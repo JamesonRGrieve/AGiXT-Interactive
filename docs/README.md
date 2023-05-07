@@ -27,14 +27,16 @@ Agent-LLM is an Artificial Intelligence Automation Platform designed to power ef
 
 ## Front-End Quickstart
 
-Run the following commands from within your Agent-LLM folder.
+After you have run the Agent-LLM back end, follow these instructions below:
 
 ```
-git clone https://github.com/JamesonRGrieve/Agent-LLM-Frontend frontend --recurse-submodules 
-cd frontend
+git clone https://github.com/JamesonRGrieve/Agent-LLM-Frontend --recurse-submodules 
+cd Agent-LLM-Frontend
 yarn install
 yarn dev
 ```
+
+Access at http://localhost:3000
 
 ## Contributing
 
