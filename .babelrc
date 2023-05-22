@@ -1,4 +1,11 @@
+// .babelrc
 {
-    "presets": ["next/babel"],
-    "plugins": []
-}
+    "presets": [
+      "next/babel"
+    ],
+    "plugins": [
+      ["@babel/plugin-transform-typescript", {
+        "isTSX": true
+      }]
+    ]
+  }
