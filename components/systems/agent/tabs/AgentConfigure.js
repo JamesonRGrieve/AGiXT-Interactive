@@ -212,7 +212,7 @@ export default function AgentAdmin() {
       <Typography variant="body1" sx={{ my: "1rem" }}>
         <b>
           <a
-            href="https://github.com/Josh-XT/Agent-LLM/tree/main/docs/providers"
+            href="https://github.com/Josh-XT/AGiXT/tree/main/docs/providers"
             target="_blank"
           >
             CLICK HERE FOR PROVIDER DOCUMENTATION

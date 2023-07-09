@@ -1,6 +1,6 @@
 {
-  "name": "agent-llm-frontend",
-  "version": "0.8.0",
+  "name": "agixt-nextjs",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
