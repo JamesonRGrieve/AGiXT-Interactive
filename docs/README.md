@@ -20,9 +20,9 @@ AGiXT is an Artificial Intelligence Automation Platform designed to power effici
 
 ![image](https://user-images.githubusercontent.com/102809327/235532233-72f291a7-0633-435f-b72c-7f56bce682d8.png)
 
-## Front-End Quickstart
-
-After you have run the AGiXT back end, follow these instructions below:
+## NextJS Front-End Quickstart
+- If you don't already have AGiXT, [follow this link for instructions to set it up.](https://github.com/Josh-XT/AGiXT#quick-start-guide)
+- After you have run the AGiXT back end, follow these instructions below:
 
 ```
 git clone https://github.com/AGiXT/nextjs --recurse-submodules 
