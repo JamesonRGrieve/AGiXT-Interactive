@@ -8,7 +8,6 @@ import { sdk } from "../../lib/apiClient";
 import useSWR from "swr";
 export default function StepTypeCommand({ prompt, set_prompt, update }) {
   const [chain, setChain] = useState(-1);
-  // TODO: Get commands directly from API without going through agent.
   const chains = useSWR("chain", async () => await sdk.getChains());
   useEffect(() => {
     const chain = prompt.slice(11, indexOf(")"));

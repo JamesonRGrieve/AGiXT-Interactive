@@ -17,7 +17,7 @@ export default function StepTypePrompt({
   const [promptNameVal, setPromptNameVal] = useState(-1);
   const [promptText, setPromptText] = useState("");
   const agents = useSWR("agent", async () => await sdk.getAgents());
-  // TODO: Add prompt category field and logic to choose category before choosing prompt, setting to "Default" for now
+  // TODO: Add prompt category field and logic to choose category before choosing prompt, setting to "Default" for now.
   const promptCategories = useSWR(
     "prompt_categories",
     async () => await sdk.getPromptsCategories()

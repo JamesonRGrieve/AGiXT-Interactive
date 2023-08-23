@@ -170,7 +170,7 @@ export default function AgentAdmin() {
   console.log(agentConfig);
   const handleConfigure = async () => {
     console.log({ provider: provider, settings: { ...fieldValues } });
-    // TODO: Get agent_name out of the body of the request.
+    // TODO: Get agent_name out of the body of the request
     await axios.put(
       `${
         process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
@@ -204,7 +204,6 @@ export default function AgentAdmin() {
     if (provider != "initial") getAndSetFields();
   }, [provider]);
   return (
-    //TODO: Lay these out nicer.
     <Container>
       <Typography variant="h6" sx={{ my: "1rem" }}>
         Agent Provider

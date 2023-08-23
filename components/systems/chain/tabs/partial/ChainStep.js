@@ -115,7 +115,6 @@ export default function ChainStep({
     setStepType(
       step_types.findIndex((step_type) => step_type.name == prompt_type)
     );
-    // TODO: Fix this.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prompt_type]);
   const handleChange = () => {

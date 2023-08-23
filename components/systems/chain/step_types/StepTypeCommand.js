@@ -9,7 +9,6 @@ import AgentAdmin from "../../agent/tabs/AgentConfigure";
 export default function StepTypeCommand({ prompt, set_prompt, update }) {
   const [command, setCommand] = useState(-1);
   const [args, setArgs] = useState("");
-  // TODO: Get commands directly from API without going through agent.
   const commands = useSWR("command", async () => await sdk.getCommands(agent));
   useEffect(() => {
     const command = prompt.slice(0, prompt.indexOf("("));

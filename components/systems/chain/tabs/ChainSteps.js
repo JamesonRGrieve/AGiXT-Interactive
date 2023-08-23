@@ -15,12 +15,12 @@ export default function ChainSteps() {
   );
   console.log(steps.data);
   const handleAdd = async () => {
-    // TODO: See Chain Management page in Streamlit app.  This needs modified, missing some fields.
-    // If prompt type is prompt, we need to show prompt category and prompt name drop downs.
-    // prompt_name and prompt_category are what is expected for promptArgs in addStep if prompt type is prompt.
-    // command_name and command_args are what is expected for promptArgs in addStep if prompt type is command.
-    // chain and input are what is expected for promptArgs in addStep if prompt type is chain at minimum, but we will also want to show the chain args.
-    // See Chain Management page in Streamlit app to see the available overrides/options for each prompt type.
+    // TODO: See Chain Management page in Streamlit app.  This needs modified, missing some fields..
+    //  If prompt type is prompt, we need to show prompt category and prompt name drop downs.
+    //  prompt_name and prompt_category are what is expected for promptArgs in addStep if prompt type is prompt.
+    //  command_name and command_args are what is expected for promptArgs in addStep if prompt type is command.
+    //  chain and input are what is expected for promptArgs in addStep if prompt type is chain at minimum, but we will also want to show the chain args.
+    //  See Chain Management page in Streamlit app to see the available overrides/options for each prompt type.
     await sdk.addStep({
       chainName: router.query.chain,
       stepNumber: steps.data.length + 1,

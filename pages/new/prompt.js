@@ -9,7 +9,7 @@ import { sdk } from "../../lib/apiClient";
 export default function Home() {
   const [name, setName] = useState("");
   const [prompt, setPrompt] = useState("");
-  // TODO: Add prompt category, setting to default for now.
+  // TODO: Add prompt category, setting to default for now
   const promptCategory = "Default";
   const handleCreate = async () => {
     await sdk.addPrompt({
