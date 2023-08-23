@@ -1,4 +1,4 @@
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../lib/apiClient";
 export default async function handler(req, res) {
   if (req.method === "GET") {
     const providerMap = {

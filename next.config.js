@@ -1,21 +1,13 @@
 /** @type {import('next').NextConfig} */
 
-const nextConfig = {
+module.exports = {
+  webpack(config) {
+    config.module.rules.push({
+      test: /\.tsx?$/,
+      use: "ts-loader",
+      exclude: /node_modules/,
+    });
 
-  reactStrictMode: true,
-
-  serverRuntimeConfig: {
-
-    // Increase the maxInactiveAge to 5 minutes (300000 ms)
-
-    maxInactiveAge: 300000,
-
-    // Increase the number of pages that can be built concurrently
-
-    concurrentFeatures: 10,
-
+    return config;
   },
-  "staticPageGenerationTimeout": 240,
 };
-
-module.exports = nextConfig;
