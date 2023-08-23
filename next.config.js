@@ -1,17 +1,4 @@
 /** @type {import('next').NextConfig} */
+const nextConfig = {};
 
-module.exports = {
-  webpack: (config) => {
-    config.resolve.fallback = {
-      fs: false,
-    };
-
-    config.module.rules.push({
-      test: /\.tsx?$/,
-      use: "ts-loader",
-      exclude: /node_modules/,
-    });
-
-    return config;
-  },
-};
+module.exports = nextConfig;
