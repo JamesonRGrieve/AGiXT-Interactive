@@ -37,6 +37,7 @@
     "@types/webpack-env": "^1.18.1",
     "eslint": "8.43.0",
     "eslint-config-next": "13.4.6",
+    "ts-loader": "^9.4.4",
     "typescript": "^5.1.6"
   }
 }
