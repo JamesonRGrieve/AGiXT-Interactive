@@ -15,7 +15,7 @@ export default function PromptAdmin({ friendly_name, name, args, enabled }) {
   const [newBody, setNewBody] = useState(prompt.data.prompt);
   console.log(prompt);
   const handleDelete = async () => {
-    // TODO: Add prompt category field and logic to choose category before choosing prompt, setting to "Default" for now
+    // TODO: Add prompt category field and logic to choose category before choosing prompt, setting to "Default" for now.
     const promptCategory = "Default";
     await sdk.deletePrompt({
       promptName: promptName,
