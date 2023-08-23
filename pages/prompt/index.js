@@ -3,9 +3,9 @@ import { sdk } from "../../lib/apiClient";
 import useSWR from "swr";
 import ReactMarkdown from "react-markdown";
 import { Container } from "@mui/material";
-import ContentSWR from "@/components/data/ContentSWR";
-import PopoutDrawerWrapper from "@/components/menu/PopoutDrawerWrapper";
-import PromptList from "@/components/systems/prompt/PromptList";
+import ContentSWR from "../../components/data/ContentSWR";
+import PopoutDrawerWrapper from "../../components/menu/PopoutDrawerWrapper";
+import PromptList from "../../components/systems/prompt/PromptList";
 import { useRouter } from "next/router";
 export default function Home() {
   const router = useRouter();

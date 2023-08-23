@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Container, TextField, Button, Typography } from "@mui/material";
 import { mutate } from "swr";
 import useSWR from "swr";
-import DoubleSidedMenu from "@/components/menu/PopoutDrawerWrapper";
-import PromptList from "@/components/systems/prompt/PromptList";
+import DoubleSidedMenu from "../../components/menu/PopoutDrawerWrapper";
+import PromptList from "../../components/systems/prompt/PromptList";
 import { sdk } from "../../lib/apiClient";
 export default function Home() {
   const [name, setName] = useState("");

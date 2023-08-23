@@ -2,7 +2,7 @@ import axios from "axios";
 import useSWR from "swr";
 import ReactMarkdown from "react-markdown";
 import { Container } from "@mui/material";
-import ContentSWR from "@/components/data/ContentSWR";
+import ContentSWR from "../components/data/ContentSWR";
 export default function Home() {
   const readme = useSWR(
     "docs",

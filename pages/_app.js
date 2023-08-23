@@ -1,4 +1,4 @@
-import "@/styles/globals.css";
+import "../styles/globals.css";
 import axios from "axios";
 import { useState, useCallback } from "react";
 import { setCookie, getCookie } from "cookies-next";
@@ -22,8 +22,8 @@ import {
   InsertLink,
   SmartToy,
 } from "@mui/icons-material";
-import MenuList from "@/components/menu/MenuList";
-import { MenuDarkSwitch } from "@/components/menu/MenuDarkSwitch";
+import MenuList from "../components/menu/MenuList";
+import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
 import { red } from "@mui/material/colors";
 const drawerWidth = 240;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
