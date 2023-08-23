@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../../lib/apiClient";
 import { mutate } from "swr";
 import useSWR from "swr";
 import { Typography, Box, IconButton } from "@mui/material";

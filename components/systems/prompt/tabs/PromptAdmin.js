@@ -2,7 +2,7 @@ import { useState } from "react";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../../lib/apiClient";
 import { TextField, Button, Divider, Container } from "@mui/material";
 export default function PromptAdmin({ friendly_name, name, args, enabled }) {
   const router = useRouter();

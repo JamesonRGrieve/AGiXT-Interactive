@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../../lib/apiClient";
 import { Typography, Paper, TextField, Button } from "@mui/material";
 export default function AgentChat() {
   const [chatHistory, setChatHistory] = useState([]);

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
 import { mutate } from "swr";
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../../lib/apiClient";
 import useSWR from "swr";
 export default function StepTypeCommand({ prompt, set_prompt, update }) {
   const [chain, setChain] = useState(-1);

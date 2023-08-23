@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../lib/apiClient";
 import useSWR from "swr";
 import ChainPanel from "../chain/ChainPanel";
 import PopoutDrawerWrapper from "../../menu/PopoutDrawerWrapper";

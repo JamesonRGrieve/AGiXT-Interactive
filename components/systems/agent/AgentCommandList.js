@@ -9,7 +9,7 @@ import {
   Divider,
 } from "@mui/material";
 import AgentCommand from "./AgentCommand";
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../lib/apiClient";
 
 export default function AgentCommandList({ data }) {
   const agentName = useRouter().query.agent;

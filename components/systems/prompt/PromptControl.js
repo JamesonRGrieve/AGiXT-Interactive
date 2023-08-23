@@ -3,7 +3,7 @@ import useSWR from "swr";
 import PromptPanel from "./PromptPanel";
 import PopoutDrawerWrapper from "../../menu/PopoutDrawerWrapper";
 import PromptList from "./PromptList";
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../lib/apiClient";
 export default function PromptControl({ data }) {
   const promptName = useRouter().query.prompt;
   cons;

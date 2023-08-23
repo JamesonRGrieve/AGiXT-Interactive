@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../../lib/apiClient";
 import { mutate } from "swr";
 import { TextField, Button, Divider, Container } from "@mui/material";
 export default function AgentAdmin({ friendly_name, name, args, enabled }) {

@@ -5,7 +5,7 @@ import AgentPanel from "./AgentPanel";
 import PopoutDrawerWrapper from "../../menu/PopoutDrawerWrapper";
 import AgentCommandsList from "./AgentCommandList";
 import MenuAgentList from "./AgentList";
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../lib/apiClient";
 
 export default function AgentControl({ data }) {
   const router = useRouter();

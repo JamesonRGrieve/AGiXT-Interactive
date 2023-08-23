@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
 import useSWR from "swr";
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../../../lib/apiClient";
 import {
   Typography,
   Paper,

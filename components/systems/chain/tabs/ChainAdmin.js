@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
 import { TextField, Button, Divider, Container } from "@mui/material";
-import { sdk } from "../../lib/apiClient";
+import { sdk } from "../../../../lib/apiClient";
 
 export default function ChainAdmin({ friendly_name, name, args, enabled }) {
   const router = useRouter();
