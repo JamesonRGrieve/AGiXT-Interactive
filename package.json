@@ -20,14 +20,11 @@
     "agixt": "^1.0.14",
     "axios": "latest",
     "cookies-next": "latest",
-    "graphql": "latest",
-    "graphql-ws": "latest",
-    "isomorphic-unfetch": "^3.1.0",
     "next": "13.4.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-google-recaptcha": "^3.1.0",
     "react-markdown": "^8.0.7",
+    "ts-loader": "^9.4.4",
     "swr": "latest"
   },
   "devDependencies": {
