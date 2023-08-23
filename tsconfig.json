@@ -20,7 +20,8 @@
     "jsx": "preserve"
   },
   "files": [
-    "lib/apiClient.ts"
+    "lib/apiClient.ts",
+    "theme.ts",
     // other .ts files here
   ],
   "include": [
