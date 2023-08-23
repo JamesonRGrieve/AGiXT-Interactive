@@ -1,24 +1,22 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
+import { sdk } from "../../lib/apiClient";
 import { Typography, Paper, TextField, Button } from "@mui/material";
 export default function AgentChat() {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const agentName = useRouter().query.agent;
   const MessageAgent = async (message) => {
-    const response = await axios.post(
-      `${
-        process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
-      }/api/agent/${agentName}/chat`,
-      { prompt: message }
-    );
-    const responseData = response.data.response;
-    setChatHistory((old) => [
-      ...old,
-      `You: ${message}`,
-      `Agent: ${responseData}`,
-    ]);
+    // TODO: Add contextResults and conversationName
+    const contextResults = 5;
+    const conversationName = "default";
+    const response = await sdk.chat({
+      agentName: agentName,
+      userInput: message,
+      conversation: conversationName,
+      contextResults: contextResults,
+    });
+    setChatHistory((old) => [...old, `You: ${message}`, `Agent: ${response}`]);
   };
 
   const handleKeyPress = async (event) => {

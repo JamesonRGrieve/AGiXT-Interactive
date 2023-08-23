@@ -4,7 +4,6 @@ import { useRouter } from "next/router";
 import AgentChat from "./tabs/AgentChat";
 import AgentInstruct from "./tabs/AgentInstruct";
 import AgentAdmin from "./tabs/AgentAdmin";
-import AgentTask from "./tabs/AgentTask";
 import AgentConfigure from "./tabs/AgentConfigure";
 import { useTheme } from "@mui/material/styles";
 export default function AgentPanel() {
@@ -18,7 +17,6 @@ export default function AgentPanel() {
   const tabs = [
     <AgentChat key="chat" />,
     <AgentInstruct key="instruct" />,
-    <AgentTask key="task" />,
     <AgentConfigure key="admin" />,
     <AgentAdmin key="admin" />,
   ];

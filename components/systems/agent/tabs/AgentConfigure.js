@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
+import { sdk } from "../../lib/apiClient";
 import useSWR from "swr";
 import { mutate } from "swr";
 import {
@@ -19,28 +19,10 @@ export default function AgentAdmin() {
   const [provider, setProvider] = useState("initial");
   const [fields, setFields] = useState([]);
   const [fieldValues, setFieldValues] = useState({});
-  const agentConfig = useSWR(
-    `agent/${agentName}`,
-    async () =>
-      (
-        await axios.get(
-          `${
-            process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
-          }/api/agent/${agentName}`
-        )
-      ).data
+  const agentConfig = useSWR(`agent/${agentName}`, async () =>
+    sdk.getAgent(agentName)
   );
-  const providers = useSWR(
-    "provider",
-    async () =>
-      (
-        await axios.get(
-          `${
-            process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
-          }/api/provider`
-        )
-      ).data
-  );
+  const providers = useSWR("provider", async () => await sdk.getProviders());
   const fieldComponents = {
     MODEL_PATH: (
       <TextField
@@ -170,16 +152,10 @@ export default function AgentAdmin() {
   console.log(agentConfig);
   const handleConfigure = async () => {
     console.log({ provider: provider, settings: { ...fieldValues } });
-    // TODO: Get agent_name out of the body of the request
-    await axios.put(
-      `${
-        process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
-      }/api/agent/${agentName}`,
-      {
-        agent_name: agentName,
-        settings: { provider: provider, ...fieldValues },
-      }
-    );
+    await sdk.updateAgent({
+      agent_name: agentName,
+      settings: { provider: provider, ...fieldValues },
+    });
     mutate(`agent/${agentName}`);
   };
   useEffect(() => {
@@ -193,13 +169,8 @@ export default function AgentAdmin() {
   }, [agentConfig.data]);
   useEffect(() => {
     async function getAndSetFields() {
-      const get = await axios.get(
-        `${
-          process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
-        }/api/provider/${provider}`
-      );
-      console.log(get.data.settings);
-      setFields(get.data.settings);
+      const providerSettings = await sdk.getProviderSettings(provider);
+      setFields(providerSettings);
     }
     if (provider != "initial") getAndSetFields();
   }, [provider]);

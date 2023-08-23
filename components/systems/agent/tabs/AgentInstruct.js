@@ -1,19 +1,20 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
-import {
-  Typography,
-  Paper,
-  TextField,
-  Button,
-} from "@mui/material";
+import { sdk } from "../../lib/apiClient";
+import { Typography, Paper, TextField, Button } from "@mui/material";
 export default function AgentInstruct() {
   const [responseHistory, setResponseHistory] = useState([]);
   const [instruction, setInstruction] = useState("");
   const agentName = useRouter().query.agent;
+  // TODO: Add conversationName drop down
+  const conversationName = "default";
   const InstructAgent = async () => {
     if (instruction?.length <= 0) console.log("ha");
-    const response = (await axios.post(`${process.env.NEXT_PUBLIC_API_URI ?? 'http://localhost:7437'}/api/agent/${agentName}/instruct`, { prompt: instruction })).data.response;
+    const response = await sdk.instruct({
+      agentName: agentName,
+      userInput: instruction,
+      conversation: conversationName,
+    });
     console.log(response);
     setResponseHistory((old) => [
       ...old,
@@ -67,4 +68,4 @@ export default function AgentInstruct() {
       </Paper>
     </>
   );
-};
+}

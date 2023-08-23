@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
-import axios from "axios";
+import { sdk } from "../../lib/apiClient";
 import { mutate } from "swr";
 import { TextField, Button, Divider, Container } from "@mui/material";
 export default function AgentAdmin({ friendly_name, name, args, enabled }) {
@@ -8,22 +8,12 @@ export default function AgentAdmin({ friendly_name, name, args, enabled }) {
   const agentName = router.query.agent;
   const [newName, setNewName] = useState("");
   const handleDelete = async () => {
-    await axios.delete(
-      `${
-        process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
-      }/api/agent/${agentName}`
-    );
+    await sdk.deleteAgent(agentName);
     mutate(`agent`);
     router.push(`/agent`);
   };
   const handleRename = async () => {
-    // TODO: Get agentName out of URI as it makes a 404 upon success
-    await axios.patch(
-      `${
-        process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
-      }/api/agent/${agentName}`,
-      { old_name: agentName, new_name: newName }
-    );
+    await sdk.renameAgent(agentName, newName);
     mutate(`agent`);
     router.push(`/agent/${newName}`);
   };
