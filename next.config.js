@@ -1,14 +1,12 @@
-/** @type {import('next').NextConfig} */
 module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        use: "ts-loader",
+  webpack(config, options) {
+    config.module.rules.push({
+      test: /\.(ts|tsx)$/,
+      loader: "ts-loader",
+      options: {
+        transpileOnly: true,
       },
-    ],
-  },
-  resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    });
+    return config;
   },
 };
