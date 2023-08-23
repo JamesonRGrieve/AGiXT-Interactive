@@ -5,6 +5,7 @@ import { Container } from "@mui/material";
 import ContentSWR from "../../components/data/ContentSWR";
 import PopoutDrawerWrapper from "../../components/menu/PopoutDrawerWrapper";
 import ProviderList from "../../components/systems/provider/ProviderList";
+import { sdk } from "../../lib/apiClient";
 export default function Home() {
   const docs = useSWR(
     "docs/provider",
@@ -15,17 +16,7 @@ export default function Home() {
         )
       ).data
   );
-  const providers = useSWR(
-    "provider",
-    async () =>
-      (
-        await axios.get(
-          `${
-            process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
-          }/api/provider`
-        )
-      ).data
-  );
+  const providers = useSWR("provider", async () => await sdk.getProviders());
   return (
     <PopoutDrawerWrapper
       title={"Provider Homepage"}

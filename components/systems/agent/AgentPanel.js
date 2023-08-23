@@ -1,8 +1,5 @@
 import { useState } from "react";
-import {
-  Tab,
-  Tabs
-} from "@mui/material";
+import { Tab, Tabs } from "@mui/material";
 import { useRouter } from "next/router";
 import AgentChat from "./tabs/AgentChat";
 import AgentInstruct from "./tabs/AgentInstruct";
@@ -13,7 +10,7 @@ import { useTheme } from "@mui/material/styles";
 export default function AgentPanel() {
   const router = useRouter();
   console.log(router.query.config);
-  const [tab, setTab] = useState(router.query.config=="true"?3:0);
+  const [tab, setTab] = useState(router.query.config == "true" ? 3 : 0);
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
   };
@@ -23,11 +20,19 @@ export default function AgentPanel() {
     <AgentInstruct key="instruct" />,
     <AgentTask key="task" />,
     <AgentConfigure key="admin" />,
-    <AgentAdmin key="admin" />
+    <AgentAdmin key="admin" />,
   ];
   return (
     <>
-      <Tabs value={tab} onChange={handleTabChange} TabIndicatorProps={{ style: { background: theme.palette.mode == "dark"?"#FFF":"#000" } }} sx={{ mb: "0.5rem" }} textColor={theme.palette.mode == "dark"?"white":"black"}>
+      <Tabs
+        value={tab}
+        onChange={handleTabChange}
+        TabIndicatorProps={{
+          style: { background: theme.palette.mode == "dark" ? "#FFF" : "#000" },
+        }}
+        sx={{ mb: "0.5rem" }}
+        textColor={theme.palette.mode == "dark" ? "white" : "black"}
+      >
         <Tab label="Chat With Agent" />
         <Tab label="Instruct Agent" />
         <Tab label="Task Agent" />
@@ -37,4 +42,4 @@ export default function AgentPanel() {
       {tabs[tab]}
     </>
   );
-};
+}

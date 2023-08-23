@@ -1,4 +1,5 @@
 import axios from "axios";
+import { sdk } from "../../lib/apiClient";
 import useSWR from "swr";
 import ReactMarkdown from "react-markdown";
 import { Container } from "@mui/material";
@@ -17,17 +18,7 @@ export default function Home() {
         )
       ).data
   );
-  const prompts = useSWR(
-    "prompt",
-    async () =>
-      (
-        await axios.get(
-          `${
-            process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
-          }/api/prompt`
-        )
-      ).data.prompts
-  );
+  const prompts = useSWR("prompt", async () => await sdk.getPrompts());
   return (
     <PopoutDrawerWrapper
       title={"Prompt Homepage"}

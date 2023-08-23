@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import axios from "axios";
 import { mutate } from "swr";
 import {
   List,
@@ -7,23 +6,26 @@ import {
   ListItemButton,
   Typography,
   Switch,
-  Divider
+  Divider,
 } from "@mui/material";
 import AgentCommand from "./AgentCommand";
+import { sdk } from "../../lib/apiClient";
+
 export default function AgentCommandList({ data }) {
   const agentName = useRouter().query.agent;
   const handleToggleAllCommands = async () => {
-    await axios.patch(`${process.env.NEXT_PUBLIC_API_URI ?? 'http://localhost:7437'}/api/agent/${agentName}/command`, { command_name: "*", enable: data.every((command) => command.enabled) ? "false" : "true" });
+    await sdk.toggleCommand(
+      agentName,
+      "*",
+      data.every((command) => command.enabled) ? "false" : "true"
+    );
     mutate(`agent/${agentName}/commands`);
-  }
+  };
   return (
     <List dense>
-      <ListItem disablePadding >
-
+      <ListItem disablePadding>
         <ListItemButton>
-          <Typography variant="body2">
-            All Commands
-          </Typography>
+          <Typography variant="body2">All Commands</Typography>
         </ListItemButton>
         <Switch
           checked={data.every((command) => command.enabled)}
@@ -35,7 +37,6 @@ export default function AgentCommandList({ data }) {
       {data.map((command, index) => (
         <AgentCommand key={index} {...command} />
       ))}
-
     </List>
   );
 }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { sdk } from "../../lib/apiClient";
 import useSWR from "swr";
 import ReactMarkdown from "react-markdown";
 import { Container } from "@mui/material";
@@ -15,17 +16,7 @@ export default function Home() {
         )
       ).data
   );
-  const chains = useSWR(
-    "chain",
-    async () =>
-      (
-        await axios.get(
-          `${
-            process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
-          }/api/chain`
-        )
-      ).data
-  );
+  const chains = useSWR("chain", async () => await sdk.getChains());
   return (
     <PopoutDrawerWrapper
       title={"Chain Homepage"}

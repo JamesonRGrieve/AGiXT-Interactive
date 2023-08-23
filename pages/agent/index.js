@@ -1,3 +1,4 @@
+import { sdk } from "../../lib/apiClient";
 import axios from "axios";
 import useSWR from "swr";
 import ReactMarkdown from "react-markdown";
@@ -15,17 +16,7 @@ export default function Home() {
         )
       ).data
   );
-  const agents = useSWR(
-    "agent",
-    async () =>
-      (
-        await axios.get(
-          `${
-            process.env.NEXT_PUBLIC_API_URI ?? "http://localhost:7437"
-          }/api/agent`
-        )
-      ).data.agents
-  );
+  const agents = useSWR("agent", async () => await sdk.getAgents());
   return (
     <PopoutDrawerWrapper
       title={"Agent Homepage"}
