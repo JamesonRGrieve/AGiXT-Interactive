@@ -9,7 +9,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@apollo/client": "latest",
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@fontsource/ubuntu-mono": "latest",
