@@ -13,11 +13,7 @@ export default function Prompt() {
   const promptCategory = "Default";
   const prompt = useSWR(
     `prompt/${promptName}`,
-    async () =>
-      await sdk.getPrompt({
-        promptName: promptName,
-        promptCategory: promptCategory,
-      })
+    async () => await sdk.getPrompt(promptName, promptCategory)
   );
   // TODO: Selecting a prompt is not showing it an edit prompt UI like it should.
   return <ContentSWR swr={prompt} content={PromptControl} />;

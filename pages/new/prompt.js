@@ -12,19 +12,12 @@ export default function Home() {
   // TODO: Add prompt category, setting to default for now
   const promptCategory = "Default";
   const handleCreate = async () => {
-    await sdk.addPrompt({
-      promptName: name,
-      prompt: prompt,
-      promptCategory: promptCategory,
-    });
+    await sdk.addPrompt(name, prompt, promptCategory);
     mutate("prompt");
   };
   const prompts = useSWR(
     "prompt",
-    async () =>
-      await sdk.getPrompts({
-        promptCategory: promptCategory,
-      })
+    async () => await sdk.getPrompts(promptCategory)
   );
   return (
     <DoubleSidedMenu

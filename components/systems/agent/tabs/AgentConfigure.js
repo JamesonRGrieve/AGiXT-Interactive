@@ -152,10 +152,7 @@ export default function AgentAdmin() {
   console.log(agentConfig);
   const handleConfigure = async () => {
     console.log({ provider: provider, settings: { ...fieldValues } });
-    await sdk.updateAgent({
-      agent_name: agentName,
-      settings: { provider: provider, ...fieldValues },
-    });
+    await sdk.updateAgent(agentName, { provider: provider, ...fieldValues });
     mutate(`agent/${agentName}`);
   };
   useEffect(() => {

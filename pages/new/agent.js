@@ -10,7 +10,7 @@ export default function Home() {
   const router = useRouter();
   const [name, setName] = useState("");
   const handleCreate = async () => {
-    sdk.addAgent({ agentName: name, settings: {} });
+    sdk.addAgent(name, {});
     mutate("agent");
     router.push(`/agent/${name}?config=true`);
   };

@@ -121,17 +121,11 @@ export default function ChainStep({
     setExpanded((old) => !old);
   };
   const handleIncrement = async () => {
-    await sdk.moveStep({
-      old_step_number: step_number,
-      new_step_number: Number(step_number) + 1,
-    });
+    await sdk.moveStep(step_number, Number(step_number) + 1);
     mutate("chain/" + router.query.chain);
   };
   const handleDecrement = async () => {
-    await sdk.moveStep({
-      old_step_number: step_number,
-      new_step_number: Number(step_number) - 1,
-    });
+    await sdk.moveStep(step_number, Number(step_number) - 1);
     mutate("chain/" + router.query.chain);
   };
   useEffect(() => {
@@ -147,26 +141,21 @@ export default function ChainStep({
     const args = {
       step_number: step_number,
       prompt_name: promptName,
-      prompt_type: step_types[stepType].name,
       prompt: promptText,
       agent_name: agentName,
     };
     console.log(args);
-    await sdk.updateStep({
-      chainName: router.query.chain,
-      stepNumber: step_number,
-      agentName: agentName,
-      promptName: promptName,
-      promptType: step_types[stepType].name,
-      prompt: promptText,
-    });
+    await sdk.updateStep(
+      router.query.chain,
+      step_number,
+      agentName,
+      step_types[stepType].name,
+      args
+    );
     mutate("chain/" + router.query.chain);
   };
   const handleDelete = async () => {
-    await sdk.deleteStep({
-      chain_name: router.query.chain,
-      stepNumber: step_number,
-    });
+    await sdk.deleteStep(router.query.chain, step_number);
     mutate("chain/" + router.query.chain);
   };
   console.log(last_step);

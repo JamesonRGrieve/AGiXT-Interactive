@@ -10,8 +10,7 @@ export default function ChainSteps() {
   const router = useRouter();
   const steps = useSWR(
     "chain/" + router.query.chain,
-    async () =>
-      (await sdk.getChain(router.query.chain)).chain[router.query.chain]
+    async () => (await sdk.getChain(router.query.chain))[router.query.chain]
   );
   console.log(steps.data);
   const handleAdd = async () => {
