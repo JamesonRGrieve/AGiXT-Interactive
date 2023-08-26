@@ -20,14 +20,14 @@ export default function ChainAdmin({ friendly_name, name, args, enabled }) {
   };
   const handleRun = async () => {
     // TODO: Need to add fields for userInput, agentName, allResponses, fromStep, chainArgs.  See streamlit agent interactions page in Chain mode for example of how this should be set up.
-    await sdk.runChain({
-      chainName: chainName,
-      userInput: userInput,
-      agentName: agentName,
-      allResponses: allResponses,
-      fromStep: fromStep,
-      chainArgs: chainArgs,
-    });
+    await sdk.runChain(
+      chainName,
+      userInput,
+      agentName,
+      allResponses,
+      fromStep,
+      chainArgs
+    );
   };
   return (
     <Container>

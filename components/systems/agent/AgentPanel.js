@@ -33,7 +33,6 @@ export default function AgentPanel() {
       >
         <Tab label="Chat With Agent" />
         <Tab label="Instruct Agent" />
-        <Tab label="Task Agent" />
         <Tab label="Configure Agent" />
         <Tab label="Administrate Agent" />
       </Tabs>
