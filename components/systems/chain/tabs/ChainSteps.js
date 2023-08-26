@@ -22,7 +22,7 @@ export default function ChainSteps() {
     //  See Chain Management page in Streamlit app to see the available overrides/options for each prompt type.
     await sdk.addStep(
       router.query.chain,
-      steps.data.length + 1,
+      steps.data.steps.length + 1,
       agentName,
       promptType,
       promptArgs
@@ -31,51 +31,25 @@ export default function ChainSteps() {
   };
   return (
     <>
-      {steps?.data?.map((step, index) => {
+      {steps?.data?.steps.map((step, index) => {
         return (
           <>
             <ChainStep
               key={index}
               {...step}
-              last_step={steps.data.length === index + 1}
+              last_step={steps.data.steps.length === index + 1}
               updateCallback={() => {
                 return null;
               }}
             />
-            {index === steps.data.length - 1 ? null : (
+            {index === steps.data.steps.length - 1 ? null : (
               <Box
                 sx={{
                   display: "flex",
                   justifyContent: "left",
                   alignItems: "center",
                 }}
-              >
-                {step.run_next_concurrent ? (
-                  <>
-                    <IconButton>
-                      <InsertLink sx={{ fontSize: "2rem" }} />
-                    </IconButton>
-                    <Typography
-                      variant="h5"
-                      sx={{ fontWeight: "bolder", mx: "1rem" }}
-                    >
-                      Runs Concurrently With
-                    </Typography>
-                  </>
-                ) : (
-                  <>
-                    <IconButton>
-                      <LowPriority sx={{ fontSize: "2rem" }} />
-                    </IconButton>
-                    <Typography
-                      variant="h5"
-                      sx={{ fontWeight: "bolder", mx: "1rem" }}
-                    >
-                      Runs Sequentially Before
-                    </Typography>
-                  </>
-                )}
-              </Box>
+              ></Box>
             )}
           </>
         );
