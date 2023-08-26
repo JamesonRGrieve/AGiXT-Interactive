@@ -10,11 +10,11 @@ export default function AgentInstruct() {
   const conversationName = "default";
   const InstructAgent = async () => {
     if (instruction?.length <= 0) console.log("ha");
-    const response = await sdk.instruct({
-      agentName: agentName,
-      userInput: instruction,
-      conversation: conversationName,
-    });
+    const response = await sdk.instruct(
+      agentName,
+      instruction,
+      conversationName
+    );
     console.log(response);
     setResponseHistory((old) => [
       ...old,

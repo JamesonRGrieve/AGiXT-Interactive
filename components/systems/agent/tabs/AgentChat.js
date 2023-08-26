@@ -1,21 +1,23 @@
 import { useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
 import { Typography, Paper, TextField, Button } from "@mui/material";
 export default function AgentChat() {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
-  const agentName = useRouter().query.agent;
+  const router = useRouter();
+  const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const MessageAgent = async (message) => {
     // TODO: Add contextResults and conversationName
     const contextResults = 5;
     const conversationName = "default";
-    const response = await sdk.chat({
-      agentName: agentName,
-      userInput: message,
-      conversation: conversationName,
-      contextResults: contextResults,
-    });
+    const response = await sdk.chat(
+      agentName,
+      message,
+      conversationName,
+      contextResults
+    );
     setChatHistory((old) => [...old, `You: ${message}`, `Agent: ${response}`]);
   };
 
