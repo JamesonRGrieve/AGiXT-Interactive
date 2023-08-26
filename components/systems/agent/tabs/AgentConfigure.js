@@ -20,7 +20,7 @@ export default function AgentAdmin() {
   const [fields, setFields] = useState([]);
   const [fieldValues, setFieldValues] = useState({});
   const agentConfig = useSWR(`agent/${agentName}`, async () =>
-    sdk.getAgent(agentName)
+    sdk.getAgentConfig(agentName)
   );
   const providers = useSWR("provider", async () => await sdk.getProviders());
   const fieldComponents = {
