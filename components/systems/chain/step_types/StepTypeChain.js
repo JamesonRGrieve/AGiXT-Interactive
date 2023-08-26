@@ -12,11 +12,11 @@ export default function StepTypeCommand({ prompt, set_prompt, update }) {
   useEffect(() => {
     const chain = prompt.slice(11, indexOf(")"));
     setChain(
-      chains.data && prompt
-        ? chains.data.findIndex((chainName) => chainName == chain)
+      chains.data.steps && prompt
+        ? chains.data.steps.findIndex((chainName) => chainName == chain)
         : -1
     );
-  }, [chains.data, prompt]);
+  }, [chains.data.steps, prompt]);
   return (
     <>
       <Select
@@ -31,7 +31,7 @@ export default function StepTypeCommand({ prompt, set_prompt, update }) {
         }}
       >
         <MenuItem value={-1}>Select a Chain...</MenuItem>
-        {chains?.data?.map((chain, index) => {
+        {chains?.data?.steps.map((chain, index) => {
           return (
             <MenuItem key={index} value={index}>
               {chain}
