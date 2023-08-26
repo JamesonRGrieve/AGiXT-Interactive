@@ -12,21 +12,20 @@ import {
   MenuItem,
 } from "@mui/material";
 // TODO: Add prompt category field and logic to choose category before choosing prompt, setting to "Default" for now.
-const promptCategory = "Default";
 export default function PromptAdmin({ friendly_name, name, args, enabled }) {
   const router = useRouter();
   const promptName = router.query.prompt;
-  const prompt = useSWR(
-    "prompt/" + promptName,
-    async () => await sdk.getPrompt(promptName, promptCategory)
-  );
   const promptCategories = useSWR(
     "promptCategory",
     async () => await sdk.getPromptCategories()
   );
+  const [promptCategory, setPromptCategory] = useState("Default");
+  const prompt = useSWR(
+    "prompt/" + promptName,
+    async () => await sdk.getPrompt(promptName, promptCategory)
+  );
   const [newName, setNewName] = useState(promptName);
   const [newBody, setNewBody] = useState(prompt.data);
-  const [promptCategory, setPromptCategory] = useState("Default");
   console.log(prompt);
   const handleDelete = async () => {
     await sdk.deletePrompt(promptName, promptCategory);
