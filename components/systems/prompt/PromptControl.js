@@ -7,6 +7,10 @@ import { sdk } from "../../../lib/apiClient";
 export default function PromptControl({ data }) {
   const promptName = useRouter().query.prompt;
   // TODO: Need to define promptCategory from a selector rather than hard coding it.
+  const promptCategories = useSWR(
+    "promptCategory",
+    async () => await sdk.getPromptCategories()
+  );
   const promptCategory = "Default";
   const prompts = useSWR(
     "prompt",

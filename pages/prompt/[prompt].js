@@ -6,6 +6,10 @@ import PromptControl from "../../components/systems/prompt/PromptControl";
 export default function Prompt() {
   const promptName = useRouter().query.prompt;
   // TODO: Need to define promptCategory from a selector rather than hard coding it.
+  const promptCategories = useSWR(
+    "promptCategory",
+    async () => await sdk.getPromptCategories()
+  );
   const promptCategory = "Default";
   const prompt = useSWR(
     `prompt/${promptName}`,
