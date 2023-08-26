@@ -31,7 +31,6 @@ import {
 import StepTypePrompt from "../../step_types/StepTypePrompt";
 import StepTypeCommand from "../../step_types/StepTypeCommand";
 import StepTypeChain from "../../step_types/StepTypeChain";
-import StepTypeTask from "../../step_types/StepTypeTask";
 import StepTypeInstruction from "../../step_types/StepTypeInstruction";
 export default function ChainStep({
   step_number,
@@ -69,18 +68,6 @@ export default function ChainStep({
         component: (
           <StepTypeCommand
             update={setModified}
-            prompt={promptText}
-            set_prompt={setPromptText}
-          />
-        ),
-      },
-      {
-        name: "task",
-        component: (
-          <StepTypeTask
-            update={setModified}
-            agent_name={agentName}
-            set_agent_name={setAgentName}
             prompt={promptText}
             set_prompt={setPromptText}
           />
