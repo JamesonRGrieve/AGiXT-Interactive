@@ -140,9 +140,7 @@ export default function App({ Component, pageProps, dark }) {
                 <Menu />
               </IconButton>
               <Typography variant="h6" component="h1" noWrap>
-                <Link href="/">
-                  Agent LLM - AI Problem Solving and Task Automation
-                </Link>
+                <Link href="/">AGiXT</Link>
               </Typography>
             </Box>
             <MenuDarkSwitch
