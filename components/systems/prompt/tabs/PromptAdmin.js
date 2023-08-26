@@ -4,34 +4,25 @@ import { useRouter } from "next/router";
 import { mutate } from "swr";
 import { sdk } from "../../../../lib/apiClient";
 import { TextField, Button, Divider, Container } from "@mui/material";
+// TODO: Add prompt category field and logic to choose category before choosing prompt, setting to "Default" for now.
+const promptCategory = "Default";
 export default function PromptAdmin({ friendly_name, name, args, enabled }) {
   const router = useRouter();
   const promptName = router.query.prompt;
   const prompt = useSWR(
     "prompt/" + promptName,
-    async () => await sdk.getPrompt(promptName)
+    async () => await sdk.getPrompt(promptName, promptCategory)
   );
   const [newName, setNewName] = useState(prompt.data.prompt_name);
   const [newBody, setNewBody] = useState(prompt.data.prompt);
   console.log(prompt);
   const handleDelete = async () => {
-    // TODO: Add prompt category field and logic to choose category before choosing prompt, setting to "Default" for now.
-    const promptCategory = "Default";
-    await sdk.deletePrompt({
-      promptName: promptName,
-      promptCategory: promptCategory,
-    });
+    await sdk.deletePrompt(promptName, promptCategory);
     mutate(`prompt`);
     router.push(`/prompt`);
   };
   const handleSave = async () => {
-    // TODO: Add prompt category field and logic to choose category before choosing prompt, setting to "Default" for now.
-    const promptCategory = "Default";
-    await sdk.updatePrompt({
-      promptName: newName,
-      promptCategory: promptCategory,
-      prompt: newBody,
-    });
+    await sdk.updatePrompt(newName, promptCategory, newBody);
     mutate(`prompt`);
     router.push(`/prompt/${newName}`);
   };

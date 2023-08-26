@@ -21,13 +21,13 @@ export default function ChainSteps() {
     //  command_name and command_args are what is expected for promptArgs in addStep if prompt type is command.
     //  chain and input are what is expected for promptArgs in addStep if prompt type is chain at minimum, but we will also want to show the chain args.
     //  See Chain Management page in Streamlit app to see the available overrides/options for each prompt type.
-    await sdk.addStep({
-      chainName: router.query.chain,
-      stepNumber: steps.data.length + 1,
-      agentName: agentName,
-      promptType: promptType,
-      prompt: promptArgs,
-    });
+    await sdk.addStep(
+      router.query.chain,
+      steps.data.length + 1,
+      agentName,
+      promptType,
+      promptArgs
+    );
     mutate("chain/" + router.query.chain);
   };
   return (
