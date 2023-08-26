@@ -15,5 +15,6 @@ export default function Prompt() {
         promptCategory: promptCategory,
       })
   );
+  // TODO: Selecting a prompt is not showing it an edit prompt UI like it should.
   return <ContentSWR swr={prompt} content={PromptControl} />;
 }

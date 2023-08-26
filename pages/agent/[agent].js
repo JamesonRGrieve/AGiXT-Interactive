@@ -8,7 +8,7 @@ export default function Agent() {
   const agentName = useRouter().query.agent;
   const agent = useSWR(
     `agent/${agentName}`,
-    async () => await sdk.getAgent(agentName)
+    async () => await sdk.getAgentConfig(agentName)
   );
   return <ContentSWR swr={agent} content={AgentControl} />;
 }

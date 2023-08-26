@@ -18,7 +18,12 @@ export default function Home() {
         )
       ).data
   );
-  const prompts = useSWR("prompt", async () => await sdk.getPrompts());
+  // TODO: Need to define promptCategory from a selector rather than hard coding it.
+  const promptCategory = "Default";
+  const prompts = useSWR(
+    "prompt",
+    async () => await sdk.getPrompts(promptCategory)
+  );
   return (
     <PopoutDrawerWrapper
       title={"Prompt Homepage"}

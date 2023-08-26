@@ -6,8 +6,12 @@ import PromptList from "./PromptList";
 import { sdk } from "../../../lib/apiClient";
 export default function PromptControl({ data }) {
   const promptName = useRouter().query.prompt;
-  cons;
-  const prompts = useSWR("prompt", async () => await sdk.getPrompts());
+  // TODO: Need to define promptCategory from a selector rather than hard coding it.
+  const promptCategory = "Default";
+  const prompts = useSWR(
+    "prompt",
+    async () => await sdk.getPrompts(promptCategory)
+  );
   return (
     <PopoutDrawerWrapper
       title={'Manage Prompt "' + promptName + '"'}
