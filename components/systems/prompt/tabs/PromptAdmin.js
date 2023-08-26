@@ -13,8 +13,8 @@ export default function PromptAdmin({ friendly_name, name, args, enabled }) {
     "prompt/" + promptName,
     async () => await sdk.getPrompt(promptName, promptCategory)
   );
-  const [newName, setNewName] = useState(prompt.data.prompt_name);
-  const [newBody, setNewBody] = useState(prompt.data.prompt);
+  const [newName, setNewName] = useState(promptName);
+  const [newBody, setNewBody] = useState(prompt.data);
   console.log(prompt);
   const handleDelete = async () => {
     await sdk.deletePrompt(promptName, promptCategory);
