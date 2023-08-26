@@ -9,5 +9,5 @@ export default function Chain() {
     `chain/${chainName}`,
     async () => await sdk.getChain(chainName)
   );
-  return <ContentSWR swr={chains} content={ChainControl} />;
+  return <ContentSWR swr={chain} content={ChainControl} />;
 }
