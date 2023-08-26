@@ -156,14 +156,14 @@ export default function AgentAdmin() {
     mutate(`agent/${agentName}`);
   };
   useEffect(() => {
-    if (agentConfig.data?.agent?.settings?.provider) {
-      const newFieldValues = { ...agentConfig.data.agent.settings };
+    if (agentConfig.settings?.provider) {
+      const newFieldValues = { ...agentConfig.settings };
       console.log(newFieldValues);
-      setProvider(agentConfig.data.agent.settings.provider);
+      setProvider(agentConfig.settings.provider);
       delete newFieldValues.provider;
       setFieldValues(newFieldValues);
     }
-  }, [agentConfig.data]);
+  }, [agentConfig]);
   useEffect(() => {
     async function getAndSetFields() {
       const providerSettings = await sdk.getProviderSettings(provider);
@@ -193,8 +193,8 @@ export default function AgentAdmin() {
         onChange={(e) => setProvider(e.target.value)}
       >
         <MenuItem value={"initial"}>Select a Provider...</MenuItem>
-        {providers.data?.providers
-          ? providers.data.providers.map((providerName) => (
+        {providers?.data
+          ? providers.data.map((providerName) => (
               <MenuItem key={providerName} value={providerName}>
                 {providerName}
               </MenuItem>
