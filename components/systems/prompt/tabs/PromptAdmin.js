@@ -31,7 +31,7 @@ export default function PromptAdmin({ friendly_name, name, args, enabled }) {
       <TextField
         fullWidth
         variant="outlined"
-        label="New Prompt Name"
+        label="Prompt Name"
         value={newName}
         onChange={(e) => {
           setNewName(e.target.value);
@@ -42,7 +42,7 @@ export default function PromptAdmin({ friendly_name, name, args, enabled }) {
         multiline
         rows={30}
         variant="outlined"
-        label="New Prompt Body"
+        label="Prompt Body"
         value={newBody}
         onChange={(e) => {
           setNewBody(e.target.value);
