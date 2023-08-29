@@ -13,11 +13,7 @@ export default function AgentCommandsList({
   //const [open, setOpen] = useState(false);
   //const [theArgs, setTheArgs] = useState({...args});
   const handleToggleCommand = async () => {
-    await sdk.toggleCommand(
-      agentName,
-      friendly_name,
-      enabled ? "false" : "true"
-    );
+    await sdk.toggleCommand(agentName, friendly_name, enabled ? false : true);
     mutate(`agent/${agentName}/commands`);
   };
   return (
