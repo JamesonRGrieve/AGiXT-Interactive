@@ -2,8 +2,8 @@
 FROM node:16-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
-COPY ./package.json ./yarn.lock ./
-RUN yarn --frozen-lockfile
+COPY ./package.json ./package-lock.json ./
+RUN npm ci
 
 # Rebuild the source code only when needed
 FROM node:16-alpine AS builder
@@ -14,7 +14,7 @@ ENV NODE_ENV production
 ARG APP_ENV=production
 ARG NODE_ENV=production
 ARG PORT=3000
-RUN yarn build
+RUN npm run build
 
 # Production image, copy all the files and run next
 FROM node:16-alpine AS runner
@@ -28,9 +28,9 @@ ARG PORT=3000
 
 # Copy the `node_modules` from builder
 COPY --from=builder /app/node_modules ./node_modules
-# Copy the `package.json` and `yarn.lock` from builder
+# Copy the `package.json` and `package-lock.json` from builder
 COPY --from=builder /app/package.json ./package.json
-COPY --from=builder /app/yarn.lock ./yarn.lock
+COPY --from=builder /app/package-lock.json ./package-lock.json
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 
@@ -40,4 +40,4 @@ EXPOSE 3000
 
 ENV PORT 3000
 
-CMD ["yarn", "start"]
+CMD ["npm", "start"]
