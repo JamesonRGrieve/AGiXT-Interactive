@@ -17,7 +17,7 @@ import {
 export default function AgentAdmin() {
   const agentName = useRouter().query.agent;
   const [provider, setProvider] = useState("initial");
-  const [fields, setFields] = useState([]);
+  const [fields, setFields] = useState({});
   const [fieldValues, setFieldValues] = useState({});
   const agentConfig = useSWR(`agent/${agentName}`, async () =>
     sdk.getAgentConfig(agentName)
@@ -149,16 +149,13 @@ export default function AgentAdmin() {
       </Box>
     ),
   };
-  console.log(agentConfig.data);
   const handleConfigure = async () => {
-    console.log({ provider: provider, settings: { ...fieldValues } });
     await sdk.updateAgent(agentName, { provider: provider, ...fieldValues });
     mutate(`agent/${agentName}`);
   };
   useEffect(() => {
     if (agentConfig.data.settings?.provider) {
       const newFieldValues = { ...agentConfig.data.settings };
-      console.log(newFieldValues);
       setProvider(agentConfig.data.settings.provider);
       delete newFieldValues.provider;
       setFieldValues(newFieldValues);
@@ -204,7 +201,27 @@ export default function AgentAdmin() {
       <Typography variant="h6" sx={{ my: "1rem" }}>
         Provider Settings
       </Typography>
-      {fields?.map((field) => fieldComponents[field])}
+      {Object.keys(fields).map((field) => {
+        if (fieldComponents[field]) {
+          return fieldComponents[field];
+        } else {
+          // Put skip args here!
+          if (field != "provider") {
+            return (
+              <TextField
+                key={field}
+                label={field}
+                sx={{ my: "1rem", mx: "0.5rem" }}
+                value={fieldValues[field]}
+                onChange={(e) =>
+                  setFieldValues({ ...fieldValues, [field]: e.target.value })
+                }
+              />
+            );
+          }
+        }
+      })}
+      <br />
       <Button onClick={handleConfigure} variant="contained" color="error">
         Save Agent Configuration
       </Button>

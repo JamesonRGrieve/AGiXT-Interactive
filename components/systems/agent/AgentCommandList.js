@@ -17,7 +17,7 @@ export default function AgentCommandList({ data }) {
     await sdk.toggleCommand(
       agentName,
       "*",
-      data.every((command) => command.enabled) ? "false" : "true"
+      Object.values(data).every((command) => command) ? false : true
     );
     mutate(`agent/${agentName}/commands`);
   };
@@ -28,18 +28,15 @@ export default function AgentCommandList({ data }) {
           <Typography variant="body2">All Commands</Typography>
         </ListItemButton>
         <Switch
-          checked={/*data.every((command) => command.enabled) */ false}
+          checked={Object.values(data).every((command) => command) || false}
           onChange={handleToggleAllCommands}
           inputProps={{ "aria-label": "Enable/Disable All Commands" }}
         />
       </ListItem>
       <Divider />
-      {
-        // TODO: Fix commands list toggles, commented out due to causing errors.
-        /*data.map((command, index) => (
-        <AgentCommand key={index} {...command} />
-      ))*/
-      }
+      {Object.keys(data).map((command) => (
+        <AgentCommand key={command} name={command} enabled={data[command]} />
+      ))}
     </List>
   );
 }
