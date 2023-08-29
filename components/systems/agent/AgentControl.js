@@ -15,6 +15,7 @@ export default function AgentControl({ data }) {
     `agent/${agentName}/commands`,
     async () => await sdk.getCommands(agentName)
   );
+  console.log(commands);
   const agents = useSWR("agent", async () => sdk.getAgents());
   return (
     <PopoutDrawerWrapper

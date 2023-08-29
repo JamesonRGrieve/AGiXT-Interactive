@@ -3,24 +3,20 @@ import { sdk } from "../../../lib/apiClient";
 import { mutate } from "swr";
 import { ListItem, ListItemButton, Typography, Switch } from "@mui/material";
 
-export default function AgentCommandsList({
-  friendly_name,
-  name,
-  args,
-  enabled,
-}) {
+export default function AgentCommandsList({ name, enabled }) {
   const agentName = useRouter().query.agent;
   //const [open, setOpen] = useState(false);
   //const [theArgs, setTheArgs] = useState({...args});
   const handleToggleCommand = async () => {
-    await sdk.toggleCommand(agentName, friendly_name, enabled ? false : true);
+    await sdk.toggleCommand(agentName, name, enabled ? false : true);
     mutate(`agent/${agentName}/commands`);
   };
+  console.log(name);
   return (
     <>
       <ListItem key={name} disablePadding>
         <ListItemButton onClick={() => setOpen((old) => !old)}>
-          <Typography variant="body2">{friendly_name}</Typography>
+          <Typography variant="body2">{name}</Typography>
         </ListItemButton>
         <Switch
           checked={enabled}
