@@ -12,7 +12,7 @@ export default function Home() {
     async () =>
       (
         await axios.get(
-          "https://raw.githubusercontent.com/Josh-XT/AGiXT/main/docs/2-Concepts/Providers.md"
+          "https://raw.githubusercontent.com/Josh-XT/AGiXT/main/docs/2-Concepts/2-Providers.md"
         )
       ).data
   );
