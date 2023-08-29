@@ -25,6 +25,7 @@ ENV NODE_ENV production
 ARG APP_ENV=production
 ARG NODE_ENV=production
 ARG PORT=3000
+ENV NEXT_TELEMETRY_DISABLED=1
 
 # Copy the `node_modules` from builder
 COPY --from=builder /app/node_modules ./node_modules
