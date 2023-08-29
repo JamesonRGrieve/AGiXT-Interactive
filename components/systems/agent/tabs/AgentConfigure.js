@@ -149,17 +149,17 @@ export default function AgentAdmin() {
       </Box>
     ),
   };
-  console.log(agentConfig);
+  console.log(agentConfig.data);
   const handleConfigure = async () => {
     console.log({ provider: provider, settings: { ...fieldValues } });
     await sdk.updateAgent(agentName, { provider: provider, ...fieldValues });
     mutate(`agent/${agentName}`);
   };
   useEffect(() => {
-    if (agentConfig.settings?.provider) {
-      const newFieldValues = { ...agentConfig.settings };
+    if (agentConfig.data.settings?.provider) {
+      const newFieldValues = { ...agentConfig.data.settings };
       console.log(newFieldValues);
-      setProvider(agentConfig.settings.provider);
+      setProvider(agentConfig.data.settings.provider);
       delete newFieldValues.provider;
       setFieldValues(newFieldValues);
     }
