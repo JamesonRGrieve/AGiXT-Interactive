@@ -61,6 +61,14 @@ export default function AgentAdmin() {
           const displayName = `${extensionName} - ${settingName}`;
           displayNames[setting] = displayName;
         }
+        if (
+          extensionName == "Stable Diffusion" &&
+          settingName == "Huggingface Api Key"
+        ) {
+          // Change it to "Huggingface" from "Stable Diffusion"
+          const displayName = `Huggingface - API Key`;
+          displayNames[setting] = displayName;
+        }
         transformed[setting] = extensionSettings[extension][setting];
       }
     }
