@@ -72,7 +72,6 @@ export default function AgentAdmin() {
     "TOP_P",
     "TOP_K",
     "TOP_A",
-    "DO_SAMPLE",
     "TYPICAL_P",
     "EPSILON_CUTOFF",
     "ETA_CUTOFF",
@@ -132,7 +131,7 @@ export default function AgentAdmin() {
       </Select>
       {Object.keys(fields).map((field) => {
         if (field !== "provider") {
-          if (field.includes(" - Use ")) {
+          if (field.includes(" - Use ") || field == "DO_SAMPLE") {
             return (
               <>
                 <br />
