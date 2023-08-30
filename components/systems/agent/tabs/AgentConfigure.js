@@ -107,34 +107,41 @@ export default function AgentAdmin() {
     mutate(`agent/${agentName}`);
   };
   useEffect(() => {
-    if (agentConfig.data.settings?.provider) {
-      const newFieldValues = { ...agentConfig.data.settings };
-      setProvider(provider || agentConfig.data.settings.provider);
-      delete newFieldValues.provider;
-      setFieldValues(newFieldValues);
+    if (agentConfig.data?.settings?.provider) {
+      const currentProvider = agentConfig.data.settings.provider;
+      setProvider(provider || currentProvider);
+      const currentSettings = { ...agentConfig.data.settings };
+      delete currentSettings.provider;
+      setFieldValues((prev) => ({
+        ...prev,
+        ...currentSettings,
+      }));
     }
   }, [agentConfig]);
+
   useEffect(() => {
     if (provider !== null && providerSettings.data && extensionSettings.data) {
       const { transformedSettings, displayNames } = transformExtensionSettings(
         extensionSettings.data
       );
-      setFields({
+
+      const mergedSettings = {
         ...providerSettings.data,
         ...transformedSettings,
-      });
+      };
+      setFields(mergedSettings);
       setDisplayNames(displayNames);
+      setFieldValues((prev) => ({
+        ...prev,
+        ...mergedSettings,
+      }));
     }
+
     if (provider !== null) {
       mutate(`provider/${provider}`);
     }
   }, [provider, providerSettings.data, extensionSettings.data]);
-  const handleSliderChange = (field, value) => {
-    setFieldValues((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
+
   return (
     <Container>
       <Typography variant="h4" sx={{ my: "1rem" }}>
