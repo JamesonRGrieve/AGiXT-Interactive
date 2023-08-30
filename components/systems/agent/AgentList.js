@@ -45,7 +45,11 @@ export default function MenuAgentList({ data }) {
       <Divider />
 
       {data.map((agent) => (
-        <Link href={`/agent/${agent.name}`} key={agent.name} passHref>
+        <Link
+          href={`/agent/${agent.name}?tab=${router.query.tab}`}
+          key={agent.name}
+          passHref
+        >
           <ListItemButton selected={router.query.agent == agent.name}>
             <ListItemIcon>
               {agent.status ? <RunCircle /> : <StopCircle />}
