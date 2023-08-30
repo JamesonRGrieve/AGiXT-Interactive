@@ -3,6 +3,7 @@ import axios from "axios";
 import { useState, useCallback } from "react";
 import { setCookie, getCookie } from "cookies-next";
 import Link from "next/link";
+import { SettingsProvider } from "../lib/SettingsContext";
 import {
   Box,
   Drawer,
@@ -180,7 +181,9 @@ export default function App({ Component, pageProps, dark }) {
         </Drawer>
         <Main open={open} sx={{ padding: 0 }}>
           <DrawerHeader />
-          <Component {...pageProps} />
+          <SettingsProvider>
+            <Component {...pageProps} />
+          </SettingsProvider>
         </Main>
       </Box>
     </ThemeProvider>
