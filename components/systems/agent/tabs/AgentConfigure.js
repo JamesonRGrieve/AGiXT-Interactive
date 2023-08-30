@@ -19,7 +19,7 @@ import {
 
 export default function AgentAdmin() {
   const agentName = useRouter().query.agent;
-  const [provider, setProvider] = useState("initial");
+  const [provider, setProvider] = useState(null);
   const [fields, setFields] = useState({});
   const [fieldValues, setFieldValues] = useState({});
   const [displayNames, setDisplayNames] = useState({});
@@ -53,9 +53,14 @@ export default function AgentAdmin() {
             (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
           )
           .join(" ");
-
-        const displayName = `${extensionName} - ${settingName}`;
-        displayNames[setting] = displayName;
+        if (extensionName != "Dalle") {
+          const displayName = `${extensionName} - ${settingName}`;
+          displayNames[setting] = displayName;
+        }
+        if (extensionName == "Dalle" && provider != "openai") {
+          const displayName = `${extensionName} - ${settingName}`;
+          displayNames[setting] = displayName;
+        }
         transformed[setting] = extensionSettings[extension][setting];
       }
     }
@@ -96,17 +101,13 @@ export default function AgentAdmin() {
   useEffect(() => {
     if (agentConfig.data.settings?.provider) {
       const newFieldValues = { ...agentConfig.data.settings };
-      setProvider(agentConfig.data.settings.provider);
+      setProvider(provider || agentConfig.data.settings.provider);
       delete newFieldValues.provider;
       setFieldValues(newFieldValues);
     }
   }, [agentConfig]);
   useEffect(() => {
-    if (
-      provider !== "initial" &&
-      providerSettings.data &&
-      extensionSettings.data
-    ) {
+    if (provider !== null && providerSettings.data && extensionSettings.data) {
       const { transformedSettings, displayNames } = transformExtensionSettings(
         extensionSettings.data
       );
@@ -115,6 +116,9 @@ export default function AgentAdmin() {
         ...transformedSettings,
       });
       setDisplayNames(displayNames);
+    }
+    if (provider !== null) {
+      mutate(`provider/${provider}`);
     }
   }, [provider, providerSettings.data, extensionSettings.data]);
   const handleSliderChange = (field, value) => {
@@ -137,7 +141,7 @@ export default function AgentAdmin() {
         value={provider}
         onChange={(e) => setProvider(e.target.value)}
       >
-        <MenuItem value={"initial"}>Select a Provider...</MenuItem>
+        <MenuItem value={null}>Select a Provider...</MenuItem>
         {providers?.data
           ? providers.data.map((providerName) => (
               <MenuItem key={providerName} value={providerName}>
