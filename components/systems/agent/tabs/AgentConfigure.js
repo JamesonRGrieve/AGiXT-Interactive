@@ -70,7 +70,10 @@ export default function AgentAdmin() {
         if (extensionName.includes("Tts")) {
           extensionName = extensionName.replace("Tts", "TTS");
         }
-        if (settingName.includes(extensionName)) {
+        if (
+          settingName.includes(extensionName) &&
+          settingName != extensionName
+        ) {
           settingName = settingName.replace(extensionName, "");
         }
         if (settingName.includes("Tw ")) {
