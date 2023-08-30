@@ -8,8 +8,13 @@ export default function Agent() {
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const agent = useSWR(
-    `agent/${agentName}`,
-    async () => await sdk.getAgentConfig(agentName)
+    agentName ? `agent/${agentName}` : null,
+    async () => await sdk.getAgentConfig(agentName),
+    {
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
   );
+  console.log(agent);
   return <ContentSWR swr={agent} content={AgentControl} />;
 }
