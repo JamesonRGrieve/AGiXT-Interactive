@@ -73,6 +73,9 @@ export default function AgentAdmin() {
         if (settingName.includes(extensionName)) {
           settingName = settingName.replace(extensionName, "");
         }
+        if (settingName.includes("Tw ")) {
+          settingName = settingName.replace("Tw ", "");
+        }
 
         if (extensionName != "Dalle") {
           const displayName = `${extensionName} - ${settingName}`;
