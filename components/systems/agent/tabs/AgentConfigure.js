@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { useMemo } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
+import { useSettings } from "../../../../lib/SettingsContext";
 import useSWR from "swr";
 import { mutate } from "swr";
 import {
@@ -19,6 +19,7 @@ import {
 } from "@mui/material";
 
 export default function AgentConfigure({ data }) {
+  const { providerSettings, extensionSettings } = useSettings();
   const [provider, setProvider] = useState(null);
   const [fields, setFields] = useState({});
   const [fieldValues, setFieldValues] = useState({});
@@ -26,14 +27,7 @@ export default function AgentConfigure({ data }) {
   const router = useRouter();
   const agentName = router.query.agent;
   const providers = useSWR("provider", async () => await sdk.getProviders());
-  const extensionSettings = useSWR(
-    `extensionSettings`,
-    async () => await sdk.getExtensionSettings()
-  );
-  const providerSettings = useSWR(
-    `provider/${provider}`,
-    async () => await sdk.getProviderSettings(provider)
-  );
+
   const transformExtensionSettings = (extensionSettings) => {
     let transformed = {};
     let displayNames = {};
@@ -122,13 +116,12 @@ export default function AgentConfigure({ data }) {
   };
 
   useEffect(() => {
-    if (provider !== null && providerSettings.data && extensionSettings.data) {
-      const { transformedSettings, displayNames } = transformExtensionSettings(
-        extensionSettings.data
-      );
+    if (provider !== null && providerSettings[provider] && extensionSettings) {
+      const { transformedSettings, displayNames } =
+        transformExtensionSettings(extensionSettings);
 
       const mergedSettings = {
-        ...providerSettings.data,
+        ...providerSettings[provider],
         ...transformedSettings,
       };
       setFields(mergedSettings);
@@ -151,13 +144,7 @@ export default function AgentConfigure({ data }) {
         ...currentSettings,
       }));
     }
-  }, [
-    provider,
-    providerSettings.data,
-    extensionSettings.data,
-    agentName,
-    data,
-  ]);
+  }, [provider, providerSettings, extensionSettings, agentName, data]);
 
   return (
     <Container>
