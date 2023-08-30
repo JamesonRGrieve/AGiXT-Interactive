@@ -11,6 +11,5 @@ export default function Agent() {
     `agent/${agentName}`,
     async () => await sdk.getAgentConfig(agentName)
   );
-  // Add a loading screen
   return <ContentSWR swr={agent} content={AgentControl} />;
 }
