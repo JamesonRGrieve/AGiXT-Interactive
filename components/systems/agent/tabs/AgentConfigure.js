@@ -152,8 +152,6 @@ export default function AgentConfigure({ data }) {
     if (provider !== null) {
       mutate(`provider/${provider}`);
     }
-  }, [provider, providerSettings.data, extensionSettings.data]);
-  useEffect(() => {
     if (data.settings?.provider) {
       const currentProvider = data.settings.provider;
       setProvider(currentProvider || provider);
@@ -163,7 +161,13 @@ export default function AgentConfigure({ data }) {
         ...currentSettings,
       }));
     }
-  }, [agentName, data]);
+  }, [
+    provider,
+    providerSettings.data,
+    extensionSettings.data,
+    agentName,
+    data,
+  ]);
 
   return (
     <Container>
