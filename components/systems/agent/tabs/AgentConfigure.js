@@ -22,6 +22,7 @@ export default function AgentAdmin() {
   const [provider, setProvider] = useState("initial");
   const [fields, setFields] = useState({});
   const [fieldValues, setFieldValues] = useState({});
+  const [displayNames, setDisplayNames] = useState({});
   const agentConfig = useSWR(`agent/${agentName}`, async () =>
     sdk.getAgentConfig(agentName)
   );
@@ -37,16 +38,15 @@ export default function AgentAdmin() {
 
   const transformExtensionSettings = (extensionSettings) => {
     let transformed = {};
+    let displayNames = {};
 
     for (let extension in extensionSettings) {
-      // Convert extension name from snake_case to Title Case
       const extensionName = extension
         .split("_")
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 
       for (let setting in extensionSettings[extension]) {
-        // Convert setting name from UPPERCASE to Title Case
         const settingName = setting
           .split("_")
           .map(
@@ -54,17 +54,18 @@ export default function AgentAdmin() {
           )
           .join(" ");
 
-        const combinedKey = `${extensionName} - ${settingName}`;
-        transformed[combinedKey] = extensionSettings[extension][setting];
+        const displayName = `${extensionName} - ${settingName}`;
+        displayNames[setting] = displayName;
+        transformed[setting] = extensionSettings[extension][setting];
       }
     }
 
-    return transformed;
+    return {
+      transformedSettings: transformed,
+      displayNames: displayNames,
+    };
   };
-  const settings = {
-    ...providerSettings.data,
-    ...transformExtensionSettings(extensionSettings.data),
-  };
+
   const sliderModes = [
     "MAX_TOKENS",
     "AI_TEMPERATURE",
@@ -101,11 +102,27 @@ export default function AgentAdmin() {
     }
   }, [agentConfig]);
   useEffect(() => {
-    async function getAndSetFields() {
-      setFields(settings);
+    if (
+      provider !== "initial" &&
+      providerSettings.data &&
+      extensionSettings.data
+    ) {
+      const { transformedSettings, displayNames } = transformExtensionSettings(
+        extensionSettings.data
+      );
+      setFields({
+        ...providerSettings.data,
+        ...transformedSettings,
+      });
+      setDisplayNames(displayNames);
     }
-    if (provider != "initial") getAndSetFields();
-  }, [provider]);
+  }, [provider, providerSettings.data, extensionSettings.data]);
+  const handleSliderChange = (field, value) => {
+    setFieldValues((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
   return (
     <Container>
       <Typography variant="h4" sx={{ my: "1rem" }}>
@@ -131,7 +148,10 @@ export default function AgentAdmin() {
       </Select>
       {Object.keys(fields).map((field) => {
         if (field !== "provider") {
-          if (field.includes(" - Use ") || field == "DO_SAMPLE") {
+          if (
+            field.includes(" - Use ") ||
+            field == "WORKING_DIRECTORY_RESTRICTED"
+          ) {
             return (
               <>
                 <br />
@@ -149,7 +169,7 @@ export default function AgentAdmin() {
                       name={field}
                     />
                   }
-                  label={field}
+                  label={displayNames[field] || field}
                 />
                 <br />
               </>
@@ -166,21 +186,16 @@ export default function AgentAdmin() {
                   step={0.1}
                   sx={{ mr: "1rem" }}
                   value={fieldValues[field]}
-                  onChange={(e) =>
-                    setFieldValues({
-                      ...fieldValues,
-                      [field]: e.target.value,
-                    })
-                  }
+                  onChange={(_, value) => handleSliderChange(field, value)}
                 />
                 <TextField
-                  label={field}
+                  label={displayNames[field] || field}
                   value={fieldValues[field]}
                   onChange={(e) =>
-                    setFieldValues({
-                      ...fieldValues,
+                    setFieldValues((prev) => ({
+                      ...prev,
                       [field]: e.target.value,
-                    })
+                    }))
                   }
                 />
               </Box>
@@ -190,7 +205,7 @@ export default function AgentAdmin() {
             return (
               <TextField
                 key={field}
-                label={field}
+                label={displayNames[field] || field}
                 sx={{ my: "1rem", mx: "0.5rem", width: "80%" }}
                 value={fieldValues[field]}
                 onChange={(e) =>
