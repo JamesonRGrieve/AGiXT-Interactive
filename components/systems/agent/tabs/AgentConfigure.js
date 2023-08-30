@@ -73,7 +73,7 @@ export default function AgentAdmin() {
       >
         <Slider
           min={32}
-          max={8192}
+          max={100000}
           sx={{ mr: "1rem" }}
           value={fieldValues.MAX_TOKENS}
           onChange={(e) =>
@@ -95,8 +95,8 @@ export default function AgentAdmin() {
         sx={{ my: "1rem", display: "flex", alignItems: "center" }}
       >
         <Slider
-          min={0.1}
-          max={1}
+          min={0.0}
+          max={2}
           step={0.1}
           sx={{ mr: "1rem" }}
           value={fieldValues.AI_TEMPERATURE}
@@ -119,8 +119,8 @@ export default function AgentAdmin() {
         sx={{ my: "1rem", display: "flex", alignItems: "center" }}
       >
         <Slider
-          min={0.1}
-          max={1}
+          min={0.0}
+          max={2}
           step={0.1}
           sx={{ mr: "1rem" }}
           value={fieldValues.AI_TOP_P}
@@ -143,8 +143,8 @@ export default function AgentAdmin() {
         sx={{ my: "1rem", display: "flex", alignItems: "center" }}
       >
         <Slider
-          min={0.1}
-          max={1}
+          min={0.0}
+          max={2}
           step={0.1}
           sx={{ mr: "1rem" }}
           value={fieldValues.TOP_P}
@@ -167,7 +167,7 @@ export default function AgentAdmin() {
         sx={{ my: "1rem", display: "flex", alignItems: "center" }}
       >
         <Slider
-          min={1}
+          min={0}
           max={100}
           sx={{ mr: "1rem" }}
           value={fieldValues.TOP_K}
@@ -190,8 +190,8 @@ export default function AgentAdmin() {
         sx={{ my: "1rem", display: "flex", alignItems: "center" }}
       >
         <Slider
-          min={0.1}
-          max={1}
+          min={0.0}
+          max={2}
           step={0.1}
           sx={{ mr: "1rem" }}
           value={fieldValues.TOP_A}
@@ -214,7 +214,7 @@ export default function AgentAdmin() {
         sx={{ my: "1rem", display: "flex", alignItems: "center" }}
       >
         <Slider
-          min={0.1}
+          min={0.0}
           max={1}
           step={0.1}
           sx={{ mr: "1rem" }}
@@ -238,7 +238,7 @@ export default function AgentAdmin() {
         sx={{ my: "1rem", display: "flex", alignItems: "center" }}
       >
         <Slider
-          min={0.1}
+          min={0.0}
           max={1}
           step={0.1}
           sx={{ mr: "1rem" }}
