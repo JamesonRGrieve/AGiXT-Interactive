@@ -37,9 +37,10 @@ export default function AgentConfigure({ data }) {
   // TODO: Fix switching between agents while on this page.
   // We should be able to use data instead of agentConfig here but it doesn't work most of the time.
   // It does not update the agentConfig when a new agent is selected in the menu.
-  const agentConfig = useSWR(`agent/${agentName}`, async () => {
-    return await sdk.getAgentConfig(agentName);
-  });
+  const agentConfig = useSWR(
+    `agent/${agentName}`,
+    async () => await sdk.getAgentConfig(agentName)
+  );
   const transformExtensionSettings = (extensionSettings) => {
     let transformed = {};
     let displayNames = {};

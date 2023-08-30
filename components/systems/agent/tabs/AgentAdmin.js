@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
 import { mutate } from "swr";
 import { TextField, Button, Divider, Container } from "@mui/material";
-export default function AgentAdmin({ friendly_name, name, args, enabled }) {
+export default function AgentAdmin() {
   const router = useRouter();
   const agentName = router.query.agent;
   const [newName, setNewName] = useState("");

@@ -8,7 +8,6 @@ import AgentConfigure from "./tabs/AgentConfigure";
 import { useTheme } from "@mui/material/styles";
 export default function AgentPanel({ data }) {
   const router = useRouter();
-  console.log("Agent config", data);
   const [tab, setTab] = useState(router.query.config == "true" ? 3 : 0);
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
