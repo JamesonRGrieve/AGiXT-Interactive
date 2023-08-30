@@ -6,8 +6,9 @@ import AgentInstruct from "./tabs/AgentInstruct";
 import AgentAdmin from "./tabs/AgentAdmin";
 import AgentConfigure from "./tabs/AgentConfigure";
 import { useTheme } from "@mui/material/styles";
-export default function AgentPanel() {
+export default function AgentPanel({ data }) {
   const router = useRouter();
+  console.log("Agent config", data);
   console.log(router.query.config);
   const [tab, setTab] = useState(router.query.config == "true" ? 3 : 0);
   const handleTabChange = (event, newTab) => {
@@ -17,7 +18,7 @@ export default function AgentPanel() {
   const tabs = [
     <AgentChat key="chat" />,
     <AgentInstruct key="instruct" />,
-    <AgentConfigure key="admin" />,
+    <AgentConfigure key="config" data={data} />,
     <AgentAdmin key="admin" />,
   ];
   return (
@@ -33,8 +34,8 @@ export default function AgentPanel() {
       >
         <Tab label="Chat With Agent" />
         <Tab label="Instruct Agent" />
-        <Tab label="Configure Agent" />
-        <Tab label="Administrate Agent" />
+        <Tab label="Agent Settings" />
+        <Tab label="Modify Agent" />
       </Tabs>
       {tabs[tab]}
     </>
