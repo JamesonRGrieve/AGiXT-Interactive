@@ -34,7 +34,12 @@ export default function AgentConfigure({ data }) {
     `provider/${provider}`,
     async () => await sdk.getProviderSettings(provider)
   );
-
+  // TODO: Fix switching between agents while on this page.
+  // We should be able to use data instead of agentConfig here but it doesn't work most of the time.
+  // It does not update the agentConfig when a new agent is selected in the menu.
+  const agentConfig = useSWR(`agent/${agentName}`, async () => {
+    return await sdk.getAgentConfig(agentName);
+  });
   const transformExtensionSettings = (extensionSettings) => {
     let transformed = {};
     let displayNames = {};
@@ -133,17 +138,17 @@ export default function AgentConfigure({ data }) {
     mutate(`agent/${agentName}`);
   };
   useEffect(() => {
-    if (data?.settings?.provider) {
-      const currentProvider = data.settings.provider;
-      setProvider(provider || currentProvider);
-      const currentSettings = { ...data.settings };
+    if (agentConfig.data.settings?.provider) {
+      const currentProvider = agentConfig.data.settings.provider;
+      setProvider(currentProvider || provider);
+      const currentSettings = { ...agentConfig.data.settings };
       delete currentSettings.provider;
       setFieldValues((prev) => ({
         ...prev,
         ...currentSettings,
       }));
     }
-  }, [data]);
+  }, [agentConfig]);
 
   useEffect(() => {
     if (provider !== null && providerSettings.data && extensionSettings.data) {
