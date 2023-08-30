@@ -65,517 +65,30 @@ export default function AgentAdmin() {
     ...providerSettings.data,
     ...transformExtensionSettings(extensionSettings.data),
   };
-  const fieldComponents = {
-    MAX_TOKENS: (
-      <Box
-        key={"MAX_TOKENS"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={32}
-          max={100000}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.MAX_TOKENS}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, MAX_TOKENS: e.target.value })
-          }
-        />
-        <TextField
-          label="Maximum Tokens"
-          value={fieldValues.MAX_TOKENS}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, MAX_TOKENS: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    AI_TEMPERATURE: (
-      <Box
-        key={"AI_TEMPERATURE"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={0.0}
-          max={2}
-          step={0.1}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.AI_TEMPERATURE}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, AI_TEMPERATURE: e.target.value })
-          }
-        />
-        <TextField
-          label="AI Temperature"
-          value={fieldValues.AI_TEMPERATURE}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, AI_TEMPERATURE: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    AI_TOP_P: (
-      <Box
-        key={"AI_TOP_P"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={0.0}
-          max={2}
-          step={0.1}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.AI_TOP_P}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, AI_TOP_P: e.target.value })
-          }
-        />
-        <TextField
-          label="AI Temperature"
-          value={fieldValues.AI_TOP_P}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, AI_TOP_P: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    TOP_P: (
-      <Box
-        key={"TOP_P"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={0.0}
-          max={2}
-          step={0.1}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.TOP_P}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, TOP_P: e.target.value })
-          }
-        />
-        <TextField
-          label="Top P"
-          value={fieldValues.TOP_P}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, TOP_P: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    TOP_K: (
-      <Box
-        key={"TOP_K"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={0}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.TOP_K}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, TOP_K: e.target.value })
-          }
-        />
-        <TextField
-          label="Top K"
-          value={fieldValues.TOP_K}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, TOP_K: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    TOP_A: (
-      <Box
-        key={"TOP_A"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={0.0}
-          max={2}
-          step={0.1}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.TOP_A}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, TOP_A: e.target.value })
-          }
-        />
-        <TextField
-          label="Top A"
-          value={fieldValues.TOP_A}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, TOP_A: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    DO_SAMPLE: (
-      <Box
-        key={"DO_SAMPLE"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={0.0}
-          max={1}
-          step={0.1}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.DO_SAMPLE}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, DO_SAMPLE: e.target.value })
-          }
-        />
-        <TextField
-          label="Do Sample"
-          value={fieldValues.DO_SAMPLE}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, DO_SAMPLE: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    TYPICAL_P: (
-      <Box
-        key={"TYPICAL_P"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={0.0}
-          max={1}
-          step={0.1}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.TYPICAL_P}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, TYPICAL_P: e.target.value })
-          }
-        />
-        <TextField
-          label="Typical P"
-          value={fieldValues.TYPICAL_P}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, TYPICAL_P: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    EPSILON_CUTOFF: (
-      <Box
-        key={"EPSILON_CUTOFF"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={0.1}
-          max={1}
-          step={0.1}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.EPSILON_CUTOFF}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, EPSILON_CUTOFF: e.target.value })
-          }
-        />
-        <TextField
-          label="Epsilon Cutoff"
-          value={fieldValues.EPSILON_CUTOFF}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, EPSILON_CUTOFF: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    ETA_CUTOFF: (
-      <Box
-        key={"ETA_CUTOFF"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={0.1}
-          max={1}
-          step={0.1}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.ETA_CUTOFF}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, ETA_CUTOFF: e.target.value })
-          }
-        />
-        <TextField
-          label="Eta Cutoff"
-          value={fieldValues.ETA_CUTOFF}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, ETA_CUTOFF: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    TFS: (
-      <Box
-        key={"TFS"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={1}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.TFS}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, TFS: e.target.value })
-          }
-        />
-        <TextField
-          label="TFS"
-          value={fieldValues.TFS}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, TFS: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    REPETITION_PENALTY: (
-      <Box
-        key={"REPETITION_PENALTY"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={1}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.REPETITION_PENALTY}
-          onChange={(e) =>
-            setFieldValues({
-              ...fieldValues,
-              REPETITION_PENALTY: e.target.value,
-            })
-          }
-        />
-        <TextField
-          label="Repetition Penalty"
-          value={fieldValues.REPETITION_PENALTY}
-          onChange={(e) =>
-            setFieldValues({
-              ...fieldValues,
-              REPETITION_PENALTY: e.target.value,
-            })
-          }
-        />
-      </Box>
-    ),
-    ENCODER_REPETITION_PENALTY: (
-      <Box
-        key={"ENCODER_REPETITION_PENALTY"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={1}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.ENCODER_REPETITION_PENALTY}
-          onChange={(e) =>
-            setFieldValues({
-              ...fieldValues,
-              ENCODER_REPETITION_PENALTY: e.target.value,
-            })
-          }
-        />
-        <TextField
-          label="Encoder Repetition Penalty"
-          value={fieldValues.ENCODER_REPETITION_PENALTY}
-          onChange={(e) =>
-            setFieldValues({
-              ...fieldValues,
-              ENCODER_REPETITION_PENALTY: e.target.value,
-            })
-          }
-        />
-      </Box>
-    ),
-    MIN_LENGTH: (
-      <Box
-        key={"MIN_LENGTH"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={1}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.MIN_LENGTH}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, MIN_LENGTH: e.target.value })
-          }
-        />
-        <TextField
-          label="Minimum Length"
-          value={fieldValues.MIN_LENGTH}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, MIN_LENGTH: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    NO_REPEAT_NGRAM_SIZE: (
-      <Box
-        key={"NO_REPEAT_NGRAM_SIZE"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={1}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.NO_REPEAT_NGRAM_SIZE}
-          onChange={(e) =>
-            setFieldValues({
-              ...fieldValues,
-              NO_REPEAT_NGRAM_SIZE: e.target.value,
-            })
-          }
-        />
-        <TextField
-          label="No Repeat Ngram Size"
-          value={fieldValues.NO_REPEAT_NGRAM_SIZE}
-          onChange={(e) =>
-            setFieldValues({
-              ...fieldValues,
-              NO_REPEAT_NGRAM_SIZE: e.target.value,
-            })
-          }
-        />
-      </Box>
-    ),
-    NUM_BEAMS: (
-      <Box
-        key={"NUM_BEAMS"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={1}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.NUM_BEAMS}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, NUM_BEAMS: e.target.value })
-          }
-        />
-        <TextField
-          label="Number of Beams"
-          value={fieldValues.NUM_BEAMS}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, NUM_BEAMS: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    PENALTY_ALPHA: (
-      <Box
-        key={"PENALTY_ALPHA"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={1}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.PENALTY_ALPHA}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, PENALTY_ALPHA: e.target.value })
-          }
-        />
-        <TextField
-          label="Penalty Alpha"
-          value={fieldValues.PENALTY_ALPHA}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, PENALTY_ALPHA: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    LENGTH_PENALTY: (
-      <Box
-        key={"LENGTH_PENALTY"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={1}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.LENGTH_PENALTY}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, LENGTH_PENALTY: e.target.value })
-          }
-        />
-        <TextField
-          label="Length Penalty"
-          value={fieldValues.LENGTH_PENALTY}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, LENGTH_PENALTY: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    MIROSTAT_MODE: (
-      <Box
-        key={"MIROSTAT_MODE"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={1}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.MIROSTAT_MODE}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, MIROSTAT_MODE: e.target.value })
-          }
-        />
-        <TextField
-          label="Mirostat Mode"
-          value={fieldValues.MIROSTAT_MODE}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, MIROSTAT_MODE: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    MIROSTAT_TAU: (
-      <Box
-        key={"MIROSTAT_TAU"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={1}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.MIROSTAT_TAU}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, MIROSTAT_TAU: e.target.value })
-          }
-        />
-        <TextField
-          label="Mirostat Tau"
-          value={fieldValues.MIROSTAT_TAU}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, MIROSTAT_TAU: e.target.value })
-          }
-        />
-      </Box>
-    ),
-    MIROSTAT_ETA: (
-      <Box
-        key={"MIROSTAT_ETA"}
-        sx={{ my: "1rem", display: "flex", alignItems: "center" }}
-      >
-        <Slider
-          min={1}
-          max={100}
-          sx={{ mr: "1rem" }}
-          value={fieldValues.MIROSTAT_ETA}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, MIROSTAT_ETA: e.target.value })
-          }
-        />
-        <TextField
-          label="Mirostat Eta"
-          value={fieldValues.MIROSTAT_ETA}
-          onChange={(e) =>
-            setFieldValues({ ...fieldValues, MIROSTAT_ETA: e.target.value })
-          }
-        />
-      </Box>
-    ),
-  };
+  const sliderModes = [
+    "MAX_TOKENS",
+    "AI_TEMPERATURE",
+    "AI_TOP_P",
+    "TOP_P",
+    "TOP_K",
+    "TOP_A",
+    "DO_SAMPLE",
+    "TYPICAL_P",
+    "EPSILON_CUTOFF",
+    "ETA_CUTOFF",
+    "TFS",
+    "REPETITION_PENALTY",
+    "ENCODER_REPETITION_PENALTY",
+    "MIN_LENGTH",
+    "NO_REPEAT_NGRAM_SIZE",
+    "NUM_BEAMS",
+    "PENALTY_ALPHA",
+    "LENGTH_PENALTY",
+    "MIROSTAT_MODE",
+    "MIROSTAT_TAU",
+    "MIROSTAT_ETA",
+  ];
+
   const handleConfigure = async () => {
     await sdk.updateAgent(agentName, { provider: provider, ...fieldValues });
     mutate(`agent/${agentName}`);
@@ -604,7 +117,7 @@ export default function AgentAdmin() {
       </Typography>
       <Select
         label="Provider"
-        sx={{ mx: "0.5rem", display: "block", width: "80%" }} // Add 'display: "block"' here
+        sx={{ mx: "0.5rem", display: "block", width: "80%" }}
         value={provider}
         onChange={(e) => setProvider(e.target.value)}
       >
@@ -618,41 +131,41 @@ export default function AgentAdmin() {
           : null}
       </Select>
       {Object.keys(fields).map((field) => {
-        if (fieldComponents[field]) {
-          return fieldComponents[field];
-        } else {
-          if (field !== "provider") {
-            if (field.includes(" - Use ")) {
-              // Render a switch for boolean fields with " - Use " in their name
-              return (
-                <>
-                  <br />
-                  <FormControlLabel
-                    key={field}
-                    control={
-                      <Switch
-                        checked={fieldValues[field]}
-                        onChange={(e) =>
-                          setFieldValues({
-                            ...fieldValues,
-                            [field]: e.target.checked,
-                          })
-                        }
-                        name={field}
-                      />
-                    }
-                    label={field}
-                  />
-                  <br />
-                </>
-              );
-            } else {
-              // Render a TextField for other fields
-              return (
-                <TextField
+        if (field !== "provider") {
+          if (field.includes(" - Use ")) {
+            return (
+              <>
+                <br />
+                <FormControlLabel
                   key={field}
+                  control={
+                    <Switch
+                      checked={fieldValues[field]}
+                      onChange={(e) =>
+                        setFieldValues({
+                          ...fieldValues,
+                          [field]: e.target.checked,
+                        })
+                      }
+                      name={field}
+                    />
+                  }
                   label={field}
-                  sx={{ my: "1rem", mx: "0.5rem", width: "80%" }}
+                />
+                <br />
+              </>
+            );
+          } else if (sliderModes.includes(field)) {
+            return (
+              <Box
+                key={field}
+                sx={{ my: "1rem", display: "flex", alignItems: "center" }}
+              >
+                <Slider
+                  min={0}
+                  max={field !== "MAX_TOKENS" ? 3 : 100000}
+                  step={0.1}
+                  sx={{ mr: "1rem" }}
                   value={fieldValues[field]}
                   onChange={(e) =>
                     setFieldValues({
@@ -661,8 +174,34 @@ export default function AgentAdmin() {
                     })
                   }
                 />
-              );
-            }
+                <TextField
+                  label={field}
+                  value={fieldValues[field]}
+                  onChange={(e) =>
+                    setFieldValues({
+                      ...fieldValues,
+                      [field]: e.target.value,
+                    })
+                  }
+                />
+              </Box>
+            );
+          } else {
+            // Render a TextField for other fields
+            return (
+              <TextField
+                key={field}
+                label={field}
+                sx={{ my: "1rem", mx: "0.5rem", width: "80%" }}
+                value={fieldValues[field]}
+                onChange={(e) =>
+                  setFieldValues({
+                    ...fieldValues,
+                    [field]: e.target.value, // Correctly set the field name as key
+                  })
+                }
+              />
+            );
           }
         }
       })}
