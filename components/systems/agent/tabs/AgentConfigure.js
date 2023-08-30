@@ -138,12 +138,13 @@ export default function AgentConfigure({ data }) {
         ...mergedSettings,
       }));
     }
-    if (provider !== null) {
-      mutate(`provider/${provider}`);
-    }
     if (data.settings?.provider) {
       const currentProvider = data.settings.provider;
-      setProvider(currentProvider || provider);
+      if (provider !== null) {
+        setProvider(provider);
+      } else {
+        setProvider(currentProvider);
+      }
       const currentSettings = { ...data.settings };
       setFieldValues((prev) => ({
         ...prev,
