@@ -152,7 +152,7 @@ export default function AgentAdmin() {
       </Typography>
       <Select
         label="Provider"
-        sx={{ mx: "0.5rem", display: "block", width: "80%" }}
+        sx={{ mx: "0.5rem", display: "block", width: "100%" }}
         value={provider}
         onChange={(e) => setProvider(e.target.value)}
       >
@@ -259,7 +259,7 @@ export default function AgentAdmin() {
               <TextField
                 key={field}
                 label={displayNames[field] || field}
-                sx={{ my: "1rem", mx: "0.5rem", width: "80%" }}
+                sx={{ my: "1rem", mx: "0.5rem", width: "100%" }}
                 value={fieldValues[field]}
                 onChange={(e) =>
                   setFieldValues({
