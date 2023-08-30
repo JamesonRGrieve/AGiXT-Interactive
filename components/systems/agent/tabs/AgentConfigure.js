@@ -149,7 +149,7 @@ export default function AgentAdmin() {
       {Object.keys(fields).map((field) => {
         if (field !== "provider") {
           if (
-            field.includes(" - Use ") ||
+            field.includes("USE_") ||
             field == "WORKING_DIRECTORY_RESTRICTED"
           ) {
             return (
