@@ -53,6 +53,27 @@ export default function AgentAdmin() {
             (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
           )
           .join(" ");
+
+        // If setting name includes "API", capitalize it
+        if (settingName.includes("Api")) {
+          settingName = settingName.replace("Api", "API");
+        }
+        if (settingName.includes("Stt")) {
+          settingName = settingName.replace("Stt", "STT");
+        }
+        if (settingName.includes("Tts")) {
+          settingName = settingName.replace("Tts", "TTS");
+        }
+        if (extensionName.includes("Stt")) {
+          extensionName = extensionName.replace("Stt", "STT");
+        }
+        if (extensionName.includes("Tts")) {
+          extensionName = extensionName.replace("Tts", "TTS");
+        }
+        if (settingName.includes(extensionName)) {
+          settingName = settingName.replace(extensionName, "");
+        }
+
         if (extensionName != "Dalle") {
           const displayName = `${extensionName} - ${settingName}`;
           displayNames[setting] = displayName;
