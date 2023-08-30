@@ -24,7 +24,7 @@ export default function AgentConfigure({ data }) {
   const [fieldValues, setFieldValues] = useState({});
   const [displayNames, setDisplayNames] = useState({});
   const router = useRouter();
-  const agentName = useMemo(() => router.query.agent, [router.query.agent]);
+  const agentName = router.query.agent;
   const providers = useSWR("provider", async () => await sdk.getProviders());
   const extensionSettings = useSWR(
     `extensionSettings`,
@@ -33,13 +33,6 @@ export default function AgentConfigure({ data }) {
   const providerSettings = useSWR(
     `provider/${provider}`,
     async () => await sdk.getProviderSettings(provider)
-  );
-  // TODO: Fix switching between agents while on this page.
-  // We should be able to use data instead of agentConfig here but it doesn't work most of the time.
-  // It does not update the agentConfig when a new agent is selected in the menu.
-  const agentConfig = useSWR(
-    `agent/${agentName}`,
-    async () => await sdk.getAgentConfig(agentName)
   );
   const transformExtensionSettings = (extensionSettings) => {
     let transformed = {};
@@ -138,18 +131,6 @@ export default function AgentConfigure({ data }) {
     await sdk.updateAgent(agentName, { provider: provider, ...fieldValues });
     mutate(`agent/${agentName}`);
   };
-  useEffect(() => {
-    if (agentConfig.data.settings?.provider) {
-      const currentProvider = agentConfig.data.settings.provider;
-      setProvider(currentProvider || provider);
-      const currentSettings = { ...agentConfig.data.settings };
-      delete currentSettings.provider;
-      setFieldValues((prev) => ({
-        ...prev,
-        ...currentSettings,
-      }));
-    }
-  }, [agentConfig]);
 
   useEffect(() => {
     if (provider !== null && providerSettings.data && extensionSettings.data) {
@@ -168,11 +149,21 @@ export default function AgentConfigure({ data }) {
         ...mergedSettings,
       }));
     }
-
     if (provider !== null) {
       mutate(`provider/${provider}`);
     }
   }, [provider, providerSettings.data, extensionSettings.data]);
+  useEffect(() => {
+    if (data.settings?.provider) {
+      const currentProvider = data.settings.provider;
+      setProvider(currentProvider || provider);
+      const currentSettings = { ...data.settings };
+      setFieldValues((prev) => ({
+        ...prev,
+        ...currentSettings,
+      }));
+    }
+  }, [agentName, data]);
 
   return (
     <Container>

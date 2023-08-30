@@ -9,49 +9,50 @@ import {
 } from "@mui/material";
 import { RunCircle, StopCircle, AddCircle, Home } from "@mui/icons-material";
 import { useRouter } from "next/router";
+
 export default function MenuAgentList({ data }) {
   const router = useRouter();
-  console.log(data);
+
   return (
     <List>
-      <ListItemButton
-        selected={
-          router.pathname.split("/")[1] == "agent" && !router.query.agent
-        }
-      >
-        <ListItemIcon>
-          <Home />
-        </ListItemIcon>
-        <Link href={`/agent`}>
-          <ListItemText primary="Agent Homepage" />
-        </Link>
-      </ListItemButton>
-      <ListItemButton
-        selected={
-          router.pathname.split("/")[1] == "new" &&
-          router.pathname.split("/")[2] == "agent"
-        }
-      >
-        <ListItemIcon>
-          <AddCircle />
-        </ListItemIcon>
-        <Link href={`/new/agent`}>
-          <ListItemText primary="Add A New Agent" />
-        </Link>
-      </ListItemButton>
-      <Divider />
-      {data.map((agent) => (
+      <Link href={`/agent`} passHref>
         <ListItemButton
-          key={agent.name}
-          selected={router.query.agent == agent.name}
+          selected={
+            router.pathname.split("/")[1] == "agent" && !router.query.agent
+          }
         >
           <ListItemIcon>
-            {agent.status ? <RunCircle /> : <StopCircle />}
+            <Home />
           </ListItemIcon>
-          <Link href={`/agent/${agent.name}`}>
-            <ListItemText primary={agent.name} />
-          </Link>
+          <ListItemText primary="Agent Homepage" />
         </ListItemButton>
+      </Link>
+
+      <Link href={`/new/agent`} passHref>
+        <ListItemButton
+          selected={
+            router.pathname.split("/")[1] == "new" &&
+            router.pathname.split("/")[2] == "agent"
+          }
+        >
+          <ListItemIcon>
+            <AddCircle />
+          </ListItemIcon>
+          <ListItemText primary="Add A New Agent" />
+        </ListItemButton>
+      </Link>
+
+      <Divider />
+
+      {data.map((agent) => (
+        <Link href={`/agent/${agent.name}`} key={agent.name} passHref>
+          <ListItemButton selected={router.query.agent == agent.name}>
+            <ListItemIcon>
+              {agent.status ? <RunCircle /> : <StopCircle />}
+            </ListItemIcon>
+            <ListItemText primary={agent.name} />
+          </ListItemButton>
+        </Link>
       ))}
     </List>
   );
