@@ -84,7 +84,7 @@ export default function AgentAdmin() {
         }
         if (
           extensionName == "Stable Diffusion" &&
-          settingName == "Huggingface Api Key"
+          settingName == "Huggingface API Key"
         ) {
           // Change it to "Huggingface" from "Stable Diffusion"
           const displayName = `Huggingface - API Key`;
