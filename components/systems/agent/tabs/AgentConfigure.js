@@ -52,31 +52,20 @@ export default function AgentConfigure({ data }) {
           )
           .join(" ");
 
-        // If setting name includes "API", capitalize it
-        if (settingName.includes("Api")) {
-          settingName = settingName.replace("Api", "API");
+        const toCapitalize = ["Api", "Stt", "Tts"];
+        for (let substring of toCapitalize) {
+          settingName = settingName.replaceAll(
+            substring,
+            substring.toUpperCase()
+          );
+          extensionName = extensionName.replaceAll(
+            substring,
+            substring.toUpperCase()
+          );
         }
-        if (settingName.includes("Stt")) {
-          settingName = settingName.replace("Stt", "STT");
-        }
-        if (settingName.includes("Tts")) {
-          settingName = settingName.replace("Tts", "TTS");
-        }
-        if (extensionName.includes("Stt")) {
-          extensionName = extensionName.replace("Stt", "STT");
-        }
-        if (extensionName.includes("Tts")) {
-          extensionName = extensionName.replace("Tts", "TTS");
-        }
-        if (
-          settingName.includes(extensionName) &&
-          settingName != extensionName
-        ) {
-          settingName = settingName.replace(extensionName, "");
-        }
-        if (settingName.includes("Tw ")) {
-          settingName = settingName.replace("Tw ", "");
-        }
+        if (settingName != extensionName)
+          settingName = settingName.replaceAll(extensionName, "");
+        settingName = settingName.replaceAll("Tw ", "");
 
         if (extensionName != "Dalle") {
           const displayName = `${extensionName} - ${settingName}`;
