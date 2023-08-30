@@ -27,7 +27,7 @@ export default function AgentControl({ data }) {
       rightSWR={commands}
       rightMenu={AgentCommandsList}
     >
-      <AgentPanel agentName={agentName} data={data} />
+      <AgentPanel data={data} />
     </PopoutDrawerWrapper>
   );
 }

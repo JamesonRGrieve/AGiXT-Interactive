@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
 import useSWR from "swr";
@@ -17,15 +18,13 @@ import {
   FormControlLabel,
 } from "@mui/material";
 
-export default function AgentAdmin() {
-  const agentName = useRouter().query.agent;
+export default function AgentConfigure({ data }) {
   const [provider, setProvider] = useState(null);
   const [fields, setFields] = useState({});
   const [fieldValues, setFieldValues] = useState({});
   const [displayNames, setDisplayNames] = useState({});
-  const agentConfig = useSWR(`agent/${agentName}`, async () =>
-    sdk.getAgentConfig(agentName)
-  );
+  const router = useRouter();
+  const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const providers = useSWR("provider", async () => await sdk.getProviders());
   const extensionSettings = useSWR(
     `extensionSettings`,
@@ -134,17 +133,17 @@ export default function AgentAdmin() {
     mutate(`agent/${agentName}`);
   };
   useEffect(() => {
-    if (agentConfig.data?.settings?.provider) {
-      const currentProvider = agentConfig.data.settings.provider;
+    if (data?.settings?.provider) {
+      const currentProvider = data.settings.provider;
       setProvider(provider || currentProvider);
-      const currentSettings = { ...agentConfig.data.settings };
+      const currentSettings = { ...data.settings };
       delete currentSettings.provider;
       setFieldValues((prev) => ({
         ...prev,
         ...currentSettings,
       }));
     }
-  }, [agentConfig]);
+  }, [data]);
 
   useEffect(() => {
     if (provider !== null && providerSettings.data && extensionSettings.data) {
