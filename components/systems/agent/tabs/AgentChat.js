@@ -29,24 +29,6 @@ export default function AgentChat() {
     `conversation/${agentName}/${conversationName}`,
     async () => await sdk.getConversation(agentName, conversationName, 100, 1)
   );
-
-  /* conversation should equal something like:
-[
-  {
-    message: 'What can you tell me about AGiXT?',
-    role: 'USER',
-    timestamp: 'August 09, 2023 05:17 PM'
-  },
-  {
-    message: 'AGiXT is a dynamic Artificial Intelligence Automation Platform designed to manage AI instruction and task execution across various providers. It uses adaptive memory handling and a wide range of commands to enhance AI understanding and responsiveness. AGiXT features Smart Instruct and Smart Chat, which integrate web search, planning strategies, and conversation continuity to improve task completion. It also supports multiple AI providers, code evaluation, comprehensive chain management, and platform interoperability. AGiXT aims to push the boundaries of AI and contribute to the development of Artificial General Intelligence (AGI).',
-    role: 'OpenAI',
-    timestamp: 'August 09, 2023 05:17 PM'
-  }
-]
-
-It needs to properly parse this into the chatHistory.
-*/
-
   useEffect(() => {
     mutate("getConversations");
     if (conversations) {
