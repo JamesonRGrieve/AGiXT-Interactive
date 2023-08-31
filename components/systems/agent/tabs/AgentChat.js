@@ -19,8 +19,9 @@ export default function AgentChat() {
   const [conversationName, setConversationName] = useState("Test");
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
-  const { data: conversations } = useSWR("getConversations", async () =>
-    sdk.getConversations()
+  const { data: conversations } = useSWR(
+    "getConversations",
+    async () => await sdk.getConversations()
   );
   // TODO: Conversation history not updating when a new conversation is selected.
   // This keeps coming back response code "422 Unprocessable Entity" but works in node notebook
@@ -60,12 +61,13 @@ But it is returning:
 "Unable to retrieve data." and the server is giving a 422 Unprocessable Entity response code when trying to use it on the NextJS front end.
 */
 
-  console.log("conversation", conversation);
   useEffect(() => {
     mutate("getConversations");
     if (conversations) {
       setConversationName(conversationName);
     }
+  }, [conversationName]);
+  useEffect(() => {
     mutate(`conversation/${agentName}/${conversationName}`);
     if (
       conversation != "Unable to retrieve data." &&
@@ -73,9 +75,10 @@ But it is returning:
     ) {
       setChatHistory(conversation);
     }
-  }, [conversations, conversationName]);
-
-  console.log("conversationName", conversationName);
+  }, [conversationName, conversation]);
+  console.log("Agent: ", agentName);
+  console.log("Conversation Name: ", conversationName);
+  console.log("Conversation Data: ", conversation);
   const MessageAgent = async (message) => {
     // TODO: Add contextResults to the UI in a chat settings popup or drawer, unsure which is better.
     // The same area for chat settings will need a lot more than just contextResults.
