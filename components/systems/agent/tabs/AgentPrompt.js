@@ -315,19 +315,24 @@ export default function AgentPrompt() {
               />
             );
           }
+          if (arg == "user_input") {
+            return (
+              <TextField
+                fullWidth
+                label="User Input"
+                placeholder="User input..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                sx={{ mb: 2 }}
+              />
+            );
+          }
         })
       ) : (
         <></>
       )}
-      <TextField
-        fullWidth
-        label="User Input"
-        placeholder="User input..."
-        value={message}
-        onChange={(e) => setMessage(e.target.value)}
-        onKeyPress={handleKeyPress}
-        sx={{ mb: 2 }}
-      />
+
       <Button
         variant="contained"
         color="primary"
