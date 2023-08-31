@@ -44,9 +44,6 @@ export default function AgentChat() {
       setChatHistory(conversation);
     }
   }, [conversationName, conversation, lastResponse]);
-  console.log("Agent: ", agentName);
-  console.log("Conversation Name: ", conversationName);
-  console.log("Conversation Data: ", conversation);
 
   const MessageAgent = async (message) => {
     // TODO: Add contextResults to the UI in a chat settings popup or drawer, unsure which is better.
@@ -92,9 +89,6 @@ export default function AgentChat() {
             ))
           : []}
       </Select>
-      <Typography variant="h6" gutterBottom>
-        Agent Chat
-      </Typography>
       <Paper
         elevation={5}
         sx={{ padding: "0.5rem", overflowY: "auto", height: "60vh" }}
