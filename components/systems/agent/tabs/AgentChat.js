@@ -25,8 +25,9 @@ export default function AgentChat() {
   // TODO: Conversation history not updating when a new conversation is selected.
   // This keeps coming back response code "422 Unprocessable Entity" but works in node notebook
   const { data: conversation } = useSWR(
-    `getConversation`,
-    async () => await sdk.getConversation(agentName, conversationName, 100, 1)
+    `conversation/${agentName}/${conversationName}`,
+    async () =>
+      await sdk.getConversation(agentName, conversationName, "100", "1")
   );
 
   /* Here is an example of it working properly in the node notebook. ApiClient is sdk from the apiClient file.
@@ -43,7 +44,7 @@ const conversation = await ApiClient.getConversation(
 );
 console.log(conversation);
 
-conversation should equal something like:
+// conversation should equal something like:
 [
   {
     message: 'What can you tell me about AGiXT?',
@@ -66,14 +67,14 @@ But it is returning:
     if (conversations) {
       setConversationName(conversationName);
     }
-    mutate(`getConversation`);
+    mutate(`conversation/${agentName}/${conversationName}`);
     if (
       conversation != "Unable to retrieve data." &&
       conversation != undefined
     ) {
       setChatHistory(conversation);
     }
-  }, [conversations, conversationName, chatHistory]);
+  }, [conversations, conversationName]);
 
   console.log("conversationName", conversationName);
   const MessageAgent = async (message) => {
