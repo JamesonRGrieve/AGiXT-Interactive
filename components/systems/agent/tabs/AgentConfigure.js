@@ -148,9 +148,6 @@ export default function AgentConfigure({ data }) {
 
   return (
     <Container>
-      <Typography variant="h4" sx={{ my: "1rem" }}>
-        Agent Configuration
-      </Typography>
       <Typography variant="h6" sx={{ my: "1rem" }}>
         Agent Provider
       </Typography>
