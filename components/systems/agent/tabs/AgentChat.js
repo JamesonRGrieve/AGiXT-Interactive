@@ -17,34 +17,20 @@ export default function AgentChat() {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [conversationName, setConversationName] = useState("Test");
+  const [lastResponse, setLastResponse] = useState("");
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const { data: conversations } = useSWR(
     "getConversations",
     async () => await sdk.getConversations()
   );
-  // TODO: Conversation history not updating when a new conversation is selected.
-  // This keeps coming back response code "422 Unprocessable Entity" but works in node notebook
+
   const { data: conversation } = useSWR(
     `conversation/${agentName}/${conversationName}`,
     async () => await sdk.getConversation(agentName, conversationName, 100, 1)
   );
 
-  /* Here is an example of it working properly in the node notebook. ApiClient is sdk from the apiClient file.
-import AGiXTSDK from "./index.ts";
-const ApiClient = new AGiXTSDK({
-  baseUri: "http://localhost:7437",
-  apiKey: "",
-});
-const conversation = await ApiClient.getConversation(
-  "New Test Agent",
-  "Test",
-  100,
-  1
-);
-console.log(conversation);
-
-// conversation should equal something like:
+  /* conversation should equal something like:
 [
   {
     message: 'What can you tell me about AGiXT?',
@@ -57,8 +43,8 @@ console.log(conversation);
     timestamp: 'August 09, 2023 05:17 PM'
   }
 ]
-But it is returning:
-"Unable to retrieve data." and the server is giving a 422 Unprocessable Entity response code when trying to use it on the NextJS front end.
+
+It needs to properly parse this into the chatHistory.
 */
 
   useEffect(() => {
@@ -75,10 +61,11 @@ But it is returning:
     ) {
       setChatHistory(conversation);
     }
-  }, [conversationName, conversation]);
+  }, [conversationName, conversation, lastResponse]);
   console.log("Agent: ", agentName);
   console.log("Conversation Name: ", conversationName);
   console.log("Conversation Data: ", conversation);
+
   const MessageAgent = async (message) => {
     // TODO: Add contextResults to the UI in a chat settings popup or drawer, unsure which is better.
     // The same area for chat settings will need a lot more than just contextResults.
@@ -90,7 +77,7 @@ But it is returning:
       conversationName,
       contextResults
     );
-    setChatHistory((old) => [...old, `You: ${message}`, `Agent: ${response}`]);
+    setLastResponse(response);
   };
 
   const handleKeyPress = async (event) => {
@@ -130,12 +117,16 @@ But it is returning:
         elevation={5}
         sx={{ padding: "0.5rem", overflowY: "auto", height: "60vh" }}
       >
-        {chatHistory.map((message, index) => (
-          <pre key={index} style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-            {message}
-          </pre>
+        {chatHistory.map((chatItem, index) => (
+          <div key={index} style={{ marginBottom: "10px" }}>
+            <Typography variant="caption">
+              {chatItem.role} - {chatItem.timestamp}
+            </Typography>
+            <Typography variant="body1">{chatItem.message}</Typography>
+          </div>
         ))}
       </Paper>
+
       <TextField
         fullWidth
         label="Enter Message for Agent"
