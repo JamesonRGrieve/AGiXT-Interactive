@@ -210,7 +210,7 @@ export default function AgentInstruct() {
       </Select>
       <Paper
         elevation={5}
-        sx={{ padding: "0.5rem", overflowY: "auto", height: "60vh" }}
+        sx={{ padding: "0.5rem", overflowY: "auto", height: "40vh" }}
       >
         {chatHistory.map((chatItem, index) => (
           <div key={index} style={{ marginBottom: "10px" }}>
