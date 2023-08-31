@@ -46,7 +46,7 @@ export default function MenuAgentList({ data }) {
 
       {data.map((agent) => (
         <Link
-          href={`/agent/${agent.name}?tab=${router.query.tab}`}
+          href={`/agent/${agent.name}?tab=${router.query.tab || 0}`}
           key={agent.name}
           passHref
         >
