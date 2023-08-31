@@ -1,71 +1,116 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
-import { Typography, Paper, TextField, Button } from "@mui/material";
+import {
+  Typography,
+  Paper,
+  TextField,
+  Button,
+  Select,
+  MenuItem,
+} from "@mui/material";
+import useSWR from "swr";
+import { mutate } from "swr";
+
 export default function AgentInstruct() {
-  const [responseHistory, setResponseHistory] = useState([]);
-  const [instruction, setInstruction] = useState("");
-  const agentName = useRouter().query.agent;
-  // TODO: Add conversationName drop down
-  const conversationName = "default";
-  const InstructAgent = async () => {
-    if (instruction?.length <= 0) console.log("ha");
-    const response = await sdk.instruct(
-      agentName,
-      instruction,
-      conversationName
-    );
-    console.log(response);
-    setResponseHistory((old) => [
-      ...old,
-      `You: ${instruction}`,
-      `Agent: ${response}`,
-    ]);
+  const [chatHistory, setChatHistory] = useState([]);
+  const [message, setMessage] = useState("");
+  const [conversationName, setConversationName] = useState("Test");
+  const [lastResponse, setLastResponse] = useState("");
+  const router = useRouter();
+  const agentName = useMemo(() => router.query.agent, [router.query.agent]);
+  const { data: conversations } = useSWR(
+    "getConversations",
+    async () => await sdk.getConversations()
+  );
+
+  const { data: conversation } = useSWR(
+    `conversation/${agentName}/${conversationName}`,
+    async () => await sdk.getConversation(agentName, conversationName, 100, 1)
+  );
+  useEffect(() => {
+    mutate("getConversations");
+    if (conversations) {
+      setConversationName(conversationName);
+    }
+  }, [conversationName]);
+  useEffect(() => {
+    mutate(`conversation/${agentName}/${conversationName}`);
+    if (
+      conversation != "Unable to retrieve data." &&
+      conversation != undefined
+    ) {
+      setChatHistory(conversation);
+    }
+  }, [conversationName, conversation, lastResponse]);
+
+  const MessageAgent = async (message) => {
+    const response = await sdk.instruct(agentName, message, conversationName);
+    setLastResponse(response);
   };
+
   const handleKeyPress = async (event) => {
     if (event.key === "Enter") {
       event.preventDefault();
-      handleInstruct();
+      handleSendMessage();
     }
   };
-  const handleInstruct = async () => {
-    await InstructAgent();
-    setInstruction("");
+  const handleSendMessage = async () => {
+    await MessageAgent(message);
+    setMessage("");
   };
   return (
     <>
-      <>
-        <TextField
-          fullWidth
-          label="Enter Instruction for Agent"
-          placeholder="Instruction..."
-          value={instruction}
-          onChange={(e) => setInstruction(e.target.value)}
-          onKeyPress={handleKeyPress}
-          sx={{ mb: 2 }}
-        />
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={handleInstruct}
-          fullWidth
-        >
-          Instruct Agent
-        </Button>
-      </>
       <Typography variant="h6" gutterBottom>
-        Agent Instruction
+        Select a Conversation
       </Typography>
+      <Select
+        fullWidth
+        label="Conversation"
+        value={conversationName}
+        onChange={(e) => setConversationName(e.target.value)}
+        sx={{ mb: 2 }}
+      >
+        {conversations
+          ? conversations.map((c) => (
+              <MenuItem key={c} value={c}>
+                {c}
+              </MenuItem>
+            ))
+          : []}
+      </Select>
       <Paper
         elevation={5}
         sx={{ padding: "0.5rem", overflowY: "auto", height: "60vh" }}
       >
-        {responseHistory.map((message, index) => (
-          <pre key={index} style={{ margin: 0, whiteSpace: "pre-wrap" }}>
-            {message}
-          </pre>
+        {chatHistory.map((chatItem, index) => (
+          <div key={index} style={{ marginBottom: "10px" }}>
+            <Typography variant="caption">
+              {chatItem.role} - {chatItem.timestamp}
+            </Typography>
+            <Typography variant="body1">{chatItem.message}</Typography>
+          </div>
         ))}
       </Paper>
+
+      <TextField
+        fullWidth
+        label="Enter Instruction for Agent"
+        placeholder="Instruction..."
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyPress={handleKeyPress}
+        sx={{ mb: 2 }}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleSendMessage}
+        fullWidth
+      >
+        Send Instruction
+      </Button>
     </>
   );
 }
