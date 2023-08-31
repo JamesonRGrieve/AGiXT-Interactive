@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import useSWR from "swr";
 import { mutate } from "swr";
+import ReactMarkdown from "react-markdown";
 
 export default function AgentInstruct() {
   const [chatHistory, setChatHistory] = useState([]);
@@ -210,16 +211,64 @@ export default function AgentInstruct() {
       </Select>
       <Paper
         elevation={5}
-        sx={{ padding: "0.5rem", overflowY: "auto", height: "40vh" }}
+        sx={{
+          padding: "0.5rem",
+          overflowY: "auto",
+          height: "40vh",
+          display: "flex",
+          flexDirection: "column-reverse",
+        }}
       >
-        {chatHistory.map((chatItem, index) => (
-          <div key={index} style={{ marginBottom: "10px" }}>
-            <Typography variant="caption">
-              {chatItem.role} - {chatItem.timestamp}
-            </Typography>
-            <Typography variant="body1">{chatItem.message}</Typography>
-          </div>
-        ))}
+        <div style={{ width: "100%" }}>
+          {chatHistory.map((chatItem, index) => (
+            <div
+              key={index}
+              style={{
+                marginBottom: "10px",
+                display: "flex",
+                flexDirection: chatItem.role === "USER" ? "row-reverse" : "row",
+                justifyContent:
+                  chatItem.role === "USER" ? "flex-end" : "flex-start",
+              }}
+            >
+              <div
+                style={{
+                  maxWidth: "70%",
+                  borderRadius: "15px",
+                  padding: "10px",
+                  marginBottom: "5px",
+                  overflow: "hidden",
+                  border: "2px solid black", // This adds a black border around the individual chat message
+                }}
+              >
+                <ReactMarkdown
+                  components={{
+                    ul: ({ node, ...props }) => (
+                      <ul style={{ margin: 0, padding: "0 1em" }} {...props} />
+                    ), // Reset margin and adjust padding for unordered lists
+                    ol: ({ node, ...props }) => (
+                      <ol style={{ margin: 0, padding: "0 1em" }} {...props} />
+                    ), // Reset margin and adjust padding for ordered lists
+                  }}
+                >
+                  {chatItem.message}
+                </ReactMarkdown>
+              </div>
+              <Typography
+                variant="caption"
+                style={{
+                  alignSelf: "flex-end",
+                  marginLeft: chatItem.role === "USER" ? "10px" : 0,
+                  marginRight: chatItem.role === "USER" ? 0 : "10px",
+                  color: "#a3a3a3",
+                }}
+              >
+                {chatItem.role === "USER" ? "You" : agentName} •{" "}
+                {new Date(chatItem.timestamp).toLocaleTimeString()}
+              </Typography>
+            </div>
+          ))}
+        </div>
       </Paper>
       <TextField
         fullWidth
