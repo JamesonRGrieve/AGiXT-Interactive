@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useSWR from "swr";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
@@ -10,20 +10,38 @@ import {
   Container,
   Select,
   MenuItem,
+  Typography,
+  Box,
 } from "@mui/material";
-// TODO: Add prompt category field and logic to choose category before choosing prompt, setting to "Default" for now.
-export default function PromptAdmin({ friendly_name, name, args, enabled }) {
+
+export default function PromptAdmin() {
   const router = useRouter();
-  const promptName = router.query.prompt;
+  const [promptCategory, setPromptCategory] = useState("Default");
+  const [promptName, setPromptName] = useState("Chat");
+
   const promptCategories = useSWR(
-    "promptCategory",
+    "promptCategories",
     async () => await sdk.getPromptCategories()
   );
-  const [promptCategory, setPromptCategory] = useState("Default");
   const prompt = useSWR(
-    "prompt/" + promptName,
+    `prompt/${promptCategory}/${promptName}`,
     async () => await sdk.getPrompt(promptName, promptCategory)
   );
+  const prompts = useSWR(
+    "prompt",
+    async () => await sdk.getPrompts(promptCategory)
+  );
+  useEffect(() => {
+    if (promptCategories.data) {
+      setPromptCategory(promptCategory);
+    }
+    mutate("prompt");
+    if (prompts.data) {
+      setPromptName(promptName);
+    }
+    mutate(`prompt/${promptCategory}/${promptName}`);
+  }, [promptCategories.data, promptName, promptCategory, prompts.data]);
+
   const [newName, setNewName] = useState(promptName);
   const [newBody, setNewBody] = useState(prompt.data);
   console.log(prompt);
@@ -40,41 +58,45 @@ export default function PromptAdmin({ friendly_name, name, args, enabled }) {
 
   return (
     <Container>
-      <Select
-        fullWidth
-        variant="outlined"
-        label="Prompt Category"
-        value={promptCategory}
-        onChange={(e) => {
-          setPromptCategory(e.target.value);
-        }}
-      >
-        {promptCategories.data.map((category) => (
-          <MenuItem key={category} value={category}>
-            {category}
-          </MenuItem>
-        ))}
-      </Select>
-      <TextField
-        fullWidth
-        variant="outlined"
-        label="Prompt Name"
-        value={newName}
-        onChange={(e) => {
-          setNewName(e.target.value);
-        }}
-      />
-      <TextField
-        fullWidth
-        multiline
-        rows={30}
-        variant="outlined"
-        label="Prompt Body"
-        value={newBody}
-        onChange={(e) => {
-          setNewBody(e.target.value);
-        }}
-      />
+      <Typography variant="h6">Prompt Category/Model</Typography>
+      <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+        <Select
+          labelId="promptCategory"
+          id="promptCategory"
+          value={promptCategory}
+          onChange={(e) => setPromptCategory(e.target.value)}
+        >
+          {promptCategories.data &&
+            Object.values(promptCategories.data).map((category) => (
+              <MenuItem key={category} value={category}>
+                {category}
+              </MenuItem>
+            ))}
+        </Select>
+        <Divider />
+        <Typography variant="h6">Prompt Name</Typography>
+        <Select
+          labelId="promptName"
+          id="promptName"
+          value={promptName}
+          onChange={(e) => setPromptName(e.target.value)}
+        >
+          {prompts.data &&
+            Object.values(prompts.data).map((p) => (
+              <MenuItem key={p} value={p}>
+                {p}
+              </MenuItem>
+            ))}
+        </Select>
+        <Divider />
+        <Typography variant="h6">Prompt Content</Typography>
+        <TextField
+          id="promptContent"
+          multiline
+          rows={20}
+          defaultValue={prompt.data}
+        />
+      </Box>
       <Button
         variant="contained"
         color="primary"
