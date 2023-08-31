@@ -26,8 +26,7 @@ export default function AgentChat() {
   // This keeps coming back response code "422 Unprocessable Entity" but works in node notebook
   const { data: conversation } = useSWR(
     `conversation/${agentName}/${conversationName}`,
-    async () =>
-      await sdk.getConversation(agentName, conversationName, "100", "1")
+    async () => await sdk.getConversation(agentName, conversationName, 100, 1)
   );
 
   /* Here is an example of it working properly in the node notebook. ApiClient is sdk from the apiClient file.
