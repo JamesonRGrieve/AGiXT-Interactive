@@ -5,6 +5,7 @@ import AgentChat from "./tabs/AgentChat";
 import AgentInstruct from "./tabs/AgentInstruct";
 import AgentAdmin from "./tabs/AgentAdmin";
 import AgentConfigure from "./tabs/AgentConfigure";
+import AgentPrompt from "./tabs/AgentPrompt";
 import { useTheme } from "@mui/material/styles";
 import { sdk } from "../../../lib/apiClient";
 import useSWR from "swr";
@@ -41,7 +42,7 @@ export default function AgentPanel({ data }) {
 
   const tabs = [
     <AgentChat key="chat" />,
-    <AgentChat key="prompt" />, // Placeholder
+    <AgentPrompt key="prompt" />,
     <AgentInstruct key="instruct" />,
     <AgentInstruct key="chainExecution" />, // Placeholder
     <AgentConfigure key="config" data={agentConfigData || data} />,

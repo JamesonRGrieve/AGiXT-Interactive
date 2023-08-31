@@ -15,7 +15,7 @@ import {
 import useSWR from "swr";
 import { mutate } from "swr";
 
-export default function AgentInstruct() {
+export default function AgentPrompt() {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [conversationName, setConversationName] = useState("Test");
@@ -31,6 +31,8 @@ export default function AgentInstruct() {
     setInjectMemoriesFromCollectionNumber,
   ] = useState(0);
   const [conversationResults, setConversationResults] = useState(5);
+  const [promptCategory, setPromptCategory] = useState("Default");
+  const [promptName, setPromptName] = useState("Chat");
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const { data: conversations } = useSWR(
@@ -41,6 +43,23 @@ export default function AgentInstruct() {
   const { data: conversation } = useSWR(
     `conversation/${agentName}/${conversationName}`,
     async () => await sdk.getConversation(agentName, conversationName, 100, 1)
+  );
+  const { data: promptCategories } = useSWR(
+    `promptCategories/${agentName}`,
+    async () => await sdk.getPromptCategories(agentName)
+  );
+
+  const { data: prompts } = useSWR(
+    `prompts/${promptCategory}`,
+    async () => await sdk.getPrompts(promptCategory)
+  );
+  const { data: promptArgs } = useSWR(
+    `promptArgs/${promptName}`,
+    async () => await sdk.getPromptArgs(promptName, promptCategory)
+  );
+  const { data: prompt } = useSWR(
+    `prompt/${promptName}`,
+    async () => await sdk.getPrompt(promptName, promptCategory)
   );
 
   useEffect(() => {
@@ -58,6 +77,20 @@ export default function AgentInstruct() {
       setChatHistory(conversation);
     }
   }, [conversationName, conversation, lastResponse]);
+  useEffect(() => {
+    mutate(`promptCategories/${agentName}`);
+    if (promptCategories) {
+      setPromptCategory(promptCategory);
+    }
+  }, [promptCategory]);
+  useEffect(() => {
+    mutate(`prompts/${promptCategory}`);
+    if (prompts) {
+      setPromptName(promptName);
+    }
+    mutate(`promptArgs/${promptName}`);
+    mutate(`prompt/${promptName}`);
+  }, [promptName]);
 
   const PromptAgent = async (
     message,
@@ -72,6 +105,7 @@ export default function AgentInstruct() {
     injectMemoriesFromCollectionNumber = 0,
     conversationResults = 5
   ) => {
+    // All of these fields need selectors in the UI.
     const promptArguments = {
       user_input: message,
       prompt_category: promptCategory,
@@ -221,6 +255,70 @@ export default function AgentInstruct() {
           </div>
         ))}
       </Paper>
+      <br />
+      <Typography gutterBottom>Select a Prompt Category</Typography>
+      <Select
+        fullWidth
+        label="Prompt Category"
+        value={promptCategory}
+        onChange={(e) => setPromptCategory(e.target.value)}
+        sx={{ mb: 2 }}
+      >
+        {promptCategories
+          ? promptCategories.map((c) => (
+              <MenuItem key={c} value={c}>
+                {c}
+              </MenuItem>
+            ))
+          : []}
+      </Select>
+      <Typography gutterBottom>Select a Prompt</Typography>
+      <Select
+        fullWidth
+        label="Prompt"
+        value={promptName}
+        onChange={(e) => setPromptName(e.target.value)}
+        sx={{ mb: 2 }}
+      >
+        {prompts
+          ? prompts.map((c) => (
+              <MenuItem key={c} value={c}>
+                {c}
+              </MenuItem>
+            ))
+          : []}
+      </Select>
+      <Typography gutterBottom>{prompt}</Typography>
+
+      {promptArgs ? (
+        Object.values(promptArgs).map((arg) => {
+          if (
+            arg !== "user_input" &&
+            arg !== "conversation_history" &&
+            arg !== "context" &&
+            arg !== "COMMANDS" &&
+            arg !== "command_list" &&
+            arg !== "date" &&
+            arg !== "agent_name" &&
+            arg !== "working_directory" &&
+            arg !== "helper_agent_name"
+          ) {
+            return (
+              <TextField
+                fullWidth
+                label={arg}
+                value={promptArgs[arg]}
+                onChange={(e) =>
+                  setPromptArgs({ ...promptArgs, [arg]: e.target.value })
+                }
+                sx={{ mb: 2 }}
+              />
+            );
+          }
+        })
+      ) : (
+        <></>
+      )}
       <TextField
         fullWidth
         label="User Input"
@@ -236,7 +334,7 @@ export default function AgentInstruct() {
         onClick={handleSendMessage}
         fullWidth
       >
-        Message Agent
+        Prompt Agent
       </Button>
     </>
   );
