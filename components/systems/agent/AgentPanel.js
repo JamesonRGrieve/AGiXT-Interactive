@@ -41,8 +41,10 @@ export default function AgentPanel({ data }) {
 
   const tabs = [
     <AgentChat key="chat" />,
+    <AgentChat key="prompt" />, // Placeholder
     <AgentInstruct key="instruct" />,
-    <AgentConfigure key="config" data={agentConfigData || data} />, // use agentConfigData here
+    <AgentInstruct key="chainExecution" />, // Placeholder
+    <AgentConfigure key="config" data={agentConfigData || data} />,
     <AgentAdmin key="admin" />,
   ];
 
@@ -57,8 +59,10 @@ export default function AgentPanel({ data }) {
         sx={{ mb: "0.5rem" }}
         textColor={theme.palette.mode == "dark" ? "white" : "black"}
       >
-        <Tab label="Chat With Agent" />
-        <Tab label="Instruct Agent" />
+        <Tab label="Chat Mode" />
+        <Tab label="Prompt Mode" />
+        <Tab label="Instruct Mode" />
+        <Tab label="Chain Execution" />
         <Tab label="Agent Settings" />
         <Tab label="Modify Agent" />
       </Tabs>
