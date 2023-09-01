@@ -1,4 +1,4 @@
-import { Select, MenuItem, Typography } from "@mui/material";
+import { Select, MenuItem, InputLabel, FormControl } from "@mui/material";
 
 export default function ConversationSelector({
   conversations,
@@ -6,17 +6,14 @@ export default function ConversationSelector({
   setConversationName,
 }) {
   return (
-    <>
-      <Typography variant="h6" gutterBottom>
-        Select a Conversation
-      </Typography>
-
+    <FormControl fullWidth sx={{ mb: 2 }}>
+      <InputLabel id="conversation-label">Select a Conversation</InputLabel>
       <Select
+        labelId="conversation-label"
         fullWidth
-        label="Conversation"
+        label="Select a Conversation"
         value={conversationName}
         onChange={(e) => setConversationName(e.target.value)}
-        sx={{ mb: 2 }}
       >
         {conversations
           ? conversations.map((c) => (
@@ -24,8 +21,8 @@ export default function ConversationSelector({
                 {c}
               </MenuItem>
             ))
-          : []}
+          : null}
       </Select>
-    </>
+    </FormControl>
   );
 }

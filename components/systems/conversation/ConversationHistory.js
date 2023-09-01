@@ -8,7 +8,7 @@ export default function ConversationHistory({ chatHistory }) {
       sx={{
         padding: "0.5rem",
         overflowY: "auto",
-        height: "40vh",
+        height: "58vh",
         display: "flex",
         flexDirection: "column-reverse",
       }}

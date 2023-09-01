@@ -151,32 +151,13 @@ export default function AgentPrompt({ mode = "Prompt" }) {
   };
   return (
     <>
-      <AdvancedOptions
-        contextResults={contextResults}
-        setContextResults={setContextResults}
-        shots={shots}
-        setShots={setShots}
-        websearchDepth={websearchDepth}
-        setWebsearchDepth={setWebsearchDepth}
-        injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
-        setInjectMemoriesFromCollectionNumber={
-          setInjectMemoriesFromCollectionNumber
-        }
-        conversationResults={conversationResults}
-        setConversationResults={setConversationResults}
-        browseLinks={browseLinks}
-        setBrowseLinks={setBrowseLinks}
-        websearch={websearch}
-        setWebsearch={setWebsearch}
-        enableMemory={enableMemory}
-        setEnableMemory={setEnableMemory}
-      />
       <ConversationSelector
         conversations={conversations}
         conversationName={conversationName}
         setConversationName={setConversationName}
       />
       <ConversationHistory chatHistory={chatHistory} />
+      <br />
       {mode == "Prompt" ? (
         <>
           <PromptSelector
@@ -238,6 +219,26 @@ export default function AgentPrompt({ mode = "Prompt" }) {
           </Button>
         </>
       )}
+      <AdvancedOptions
+        contextResults={contextResults}
+        setContextResults={setContextResults}
+        shots={shots}
+        setShots={setShots}
+        websearchDepth={websearchDepth}
+        setWebsearchDepth={setWebsearchDepth}
+        injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
+        setInjectMemoriesFromCollectionNumber={
+          setInjectMemoriesFromCollectionNumber
+        }
+        conversationResults={conversationResults}
+        setConversationResults={setConversationResults}
+        browseLinks={browseLinks}
+        setBrowseLinks={setBrowseLinks}
+        websearch={websearch}
+        setWebsearch={setWebsearch}
+        enableMemory={enableMemory}
+        setEnableMemory={setEnableMemory}
+      />
     </>
   );
 }

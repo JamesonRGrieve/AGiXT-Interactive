@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
-import { Select, MenuItem, Typography, TextField } from "@mui/material";
+import {
+  Select,
+  MenuItem,
+  TextField,
+  InputLabel,
+  FormControl,
+  Typography,
+} from "@mui/material";
 import { sdk } from "../../../lib/apiClient";
+
 export default function PromptSelector({
   promptCategories,
   promptCategory,
@@ -22,39 +30,40 @@ export default function PromptSelector({
 
   return (
     <>
-      <Typography gutterBottom>Select a Prompt Category</Typography>
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel id="prompt-category-label">
+          Select a Prompt Category
+        </InputLabel>
+        <Select
+          labelId="prompt-category-label"
+          value={promptCategory}
+          onChange={(e) => setPromptCategory(e.target.value)}
+        >
+          {promptCategories
+            ? promptCategories.map((c) => (
+                <MenuItem key={c} value={c}>
+                  {c}
+                </MenuItem>
+              ))
+            : []}
+        </Select>
+      </FormControl>
 
-      <Select
-        fullWidth
-        label="Prompt Category"
-        value={promptCategory}
-        onChange={(e) => setPromptCategory(e.target.value)}
-        sx={{ mb: 2 }}
-      >
-        {promptCategories
-          ? promptCategories.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))
-          : []}
-      </Select>
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        <InputLabel id="prompt-label">Select a Prompt</InputLabel>
+        <Select
+          labelId="prompt-label"
+          value={promptName}
+          onChange={(e) => setPromptName(e.target.value)}
+        >
+          {prompts.map((c) => (
+            <MenuItem key={c} value={c}>
+              {c}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
 
-      <Typography gutterBottom>Select a Prompt</Typography>
-
-      <Select
-        fullWidth
-        label="Prompt"
-        value={promptName}
-        onChange={(e) => setPromptName(e.target.value)}
-        sx={{ mb: 2 }}
-      >
-        {prompts.map((c) => (
-          <MenuItem key={c} value={c}>
-            {c}
-          </MenuItem>
-        ))}
-      </Select>
       <Typography gutterBottom>{prompt}</Typography>
 
       {promptArgs ? (
