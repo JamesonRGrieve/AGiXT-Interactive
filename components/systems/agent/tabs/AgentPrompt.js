@@ -2,21 +2,15 @@ import { useEffect, useState } from "react";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
-import {
-  Typography,
-  Paper,
-  TextField,
-  Button,
-  Select,
-  MenuItem,
-  FormControlLabel,
-  Switch,
-} from "@mui/material";
+import ConversationSelector from "../../conversation/ConversationSelector";
+import ConversationHistory from "../../conversation/ConversationHistory";
+import PromptSelector from "../../prompt/PromptSelector";
+import AdvancedOptions from "../AdvancedOptions";
+import { Button, TextField } from "@mui/material";
 import useSWR from "swr";
 import { mutate } from "swr";
-import ReactMarkdown from "react-markdown";
 
-export default function AgentPrompt() {
+export default function AgentPrompt({ mode = "Prompt" }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [conversationName, setConversationName] = useState("Test");
@@ -106,7 +100,6 @@ export default function AgentPrompt() {
     injectMemoriesFromCollectionNumber = 0,
     conversationResults = 5
   ) => {
-    // All of these fields need selectors in the UI.
     const promptArguments = {
       user_input: message,
       prompt_category: promptCategory,
@@ -122,6 +115,9 @@ export default function AgentPrompt() {
       conversation_results: conversationResults,
       ...promptArgs,
     };
+    if (mode != "Prompt") {
+      promptName = mode;
+    }
     const response = await sdk.promptAgent(
       agentName,
       promptName,
@@ -155,241 +151,93 @@ export default function AgentPrompt() {
   };
   return (
     <>
-      <br />
-      <TextField
-        type="number"
-        label="Context Results"
-        value={contextResults}
-        onChange={(e) => setContextResults(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-      <TextField
-        type="number"
-        label="Shots"
-        value={shots}
-        onChange={(e) => setShots(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-      <TextField
-        type="number"
-        label="Websearch Depth"
-        value={websearchDepth}
-        onChange={(e) => setWebsearchDepth(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-      <TextField
-        type="number"
-        label="Inject Memories from Collection"
-        value={injectMemoriesFromCollectionNumber}
-        onChange={(e) => setInjectMemoriesFromCollectionNumber(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-      <TextField
-        label="Conversation Results"
-        type="number"
-        min={0}
-        max={100}
-        step={1}
-        value={conversationResults}
-        onChange={(e) => setConversationResults(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-      <br />
-      <FormControlLabel
-        control={
-          <Switch
-            checked={browseLinks}
-            onChange={(e) => setBrowseLinks(e.target.checked)}
-            name="Browse Links"
-          />
+      <AdvancedOptions
+        contextResults={contextResults}
+        setContextResults={setContextResults}
+        shots={shots}
+        setShots={setShots}
+        websearchDepth={websearchDepth}
+        setWebsearchDepth={setWebsearchDepth}
+        injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
+        setInjectMemoriesFromCollectionNumber={
+          setInjectMemoriesFromCollectionNumber
         }
-        label="Browse Links"
+        conversationResults={conversationResults}
+        setConversationResults={setConversationResults}
+        browseLinks={browseLinks}
+        setBrowseLinks={setBrowseLinks}
+        websearch={websearch}
+        setWebsearch={setWebsearch}
+        enableMemory={enableMemory}
+        setEnableMemory={setEnableMemory}
       />
-      <FormControlLabel
-        control={
-          <Switch
-            checked={websearch}
-            onChange={(e) => setWebsearch(e.target.checked)}
-            name="Websearch"
+      <ConversationSelector
+        conversations={conversations}
+        conversationName={conversationName}
+        setConversationName={setConversationName}
+      />
+      <ConversationHistory chatHistory={chatHistory} />
+      {mode == "Prompt" ? (
+        <>
+          <PromptSelector
+            promptCategories={promptCategories}
+            promptCategory={promptCategory}
+            setPromptCategory={setPromptCategory}
+            promptName={promptName}
+            setPromptName={setPromptName}
+            prompt={prompt}
+            promptArgs={promptArgs}
           />
-        }
-        label="Websearch"
-      />
-      <FormControlLabel
-        control={
-          <Switch
-            checked={enableMemory}
-            onChange={(e) => setEnableMemory(e.target.checked)}
-            name="Enable Memory"
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSendMessage}
+            fullWidth
+          >
+            Prompt Agent
+          </Button>
+        </>
+      ) : mode == "Chat" ? (
+        <>
+          <TextField
+            fullWidth
+            label="User Input"
+            placeholder="User input..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
+            sx={{ mb: 2 }}
           />
-        }
-        label="Enable Memory"
-      />
-      <Typography variant="h6" gutterBottom>
-        Select a Conversation
-      </Typography>
-      <Select
-        fullWidth
-        label="Conversation"
-        value={conversationName}
-        onChange={(e) => setConversationName(e.target.value)}
-        sx={{ mb: 2 }}
-      >
-        {conversations
-          ? conversations.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))
-          : []}
-      </Select>
-      <Paper
-        elevation={5}
-        sx={{
-          padding: "0.5rem",
-          overflowY: "auto",
-          height: "40vh",
-          display: "flex",
-          flexDirection: "column-reverse",
-        }}
-      >
-        <div style={{ width: "100%" }}>
-          {chatHistory.map((chatItem, index) => (
-            <div
-              key={index}
-              style={{
-                marginBottom: "10px",
-                display: "flex",
-                flexDirection: chatItem.role === "USER" ? "row-reverse" : "row",
-                justifyContent:
-                  chatItem.role === "USER" ? "flex-end" : "flex-start",
-              }}
-            >
-              <div
-                style={{
-                  maxWidth: "70%",
-                  borderRadius: "15px",
-                  padding: "10px",
-                  marginBottom: "5px",
-                  overflow: "hidden",
-                  border: "2px solid black", // This adds a black border around the individual chat message
-                }}
-              >
-                <ReactMarkdown
-                  components={{
-                    ul: ({ node, ...props }) => (
-                      <ul style={{ margin: 0, padding: "0 1em" }} {...props} />
-                    ), // Reset margin and adjust padding for unordered lists
-                    ol: ({ node, ...props }) => (
-                      <ol style={{ margin: 0, padding: "0 1em" }} {...props} />
-                    ), // Reset margin and adjust padding for ordered lists
-                  }}
-                >
-                  {chatItem.message}
-                </ReactMarkdown>
-              </div>
-              <Typography
-                variant="caption"
-                style={{
-                  alignSelf: "flex-end",
-                  marginLeft: chatItem.role === "USER" ? "10px" : 0,
-                  marginRight: chatItem.role === "USER" ? 0 : "10px",
-                  color: "#a3a3a3",
-                }}
-              >
-                {chatItem.role === "USER" ? "You" : agentName} •{" "}
-                {new Date(chatItem.timestamp).toLocaleTimeString()}
-              </Typography>
-            </div>
-          ))}
-        </div>
-      </Paper>
-      <br />
-      <Typography gutterBottom>Select a Prompt Category</Typography>
-      <Select
-        fullWidth
-        label="Prompt Category"
-        value={promptCategory}
-        onChange={(e) => setPromptCategory(e.target.value)}
-        sx={{ mb: 2 }}
-      >
-        {promptCategories
-          ? promptCategories.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))
-          : []}
-      </Select>
-      <Typography gutterBottom>Select a Prompt</Typography>
-      <Select
-        fullWidth
-        label="Prompt"
-        value={promptName}
-        onChange={(e) => setPromptName(e.target.value)}
-        sx={{ mb: 2 }}
-      >
-        {prompts
-          ? prompts.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))
-          : []}
-      </Select>
-      <Typography gutterBottom>{prompt}</Typography>
-
-      {promptArgs ? (
-        Object.values(promptArgs).map((arg) => {
-          if (
-            arg !== "user_input" &&
-            arg !== "conversation_history" &&
-            arg !== "context" &&
-            arg !== "COMMANDS" &&
-            arg !== "command_list" &&
-            arg !== "date" &&
-            arg !== "agent_name" &&
-            arg !== "working_directory" &&
-            arg !== "helper_agent_name"
-          ) {
-            return (
-              <TextField
-                fullWidth
-                label={arg}
-                value={promptArgs[arg]}
-                onChange={(e) =>
-                  setPromptArgs({ ...promptArgs, [arg]: e.target.value })
-                }
-                sx={{ mb: 2 }}
-              />
-            );
-          }
-          if (arg == "user_input") {
-            return (
-              <TextField
-                fullWidth
-                label="User Input"
-                placeholder="User input..."
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                sx={{ mb: 2 }}
-              />
-            );
-          }
-        })
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSendMessage}
+            fullWidth
+          >
+            Send Message
+          </Button>
+        </>
       ) : (
-        <></>
+        <>
+          <TextField
+            fullWidth
+            label="User Input"
+            placeholder="User input..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
+            sx={{ mb: 2 }}
+          />
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSendMessage}
+            fullWidth
+          >
+            Instruct Agent
+          </Button>
+        </>
       )}
-
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleSendMessage}
-        fullWidth
-      >
-        Prompt Agent
-      </Button>
     </>
   );
 }
