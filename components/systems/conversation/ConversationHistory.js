@@ -23,6 +23,10 @@ export default function ConversationHistory({ chatHistory }) {
 }
 
 const ChatMessage = ({ chatItem }) => {
+  const formattedMessage = chatItem.message
+    .replace(/\\n/g, "  \n")
+    .replace(/\n/g, "  \n");
+
   return (
     <div
       style={{
@@ -42,7 +46,7 @@ const ChatMessage = ({ chatItem }) => {
           border: "2px solid black",
         }}
       >
-        <ReactMarkdown>{chatItem.message}</ReactMarkdown>
+        <ReactMarkdown>{formattedMessage}</ReactMarkdown>
       </div>
 
       <Typography
