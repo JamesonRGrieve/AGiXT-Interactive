@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { Tab, Tabs } from "@mui/material";
 import { useRouter } from "next/router";
-import AgentChat from "./tabs/AgentChat";
-import AgentInstruct from "./tabs/AgentInstruct";
 import AgentAdmin from "./tabs/AgentAdmin";
 import AgentConfigure from "./tabs/AgentConfigure";
 import AgentPrompt from "./tabs/AgentPrompt";
@@ -41,10 +39,10 @@ export default function AgentPanel({ data }) {
   const theme = useTheme();
 
   const tabs = [
-    <AgentChat key="chat" />,
-    <AgentPrompt key="prompt" />,
-    <AgentInstruct key="instruct" />,
-    <AgentInstruct key="chainExecution" />, // Placeholder
+    <AgentPrompt key="chat" mode="Chat" />,
+    <AgentPrompt key="prompt" mode="Prompt" />,
+    <AgentPrompt key="instruct" mode="instruct" />,
+    <AgentPrompt key="chainExecution" mode="instruct" />, // Placeholder
     <AgentConfigure key="config" data={agentConfigData || data} />,
     <AgentAdmin key="admin" />,
   ];
