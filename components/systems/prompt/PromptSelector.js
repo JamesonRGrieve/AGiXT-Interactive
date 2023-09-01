@@ -6,8 +6,11 @@ import {
   InputLabel,
   FormControl,
   Typography,
+  Tooltip,
+  Box,
 } from "@mui/material";
 import { sdk } from "../../../lib/apiClient";
+import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 
 export default function PromptSelector({
   promptCategories,
@@ -30,41 +33,44 @@ export default function PromptSelector({
 
   return (
     <>
-      <FormControl fullWidth sx={{ mb: 2, width: "20%" }}>
-        <InputLabel id="prompt-category-label">
-          Select a Prompt Category
-        </InputLabel>
-        <Select
-          labelId="prompt-category-label"
-          value={promptCategory}
-          onChange={(e) => setPromptCategory(e.target.value)}
-        >
-          {promptCategories
-            ? promptCategories.map((c) => (
-                <MenuItem key={c} value={c}>
-                  {c}
-                </MenuItem>
-              ))
-            : []}
-        </Select>
-      </FormControl>
+      <Box display="flex" alignItems="center" gap={2}>
+        <FormControl fullWidth sx={{ mb: 2, width: "20%" }}>
+          <InputLabel id="prompt-category-label">
+            Select a Prompt Category
+          </InputLabel>
+          <Select
+            labelId="prompt-category-label"
+            value={promptCategory}
+            onChange={(e) => setPromptCategory(e.target.value)}
+          >
+            {promptCategories
+              ? promptCategories.map((c) => (
+                  <MenuItem key={c} value={c}>
+                    {c}
+                  </MenuItem>
+                ))
+              : []}
+          </Select>
+        </FormControl>
 
-      <FormControl sx={{ mb: 2, width: "80%" }}>
-        <InputLabel id="prompt-label">Select a Prompt</InputLabel>
-        <Select
-          labelId="prompt-label"
-          value={promptName}
-          onChange={(e) => setPromptName(e.target.value)}
-        >
-          {prompts.map((c) => (
-            <MenuItem key={c} value={c}>
-              {c}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-
-      <Typography gutterBottom>{prompt}</Typography>
+        <FormControl sx={{ mb: 2, width: "30%" }}>
+          <InputLabel id="prompt-label">Select a Prompt</InputLabel>
+          <Select
+            labelId="prompt-label"
+            value={promptName}
+            onChange={(e) => setPromptName(e.target.value)}
+          >
+            {prompts.map((c) => (
+              <MenuItem key={c} value={c}>
+                {c}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <Tooltip title={prompt} placement="right">
+          <InfoOutlinedIcon style={{ cursor: "pointer", color: "green" }} />
+        </Tooltip>
+      </Box>
 
       {promptArgs ? (
         Object.values(promptArgs).map((arg) => {

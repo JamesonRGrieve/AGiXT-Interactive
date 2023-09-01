@@ -12,7 +12,7 @@
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@fontsource/ubuntu-mono": "latest",
-    "@mui/icons-material": "latest",
+    "@mui/icons-material": "^5.14.7",
     "@mui/material": "latest",
     "@mui/system": "^5.4.1",
     "@mui/x-data-grid": "^5.17.12",
