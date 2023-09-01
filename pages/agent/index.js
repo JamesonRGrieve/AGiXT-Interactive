@@ -12,11 +12,12 @@ export default function Home() {
     async () =>
       (
         await axios.get(
-          "https://raw.githubusercontent.com/Josh-XT/AGiXT/main/docs/2-Concepts/3-Agents.md"
+          "https://raw.githubusercontent.com/Josh-XT/AGiXT/main/docs/2-Concepts/9-Agent%20Interactions.md"
         )
       ).data
   );
   const agents = useSWR("agent", async () => await sdk.getAgents());
+
   return (
     <PopoutDrawerWrapper
       title={"Agent Homepage"}
