@@ -30,7 +30,7 @@ export default function PromptSelector({
 
   return (
     <>
-      <FormControl fullWidth sx={{ mb: 2 }}>
+      <FormControl fullWidth sx={{ mb: 2, width: "20%" }}>
         <InputLabel id="prompt-category-label">
           Select a Prompt Category
         </InputLabel>
@@ -49,7 +49,7 @@ export default function PromptSelector({
         </Select>
       </FormControl>
 
-      <FormControl fullWidth sx={{ mb: 2 }}>
+      <FormControl sx={{ mb: 2, width: "80%" }}>
         <InputLabel id="prompt-label">Select a Prompt</InputLabel>
         <Select
           labelId="prompt-label"
@@ -80,10 +80,9 @@ export default function PromptSelector({
           ) {
             return (
               <TextField
-                fullWidth
                 label={arg}
                 value={promptArgs[arg]}
-                sx={{ mb: 2 }}
+                sx={{ mb: 2, width: "30%" }}
               />
             );
           }

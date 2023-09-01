@@ -159,6 +159,7 @@ export default function AgentPrompt({ mode = "Prompt" }) {
       <ConversationHistory chatHistory={chatHistory} />
       {mode == "Prompt" ? (
         <>
+          <br />
           <PromptSelector
             promptCategories={promptCategories}
             promptCategory={promptCategory}
@@ -172,9 +173,9 @@ export default function AgentPrompt({ mode = "Prompt" }) {
             variant="contained"
             color="primary"
             onClick={handleSendMessage}
-            fullWidth
+            sx={{ height: "56px" }}
           >
-            Prompt Agent
+            Send
           </Button>
         </>
       ) : (
@@ -185,7 +186,7 @@ export default function AgentPrompt({ mode = "Prompt" }) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            sx={{ mb: 2, width: "75%", height: "50px" }}
+            sx={{ mb: 2, width: "75%" }}
           />
           <Button
             variant="contained"
@@ -195,9 +196,9 @@ export default function AgentPrompt({ mode = "Prompt" }) {
           >
             Send
           </Button>
-          &nbsp;&nbsp;
         </>
       )}
+      &nbsp;&nbsp;
       <AdvancedOptions
         contextResults={contextResults}
         setContextResults={setContextResults}
