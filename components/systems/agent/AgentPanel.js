@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import AgentAdmin from "./tabs/AgentAdmin";
 import AgentConfigure from "./tabs/AgentConfigure";
 import AgentPrompt from "./tabs/AgentPrompt";
+import MemoryManagement from "../memory/MemoryManagement";
 import { useTheme } from "@mui/material/styles";
 import { sdk } from "../../../lib/apiClient";
 import useSWR from "swr";
@@ -44,6 +45,7 @@ export default function AgentPanel({ data }) {
     <AgentPrompt key="instruct" mode="instruct" />,
     <AgentPrompt key="chainExecution" mode="instruct" />, // Placeholder
     <AgentConfigure key="config" data={agentConfigData || data} />,
+    <MemoryManagement key="memory" />,
     <AgentAdmin key="admin" />,
   ];
 
@@ -63,6 +65,7 @@ export default function AgentPanel({ data }) {
         <Tab label="Instruct Mode" />
         <Tab label="Chain Execution" />
         <Tab label="Agent Settings" />
+        <Tab label="Memory Management" />
         <Tab label="Modify Agent" />
       </Tabs>
       {tabs[tab]}
