@@ -1,9 +1,9 @@
 import { Container } from "@mui/material";
-import PromptPanel from "../../components/systems/prompt/PromptPanel";
+import PromptAdmin from "../../components/systems/prompt/PromptAdmin";
 export default function Home() {
   return (
     <Container>
-      <PromptPanel />
+      <PromptAdmin />
     </Container>
   );
 }
