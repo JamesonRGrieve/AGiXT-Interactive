@@ -14,6 +14,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/router";
+import { sdk } from "../../../lib/apiClient";
 
 export default function ConversationSelector({
   conversations,
@@ -31,6 +32,7 @@ export default function ConversationSelector({
     await sdk.newConversation(agentName, newConversationName);
     setNewConversationName("");
     setOpenDialog(false);
+    conversations = await sdk.getConversations();
     setConversationName(newConversationName);
   };
 
@@ -75,18 +77,41 @@ export default function ConversationSelector({
       <Button onClick={handleDeleteConversation}>
         <DeleteIcon />
       </Button>
-      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Create New Conversation</DialogTitle>
+      <Dialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        PaperProps={{ style: { backgroundColor: "white" } }} // This sets the background color of the dialog box
+      >
+        <DialogTitle style={{ color: "black" }}>
+          Create New Conversation
+        </DialogTitle>
+
         <DialogContent>
           <TextField
             autoFocus
             margin="dense"
             id="name"
-            label="Conversation Name"
+            label="New Conversation Name"
             type="text"
             fullWidth
             value={newConversationName}
             onChange={(e) => setNewConversationName(e.target.value)}
+            variant="outlined"
+            InputLabelProps={{ style: { color: "black" } }}
+            InputProps={{
+              style: { color: "black" },
+              classes: {
+                notchedOutline: "yourUniqueClassName",
+              },
+              underline: {
+                "&:before": {
+                  borderBottomColor: "black",
+                },
+                "&:hover:not($disabled):not($focused):not($error):before": {
+                  borderBottomColor: "black",
+                },
+              },
+            }}
           />
         </DialogContent>
         <DialogActions>
