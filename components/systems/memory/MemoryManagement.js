@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
+import ReactMarkdown from "react-markdown";
 import { useRouter } from "next/router";
 import { sdk } from "../../../lib/apiClient";
 import {
@@ -9,6 +10,11 @@ import {
   Container,
   Checkbox,
   FormControlLabel,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 
 export default function MemoryManagement({ data }) {
@@ -59,6 +65,44 @@ export default function MemoryManagement({ data }) {
 
       {advancedOptions && (
         <div className="advanced-options">
+          <Typography variant="h6" component="h2" gutterBottom>
+            <strong>Predefined Memory Collections</strong>
+          </Typography>
+          <Typography component="h2" gutterBottom>
+            You can use any number above 10 for your own custom collections, but
+            0-10 are reserved for the following collections:
+          </Typography>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Collection Number</TableCell>
+                <TableCell>Collection Name</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>0</TableCell>
+                <TableCell>Default long term memory storage</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>1</TableCell>
+                <TableCell>Websearch storage</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>2</TableCell>
+                <TableCell>RLHF - Positive Feedback memory storage</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>3</TableCell>
+                <TableCell>RLHF - Negative Feedback memory storage</TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>4-10</TableCell>
+                <TableCell>Reserved for future use.</TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+
           <TextField
             type="number"
             value={collectionNumber}
