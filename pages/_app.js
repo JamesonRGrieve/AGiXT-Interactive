@@ -86,11 +86,6 @@ export default function App({ Component, pageProps, dark }) {
       Icon: SupportAgent,
     },
     {
-      name: "Conversations",
-      href: "conversation",
-      Icon: ChatBubble,
-    },
-    {
       name: "Prompts",
       href: "prompt",
       Icon: ChatBubble,

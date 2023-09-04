@@ -12,7 +12,7 @@ export default function Home() {
     async () =>
       (
         await axios.get(
-          "https://raw.githubusercontent.com/Josh-XT/AGiXT/main/docs/2-Concepts/9-Agent%20Interactions.md"
+          "https://raw.githubusercontent.com/Josh-XT/AGiXT/main/docs/2-Concepts/8-Agent%20Training.md"
         )
       ).data
   );
@@ -20,7 +20,7 @@ export default function Home() {
 
   return (
     <PopoutDrawerWrapper
-      title={"Agent Interactions"}
+      title={"Agent Training"}
       leftHeading={"Agents"}
       leftSWR={agents}
       leftMenu={AgentList}

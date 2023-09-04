@@ -12,15 +12,11 @@ import { useRouter } from "next/router";
 
 export default function MenuAgentList({ data }) {
   const router = useRouter();
-
+  const pageName = router.pathname.split("/")[1];
   return (
     <List>
       <Link href={`/agent`} passHref>
-        <ListItemButton
-          selected={
-            router.pathname.split("/")[1] == "agent" && !router.query.agent
-          }
-        >
+        <ListItemButton selected={pageName == "agent" && !router.query.agent}>
           <ListItemIcon>
             <Home />
           </ListItemIcon>
@@ -46,7 +42,7 @@ export default function MenuAgentList({ data }) {
 
       {data.map((agent) => (
         <Link
-          href={`/agent/${agent.name}?tab=${router.query.tab || 0}`}
+          href={`/${pageName}/${agent.name}?tab=${router.query.tab || 0}`}
           key={agent.name}
           passHref
         >
