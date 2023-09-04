@@ -77,14 +77,8 @@ export default function ConversationSelector({
       <Button onClick={handleDeleteConversation}>
         <DeleteIcon />
       </Button>
-      <Dialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        PaperProps={{ style: { backgroundColor: "white" } }} // This sets the background color of the dialog box
-      >
-        <DialogTitle style={{ color: "black" }}>
-          Create New Conversation
-        </DialogTitle>
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Create New Conversation</DialogTitle>
 
         <DialogContent>
           <TextField
@@ -97,28 +91,14 @@ export default function ConversationSelector({
             value={newConversationName}
             onChange={(e) => setNewConversationName(e.target.value)}
             variant="outlined"
-            InputLabelProps={{ style: { color: "black" } }}
-            InputProps={{
-              style: { color: "black" },
-              classes: {
-                notchedOutline: "yourUniqueClassName",
-              },
-              underline: {
-                "&:before": {
-                  borderBottomColor: "black",
-                },
-                "&:hover:not($disabled):not($focused):not($error):before": {
-                  borderBottomColor: "black",
-                },
-              },
-            }}
+            color="info"
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)} color="primary">
+          <Button onClick={() => setOpenDialog(false)} color="error">
             Cancel
           </Button>
-          <Button onClick={handleAddConversation} color="primary">
+          <Button onClick={handleAddConversation} color="info">
             Create
           </Button>
         </DialogActions>
