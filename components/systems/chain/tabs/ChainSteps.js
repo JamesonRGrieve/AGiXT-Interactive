@@ -35,7 +35,7 @@ export default function ChainSteps() {
         return (
           <>
             <ChainStep
-              key={index}
+              key={step.step}
               {...step}
               last_step={steps.data.steps.length === index + 1}
               updateCallback={() => {
