@@ -10,7 +10,7 @@ export default function MemoryManagement({
   minRelevanceScore = 0.0,
 }) {
   const router = useRouter();
-  const agentName = useMemo(() => router.query.agent, [router.query.agent]);
+  const agentName = useMemo(() => router.query.train, [router.query.train]);
   const [memoryQuery, setMemoryQuery] = useState("");
   const [response, setResponse] = useState([]);
 
