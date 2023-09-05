@@ -6,7 +6,11 @@ import {
   ListItemIcon,
   Divider,
 } from "@mui/material";
-import { RunCircle, StopCircle, AddCircle, Home } from "@mui/icons-material";
+import { AddCircle, Home } from "@mui/icons-material";
+import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
+import ModelTrainingOutlinedIcon from "@mui/icons-material/ModelTrainingOutlined";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
 import { useRouter } from "next/router";
 
 export default function MenuAgentList({ data }) {
@@ -49,39 +53,48 @@ export default function MenuAgentList({ data }) {
         >
           <ListItemButton selected={agentName == agent.name}>
             <ListItemIcon sx={{ minWidth: "30px" }}>
-              {agent.status ? <RunCircle /> : <StopCircle />}
+              <SmartToyOutlinedIcon />
             </ListItemIcon>
             <ListItemText primary={agent.name} />
           </ListItemButton>
           {agentName == agent.name ? (
             <>
               <Link href={`/train/${agent.name}`} passHref>
+                <Link href={`/agent/${agent.name}`} passHref>
+                  <ListItemButton
+                    variant="contained"
+                    color="primary"
+                    sx={{ pl: "2.5rem" }}
+                    selected={pageName == "agent" && router.query.tab != 4}
+                  >
+                    <ListItemIcon sx={{ minWidth: "30px" }}>
+                      <PlayCircleFilledWhiteOutlinedIcon />
+                    </ListItemIcon>
+                    Interact
+                  </ListItemButton>
+                </Link>
                 <ListItemButton
                   variant="contained"
                   color="primary"
-                  sx={{ pl: "4rem" }}
+                  sx={{ pl: "2.5rem" }}
                   selected={pageName == "train"}
                 >
-                  Train
-                </ListItemButton>
-              </Link>
-              <Link href={`/agent/${agent.name}`} passHref>
-                <ListItemButton
-                  variant="contained"
-                  color="primary"
-                  sx={{ pl: "4rem" }}
-                  selected={pageName == "agent" && router.query.tab != 4}
-                >
-                  Interact
+                  <ListItemIcon sx={{ minWidth: "30px" }}>
+                    <ModelTrainingOutlinedIcon />
+                  </ListItemIcon>
+                  Training
                 </ListItemButton>
               </Link>
               <Link href={`/agent/${agent.name}?tab=4`} passHref>
                 <ListItemButton
                   variant="contained"
                   color="primary"
-                  sx={{ pl: "4rem" }}
+                  sx={{ pl: "2.5rem" }}
                   selected={pageName == "agent" && router.query.tab == 4}
                 >
+                  <ListItemIcon sx={{ minWidth: "30px" }}>
+                    <SettingsOutlinedIcon />
+                  </ListItemIcon>
                   Settings
                 </ListItemButton>
               </Link>

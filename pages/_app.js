@@ -76,13 +76,8 @@ export default function App({ Component, pageProps, dark }) {
   const [darkMode, setDarkMode] = useState(dark);
   const pages = [
     {
-      name: "Agent Interactions",
+      name: "Agents",
       href: "agent",
-      Icon: SupportAgent,
-    },
-    {
-      name: "Agent Training",
-      href: "train",
       Icon: SupportAgent,
     },
     {
