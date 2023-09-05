@@ -18,6 +18,7 @@ import WebTraining from "./tabs/WebTraining";
 import FileTraining from "./tabs/FileTraining";
 import TextTraining from "./tabs/TextTraining";
 import GithubTraining from "./tabs/GithubTraining";
+import MemoryManagement from "./tabs/MemoryManagement";
 import { useTheme } from "@mui/material/styles";
 
 export default function TrainPanel({ data }) {
@@ -25,6 +26,8 @@ export default function TrainPanel({ data }) {
   const [tab, setTab] = useState(router.query.tab || 0);
   const [collectionNumber, setCollectionNumber] = useState(0);
   const [advancedOptions, setAdvancedOptions] = useState(false);
+  const [limit, setLimit] = useState(10);
+  const [minRelevanceScore, setMinRelevanceScore] = useState(0.0);
 
   useEffect(() => {
     // Push the current tab to the router query
@@ -49,6 +52,12 @@ export default function TrainPanel({ data }) {
     <FileTraining collectionNumber={collectionNumber} />,
     <TextTraining collectionNumber={collectionNumber} />,
     <GithubTraining collectionNumber={collectionNumber} />,
+    <MemoryManagement
+      key="memory"
+      collectionNumber={collectionNumber}
+      minRelevanceScore={minRelevanceScore}
+      limit={limit}
+    />,
   ];
 
   return (
@@ -66,6 +75,7 @@ export default function TrainPanel({ data }) {
         <Tab label="File Training" />
         <Tab label="Text Training" />
         <Tab label="GitHub Repository Training" />
+        <Tab label="Memory Management" />
       </Tabs>
 
       <Container>
@@ -76,9 +86,11 @@ export default function TrainPanel({ data }) {
               "File Training",
               "Text Training",
               "GitHub Repository Training",
+              "Memory Management",
             ][tab]
           }
         </Typography>
+
         <FormControlLabel
           control={
             <Checkbox
@@ -140,6 +152,38 @@ export default function TrainPanel({ data }) {
                 setCollectionNumber(e.target.value);
               }}
             />
+            {tab == 4 && (
+              <>
+                <TextField
+                  type="number"
+                  value={limit}
+                  onChange={(e) => setLimit(Number(e.target.value))}
+                  label="Limit"
+                  variant="outlined"
+                  margin="normal"
+                  style={{ width: "130px" }}
+                />
+                <TextField
+                  type="number"
+                  value={minRelevanceScore}
+                  onChange={(e) => {
+                    let value = parseFloat(e.target.value);
+                    if (value < 0) value = 0;
+                    if (value > 1) value = 1;
+                    setMinRelevanceScore(value);
+                  }}
+                  label="Minimum Relevance Score"
+                  variant="outlined"
+                  margin="normal"
+                  inputProps={{
+                    step: 0.1, // Allow only increments or decrements of 0.1
+                    min: 0.1, // Minimum value
+                    max: 1, // Maximum value
+                  }}
+                  style={{ width: "200px" }}
+                />
+              </>
+            )}
           </div>
         )}
 
