@@ -77,17 +77,12 @@ export default function App({ Component, pageProps, dark }) {
     {
       name: "Agents",
       href: "agent",
-      Icon: SupportAgent,
+      Icon: SmartToy,
     },
     {
       name: "Prompts",
       href: "prompt",
       Icon: ChatBubble,
-    },
-    {
-      name: "Providers",
-      href: "provider",
-      Icon: SmartToy,
     },
     {
       name: "Chains",
