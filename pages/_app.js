@@ -1,6 +1,6 @@
 import "../styles/globals.css";
-import axios from "axios";
 import { useState, useCallback } from "react";
+import { useRouter } from "next/router";
 import { setCookie, getCookie } from "cookies-next";
 import Link from "next/link";
 import { SettingsProvider } from "../lib/SettingsContext";
@@ -14,6 +14,7 @@ import {
 } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
+import ListItemButton from "@mui/material/ListItemButton";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import {
   ChevronLeft,
@@ -24,9 +25,13 @@ import {
   SmartToy,
 } from "@mui/icons-material";
 import MenuList from "../components/menu/MenuList";
+import MenuAgentList from "../components/systems/agent/AgentList";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
 import { red } from "@mui/material/colors";
-const drawerWidth = 240;
+import useSWR from "swr";
+import { sdk } from "../lib/apiClient";
+
+const drawerWidth = 200;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
@@ -72,28 +77,19 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   color: "white",
 }));
 export default function App({ Component, pageProps, dark }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(dark);
+  const router = useRouter();
   const pages = [
     {
-      name: "Agent Interactions",
+      name: "Agents",
       href: "agent",
-      Icon: SupportAgent,
-    },
-    {
-      name: "Agent Training",
-      href: "train",
-      Icon: SupportAgent,
+      Icon: SmartToy,
     },
     {
       name: "Prompts",
       href: "prompt",
       Icon: ChatBubble,
-    },
-    {
-      name: "Providers",
-      href: "provider",
-      Icon: SmartToy,
     },
     {
       name: "Chains",
@@ -128,14 +124,14 @@ export default function App({ Component, pageProps, dark }) {
       return newVal;
     });
   }, []);
-
+  const agents = useSWR("agent", async () => sdk.getAgents());
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="fixed" open={open}>
           <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
+            <Box sx={{ display: "flex", alignItems: "left" }}>
               <IconButton
                 color="inherit"
                 aria-label="open drawer"
@@ -148,6 +144,56 @@ export default function App({ Component, pageProps, dark }) {
               <Typography variant="h6" component="h1" noWrap>
                 <Link href="/">AGiXT</Link>
               </Typography>
+            </Box>
+            <Box sx={{ display: "flex", alignItems: "left" }}>
+              <Link href={`/agent`} passHref>
+                <ListItemButton
+                  variant="contained"
+                  color="primary"
+                  sx={{ pl: "1rem" }}
+                  selected={router.pathname.split("/")[1] == "agent"}
+                >
+                  <Typography noWrap>
+                    {router.pathname.split("/")[1] == "agent" ? (
+                      <b>Agents</b>
+                    ) : (
+                      <>Agents</>
+                    )}
+                  </Typography>
+                </ListItemButton>
+              </Link>
+              <Link href={`/prompt`} passHref>
+                <ListItemButton
+                  variant="contained"
+                  color="primary"
+                  sx={{ pl: "1rem" }}
+                  selected={router.pathname.split("/")[1] == "prompt"}
+                >
+                  <Typography noWrap>
+                    {router.pathname.split("/")[1] == "prompt" ? (
+                      <b>Prompts</b>
+                    ) : (
+                      <>Prompts</>
+                    )}
+                  </Typography>
+                </ListItemButton>
+              </Link>
+              <Link href={`/chain`} passHref>
+                <ListItemButton
+                  variant="contained"
+                  color="primary"
+                  sx={{ pl: "1rem" }}
+                  selected={router.pathname.split("/")[1] == "chain"}
+                >
+                  <Typography noWrap>
+                    {router.pathname.split("/")[1] == "chain" ? (
+                      <b>Chains</b>
+                    ) : (
+                      <>Chains</>
+                    )}
+                  </Typography>
+                </ListItemButton>
+              </Link>
             </Box>
             <MenuDarkSwitch
               checked={darkMode}
@@ -169,20 +215,12 @@ export default function App({ Component, pageProps, dark }) {
           open={open}
         >
           <DrawerHeader sx={{ justifyContent: "space-between", pl: "1rem" }}>
-            <Typography
-              variant="h6"
-              component="h1"
-              noWrap
-              sx={{ fontWeight: "bold" }}
-            >
-              Main Menu
-            </Typography>
             <IconButton onClick={handleDrawerClose}>
               <ChevronLeft fontSize="large" sx={{ color: "white" }} />
             </IconButton>
           </DrawerHeader>
           <Divider />
-          <MenuList pages={pages} />
+          <MenuAgentList data={agents.data ? agents.data : []} />
         </Drawer>
         <Main open={open} sx={{ padding: "0" }}>
           <DrawerHeader />

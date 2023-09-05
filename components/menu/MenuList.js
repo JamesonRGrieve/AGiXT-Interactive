@@ -1,24 +1,27 @@
-import Link from 'next/link'
+import Link from "next/link";
 import {
   List,
   ListItemText,
   ListItemButton,
   ListItemIcon,
 } from "@mui/material";
-import {useRouter} from 'next/router';
+import { useRouter } from "next/router";
 export default function MenuList({ pages }) {
   const router = useRouter();
   return (
     <List>
-      {pages.map(({name, href, Icon}) => (
-          <ListItemButton key={name} selected={router.pathname.split("/")[1]==href}>
-            <ListItemIcon>
-              <Icon />
-            </ListItemIcon>
-            <Link href={`/${href}`}>
-              <ListItemText primary={name} />
-            </Link>
-          </ListItemButton>
+      {pages.map(({ name, href, Icon }) => (
+        <ListItemButton
+          key={name}
+          selected={router.pathname.split("/")[1] == href}
+        >
+          <ListItemIcon sx={{ minWidth: "30px" }}>
+            <Icon />
+          </ListItemIcon>
+          <Link href={`/${href}`}>
+            <ListItemText primary={name} />
+          </Link>
+        </ListItemButton>
       ))}
     </List>
   );
