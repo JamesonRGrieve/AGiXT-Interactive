@@ -184,7 +184,7 @@ export default function App({ Component, pageProps, dark }) {
           <Divider />
           <MenuList pages={pages} />
         </Drawer>
-        <Main open={open} sx={{ padding: 0 }}>
+        <Main open={open} sx={{ padding: "0" }}>
           <DrawerHeader />
           <SettingsProvider>
             <Component {...pageProps} />
