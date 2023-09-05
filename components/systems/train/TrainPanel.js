@@ -62,23 +62,25 @@ export default function TrainPanel({ data }) {
 
   return (
     <>
-      <Tabs
-        value={tab}
-        onChange={handleTabChange}
-        TabIndicatorProps={{
-          style: { background: theme.palette.mode == "dark" ? "#FFF" : "#000" },
-        }}
-        sx={{ mb: "0.5rem" }}
-        textColor={theme.palette.mode == "dark" ? "white" : "black"}
-      >
-        <Tab label="Website Training" />
-        <Tab label="File Training" />
-        <Tab label="Text Training" />
-        <Tab label="GitHub Repository Training" />
-        <Tab label="Memory Management" />
-      </Tabs>
-
       <Container>
+        <Tabs
+          value={tab}
+          onChange={handleTabChange}
+          TabIndicatorProps={{
+            style: {
+              background: theme.palette.mode == "dark" ? "#FFF" : "#000",
+            },
+          }}
+          sx={{ mb: "0.5rem" }}
+          textColor={theme.palette.mode == "dark" ? "white" : "black"}
+        >
+          <Tab label="Website Training" />
+          <Tab label="File Training" />
+          <Tab label="Text Training" />
+          <Tab label="GitHub Repository Training" />
+          <Tab label="Memory Management" />
+        </Tabs>
+
         <Typography variant="h4" component="h1" gutterBottom>
           {
             [
