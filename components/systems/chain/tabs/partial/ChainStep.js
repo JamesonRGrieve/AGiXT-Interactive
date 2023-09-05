@@ -234,7 +234,7 @@ export default function ChainStep({
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            {/*
+            
                         {expanded?<Typography variant="h6">Step Inputs</Typography>:null}
                         <Paper elevation={3} sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", my: "0.5rem", mx: "2rem", p: "0.3rem" }}>
                             <IconButton size="large"><HighlightOff sx={{ fontSize: "2rem" }} /></IconButton>
@@ -260,8 +260,7 @@ export default function ChainStep({
                             <TextField variant="outlined" value="console.log('Hello, World!');"></TextField>
                             <TextField variant="outlined" value="{myLiteral}"></TextField>
                         </Paper>
-                                */}
-            <Typography variant="h6">Coming Soon</Typography>
+                                
           </AccordionDetails>
         </Accordion>
       </Paper>

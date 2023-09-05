@@ -1,14 +1,13 @@
-import { Paper, Typography } from "@mui/material";
+import { Paper, Box, Typography } from "@mui/material";
 import ReactMarkdown from "react-markdown";
+import { useTheme } from "@emotion/react";
 
 export default function ConversationHistory({ chatHistory }) {
   return (
     <Paper
       elevation={5}
       sx={{
-        padding: "0.5rem",
         overflowY: "auto",
-        height: "58vh",
         display: "flex",
         flexDirection: "column-reverse",
       }}
@@ -26,41 +25,41 @@ const ChatMessage = ({ chatItem }) => {
   const formattedMessage = chatItem.message
     .replace(/\\n/g, "  \n")
     .replace(/\n/g, "  \n");
-
+  const theme = useTheme();
   return (
-    <div
-      style={{
-        marginBottom: "10px",
+    /* Message Wrapper */
+    <Box
+      sx={{
+        p: "1rem",
         display: "flex",
         flexDirection: chatItem.role === "USER" ? "row-reverse" : "row",
-        justifyContent: chatItem.role === "USER" ? "flex-end" : "flex-start",
+        backgroundColor: chatItem.role === "USER" ? theme.palette.background.default : theme.palette.action.selected,
       }}
     >
-      <div
-        style={{
-          maxWidth: "70%",
-          borderRadius: "15px",
+      <Box sx={{flexDirection: "column"}}>
+      {/* Message */}
+      <Box
+        sx={{
+          maxWidth: "calc(100%-1rem)",
           padding: "10px",
           marginBottom: "5px",
           overflow: "hidden",
-          border: "2px solid black",
         }}
       >
         <ReactMarkdown>{formattedMessage}</ReactMarkdown>
-      </div>
-
+      </Box>
+      {/* Caption */}
       <Typography
         variant="caption"
         style={{
           alignSelf: "flex-end",
-          marginLeft: chatItem.role === "USER" ? "10px" : 0,
-          marginRight: chatItem.role === "USER" ? 0 : "10px",
-          color: "#a3a3a3",
+          color: theme.palette.text.secondary,
         }}
       >
         {chatItem.role === "USER" ? "You" : chatItem.role} •{" "}
         {chatItem.timestamp}
       </Typography>
-    </div>
+      </Box>
+      </Box>
   );
 };
