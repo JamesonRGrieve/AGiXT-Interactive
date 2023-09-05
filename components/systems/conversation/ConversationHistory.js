@@ -10,7 +10,7 @@ export default function ConversationHistory({ chatHistory }) {
         overflowY: "auto",
         display: "flex",
         flexDirection: "column-reverse",
-        height: "55vh"
+        height: "50vh"
       }}
     >
       <div style={{ width: "100%" }}>
@@ -53,8 +53,10 @@ const ChatMessage = ({ chatItem }) => {
       <Typography
         variant="caption"
         style={{
-          alignSelf: "flex-end",
           color: theme.palette.text.secondary,
+          width: "100%",
+          textAlign: chatItem.role === "USER" ? "right" : "left",
+          display: "inline-block"
         }}
       >
         {chatItem.role === "USER" ? "You" : chatItem.role} •{" "}
