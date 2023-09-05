@@ -6,10 +6,10 @@ import ConversationSelector from "../../conversation/ConversationSelector";
 import ConversationHistory from "../../conversation/ConversationHistory";
 import PromptSelector from "../../prompt/PromptSelector";
 import AdvancedOptions from "../AdvancedOptions";
-import { Button, TextField, Box } from "@mui/material";
+import { Button, TextField } from "@mui/material";
 import useSWR from "swr";
 import { mutate } from "swr";
-import {useTheme} from "@emotion/react";
+
 export default function AgentPrompt({ mode = "Prompt" }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
@@ -30,7 +30,6 @@ export default function AgentPrompt({ mode = "Prompt" }) {
   const [promptName, setPromptName] = useState("Chat");
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
-  const theme = useTheme();
   const { data: conversations } = useSWR(
     "getConversations",
     async () => await sdk.getConversations()
@@ -158,17 +157,9 @@ export default function AgentPrompt({ mode = "Prompt" }) {
         setConversationName={setConversationName}
       />
       <ConversationHistory chatHistory={chatHistory} />
-      <Box sx={{height: "14rem"}}></Box>
-      <Box sx={{position: "fixed", 
-      px: "1rem",
-      bottom: "0", 
-      backgroundColor: theme.palette.background.default,
-      width: "calc(100% - 440px)"
-      }}>
-        <Box>
       {mode == "Prompt" ? (
-
-          <Box>
+        <>
+          <br />
           <PromptSelector
             promptCategories={promptCategories}
             promptCategory={promptCategory}
@@ -186,17 +177,16 @@ export default function AgentPrompt({ mode = "Prompt" }) {
           >
             Send
           </Button>
-          </Box>
-
+        </>
       ) : (
-        <Box >
+        <>
           <TextField
             label="User Input"
             placeholder="User input..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            sx={{width: "80%"}}
+            sx={{ mb: 2, width: "75%" }}
           />
           <Button
             variant="contained"
@@ -206,8 +196,9 @@ export default function AgentPrompt({ mode = "Prompt" }) {
           >
             Send
           </Button>
-        </Box>
+        </>
       )}
+      &nbsp;&nbsp;
       <AdvancedOptions
         contextResults={contextResults}
         setContextResults={setContextResults}
@@ -228,9 +219,6 @@ export default function AgentPrompt({ mode = "Prompt" }) {
         enableMemory={enableMemory}
         setEnableMemory={setEnableMemory}
       />
-      </Box>
-      </Box>
     </>
-    
   );
 }

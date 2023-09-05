@@ -10,6 +10,7 @@ export default function ConversationHistory({ chatHistory }) {
         overflowY: "auto",
         display: "flex",
         flexDirection: "column-reverse",
+        height: "55vh"
       }}
     >
       <div style={{ width: "100%" }}>
