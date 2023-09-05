@@ -60,7 +60,7 @@ export default function MenuAgentList({ data }) {
                   variant="contained"
                   color="primary"
                   sx={{ pl: "4rem" }}
-                  selected={router.pathname.split("/")[1] == "train"}
+                  selected={pageName == "train"}
                 >
                   Train
                 </ListItemButton>
@@ -70,10 +70,7 @@ export default function MenuAgentList({ data }) {
                   variant="contained"
                   color="primary"
                   sx={{ pl: "4rem" }}
-                  selected={
-                    router.pathname.split("/")[1] == "agent" &&
-                    router.query.tab != 4
-                  }
+                  selected={pageName == "agent" && router.query.tab != 4}
                 >
                   Interact
                 </ListItemButton>
@@ -83,10 +80,7 @@ export default function MenuAgentList({ data }) {
                   variant="contained"
                   color="primary"
                   sx={{ pl: "4rem" }}
-                  selected={
-                    router.pathname.split("/")[1] == "agent" &&
-                    router.query.tab == 4
-                  }
+                  selected={pageName == "agent" && router.query.tab == 4}
                 >
                   Settings
                 </ListItemButton>
