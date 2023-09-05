@@ -1,5 +1,4 @@
 import "../styles/globals.css";
-import axios from "axios";
 import { useState, useCallback } from "react";
 import { setCookie, getCookie } from "cookies-next";
 import Link from "next/link";
@@ -26,7 +25,7 @@ import {
 import MenuList from "../components/menu/MenuList";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
 import { red } from "@mui/material/colors";
-const drawerWidth = 240;
+const drawerWidth = 150;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
     flexGrow: 1,
@@ -164,14 +163,6 @@ export default function App({ Component, pageProps, dark }) {
           open={open}
         >
           <DrawerHeader sx={{ justifyContent: "space-between", pl: "1rem" }}>
-            <Typography
-              variant="h6"
-              component="h1"
-              noWrap
-              sx={{ fontWeight: "bold" }}
-            >
-              Main Menu
-            </Typography>
             <IconButton onClick={handleDrawerClose}>
               <ChevronLeft fontSize="large" sx={{ color: "white" }} />
             </IconButton>

@@ -64,7 +64,7 @@ export default function MenuAgentList({ data }) {
                   <ListItemButton
                     variant="contained"
                     color="primary"
-                    sx={{ pl: "2.5rem" }}
+                    sx={{ pl: "2rem" }}
                     selected={pageName == "agent" && router.query.tab != 4}
                   >
                     <ListItemIcon sx={{ minWidth: "30px" }}>
@@ -76,7 +76,7 @@ export default function MenuAgentList({ data }) {
                 <ListItemButton
                   variant="contained"
                   color="primary"
-                  sx={{ pl: "2.5rem" }}
+                  sx={{ pl: "2rem" }}
                   selected={pageName == "train"}
                 >
                   <ListItemIcon sx={{ minWidth: "30px" }}>
@@ -89,7 +89,7 @@ export default function MenuAgentList({ data }) {
                 <ListItemButton
                   variant="contained"
                   color="primary"
-                  sx={{ pl: "2.5rem" }}
+                  sx={{ pl: "2rem" }}
                   selected={pageName == "agent" && router.query.tab == 4}
                 >
                   <ListItemIcon sx={{ minWidth: "30px" }}>

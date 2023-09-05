@@ -4,7 +4,7 @@ import MuiAppBar from "@mui/material/AppBar";
 import { styled } from "@mui/material/styles";
 import PopoutDrawer from "./PopoutDrawer";
 import PopoutDrawerWrapperAppBarButton from "./PopoutDrawerWrapperAppBarButton";
-const leftDrawerWidth = 230;
+const leftDrawerWidth = 200;
 const rightDrawerWidth = 320;
 const Main = styled("main", {
   shouldForwardProp: (prop) => prop !== "openLeft" && prop !== "openRight",
