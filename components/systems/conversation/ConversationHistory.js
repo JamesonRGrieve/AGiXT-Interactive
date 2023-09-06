@@ -8,10 +8,24 @@ import { useState } from "react";
 import { ContentCopy as ContentCopyIcon } from "@mui/icons-material";
 import DownloadIcon from "@mui/icons-material/Download";
 import clipboardCopy from "clipboard-copy";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  TextField,
+  Button,
+} from "@mui/material";
+import { sdk } from "../../../lib/apiClient";
+
 export default function ConversationHistory({ chatHistory }) {
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
   const tab = router.query.tab;
+
+  let lastUserMessage = ""; // track the last user message
+
   return (
     <Paper
       elevation={5}
@@ -24,21 +38,43 @@ export default function ConversationHistory({ chatHistory }) {
     >
       <div style={{ width: "100%" }}>
         {chatHistory
-          ? chatHistory.map((chatItem, index) => (
-              <ChatMessage key={index} chatItem={chatItem} />
-            ))
+          ? chatHistory.map((chatItem, index) => {
+              if (chatItem.role === "USER") {
+                lastUserMessage = chatItem.message;
+              }
+              return (
+                <ChatMessage
+                  key={index}
+                  chatItem={chatItem}
+                  lastUserMessage={lastUserMessage} // Pass the last user message as a prop
+                />
+              );
+            })
           : null}
       </div>
     </Paper>
   );
 }
-const ChatMessage = ({ chatItem }) => {
+
+const ChatMessage = ({ chatItem, lastUserMessage }) => {
   const formattedMessage =
     typeof chatItem.message === "string"
       ? chatItem.message.replace(/\\n/g, "  \n").replace(/\n/g, "  \n")
       : chatItem.message;
   const theme = useTheme();
   const [vote, setVote] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [feedback, setFeedback] = useState("");
+
+  const handleClickOpen = (newVote) => {
+    setVote(newVote);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const handleCopyClick = () => {
     clipboardCopy(formattedMessage);
   };
@@ -204,12 +240,13 @@ const ChatMessage = ({ chatItem }) => {
         </Typography>
         {chatItem.role != "USER" && (
           <>
-            <IconButton onClick={() => setVote(vote === 1 ? 0 : 1)}>
-              <ThumbUp color={vote === 1 ? "primary" : "inherit"} />
+            <IconButton onClick={() => handleClickOpen(1)}>
+              <ThumbUp color={vote === 1 ? "success" : "inherit"} />
             </IconButton>
-            <IconButton onClick={() => setVote(vote === -1 ? 0 : -1)}>
+            <IconButton onClick={() => handleClickOpen(-1)}>
               <ThumbDown color={vote === -1 ? "error" : "inherit"} />
             </IconButton>
+
             <IconButton onClick={handleCopyClick}>
               <ContentCopyIcon />
             </IconButton>
@@ -218,6 +255,48 @@ const ChatMessage = ({ chatItem }) => {
             </IconButton>
           </>
         )}
+        <Dialog
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="form-dialog-title"
+        >
+          <DialogTitle id="form-dialog-title">Provide Feedback</DialogTitle>
+          <DialogContent>
+            <DialogContentText>
+              Please provide some feedback regarding the message.
+            </DialogContentText>
+            <TextField
+              autoFocus
+              margin="dense"
+              id="name"
+              label="Feedback"
+              type="text"
+              fullWidth
+              value={feedback}
+              onChange={(e) => setFeedback(e.target.value)}
+              color="info"
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="error">
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                const messageText = `User Feedback: ${feedback} \n\n Message: ${chatItem.message} \n\n Last User Message: ${lastUserMessage}`;
+                handleClose();
+                if (vote === 1) {
+                  sdk.learnText(chatItem.role, lastUserMessage, messageText, 2);
+                } else {
+                  sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
+                }
+              }}
+              color="info"
+            >
+              Submit
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
     </Box>
   );
