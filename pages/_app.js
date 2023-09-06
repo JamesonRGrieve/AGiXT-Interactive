@@ -88,6 +88,10 @@ export default function App({ Component, pageProps, dark }) {
   ] = useState(0);
   const [conversationResults, setConversationResults] = useState(5);
   const [chainArgs, setChainArgs] = useState({});
+  const [singleStep, setSingleStep] = useState(false);
+  const [fromStep, setFromStep] = useState(0);
+  const [allResponses, setAllResponses] = useState(false);
+  const [useSelectedAgent, setUseSelectedAgent] = useState(true);
 
   const handleArgsChange = (args) => {
     setChainArgs(args);
@@ -259,13 +263,29 @@ export default function App({ Component, pageProps, dark }) {
             )
           ) : null}
           {pageName === "agent" && tab == 3 ? (
-            <ChainArgsEditor
-              selectedChain={selectedChain}
-              sdk={sdk}
-              chainArgs={chainArgs}
-              setChainArgs={setChainArgs}
-              onChange={handleArgsChange}
-            />
+            <>
+              <ChainArgsEditor
+                selectedChain={selectedChain}
+                sdk={sdk}
+                chainArgs={chainArgs}
+                setChainArgs={setChainArgs}
+                onChange={handleArgsChange}
+                singleStep={singleStep}
+                setSingleStep={setSingleStep}
+                fromStep={fromStep}
+                setFromStep={setFromStep}
+                allResponses={allResponses}
+                setAllResponses={setAllResponses}
+                useSelectedAgent={useSelectedAgent}
+                setUseSelectedAgent={setUseSelectedAgent}
+              />
+              {/*
+              singleStep checkbox, false by default.
+              fromStep - Number to start step from, default 0.  If singleStep is checked, this is the step to run.
+              allResponses - Boolean, default false.  
+                If true, it will output all responses in the last response instead of just the last one.
+               */}
+            </>
           ) : null}
         </Drawer>
 
@@ -297,6 +317,14 @@ export default function App({ Component, pageProps, dark }) {
               setChainArgs={setChainArgs}
               chains={chains}
               handleChainChange={handleChainChange}
+              singleStep={singleStep}
+              setSingleStep={setSingleStep}
+              fromStep={fromStep}
+              setFromStep={setFromStep}
+              allResponses={allResponses}
+              setAllResponses={setAllResponses}
+              useSelectedAgent={useSelectedAgent}
+              setUseSelectedAgent={setUseSelectedAgent}
             />
           </SettingsProvider>
         </Main>

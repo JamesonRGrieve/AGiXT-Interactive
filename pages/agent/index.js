@@ -21,6 +21,8 @@ export default function Agents({
   enableMemory = false,
   injectMemoriesFromCollectionNumber = 0,
   conversationResults = 5,
+  useSelectedAgent,
+  setUseSelectedAgent,
 }) {
   const docs = useSWR(
     "docs/agent",
@@ -49,6 +51,8 @@ export default function Agents({
         enableMemory={enableMemory}
         injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
         conversationResults={conversationResults}
+        useSelectedAgent={useSelectedAgent}
+        setUseSelectedAgent={setUseSelectedAgent}
       />
     );
   } else {

@@ -22,6 +22,11 @@ export default function AgentPanel({
   enableMemory = false,
   injectMemoriesFromCollectionNumber = 0,
   conversationResults = 5,
+  singleStep = false,
+  fromStep = 0,
+  allResponses = false,
+  useSelectedAgent,
+  setUseSelectedAgent,
 }) {
   const router = useRouter();
   const agentName = router.query.agent;
@@ -109,6 +114,11 @@ export default function AgentPanel({
       enableMemory={enableMemory}
       injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
       conversationResults={conversationResults}
+      singleStep={singleStep}
+      fromStep={fromStep}
+      allResponses={allResponses}
+      useSelectedAgent={useSelectedAgent}
+      setUseSelectedAgent={setUseSelectedAgent}
     />,
   ];
 
