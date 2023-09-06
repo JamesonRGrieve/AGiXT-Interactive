@@ -1,0 +1,10 @@
+.code-container {
+    border: 1px solid darkgrey;
+  }
+  
+  .code-title {
+    background-color: darkgrey;
+    color: white;
+    padding: 5px;
+    font-weight: bold;
+  }
