@@ -4,7 +4,8 @@ import { ThumbUp, ThumbDown } from "@mui/icons-material";
 import ReactMarkdown from "react-markdown";
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
-
+import { ContentCopy as ContentCopyIcon } from "@mui/icons-material";
+import clipboardCopy from "clipboard-copy";
 export default function ConversationHistory({ chatHistory }) {
   return (
     <Paper
@@ -30,9 +31,10 @@ const ChatMessage = ({ chatItem }) => {
     .replace(/\n/g, "  \n");
   const theme = useTheme();
   const [vote, setVote] = useState(0);
-
+  const handleCopyClick = () => {
+    clipboardCopy(formattedMessage);
+  };
   return (
-    /* Message Wrapper */
     <Box
       sx={{
         p: "1rem",
@@ -45,7 +47,6 @@ const ChatMessage = ({ chatItem }) => {
       }}
     >
       <Box sx={{ flexDirection: "column" }}>
-        {/* Message */}
         <Box
           sx={{
             maxWidth: "calc(100%-1rem)",
@@ -56,18 +57,26 @@ const ChatMessage = ({ chatItem }) => {
         >
           <ReactMarkdown
             components={{
-              code({ node, inline, className, children, ...props }) {
-                const match = /language-(\w+)/.exec(className || "");
-                return !inline && match ? (
-                  <CodeBlock
-                    language={match[1]}
-                    value={String(children).replace(/\n$/, "")}
-                    {...props}
-                  />
-                ) : (
-                  <code className={className} {...props}>
-                    {children}
-                  </code>
+              code({ node, inline, children, ...props }) {
+                const language = props.className?.replace(/language-/, "");
+                return (
+                  <>
+                    <br />
+                    <div className="code-block">
+                      <div className="code-container">
+                        {language && (
+                          <div className="code-title">{language}</div>
+                        )}
+                        <IconButton onClick={handleCopyClick}>
+                          <ContentCopyIcon />
+                        </IconButton>
+                        <code className={"code-block"} {...props}>
+                          {children}
+                        </code>
+                      </div>
+                    </div>
+                    <br />
+                  </>
                 );
               },
             }}
@@ -88,13 +97,19 @@ const ChatMessage = ({ chatItem }) => {
           {chatItem.role === "USER" ? "You" : chatItem.role} •{" "}
           {chatItem.timestamp}
         </Typography>
-
-        <IconButton onClick={() => setVote(vote === 1 ? 0 : 1)}>
-          <ThumbUp color={vote === 1 ? "primary" : "inherit"} />
-        </IconButton>
-        <IconButton onClick={() => setVote(vote === -1 ? 0 : -1)}>
-          <ThumbDown color={vote === -1 ? "error" : "inherit"} />
-        </IconButton>
+        {chatItem.role != "USER" && (
+          <>
+            <IconButton onClick={() => setVote(vote === 1 ? 0 : 1)}>
+              <ThumbUp color={vote === 1 ? "primary" : "inherit"} />
+            </IconButton>
+            <IconButton onClick={() => setVote(vote === -1 ? 0 : -1)}>
+              <ThumbDown color={vote === -1 ? "error" : "inherit"} />
+            </IconButton>
+            <IconButton onClick={handleCopyClick}>
+              <ContentCopyIcon />
+            </IconButton>
+          </>
+        )}
       </Box>
     </Box>
   );
