@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
-import TrainControl from "../../components/systems/train/TrainControl";
+import TrainPanel from "../../components/systems/train/TrainPanel";
 export default function Train() {
   const router = useRouter();
-  return <TrainControl />;
+  return <TrainPanel />;
 }
