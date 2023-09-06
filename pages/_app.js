@@ -196,7 +196,7 @@ export default function App({ Component, pageProps, dark }) {
             <IconButton onClick={handleRightDrawerClose}>
               <Typography noWrap>
                 {pageName == "agent" ? "Advanced Options" : null}
-                {pageName == "train" ? "Training Options" : null}
+                {pageName == "train" ? "Advanced Options" : null}
                 {pageName == "settings" ? "Agent Commands" : null}
               </Typography>
               <ChevronRight fontSize="large" sx={{ color: "white" }} />
