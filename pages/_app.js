@@ -16,14 +16,7 @@ import MuiAppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
 import ListItemButton from "@mui/material/ListItemButton";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
-import {
-  ChevronLeft,
-  Menu,
-  SupportAgent,
-  ChatBubble,
-  InsertLink,
-  SmartToy,
-} from "@mui/icons-material";
+import { ChevronLeft, Menu } from "@mui/icons-material";
 import MenuList from "../components/menu/MenuList";
 import MenuAgentList from "../components/systems/agent/AgentList";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
@@ -80,23 +73,6 @@ export default function App({ Component, pageProps, dark }) {
   const [open, setOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(dark);
   const router = useRouter();
-  const pages = [
-    {
-      name: "Agents",
-      href: "agent",
-      Icon: SmartToy,
-    },
-    {
-      name: "Prompts",
-      href: "prompt",
-      Icon: ChatBubble,
-    },
-    {
-      name: "Chains",
-      href: "chain",
-      Icon: InsertLink,
-    },
-  ];
 
   const themeGenerator = (darkMode) =>
     createTheme({
@@ -145,56 +121,7 @@ export default function App({ Component, pageProps, dark }) {
                 <Link href="/">AGiXT</Link>
               </Typography>
             </Box>
-            <Box sx={{ display: "flex", alignItems: "left" }}>
-              <Link href={`/agent`} passHref>
-                <ListItemButton
-                  variant="contained"
-                  color="primary"
-                  sx={{ pl: "1rem" }}
-                  selected={router.pathname.split("/")[1] == "agent"}
-                >
-                  <Typography noWrap>
-                    {router.pathname.split("/")[1] == "agent" ? (
-                      <b>Agents</b>
-                    ) : (
-                      <>Agents</>
-                    )}
-                  </Typography>
-                </ListItemButton>
-              </Link>
-              <Link href={`/prompt`} passHref>
-                <ListItemButton
-                  variant="contained"
-                  color="primary"
-                  sx={{ pl: "1rem" }}
-                  selected={router.pathname.split("/")[1] == "prompt"}
-                >
-                  <Typography noWrap>
-                    {router.pathname.split("/")[1] == "prompt" ? (
-                      <b>Prompts</b>
-                    ) : (
-                      <>Prompts</>
-                    )}
-                  </Typography>
-                </ListItemButton>
-              </Link>
-              <Link href={`/chain`} passHref>
-                <ListItemButton
-                  variant="contained"
-                  color="primary"
-                  sx={{ pl: "1rem" }}
-                  selected={router.pathname.split("/")[1] == "chain"}
-                >
-                  <Typography noWrap>
-                    {router.pathname.split("/")[1] == "chain" ? (
-                      <b>Chains</b>
-                    ) : (
-                      <>Chains</>
-                    )}
-                  </Typography>
-                </ListItemButton>
-              </Link>
-            </Box>
+
             <MenuDarkSwitch
               checked={darkMode}
               onChange={handleToggleDarkMode}

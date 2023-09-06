@@ -12,7 +12,6 @@ export default function AgentControl({ data }) {
   // TODO: Make sure any references to router.query are done using memo so that renames don't break calls.
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const tab = useMemo(() => router.query.tab, [router.query.tab]);
-  const agents = useSWR("agent", async () => sdk.getAgents());
 
   const commands = useSWR(
     `agent/${agentName}/commands`,

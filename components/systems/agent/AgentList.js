@@ -11,6 +11,8 @@ import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
 import ModelTrainingOutlinedIcon from "@mui/icons-material/ModelTrainingOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
+import ChatBubble from "@mui/icons-material/ChatBubble";
+import InsertLink from "@mui/icons-material/InsertLink";
 import { useRouter } from "next/router";
 
 export default function MenuAgentList({ data }) {
@@ -20,14 +22,23 @@ export default function MenuAgentList({ data }) {
     pageName == "agent" ? router.query.agent : router.query.train;
   return (
     <List>
-      <Link href={`/${pageName}`} passHref>
+      <Link href={`/prompt`} passHref>
         <ListItemButton selected={agentName}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
-            <Home />
+            <ChatBubble />
           </ListItemIcon>
-          <ListItemText primary="Agent Homepage" />
+          <ListItemText primary="Prompts" />
         </ListItemButton>
       </Link>
+      <Link href={`/chain`} passHref>
+        <ListItemButton selected={agentName}>
+          <ListItemIcon sx={{ minWidth: "30px" }}>
+            <InsertLink />
+          </ListItemIcon>
+          <ListItemText primary="Chains" />
+        </ListItemButton>
+      </Link>
+      <Divider />
 
       <Link href={`/new/agent`} passHref>
         <ListItemButton
