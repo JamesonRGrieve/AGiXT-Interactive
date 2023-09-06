@@ -18,7 +18,7 @@ export default function ConversationHistory({ chatHistory }) {
         overflowY: "auto",
         display: "flex",
         flexDirection: "column-reverse",
-        height: tab == 1 ? "65vh" : "75vh",
+        height: tab == 1 ? "65vh" : tab == 3 ? "70vh" : "75vh",
       }}
     >
       <div style={{ width: "100%" }}>

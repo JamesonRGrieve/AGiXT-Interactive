@@ -8,7 +8,20 @@ import ReactMarkdown from "react-markdown";
 import { Container } from "@mui/material";
 import axios from "axios";
 
-export default function Home() {
+export default function Agents({
+  chains,
+  selectedChain,
+  setSelectedChain,
+  chainArgs,
+  contextResults = 5,
+  shots = 1,
+  browseLinks = false,
+  websearch = false,
+  websearchDepth = 0,
+  enableMemory = false,
+  injectMemoriesFromCollectionNumber = 0,
+  conversationResults = 5,
+}) {
   const docs = useSWR(
     "docs/agent",
     async () =>
@@ -21,16 +34,23 @@ export default function Home() {
 
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
-  const agent = useSWR(
-    agentName ? `agent/${agentName}` : null,
-    async () => await sdk.getAgentConfig(agentName),
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
   if (agentName) {
-    return <ContentSWR swr={agent} content={AgentPanel} />;
+    return (
+      <AgentPanel
+        chains={chains}
+        selectedChain={selectedChain}
+        setSelectedChain={setSelectedChain}
+        chainArgs={chainArgs}
+        contextResults={contextResults}
+        shots={shots}
+        browseLinks={browseLinks}
+        websearch={websearch}
+        websearchDepth={websearchDepth}
+        enableMemory={enableMemory}
+        injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
+        conversationResults={conversationResults}
+      />
+    );
   } else {
     return (
       <Container>

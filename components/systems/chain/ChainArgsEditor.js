@@ -1,5 +1,5 @@
 import React, { useState, useEffect, use } from "react";
-import { TextField } from "@mui/material";
+import { TextField, Container } from "@mui/material";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
@@ -45,7 +45,7 @@ const ChainArgsEditor = ({
   };
 
   return (
-    <>
+    <Container>
       {argNames.map((name) => {
         return (
           name !== "user_input" && (
@@ -68,7 +68,7 @@ const ChainArgsEditor = ({
           )
         );
       })}
-    </>
+    </Container>
   );
 };
 
