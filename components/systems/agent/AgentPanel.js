@@ -133,10 +133,10 @@ export default function AgentPanel({
         sx={{ mb: "0.5rem" }}
         textColor={theme.palette.mode == "dark" ? "white" : "black"}
       >
-        <Tab label="Chat Mode" />
-        <Tab label="Prompt Mode" />
-        <Tab label="Instruct Mode" />
-        <Tab label="Chain Execution" />
+        <Tab label="Chat Mode" selected={tab == 0} />
+        <Tab label="Prompt Mode" selected={tab == 1} />
+        <Tab label="Instruct Mode" selected={tab == 2} />
+        <Tab label="Chain Execution" selected={tab == 3} />
       </Tabs>
       {tabs[tab]}
     </>
