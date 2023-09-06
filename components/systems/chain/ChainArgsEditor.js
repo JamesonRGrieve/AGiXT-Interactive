@@ -68,29 +68,7 @@ const ChainArgsEditor = ({
           label="Use Selected Agent"
         />
       </FormGroup>
-      <Divider />
-      {argNames.map((name) => {
-        return (
-          name !== "user_input" && (
-            <FormGroup key={name}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={Boolean(chainArgs[name])}
-                    onChange={(e) =>
-                      setChainArgs({ ...chainArgs, [name]: e.target.checked })
-                    }
-                  />
-                }
-                label={`Override ${name}`}
-              />
-              {chainArgs[name] && (
-                <TextField name={name} label={name} onChange={handleChange} />
-              )}
-            </FormGroup>
-          )
-        );
-      })}
+
       <FormGroup>
         <FormControlLabel
           control={
@@ -134,6 +112,29 @@ const ChainArgsEditor = ({
           sx={{ mb: 2 }}
         />
       )}
+      <Divider />
+      {argNames.map((name) => {
+        return (
+          name !== "user_input" && (
+            <FormGroup key={name}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={Boolean(chainArgs[name])}
+                    onChange={(e) =>
+                      setChainArgs({ ...chainArgs, [name]: e.target.checked })
+                    }
+                  />
+                }
+                label={`Override ${name}`}
+              />
+              {chainArgs[name] && (
+                <TextField name={name} label={name} onChange={handleChange} />
+              )}
+            </FormGroup>
+          )
+        );
+      })}
     </Container>
   );
 };
