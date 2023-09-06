@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
 import { useSettings } from "../../../../lib/SettingsContext";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import useSWR from "swr";
 import { mutate } from "swr";
 import {
@@ -16,6 +17,9 @@ import {
   Typography,
   Switch,
   FormControlLabel,
+  FormControl,
+  Link,
+  InputLabel,
 } from "@mui/material";
 
 export default function AgentConfigure({ data }) {
@@ -36,6 +40,27 @@ export default function AgentConfigure({ data }) {
     await sdk.renameAgent(agentName, newName);
     mutate(`agent`);
     router.push(`/agent/${newName}`);
+  };
+  const handleExport = async () => {
+    // Download the content of data to a json file with the agentname.json
+    const filename = `${agentName}.json`;
+    const contentType = "application/json;charset=utf-8;";
+    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+      var blob = new Blob(
+        [decodeURIComponent(encodeURI(JSON.stringify(data)))],
+        { type: contentType }
+      );
+      navigator.msSaveOrOpenBlob(blob, filename);
+    } else {
+      var a = document.createElement("a");
+      a.download = filename;
+      a.href =
+        "data:" + contentType + "," + encodeURIComponent(JSON.stringify(data));
+      a.target = "_blank";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   };
 
   const providers = useSWR("provider", async () => await sdk.getProviders());
@@ -160,8 +185,14 @@ export default function AgentConfigure({ data }) {
   return (
     <Container>
       <Typography variant="h6" sx={{ my: "1rem" }}>
-        Agent Provider
+        {agentName} Agent Configuration&nbsp;&nbsp;
+        <Button color="info" onClick={handleExport}>
+          <FileDownloadOutlinedIcon color="info" /> Export Agent
+        </Button>
       </Typography>
+
+      <Divider />
+      <Typography sx={{ my: "1rem" }}>Provider</Typography>
       <Select
         label="Provider"
         sx={{ mx: "0.5rem", display: "block", width: "100%" }}
@@ -177,6 +208,7 @@ export default function AgentConfigure({ data }) {
             ))
           : null}
       </Select>
+
       {Object.keys(fields).map((field) => {
         if (field !== "provider") {
           if (

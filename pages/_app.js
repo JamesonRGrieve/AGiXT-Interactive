@@ -21,6 +21,7 @@ import MenuAgentList from "../components/systems/agent/AgentList";
 import AdvancedOptions from "../components/systems/agent/AdvancedOptions";
 import TrainOptions from "../components/systems/train/TrainOptions";
 import AgentCommandList from "../components/systems/agent/AgentCommandList";
+import ChainArgsEditor from "../components/systems/chain/ChainArgsEditor";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
 import useSWR from "swr";
 import { sdk } from "../lib/apiClient";
@@ -80,18 +81,37 @@ export default function App({ Component, pageProps, dark }) {
   const [websearch, setWebsearch] = useState(false);
   const [websearchDepth, setWebsearchDepth] = useState(0);
   const [enableMemory, setEnableMemory] = useState(false);
+  const [selectedChain, setSelectedChain] = useState("Smart Chat");
+  const [chains, setChains] = useState([]);
   const [
     injectMemoriesFromCollectionNumber,
     setInjectMemoriesFromCollectionNumber,
   ] = useState(0);
   const [conversationResults, setConversationResults] = useState(5);
+  const [chainArgs, setChainArgs] = useState({});
+  const [singleStep, setSingleStep] = useState(false);
+  const [fromStep, setFromStep] = useState(0);
+  const [allResponses, setAllResponses] = useState(false);
+  const [useSelectedAgent, setUseSelectedAgent] = useState(true);
+
+  const handleArgsChange = (args) => {
+    setChainArgs(args);
+  };
+
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
   const agentName = router.query.agent;
+  const tab = router.query.tab;
   const commands = useSWR(
     `agent/${agentName}/commands`,
     async () => await sdk.getCommands(agentName)
   );
+
+  if (darkMode === "false") {
+    setDarkMode(false);
+  } else if (darkMode === "true") {
+    setDarkMode(true);
+  }
 
   const themeGenerator = (darkMode) =>
     createTheme({
@@ -128,7 +148,9 @@ export default function App({ Component, pageProps, dark }) {
   if (pageName == "agent") {
   }
   const agents = useSWR("agent", async () => sdk.getAgents());
-
+  const handleChainChange = (event) => {
+    setSelectedChain(event.target.value);
+  };
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: "flex" }}>
@@ -196,15 +218,16 @@ export default function App({ Component, pageProps, dark }) {
           <DrawerHeader>
             <IconButton onClick={handleRightDrawerClose}>
               <Typography noWrap color="white">
-                {pageName == "agent" ? "Advanced Options" : null}
+                {pageName == "agent" && tab != 3 ? "Advanced Options" : null}
                 {pageName == "train" ? "Advanced Options" : null}
                 {pageName == "settings" ? "Agent Commands" : null}
+                {pageName == "agent" && tab == 3 ? "Chain Options" : null}
               </Typography>
               <ChevronRight fontSize="large" sx={{ color: "white" }} />
             </IconButton>
           </DrawerHeader>
           <Divider />
-          {pageName === "agent" ? (
+          {pageName === "agent" && tab != 3 ? (
             <AdvancedOptions
               contextResults={contextResults}
               setContextResults={setContextResults}
@@ -247,6 +270,31 @@ export default function App({ Component, pageProps, dark }) {
               <AgentCommandList data={commands ? commands.data : null} />
             )
           ) : null}
+          {pageName === "agent" && tab == 3 ? (
+            <>
+              <ChainArgsEditor
+                selectedChain={selectedChain}
+                sdk={sdk}
+                chainArgs={chainArgs}
+                setChainArgs={setChainArgs}
+                onChange={handleArgsChange}
+                singleStep={singleStep}
+                setSingleStep={setSingleStep}
+                fromStep={fromStep}
+                setFromStep={setFromStep}
+                allResponses={allResponses}
+                setAllResponses={setAllResponses}
+                useSelectedAgent={useSelectedAgent}
+                setUseSelectedAgent={setUseSelectedAgent}
+              />
+              {/*
+              singleStep checkbox, false by default.
+              fromStep - Number to start step from, default 0.  If singleStep is checked, this is the step to run.
+              allResponses - Boolean, default false.  
+                If true, it will output all responses in the last response instead of just the last one.
+               */}
+            </>
+          ) : null}
         </Drawer>
 
         <Main
@@ -271,6 +319,20 @@ export default function App({ Component, pageProps, dark }) {
               limit={limit}
               minRelevanceScore={minRelevanceScore}
               conversationResults={conversationResults}
+              selectedChain={selectedChain}
+              setSelectedChain={setSelectedChain}
+              chainArgs={chainArgs}
+              setChainArgs={setChainArgs}
+              chains={chains}
+              handleChainChange={handleChainChange}
+              singleStep={singleStep}
+              setSingleStep={setSingleStep}
+              fromStep={fromStep}
+              setFromStep={setFromStep}
+              allResponses={allResponses}
+              setAllResponses={setAllResponses}
+              useSelectedAgent={useSelectedAgent}
+              setUseSelectedAgent={setUseSelectedAgent}
             />
           </SettingsProvider>
         </Main>
