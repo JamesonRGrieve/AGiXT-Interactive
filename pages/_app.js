@@ -1,5 +1,6 @@
 import "../styles/globals.css";
 import { useState, useCallback } from "react";
+import { useRouter } from "next/router";
 import { setCookie, getCookie } from "cookies-next";
 import Link from "next/link";
 import { SettingsProvider } from "../lib/SettingsContext";
@@ -13,32 +14,31 @@ import {
 } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
+import TuneIcon from "@mui/icons-material/Tune";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
-import { ChevronLeft, Menu } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight, Menu } from "@mui/icons-material";
 import MenuAgentList from "../components/systems/agent/AgentList";
+import AdvancedOptions from "../components/systems/agent/AdvancedOptions";
+import TrainOptions from "../components/systems/train/TrainOptions";
+import AgentCommandList from "../components/systems/agent/AgentCommandList";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
 import useSWR from "swr";
 import { sdk } from "../lib/apiClient";
 
 const drawerWidth = 200;
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: `-${drawerWidth}px`,
-    ...(open && {
-      transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginLeft: 0,
-    }),
-  })
-);
+const rightDrawerWidth = 310;
+const Main = styled("main", {
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "rightDrawerOpen",
+})(({ theme, open, rightDrawerOpen }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  transition: theme.transitions.create("margin", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  marginLeft: open ? 0 : `-${drawerWidth}px`, // Adjust based on left drawer
+  marginRight: rightDrawerOpen ? `${rightDrawerWidth}px` : 0, // Adjust based on right drawer
+}));
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -55,6 +55,7 @@ const AppBar = styled(MuiAppBar, {
     }),
   }),
 }));
+
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -68,6 +69,14 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function App({ Component, pageProps, dark }) {
   const [open, setOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(dark);
+  const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
+  const router = useRouter();
+  const pageName = router.pathname.split("/")[1];
+  const agentName = router.query.agent;
+  const commands = useSWR(
+    `agent/${agentName}/commands`,
+    async () => await sdk.getCommands(agentName)
+  );
 
   const themeGenerator = (darkMode) =>
     createTheme({
@@ -86,6 +95,12 @@ export default function App({ Component, pageProps, dark }) {
 
   const handleDrawerClose = () => {
     setOpen(false);
+  };
+  const handleRightDrawerOpen = () => {
+    setRightDrawerOpen(true);
+  };
+  const handleRightDrawerClose = () => {
+    setRightDrawerOpen(false);
   };
 
   const handleToggleDarkMode = useCallback(() => {
@@ -121,6 +136,9 @@ export default function App({ Component, pageProps, dark }) {
               checked={darkMode}
               onChange={handleToggleDarkMode}
             />
+            <IconButton color="inherit" onClick={handleRightDrawerOpen}>
+              <TuneIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -144,7 +162,46 @@ export default function App({ Component, pageProps, dark }) {
           <Divider />
           <MenuAgentList data={agents.data ? agents.data : []} />
         </Drawer>
-        <Main open={open} sx={{ padding: "0" }}>
+        <Drawer
+          sx={{
+            width: 0,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: rightDrawerWidth,
+              boxSizing: "border-box",
+            },
+          }}
+          variant="persistent"
+          anchor="right"
+          open={rightDrawerOpen}
+        >
+          <DrawerHeader>
+            <IconButton onClick={handleRightDrawerClose}>
+              <Typography noWrap>
+                {pageName != "settings" ? "Advanced Options" : "Commands"}{" "}
+              </Typography>
+              <ChevronRight fontSize="large" sx={{ color: "white" }} />
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          {pageName === "agent" ? <AdvancedOptions /> : null}
+          {pageName === "train" ? <TrainOptions /> : null}
+          {pageName === "settings" ? (
+            commands.isLoading ? (
+              "Loading..."
+            ) : commands.error ? (
+              commands.error.message
+            ) : (
+              <AgentCommandList data={commands ? commands.data : null} />
+            )
+          ) : null}
+        </Drawer>
+
+        <Main
+          open={open}
+          rightDrawerOpen={rightDrawerOpen}
+          sx={{ padding: "0" }}
+        >
           <DrawerHeader />
           <SettingsProvider>
             <Component {...pageProps} />
