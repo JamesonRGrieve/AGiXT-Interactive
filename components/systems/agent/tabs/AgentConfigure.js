@@ -24,8 +24,20 @@ export default function AgentConfigure({ data }) {
   const [fields, setFields] = useState({});
   const [fieldValues, setFieldValues] = useState({});
   const [displayNames, setDisplayNames] = useState({});
+  const [newName, setNewName] = useState("");
   const router = useRouter();
   const agentName = router.query.agent;
+  const handleDelete = async () => {
+    await sdk.deleteAgent(agentName);
+    mutate(`agent`);
+    router.push(`/agent`);
+  };
+  const handleRename = async () => {
+    await sdk.renameAgent(agentName, newName);
+    mutate(`agent`);
+    router.push(`/agent/${newName}`);
+  };
+
   const providers = useSWR("provider", async () => await sdk.getProviders());
 
   const transformExtensionSettings = (extensionSettings) => {
@@ -131,19 +143,18 @@ export default function AgentConfigure({ data }) {
         ...mergedSettings,
       }));
     }
-    if (data.settings?.provider) {
-      const currentProvider = data.settings.provider;
-      if (provider !== null) {
-        setProvider(provider);
-      } else {
-        setProvider(currentProvider);
-      }
-      const currentSettings = { ...data.settings };
-      setFieldValues((prev) => ({
-        ...prev,
-        ...currentSettings,
-      }));
+    const currentProvider = data?.settings.provider;
+    if (provider !== null) {
+      setProvider(provider);
+    } else {
+      setProvider(currentProvider);
     }
+
+    const currentSettings = { ...data.settings };
+    setFieldValues((prev) => ({
+      ...prev,
+      ...currentSettings,
+    }));
   }, [provider, providerSettings, extensionSettings, agentName, data]);
 
   return (
@@ -277,6 +288,31 @@ export default function AgentConfigure({ data }) {
       <br />
       <Button onClick={handleConfigure} variant="contained" color="error">
         Save Agent Configuration
+      </Button>
+      <Divider />
+      <Typography variant="h6" sx={{ my: "1rem" }}>
+        Agent Admin
+      </Typography>
+      <TextField
+        fullWidth
+        variant="outlined"
+        label="New Agent Name"
+        value={newName}
+        onChange={(e) => {
+          setNewName(e.target.value);
+        }}
+      />
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleRename}
+        sx={{ marginY: "1rem" }}
+      >
+        Rename Agent
+      </Button>
+      <Divider sx={{ my: "1.5rem" }} />
+      <Button onClick={handleDelete} variant="contained" color="error">
+        Delete Agent
       </Button>
     </Container>
   );

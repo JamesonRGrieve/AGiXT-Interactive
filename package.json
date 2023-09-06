@@ -19,11 +19,13 @@
     "@types/axios": "^0.14.0",
     "agixt": "^1.0.32",
     "axios": "^1.4.0",
+    "clipboard-copy": "^4.0.1",
     "cookies-next": "latest",
     "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-markdown": "^8.0.7",
+    "react-syntax-highlighter": "^15.5.0",
     "swr": "latest"
   },
   "devDependencies": {

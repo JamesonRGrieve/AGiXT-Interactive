@@ -11,13 +11,6 @@ import useSWR from "swr";
 export default function AgentPanel({ data }) {
   const router = useRouter();
   const agentName = router.query.agent;
-
-  // Use SWR at top level
-  const { data: agentConfigData, error } = useSWR(
-    agentName ? `agent/${agentName}` : null,
-    () => sdk.getAgentConfig(agentName)
-  );
-
   const [tab, setTab] = useState(router.query.tab || 0);
 
   useEffect(() => {
@@ -43,8 +36,6 @@ export default function AgentPanel({ data }) {
     <AgentPrompt key="prompt" mode="Prompt" />,
     <AgentPrompt key="instruct" mode="instruct" />,
     <AgentPrompt key="chainExecution" mode="instruct" />, // Placeholder
-    <AgentConfigure key="config" data={agentConfigData || data} />,
-    <AgentAdmin key="admin" />,
   ];
 
   return (
@@ -62,8 +53,6 @@ export default function AgentPanel({ data }) {
         <Tab label="Prompt Mode" />
         <Tab label="Instruct Mode" />
         <Tab label="Chain Execution" />
-        <Tab label="Agent Settings" />
-        <Tab label="Modify Agent" />
       </Tabs>
       {tabs[tab]}
     </>

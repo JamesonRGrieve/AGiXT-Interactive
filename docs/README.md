@@ -16,9 +16,13 @@
 
 AGiXT is an Artificial Intelligence Automation Platform designed to power efficient AI instruction management across multiple providers. Our agents are equipped with adaptive memory, and this versatile solution offers a powerful plugin system that supports a wide range of commands, including web browsing. With growing support for numerous AI providers and models, AGiXT is constantly evolving to empower diverse applications.
 
-![image](https://github.com/AGiXT/nextjs/assets/102809327/dccd458f-dd00-4303-840e-0b3ed2aec46e)
+![image](https://github.com/AGiXT/nextjs/assets/102809327/b429ce4c-c4a2-4cd2-973e-991b1a93a678)
 
-![image](https://github.com/AGiXT/nextjs/assets/102809327/0bf773d6-dd16-4c63-887c-a9ca9894dc34)
+![image](https://github.com/AGiXT/nextjs/assets/102809327/a2e384ea-5a03-4338-a84b-02c5bd05936e)
+
+![image](https://github.com/AGiXT/nextjs/assets/102809327/b5efa431-1c0e-4109-8782-919115cd15d7)
+
+![image](https://github.com/AGiXT/nextjs/assets/102809327/5ac98296-6132-4318-8c1f-d98af30d95c9)
 
 
 ## NextJS Front-End Quickstart

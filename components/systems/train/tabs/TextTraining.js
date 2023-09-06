@@ -8,7 +8,7 @@ export default function TextTraining({ collectionNumber = 0 }) {
   const router = useRouter();
   const [learnStatus, setLearnStatus] = useState("");
   const [userInput, setUserInput] = useState("");
-  const agentName = router.query.train;
+  const agentName = router.query.agent;
 
   const onTrain = async (text) => {
     setLearnStatus("Please wait...");

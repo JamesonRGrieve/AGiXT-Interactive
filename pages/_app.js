@@ -14,42 +14,31 @@ import {
 } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
-import ListItemButton from "@mui/material/ListItemButton";
+import TuneIcon from "@mui/icons-material/Tune";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
-import {
-  ChevronLeft,
-  Menu,
-  SupportAgent,
-  ChatBubble,
-  InsertLink,
-  SmartToy,
-} from "@mui/icons-material";
-import MenuList from "../components/menu/MenuList";
+import { ChevronLeft, ChevronRight, Menu } from "@mui/icons-material";
 import MenuAgentList from "../components/systems/agent/AgentList";
+import AdvancedOptions from "../components/systems/agent/AdvancedOptions";
+import TrainOptions from "../components/systems/train/TrainOptions";
+import AgentCommandList from "../components/systems/agent/AgentCommandList";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
-import { red } from "@mui/material/colors";
 import useSWR from "swr";
 import { sdk } from "../lib/apiClient";
 
 const drawerWidth = 200;
-const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
-  ({ theme, open }) => ({
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create("margin", {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: `-${drawerWidth}px`,
-    ...(open && {
-      transition: theme.transitions.create("margin", {
-        easing: theme.transitions.easing.easeOut,
-        duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginLeft: 0,
-    }),
-  })
-);
+const rightDrawerWidth = 310;
+const Main = styled("main", {
+  shouldForwardProp: (prop) => prop !== "open" && prop !== "rightDrawerOpen",
+})(({ theme, open, rightDrawerOpen }) => ({
+  flexGrow: 1,
+  padding: theme.spacing(3),
+  transition: theme.transitions.create("margin", {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  marginLeft: open ? 0 : `-${drawerWidth}px`, // Adjust based on left drawer
+  marginRight: rightDrawerOpen ? `${rightDrawerWidth}px` : 0, // Adjust based on right drawer
+}));
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
 })(({ theme, open }) => ({
@@ -66,6 +55,7 @@ const AppBar = styled(MuiAppBar, {
     }),
   }),
 }));
+
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
   alignItems: "center",
@@ -79,24 +69,28 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function App({ Component, pageProps, dark }) {
   const [open, setOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(dark);
+  const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
+  const [collectionNumber, setCollectionNumber] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const [minRelevanceScore, setMinRelevanceScore] = useState(0.0);
+  const [contextResults, setContextResults] = useState(5);
+  const [shots, setShots] = useState(1);
+  const [browseLinks, setBrowseLinks] = useState(false);
+  const [websearch, setWebsearch] = useState(false);
+  const [websearchDepth, setWebsearchDepth] = useState(0);
+  const [enableMemory, setEnableMemory] = useState(false);
+  const [
+    injectMemoriesFromCollectionNumber,
+    setInjectMemoriesFromCollectionNumber,
+  ] = useState(0);
+  const [conversationResults, setConversationResults] = useState(5);
   const router = useRouter();
-  const pages = [
-    {
-      name: "Agents",
-      href: "agent",
-      Icon: SmartToy,
-    },
-    {
-      name: "Prompts",
-      href: "prompt",
-      Icon: ChatBubble,
-    },
-    {
-      name: "Chains",
-      href: "chain",
-      Icon: InsertLink,
-    },
-  ];
+  const pageName = router.pathname.split("/")[1];
+  const agentName = router.query.agent;
+  const commands = useSWR(
+    `agent/${agentName}/commands`,
+    async () => await sdk.getCommands(agentName)
+  );
 
   const themeGenerator = (darkMode) =>
     createTheme({
@@ -116,6 +110,12 @@ export default function App({ Component, pageProps, dark }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+  const handleRightDrawerOpen = () => {
+    setRightDrawerOpen(true);
+  };
+  const handleRightDrawerClose = () => {
+    setRightDrawerOpen(false);
+  };
 
   const handleToggleDarkMode = useCallback(() => {
     setDarkMode((oldVal) => {
@@ -124,7 +124,10 @@ export default function App({ Component, pageProps, dark }) {
       return newVal;
     });
   }, []);
+  if (pageName == "agent") {
+  }
   const agents = useSWR("agent", async () => sdk.getAgents());
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: "flex" }}>
@@ -145,60 +148,14 @@ export default function App({ Component, pageProps, dark }) {
                 <Link href="/">AGiXT</Link>
               </Typography>
             </Box>
-            <Box sx={{ display: "flex", alignItems: "left" }}>
-              <Link href={`/agent`} passHref>
-                <ListItemButton
-                  variant="contained"
-                  color="primary"
-                  sx={{ pl: "1rem" }}
-                  selected={router.pathname.split("/")[1] == "agent"}
-                >
-                  <Typography noWrap>
-                    {router.pathname.split("/")[1] == "agent" ? (
-                      <b>Agents</b>
-                    ) : (
-                      <>Agents</>
-                    )}
-                  </Typography>
-                </ListItemButton>
-              </Link>
-              <Link href={`/prompt`} passHref>
-                <ListItemButton
-                  variant="contained"
-                  color="primary"
-                  sx={{ pl: "1rem" }}
-                  selected={router.pathname.split("/")[1] == "prompt"}
-                >
-                  <Typography noWrap>
-                    {router.pathname.split("/")[1] == "prompt" ? (
-                      <b>Prompts</b>
-                    ) : (
-                      <>Prompts</>
-                    )}
-                  </Typography>
-                </ListItemButton>
-              </Link>
-              <Link href={`/chain`} passHref>
-                <ListItemButton
-                  variant="contained"
-                  color="primary"
-                  sx={{ pl: "1rem" }}
-                  selected={router.pathname.split("/")[1] == "chain"}
-                >
-                  <Typography noWrap>
-                    {router.pathname.split("/")[1] == "chain" ? (
-                      <b>Chains</b>
-                    ) : (
-                      <>Chains</>
-                    )}
-                  </Typography>
-                </ListItemButton>
-              </Link>
-            </Box>
+
             <MenuDarkSwitch
               checked={darkMode}
               onChange={handleToggleDarkMode}
             />
+            <IconButton color="inherit" onClick={handleRightDrawerOpen}>
+              <TuneIcon />
+            </IconButton>
           </Toolbar>
         </AppBar>
         <Drawer
@@ -222,10 +179,98 @@ export default function App({ Component, pageProps, dark }) {
           <Divider />
           <MenuAgentList data={agents.data ? agents.data : []} />
         </Drawer>
-        <Main open={open} sx={{ padding: "0" }}>
+        <Drawer
+          sx={{
+            width: 0,
+            flexShrink: 0,
+            "& .MuiDrawer-paper": {
+              width: rightDrawerWidth,
+              boxSizing: "border-box",
+            },
+          }}
+          variant="persistent"
+          anchor="right"
+          open={rightDrawerOpen}
+        >
+          <DrawerHeader>
+            <IconButton onClick={handleRightDrawerClose}>
+              <Typography noWrap color="white">
+                {pageName == "agent" ? "Advanced Options" : null}
+                {pageName == "train" ? "Advanced Options" : null}
+                {pageName == "settings" ? "Agent Commands" : null}
+              </Typography>
+              <ChevronRight fontSize="large" sx={{ color: "white" }} />
+            </IconButton>
+          </DrawerHeader>
+          <Divider />
+          {pageName === "agent" ? (
+            <AdvancedOptions
+              contextResults={contextResults}
+              setContextResults={setContextResults}
+              shots={shots}
+              setShots={setShots}
+              websearchDepth={websearchDepth}
+              setWebsearchDepth={setWebsearchDepth}
+              injectMemoriesFromCollectionNumber={
+                injectMemoriesFromCollectionNumber
+              }
+              setInjectMemoriesFromCollectionNumber={
+                setInjectMemoriesFromCollectionNumber
+              }
+              conversationResults={conversationResults}
+              setConversationResults={setConversationResults}
+              browseLinks={browseLinks}
+              setBrowseLinks={setBrowseLinks}
+              websearch={websearch}
+              setWebsearch={setWebsearch}
+              enableMemory={enableMemory}
+              setEnableMemory={setEnableMemory}
+            />
+          ) : null}
+          {pageName === "train" ? (
+            <TrainOptions
+              collectionNumber={collectionNumber}
+              limit={limit}
+              minRelevanceScore={minRelevanceScore}
+              setCollectionNumber={setCollectionNumber}
+              setLimit={setLimit}
+              setMinRelevanceScore={setMinRelevanceScore}
+            />
+          ) : null}
+          {pageName === "settings" ? (
+            commands.isLoading ? (
+              "Loading..."
+            ) : commands.error ? (
+              commands.error.message
+            ) : (
+              <AgentCommandList data={commands ? commands.data : null} />
+            )
+          ) : null}
+        </Drawer>
+
+        <Main
+          open={open}
+          rightDrawerOpen={rightDrawerOpen}
+          sx={{ padding: "0" }}
+        >
           <DrawerHeader />
           <SettingsProvider>
-            <Component {...pageProps} />
+            <Component
+              {...pageProps}
+              contextResults={contextResults}
+              shots={shots}
+              browseLinks={browseLinks}
+              websearch={websearch}
+              websearchDepth={websearchDepth}
+              enableMemory={enableMemory}
+              injectMemoriesFromCollectionNumber={
+                injectMemoriesFromCollectionNumber
+              }
+              collectionNumber={collectionNumber}
+              limit={limit}
+              minRelevanceScore={minRelevanceScore}
+              conversationResults={conversationResults}
+            />
           </SettingsProvider>
         </Main>
       </Box>

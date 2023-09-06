@@ -19,7 +19,7 @@ export default function GithubTraining({ collectionNumber = 0 }) {
   const [useAgentSettings, setUseAgentSettings] = useState(true);
   const [learnStatus, setLearnStatus] = useState("");
   const router = useRouter();
-  const agentName = router.query.train;
+  const agentName = router.query.agent;
 
   const onTrain = async () => {
     setLearnStatus("Training from GitHub repo... Please wait.");
