@@ -25,6 +25,10 @@ export default function AgentPrompt({
   enableMemory = false,
   injectMemoriesFromCollectionNumber = 0,
   conversationResults = 5,
+  singleStep = false,
+  fromStep = 0,
+  allResponses = false,
+  useSelectedAgent = true,
 }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
@@ -90,15 +94,26 @@ export default function AgentPrompt({
     mutate(`prompt/${promptName}`);
   }, [promptName]);
   const runChain = async () => {
-    const response = await sdk.runChain(
-      selectedChain,
-      message,
-      agentName,
-      false, // All responses = false
-      1, // From step = 1
-      chainArgs
-    );
-    setLastResponse(response);
+    const agentOverride = useSelectedAgent ? agentName : "";
+    if (singleStep) {
+      const response = await sdk.runChainStep(
+        selectedChain,
+        fromStep,
+        message,
+        agentOverride
+      );
+      setLastResponse(response);
+    } else {
+      const response = await sdk.runChain(
+        selectedChain,
+        message,
+        agentOverride,
+        allResponses,
+        fromStep,
+        chainArgs
+      );
+      setLastResponse(response);
+    }
   };
   const PromptAgent = async (
     message,

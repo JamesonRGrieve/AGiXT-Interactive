@@ -25,11 +25,10 @@ export default function AgentPanel({
   singleStep = false,
   fromStep = 0,
   allResponses = false,
-  useSelectedAgent,
+  useSelectedAgent = true,
   setUseSelectedAgent,
 }) {
   const router = useRouter();
-  const agentName = router.query.agent;
   const [tab, setTab] = useState(router.query.tab || 0);
 
   useEffect(() => {
