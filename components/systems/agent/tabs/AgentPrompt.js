@@ -10,22 +10,22 @@ import { Button, TextField } from "@mui/material";
 import useSWR from "swr";
 import { mutate } from "swr";
 
-export default function AgentPrompt({ mode = "Prompt" }) {
+export default function AgentPrompt({
+  mode = "Prompt",
+  contextResults = 5,
+  shots = 1,
+  browseLinks = false,
+  websearch = false,
+  websearchDepth = 0,
+  enableMemory = false,
+  injectMemoriesFromCollectionNumber = 0,
+  conversationResults = 5,
+}) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [conversationName, setConversationName] = useState("Test");
   const [lastResponse, setLastResponse] = useState("");
-  const [contextResults, setContextResults] = useState(5);
-  const [shots, setShots] = useState(1);
-  const [browseLinks, setBrowseLinks] = useState(false);
-  const [websearch, setWebsearch] = useState(false);
-  const [websearchDepth, setWebsearchDepth] = useState(0);
-  const [enableMemory, setEnableMemory] = useState(false);
-  const [
-    injectMemoriesFromCollectionNumber,
-    setInjectMemoriesFromCollectionNumber,
-  ] = useState(0);
-  const [conversationResults, setConversationResults] = useState(5);
+
   const [promptCategory, setPromptCategory] = useState("Default");
   const [promptName, setPromptName] = useState("Chat");
   const router = useRouter();
@@ -186,39 +186,18 @@ export default function AgentPrompt({ mode = "Prompt" }) {
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            sx={{ mb: 2, width: "75%" }}
+            sx={{ mb: 2, width: "90%" }}
           />
           <Button
             variant="contained"
             color="primary"
             onClick={handleSendMessage}
-            sx={{ height: "56px" }}
+            sx={{ height: "56px", width: "10%" }}
           >
             Send
           </Button>
         </>
       )}
-      &nbsp;&nbsp;
-      <AdvancedOptions
-        contextResults={contextResults}
-        setContextResults={setContextResults}
-        shots={shots}
-        setShots={setShots}
-        websearchDepth={websearchDepth}
-        setWebsearchDepth={setWebsearchDepth}
-        injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
-        setInjectMemoriesFromCollectionNumber={
-          setInjectMemoriesFromCollectionNumber
-        }
-        conversationResults={conversationResults}
-        setConversationResults={setConversationResults}
-        browseLinks={browseLinks}
-        setBrowseLinks={setBrowseLinks}
-        websearch={websearch}
-        setWebsearch={setWebsearch}
-        enableMemory={enableMemory}
-        setEnableMemory={setEnableMemory}
-      />
     </>
   );
 }

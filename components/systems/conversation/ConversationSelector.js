@@ -23,7 +23,6 @@ export default function ConversationSelector({
 }) {
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
-  const AGENT = router.query.agentname;
   const [newConversationName, setNewConversationName] = useState("");
   const [openDialog, setOpenDialog] = useState(false);
 

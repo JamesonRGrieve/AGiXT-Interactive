@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from "next/router";
 import { Paper, Box, Typography, IconButton } from "@mui/material";
 import { ThumbUp, ThumbDown } from "@mui/icons-material";
 import ReactMarkdown from "react-markdown";
@@ -7,6 +8,9 @@ import { useState } from "react";
 import { ContentCopy as ContentCopyIcon } from "@mui/icons-material";
 import clipboardCopy from "clipboard-copy";
 export default function ConversationHistory({ chatHistory }) {
+  const router = useRouter();
+  const pageName = router.pathname.split("/")[1];
+  const tab = router.query.tab;
   return (
     <Paper
       elevation={5}
@@ -14,7 +18,7 @@ export default function ConversationHistory({ chatHistory }) {
         overflowY: "auto",
         display: "flex",
         flexDirection: "column-reverse",
-        height: "60vh",
+        height: tab == 1 ? "65vh" : "75vh",
       }}
     >
       <div style={{ width: "100%" }}>

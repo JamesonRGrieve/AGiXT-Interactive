@@ -11,13 +11,17 @@ import {
 } from "@mui/material";
 import { useRouter } from "next/router";
 
-export default function TrainOptions({ data }) {
+export default function TrainOptions({
+  data,
+  collectionNumber,
+  setCollectionNumber,
+  limit,
+  setLimit,
+  minRelevanceScore,
+  setMinRelevanceScore,
+}) {
   const router = useRouter();
-  const [tab, setTab] = useState(router.query.tab || 0);
-  const [collectionNumber, setCollectionNumber] = useState(0);
-  const [limit, setLimit] = useState(10);
-  const [minRelevanceScore, setMinRelevanceScore] = useState(0.0);
-
+  const tab = router.query.tab || 0;
   return (
     <Container>
       <div className="advanced-options">
@@ -61,6 +65,7 @@ export default function TrainOptions({ data }) {
         <br />
         <TextField
           fullWidth
+          type="number"
           variant="outlined"
           label="Choose a Collection Number (Default is 0)"
           value={collectionNumber}

@@ -70,6 +70,20 @@ export default function App({ Component, pageProps, dark }) {
   const [open, setOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(dark);
   const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
+  const [collectionNumber, setCollectionNumber] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const [minRelevanceScore, setMinRelevanceScore] = useState(0.0);
+  const [contextResults, setContextResults] = useState(5);
+  const [shots, setShots] = useState(1);
+  const [browseLinks, setBrowseLinks] = useState(false);
+  const [websearch, setWebsearch] = useState(false);
+  const [websearchDepth, setWebsearchDepth] = useState(0);
+  const [enableMemory, setEnableMemory] = useState(false);
+  const [
+    injectMemoriesFromCollectionNumber,
+    setInjectMemoriesFromCollectionNumber,
+  ] = useState(0);
+  const [conversationResults, setConversationResults] = useState(5);
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
   const agentName = router.query.agent;
@@ -110,7 +124,10 @@ export default function App({ Component, pageProps, dark }) {
       return newVal;
     });
   }, []);
+  if (pageName == "agent") {
+  }
   const agents = useSWR("agent", async () => sdk.getAgents());
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: "flex" }}>
@@ -178,14 +195,48 @@ export default function App({ Component, pageProps, dark }) {
           <DrawerHeader>
             <IconButton onClick={handleRightDrawerClose}>
               <Typography noWrap>
-                {pageName != "settings" ? "Advanced Options" : "Commands"}{" "}
+                {pageName == "agent" ? "Advanced Options" : null}
+                {pageName == "train" ? "Training Options" : null}
+                {pageName == "settings" ? "Agent Commands" : null}
               </Typography>
               <ChevronRight fontSize="large" sx={{ color: "white" }} />
             </IconButton>
           </DrawerHeader>
           <Divider />
-          {pageName === "agent" ? <AdvancedOptions /> : null}
-          {pageName === "train" ? <TrainOptions /> : null}
+          {pageName === "agent" ? (
+            <AdvancedOptions
+              contextResults={contextResults}
+              setContextResults={setContextResults}
+              shots={shots}
+              setShots={setShots}
+              websearchDepth={websearchDepth}
+              setWebsearchDepth={setWebsearchDepth}
+              injectMemoriesFromCollectionNumber={
+                injectMemoriesFromCollectionNumber
+              }
+              setInjectMemoriesFromCollectionNumber={
+                setInjectMemoriesFromCollectionNumber
+              }
+              conversationResults={conversationResults}
+              setConversationResults={setConversationResults}
+              browseLinks={browseLinks}
+              setBrowseLinks={setBrowseLinks}
+              websearch={websearch}
+              setWebsearch={setWebsearch}
+              enableMemory={enableMemory}
+              setEnableMemory={setEnableMemory}
+            />
+          ) : null}
+          {pageName === "train" ? (
+            <TrainOptions
+              collectionNumber={collectionNumber}
+              limit={limit}
+              minRelevanceScore={minRelevanceScore}
+              setCollectionNumber={setCollectionNumber}
+              setLimit={setLimit}
+              setMinRelevanceScore={setMinRelevanceScore}
+            />
+          ) : null}
           {pageName === "settings" ? (
             commands.isLoading ? (
               "Loading..."
@@ -204,7 +255,18 @@ export default function App({ Component, pageProps, dark }) {
         >
           <DrawerHeader />
           <SettingsProvider>
-            <Component {...pageProps} />
+            <Component
+              {...pageProps}
+              contextResults={contextResults}
+              shots={shots}
+              browseLinks={browseLinks}
+              websearch={websearch}
+              websearchDepth={websearchDepth}
+              enableMemory={enableMemory}
+              injectMemoriesFromCollectionNumber={
+                injectMemoriesFromCollectionNumber
+              }
+            />
           </SettingsProvider>
         </Main>
       </Box>
