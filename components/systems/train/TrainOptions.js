@@ -25,10 +25,9 @@ export default function TrainOptions({
   return (
     <Container>
       <div className="advanced-options">
-        <Typography variant="h6" component="h2" gutterBottom>
-          <strong>Predefined Memory Collections</strong>
-        </Typography>
         <Typography component="h2" gutterBottom>
+          <strong>Predefined Memory Collections</strong>
+          <br />
           You can use any number above 10 for your own custom collections, but
           0-10 are reserved for the following collections:
         </Typography>

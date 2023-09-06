@@ -194,7 +194,7 @@ export default function App({ Component, pageProps, dark }) {
         >
           <DrawerHeader>
             <IconButton onClick={handleRightDrawerClose}>
-              <Typography noWrap>
+              <Typography noWrap color="white">
                 {pageName == "agent" ? "Advanced Options" : null}
                 {pageName == "train" ? "Advanced Options" : null}
                 {pageName == "settings" ? "Agent Commands" : null}
