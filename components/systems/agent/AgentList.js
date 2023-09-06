@@ -18,8 +18,7 @@ import { useRouter } from "next/router";
 export default function MenuAgentList({ data }) {
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
-  const agentName =
-    pageName == "agent" ? router.query.agent : router.query.train;
+  const agentName = router.query.agent;
   return (
     <List>
       <Link href={`/prompt`} passHref>
@@ -27,7 +26,7 @@ export default function MenuAgentList({ data }) {
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <ChatBubble />
           </ListItemIcon>
-          <ListItemText primary="Prompts" />
+          <ListItemText primary="Manage Prompts" />
         </ListItemButton>
       </Link>
       <Link href={`/chain`} passHref>
@@ -35,7 +34,7 @@ export default function MenuAgentList({ data }) {
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <InsertLink />
           </ListItemIcon>
-          <ListItemText primary="Chains" />
+          <ListItemText primary="Manage Chains" />
         </ListItemButton>
       </Link>
       <Divider />
@@ -58,7 +57,7 @@ export default function MenuAgentList({ data }) {
 
       {data.map((agent) => (
         <Link
-          href={`/${pageName}/${agent.name}?tab=${router.query.tab || 0}`}
+          href={`/${pageName}?agent=${agent.name}&tab=${router.query.tab || 0}`}
           key={agent.name}
           passHref
         >
@@ -70,8 +69,8 @@ export default function MenuAgentList({ data }) {
           </ListItemButton>
           {agentName == agent.name ? (
             <>
-              <Link href={`/train/${agent.name}`} passHref>
-                <Link href={`/agent/${agent.name}`} passHref>
+              <Link href={`/train?agent=${agent.name}`} passHref>
+                <Link href={`/agent?agent=${agent.name}`} passHref>
                   <ListItemButton
                     variant="contained"
                     color="primary"
@@ -96,12 +95,12 @@ export default function MenuAgentList({ data }) {
                   Training
                 </ListItemButton>
               </Link>
-              <Link href={`/agent/${agent.name}?tab=4`} passHref>
+              <Link href={`/settings?agent=${agent.name}`} passHref>
                 <ListItemButton
                   variant="contained"
                   color="primary"
                   sx={{ pl: "2rem" }}
-                  selected={pageName == "agent" && router.query.tab == 4}
+                  selected={pageName == "settings"}
                 >
                   <ListItemIcon sx={{ minWidth: "30px" }}>
                     <SettingsOutlinedIcon />

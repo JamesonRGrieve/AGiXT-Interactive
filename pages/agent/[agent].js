@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import useSWR from "swr";
-import AgentControl from "../../components/systems/agent/AgentControl";
+import AgentPanel from "../../components/systems/agent/AgentPanel";
 import ContentSWR from "../../components/data/ContentSWR";
 import { sdk } from "../../lib/apiClient";
 export default function Agent() {
@@ -15,5 +15,5 @@ export default function Agent() {
       revalidateOnReconnect: false,
     }
   );
-  return <ContentSWR swr={agent} content={AgentControl} />;
+  return <ContentSWR swr={agent} content={AgentPanel} />;
 }
