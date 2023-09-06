@@ -14,14 +14,7 @@ export default function AgentControl({ data }) {
 
   return (
     <>
-      <PopoutDrawerWrapper
-        title={"Agent Training for " + agentName}
-        leftHeading={"Agents"}
-        leftSWR={agents}
-        leftMenu={MenuAgentList}
-      >
-        <TrainPanel data={data} />
-      </PopoutDrawerWrapper>
+      <TrainPanel data={data} />
     </>
   );
 }

@@ -23,11 +23,8 @@ export default function AgentControl({ data }) {
     <>
       {tab == 4 && (
         <PopoutDrawerWrapper
-          title={"Agent Interactions with " + agentName}
-          leftHeading={"Agents"}
-          leftSWR={agents}
-          leftMenu={MenuAgentList}
-          rightHeading={`${agentName} Commands`}
+          title={`Agent Settings for ${agentName}`}
+          rightHeading={`Commands`}
           rightSWR={commands}
           rightMenu={AgentCommandsList}
         >
@@ -52,14 +49,8 @@ export default function AgentControl({ data }) {
           Option to start from a specified step. (False, spawn a new number box for step number if true default to 1)
           Option to show all responses instead of only the last response (False)
         */
-        <PopoutDrawerWrapper
-          title={"Agent Interactions with " + agentName}
-          leftHeading={"Agents"}
-          leftSWR={agents}
-          leftMenu={MenuAgentList}
-        >
-          <AgentPanel data={data} />
-        </PopoutDrawerWrapper>
+
+        <AgentPanel data={data} />
       )}
     </>
   );
