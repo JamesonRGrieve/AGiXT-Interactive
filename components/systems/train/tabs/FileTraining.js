@@ -6,7 +6,7 @@ import { sdk } from "../../../../lib/apiClient";
 export default function FileTraining({ collectionNumber = 0 }) {
   const [learnStatus, setLearnStatus] = useState("");
   const router = useRouter();
-  const agentName = router.query.train;
+  const agentName = router.query.agent;
 
   const handleFileUpload = async (event) => {
     const files = Array.from(event.target.files);

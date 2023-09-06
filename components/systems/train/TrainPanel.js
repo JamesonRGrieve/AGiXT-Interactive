@@ -21,13 +21,14 @@ import GithubTraining from "./tabs/GithubTraining";
 import MemoryManagement from "./tabs/MemoryManagement";
 import { useTheme } from "@mui/material/styles";
 
-export default function TrainPanel({ data }) {
+export default function TrainPanel({
+  data,
+  collectionNumber = 0,
+  limit = 10,
+  minRelevanceScore = 0.0,
+}) {
   const router = useRouter();
   const [tab, setTab] = useState(router.query.tab || 0);
-  const [collectionNumber, setCollectionNumber] = useState(0);
-  const [advancedOptions, setAdvancedOptions] = useState(false);
-  const [limit, setLimit] = useState(10);
-  const [minRelevanceScore, setMinRelevanceScore] = useState(0.0);
 
   useEffect(() => {
     // Push the current tab to the router query

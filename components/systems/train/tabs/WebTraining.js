@@ -7,7 +7,7 @@ export default function WebTraining({ collectionNumber = 0 }) {
   const [url, setUrl] = useState("");
   const [learnStatus, setLearnStatus] = useState("");
   const router = useRouter();
-  const agentName = router.query.train;
+  const agentName = router.query.agent;
 
   const onTrain = async (url) => {
     const urls = url.split("\n");

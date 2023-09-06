@@ -266,6 +266,10 @@ export default function App({ Component, pageProps, dark }) {
               injectMemoriesFromCollectionNumber={
                 injectMemoriesFromCollectionNumber
               }
+              collectionNumber={collectionNumber}
+              limit={limit}
+              minRelevanceScore={minRelevanceScore}
+              conversationResults={conversationResults}
             />
           </SettingsProvider>
         </Main>
