@@ -8,7 +8,26 @@ import { useTheme } from "@mui/material/styles";
 import { sdk } from "../../../lib/apiClient";
 import useSWR from "swr";
 
-export default function AgentPanel({ data }) {
+export default function AgentPanel({
+  data,
+  chains,
+  selectedChain,
+  setSelectedChain,
+  chainArgs,
+  contextResults = 5,
+  shots = 1,
+  browseLinks = false,
+  websearch = false,
+  websearchDepth = 0,
+  enableMemory = false,
+  injectMemoriesFromCollectionNumber = 0,
+  conversationResults = 5,
+  singleStep = false,
+  fromStep = 0,
+  allResponses = false,
+  useSelectedAgent,
+  setUseSelectedAgent,
+}) {
   const router = useRouter();
   const agentName = router.query.agent;
   const [tab, setTab] = useState(router.query.tab || 0);
@@ -32,10 +51,75 @@ export default function AgentPanel({ data }) {
   const theme = useTheme();
 
   const tabs = [
-    <AgentPrompt key="chat" mode="Chat" />,
-    <AgentPrompt key="prompt" mode="Prompt" />,
-    <AgentPrompt key="instruct" mode="instruct" />,
-    <AgentPrompt key="chainExecution" mode="instruct" />, // Placeholder
+    <AgentPrompt
+      key="chat"
+      mode="Chat"
+      selectedChain={selectedChain}
+      setSelectedChain={setSelectedChain}
+      chains={chains}
+      chainArgs={chainArgs}
+      contextResults={contextResults}
+      shots={shots}
+      browseLinks={browseLinks}
+      websearch={websearch}
+      websearchDepth={websearchDepth}
+      enableMemory={enableMemory}
+      injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
+      conversationResults={conversationResults}
+    />,
+    <AgentPrompt
+      key="prompt"
+      mode="Prompt"
+      selectedChain={selectedChain}
+      setSelectedChain={setSelectedChain}
+      chains={chains}
+      chainArgs={chainArgs}
+      contextResults={contextResults}
+      shots={shots}
+      browseLinks={browseLinks}
+      websearch={websearch}
+      websearchDepth={websearchDepth}
+      enableMemory={enableMemory}
+      injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
+      conversationResults={conversationResults}
+    />,
+    <AgentPrompt
+      key="instruct"
+      mode="instruct"
+      selectedChain={selectedChain}
+      setSelectedChain={setSelectedChain}
+      chains={chains}
+      chainArgs={chainArgs}
+      contextResults={contextResults}
+      shots={shots}
+      browseLinks={browseLinks}
+      websearch={websearch}
+      websearchDepth={websearchDepth}
+      enableMemory={enableMemory}
+      injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
+      conversationResults={conversationResults}
+    />,
+    <AgentPrompt
+      key="chainExecution"
+      mode="Chain"
+      selectedChain={selectedChain}
+      setSelectedChain={setSelectedChain}
+      chains={chains}
+      chainArgs={chainArgs}
+      contextResults={contextResults}
+      shots={shots}
+      browseLinks={browseLinks}
+      websearch={websearch}
+      websearchDepth={websearchDepth}
+      enableMemory={enableMemory}
+      injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
+      conversationResults={conversationResults}
+      singleStep={singleStep}
+      fromStep={fromStep}
+      allResponses={allResponses}
+      useSelectedAgent={useSelectedAgent}
+      setUseSelectedAgent={setUseSelectedAgent}
+    />,
   ];
 
   return (

@@ -1,15 +1,4 @@
-import {
-  TextField,
-  FormControlLabel,
-  Switch,
-  Divider,
-  List,
-  ListItem,
-  ListItemButton,
-  Typography,
-  Button,
-  Container,
-} from "@mui/material";
+import { TextField, FormControlLabel, Switch, Container } from "@mui/material";
 import { useState } from "react";
 
 export default function AdvancedOptions({
@@ -30,7 +19,6 @@ export default function AdvancedOptions({
   enableMemory,
   setEnableMemory,
 }) {
-  const [showAdvancedOptions, setShowAdvancedOptions] = useState(false);
   return (
     <Container>
       <br />
