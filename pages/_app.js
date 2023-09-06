@@ -1,6 +1,5 @@
 import "../styles/globals.css";
 import { useState, useCallback } from "react";
-import { useRouter } from "next/router";
 import { setCookie, getCookie } from "cookies-next";
 import Link from "next/link";
 import { SettingsProvider } from "../lib/SettingsContext";
@@ -14,13 +13,10 @@ import {
 } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
-import ListItemButton from "@mui/material/ListItemButton";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import { ChevronLeft, Menu } from "@mui/icons-material";
-import MenuList from "../components/menu/MenuList";
 import MenuAgentList from "../components/systems/agent/AgentList";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
-import { red } from "@mui/material/colors";
 import useSWR from "swr";
 import { sdk } from "../lib/apiClient";
 
@@ -72,7 +68,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function App({ Component, pageProps, dark }) {
   const [open, setOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(dark);
-  const router = useRouter();
 
   const themeGenerator = (darkMode) =>
     createTheme({
