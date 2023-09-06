@@ -22,17 +22,20 @@ export default function ConversationHistory({ chatHistory }) {
       }}
     >
       <div style={{ width: "100%" }}>
-        {chatHistory.map((chatItem, index) => (
-          <ChatMessage key={index} chatItem={chatItem} />
-        ))}
+        {chatHistory
+          ? chatHistory.map((chatItem, index) => (
+              <ChatMessage key={index} chatItem={chatItem} />
+            ))
+          : null}
       </div>
     </Paper>
   );
 }
 const ChatMessage = ({ chatItem }) => {
-  const formattedMessage = chatItem.message
-    .replace(/\\n/g, "  \n")
-    .replace(/\n/g, "  \n");
+  const formattedMessage =
+    typeof chatItem.message === "string"
+      ? chatItem.message.replace(/\\n/g, "  \n").replace(/\n/g, "  \n")
+      : chatItem.message;
   const theme = useTheme();
   const [vote, setVote] = useState(0);
   const handleCopyClick = () => {
