@@ -6,11 +6,16 @@ import ConversationSelector from "../../conversation/ConversationSelector";
 import ConversationHistory from "../../conversation/ConversationHistory";
 import PromptSelector from "../../prompt/PromptSelector";
 import AdvancedOptions from "../AdvancedOptions";
+import ChainSelector from "../../chain/ChainSelector";
 import { Button, TextField } from "@mui/material";
 import useSWR from "swr";
 import { mutate } from "swr";
 
 export default function AgentPrompt({
+  chains,
+  selectedChain,
+  setSelectedChain,
+  chainArgs,
   mode = "Prompt",
   contextResults = 5,
   shots = 1,
@@ -20,12 +25,15 @@ export default function AgentPrompt({
   enableMemory = false,
   injectMemoriesFromCollectionNumber = 0,
   conversationResults = 5,
+  singleStep = false,
+  fromStep = 0,
+  allResponses = false,
+  useSelectedAgent = true,
 }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [conversationName, setConversationName] = useState("Test");
   const [lastResponse, setLastResponse] = useState("");
-
   const [promptCategory, setPromptCategory] = useState("Default");
   const [promptName, setPromptName] = useState("Chat");
   const router = useRouter();
@@ -56,7 +64,6 @@ export default function AgentPrompt({
     `prompt/${promptName}`,
     async () => await sdk.getPrompt(promptName, promptCategory)
   );
-
   useEffect(() => {
     mutate("getConversations");
     if (conversations) {
@@ -86,7 +93,28 @@ export default function AgentPrompt({
     mutate(`promptArgs/${promptName}`);
     mutate(`prompt/${promptName}`);
   }, [promptName]);
-
+  const runChain = async () => {
+    const agentOverride = useSelectedAgent ? agentName : "";
+    if (singleStep) {
+      const response = await sdk.runChainStep(
+        selectedChain,
+        fromStep,
+        message,
+        agentOverride
+      );
+      setLastResponse(response);
+    } else {
+      const response = await sdk.runChain(
+        selectedChain,
+        message,
+        agentOverride,
+        allResponses,
+        fromStep,
+        chainArgs
+      );
+      setLastResponse(response);
+    }
+  };
   const PromptAgent = async (
     message,
     promptName = "Chat",
@@ -176,6 +204,29 @@ export default function AgentPrompt({
             sx={{ height: "56px" }}
           >
             Send
+          </Button>
+        </>
+      ) : mode == "Chain" ? (
+        <>
+          <ChainSelector
+            chains={chains}
+            sdk={sdk}
+            selectedChain={selectedChain}
+            setSelectedChain={setSelectedChain}
+          />
+          <TextField
+            label="User Input"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            sx={{ mb: 2, width: "85%" }}
+          />
+          <Button
+            onClick={runChain}
+            variant="contained"
+            color="primary"
+            sx={{ height: "56px", width: "15%" }}
+          >
+            Execute Chain
           </Button>
         </>
       ) : (

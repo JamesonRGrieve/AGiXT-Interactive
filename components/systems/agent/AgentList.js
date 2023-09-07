@@ -22,7 +22,7 @@ export default function MenuAgentList({ data }) {
   return (
     <List>
       <Link href={`/prompt`} passHref>
-        <ListItemButton selected={agentName}>
+        <ListItemButton selected={pageName == "prompt"}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <ChatBubble />
           </ListItemIcon>
@@ -30,7 +30,7 @@ export default function MenuAgentList({ data }) {
         </ListItemButton>
       </Link>
       <Link href={`/chain`} passHref>
-        <ListItemButton selected={agentName}>
+        <ListItemButton selected={pageName == "chain"}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <InsertLink />
           </ListItemIcon>
