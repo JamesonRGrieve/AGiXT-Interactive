@@ -50,7 +50,7 @@ export default function MenuChainList({ data }) {
         </Link>
       </ListItemButton>
       <Divider />
-      {data.map((chain) => (
+      { Array.isArray(data) && data.map((chain) => (
         <ListItemButton key={chain}>
           <ListItemIcon>
             <InsertLink />

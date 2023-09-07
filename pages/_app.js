@@ -105,6 +105,13 @@ export default function App({ Component, pageProps, dark }) {
     `agent/${agentName}/commands`,
     async () => await sdk.getCommands(agentName)
   );
+
+  if (darkMode === 'false') {
+    setDarkMode(false)
+  } else if (darkMode === 'true') {
+    setDarkMode(true)
+  }
+
   const themeGenerator = (darkMode) =>
     createTheme({
       palette: {

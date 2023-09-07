@@ -55,7 +55,7 @@ export default function MenuAgentList({ data }) {
 
       <Divider />
 
-      {data.map((agent) => (
+      { Array.isArray(data) && data.map((agent) => (
         <Link
           href={`/${pageName}?agent=${agent.name}&tab=${router.query.tab || 0}`}
           key={agent.name}
