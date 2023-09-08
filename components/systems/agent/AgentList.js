@@ -55,63 +55,71 @@ export default function MenuAgentList({ data }) {
 
       <Divider />
 
-      { Array.isArray(data) && data.map((agent) => (
-        <Link
-          href={`/${pageName}?agent=${agent.name}&tab=${router.query.tab || 0}`}
-          key={agent.name}
-          passHref
-        >
-          <ListItemButton selected={agentName == agent.name}>
-            <ListItemIcon sx={{ minWidth: "30px" }}>
-              <SmartToyOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary={agent.name} />
-          </ListItemButton>
-          {agentName == agent.name ? (
-            <>
-              <Link href={`/train?agent=${agent.name}`} passHref>
-                <Link href={`/agent?agent=${agent.name}`} passHref>
-                  <ListItemButton
-                    variant="contained"
-                    color="primary"
-                    sx={{ pl: "2rem" }}
-                    selected={pageName == "agent" && router.query.tab != 4}
-                  >
-                    <ListItemIcon sx={{ minWidth: "30px" }}>
-                      <PlayCircleFilledWhiteOutlinedIcon />
-                    </ListItemIcon>
-                    Interact
-                  </ListItemButton>
-                </Link>
-                <ListItemButton
-                  variant="contained"
-                  color="primary"
-                  sx={{ pl: "2rem" }}
-                  selected={pageName == "train"}
-                >
+      {Array.isArray(data) &&
+        data.map(
+          (agent) =>
+            agent.name != "undefined" && (
+              <Link
+                href={`/${pageName}?agent=${agent.name}&tab=${
+                  router.query.tab || 0
+                }`}
+                key={agent.name}
+                passHref
+              >
+                <ListItemButton selected={agentName == agent.name}>
                   <ListItemIcon sx={{ minWidth: "30px" }}>
-                    <ModelTrainingOutlinedIcon />
+                    <SmartToyOutlinedIcon />
                   </ListItemIcon>
-                  Training
+                  <ListItemText primary={agent.name} />
                 </ListItemButton>
+                {agentName == agent.name ? (
+                  <>
+                    <Link href={`/train?agent=${agent.name}`} passHref>
+                      <Link href={`/agent?agent=${agent.name}`} passHref>
+                        <ListItemButton
+                          variant="contained"
+                          color="primary"
+                          sx={{ pl: "2rem" }}
+                          selected={
+                            pageName == "agent" && router.query.tab != 4
+                          }
+                        >
+                          <ListItemIcon sx={{ minWidth: "30px" }}>
+                            <PlayCircleFilledWhiteOutlinedIcon />
+                          </ListItemIcon>
+                          Interact
+                        </ListItemButton>
+                      </Link>
+                      <ListItemButton
+                        variant="contained"
+                        color="primary"
+                        sx={{ pl: "2rem" }}
+                        selected={pageName == "train"}
+                      >
+                        <ListItemIcon sx={{ minWidth: "30px" }}>
+                          <ModelTrainingOutlinedIcon />
+                        </ListItemIcon>
+                        Training
+                      </ListItemButton>
+                    </Link>
+                    <Link href={`/settings?agent=${agent.name}`} passHref>
+                      <ListItemButton
+                        variant="contained"
+                        color="primary"
+                        sx={{ pl: "2rem" }}
+                        selected={pageName == "settings"}
+                      >
+                        <ListItemIcon sx={{ minWidth: "30px" }}>
+                          <SettingsOutlinedIcon />
+                        </ListItemIcon>
+                        Settings
+                      </ListItemButton>
+                    </Link>
+                  </>
+                ) : null}
               </Link>
-              <Link href={`/settings?agent=${agent.name}`} passHref>
-                <ListItemButton
-                  variant="contained"
-                  color="primary"
-                  sx={{ pl: "2rem" }}
-                  selected={pageName == "settings"}
-                >
-                  <ListItemIcon sx={{ minWidth: "30px" }}>
-                    <SettingsOutlinedIcon />
-                  </ListItemIcon>
-                  Settings
-                </ListItemButton>
-              </Link>
-            </>
-          ) : null}
-        </Link>
-      ))}
+            )
+        )}
     </List>
   );
 }

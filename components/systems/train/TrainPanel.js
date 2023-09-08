@@ -1,18 +1,5 @@
 import { useState, useEffect } from "react";
-import {
-  Tab,
-  Tabs,
-  TextField,
-  Container,
-  Typography,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Checkbox,
-  FormControlLabel,
-} from "@mui/material";
+import { Tab, Tabs, Container, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import WebTraining from "./tabs/WebTraining";
 import FileTraining from "./tabs/FileTraining";
@@ -22,7 +9,6 @@ import MemoryManagement from "./tabs/MemoryManagement";
 import { useTheme } from "@mui/material/styles";
 
 export default function TrainPanel({
-  data,
   collectionNumber = 0,
   limit = 10,
   minRelevanceScore = 0.0,
@@ -63,40 +49,38 @@ export default function TrainPanel({
 
   return (
     <>
-      <>
-        <Tabs
-          value={tab}
-          onChange={handleTabChange}
-          TabIndicatorProps={{
-            style: {
-              background: theme.palette.mode == "dark" ? "#FFF" : "#000",
-            },
-          }}
-          sx={{ mb: "0.5rem" }}
-          textColor={theme.palette.mode == "dark" ? "white" : "black"}
-        >
-          <Tab label="Website Training" selected={tab == 0} />
-          <Tab label="File Training" selected={tab == 1} />
-          <Tab label="Text Training" selected={tab == 2} />
-          <Tab label="GitHub Repository Training" selected={tab == 3} />
-          <Tab label="Memory Management" selected={tab == 4} />
-        </Tabs>
-        <Container>
-          <Typography variant="h4" component="h1" gutterBottom>
-            {
-              [
-                "Website Training",
-                "File Training",
-                "Text Training",
-                "GitHub Repository Training",
-                "Memory Management",
-              ][tab]
-            }
-          </Typography>
-          <br />
-          {tabs[tab]}
-        </Container>
-      </>
+      <Tabs
+        value={tab}
+        onChange={handleTabChange}
+        TabIndicatorProps={{
+          style: {
+            background: theme.palette.mode == "dark" ? "#FFF" : "#000",
+          },
+        }}
+        sx={{ mb: "0.5rem" }}
+        textColor={theme.palette.mode == "dark" ? "white" : "black"}
+      >
+        <Tab label="Website Training" selected={tab == 0} />
+        <Tab label="File Training" selected={tab == 1} />
+        <Tab label="Text Training" selected={tab == 2} />
+        <Tab label="GitHub Repository Training" selected={tab == 3} />
+        <Tab label="Memory Management" selected={tab == 4} />
+      </Tabs>
+      <Container>
+        <Typography variant="h4" component="h1" gutterBottom>
+          {
+            [
+              "Website Training",
+              "File Training",
+              "Text Training",
+              "GitHub Repository Training",
+              "Memory Management",
+            ][tab]
+          }
+        </Typography>
+        <br />
+        {tabs[tab]}
+      </Container>
     </>
   );
 }

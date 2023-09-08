@@ -19,9 +19,12 @@ import {
 } from "@mui/material";
 import { sdk } from "../../../lib/apiClient";
 
-export default function ConversationHistory({ chatHistory }) {
+const WAIT_MESSAGE = "Let me think about that for a moment. Please wait..";
+
+export default function ConversationHistory({ chatHistory, isLoading }) {
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
+  const agentName = router.query.agent;
   const tab = router.query.tab;
 
   let lastUserMessage = ""; // track the last user message
@@ -51,12 +54,23 @@ export default function ConversationHistory({ chatHistory }) {
               );
             })
           : null}
+        {isLoading && (
+          <ChatMessage
+            key={"Please Wait"}
+            chatItem={{
+              role: agentName,
+              message: WAIT_MESSAGE,
+              timestamp: "Just Now...",
+            }}
+            isLoading={isLoading}
+          />
+        )}
       </div>
     </Paper>
   );
 }
 
-const ChatMessage = ({ chatItem, lastUserMessage }) => {
+const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
   const formattedMessage =
     typeof chatItem.message === "string"
       ? chatItem.message.replace(/\\n/g, "  \n").replace(/\n/g, "  \n")
@@ -88,96 +102,70 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
     document.body.appendChild(element);
     element.click();
   };
-  const handleCopyCodeClick = () => {
-    const codeBlock = document.querySelector(".code-block");
-    const actualCode = codeBlock.querySelector("code");
-
-    clipboardCopy(actualCode.innerText);
-  };
-
-  const handleDownloadCodeClick = () => {
-    const codeBlock = document.querySelector(".code-block");
-    const actualCode = codeBlock.querySelector("code");
-    const lang = codeBlock.querySelector(".code-title")
-      ? codeBlock.querySelector(".code-title").innerText
-      : ""; // set default language if it's not defined
-
-    const langMap = {
-      "": "txt",
-      python: "py",
-      javascript: "js",
-      typescript: "ts",
-      html: "html",
-      css: "css",
-      json: "json",
-      yaml: "yaml",
-      markdown: "md",
-      shell: "sh",
-      bash: "sh",
-      sql: "sql",
-      java: "java",
-      c: "c",
-      cpp: "cpp",
-      csharp: "cs",
-      go: "go",
-      rust: "rs",
-      php: "php",
-      ruby: "rb",
-      perl: "pl",
-      lua: "lua",
-      r: "r",
-      swift: "swift",
-      kotlin: "kt",
-      scala: "scala",
-      clojure: "clj",
-      elixir: "ex",
-      erlang: "erl",
-      haskell: "hs",
-      ocaml: "ml",
-      pascal: "pas",
-      scheme: "scm",
-      coffeescript: "coffee",
-      fortran: "f",
-      julia: "jl",
-      lisp: "lisp",
-      prolog: "pro",
-      vbnet: "vb",
-      dart: "dart",
-      fsharp: "fs",
-      groovy: "groovy",
-      perl6: "pl",
-      powershell: "ps1",
-      puppet: "pp",
-      qml: "qml",
-      racket: "rkt",
-      sas: "sas",
-      verilog: "v",
-      vhdl: "vhd",
-      apex: "cls",
-      matlab: "m",
-      nim: "nim",
-      ocaml: "ml",
-      pascal: "pas",
-      scheme: "scm",
-      coffeescript: "coffee",
-    };
-    const element = document.createElement("a");
-    const file = new Blob([actualCode.innerText], {
-      type: "text/plain;charset=utf-8",
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = `${chatItem.role}-${chatItem.timestamp}.${
-      langMap[lang] || "txt"
-    }`; // default to .txt if language not found
-    document.body.appendChild(element);
-    element.click();
+  const langMap = {
+    "": "txt",
+    python: "py",
+    javascript: "js",
+    typescript: "ts",
+    html: "html",
+    css: "css",
+    json: "json",
+    yaml: "yaml",
+    markdown: "md",
+    shell: "sh",
+    bash: "sh",
+    sql: "sql",
+    java: "java",
+    c: "c",
+    cpp: "cpp",
+    csharp: "cs",
+    go: "go",
+    rust: "rs",
+    php: "php",
+    ruby: "rb",
+    perl: "pl",
+    lua: "lua",
+    r: "r",
+    swift: "swift",
+    kotlin: "kt",
+    scala: "scala",
+    clojure: "clj",
+    elixir: "ex",
+    erlang: "erl",
+    haskell: "hs",
+    ocaml: "ml",
+    pascal: "pas",
+    scheme: "scm",
+    coffeescript: "coffee",
+    fortran: "f",
+    julia: "jl",
+    lisp: "lisp",
+    prolog: "pro",
+    vbnet: "vb",
+    dart: "dart",
+    fsharp: "fs",
+    groovy: "groovy",
+    perl6: "pl",
+    powershell: "ps1",
+    puppet: "pp",
+    qml: "qml",
+    racket: "rkt",
+    sas: "sas",
+    verilog: "v",
+    vhdl: "vhd",
+    apex: "cls",
+    matlab: "m",
+    nim: "nim",
+    ocaml: "ml",
+    pascal: "pas",
+    scheme: "scm",
+    coffeescript: "coffee",
   };
   return (
     <Box
       sx={{
         p: "1rem",
         display: "flex",
-        flexDirection: chatItem.role === "USER" ? "row-reverse" : "row",
         backgroundColor:
           chatItem.role === "USER"
             ? theme.palette.background.default
@@ -196,21 +184,69 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
           <ReactMarkdown
             components={{
               code({ node, inline, children, ...props }) {
+                if (inline) {
+                  return (
+                    <span
+                      style={{
+                        backgroundColor: "darkgray",
+                        borderRadius: "3px",
+                        padding: "0.2em",
+                        fontFamily: "monospace",
+                      }}
+                    >
+                      {children}
+                    </span>
+                  );
+                }
+                const codeBlockRef = React.useRef(null);
                 const language = props.className?.replace(/language-/, "");
+                const fileExtension = langMap[language] || "txt";
+                // COnvert the timestamp to a more filename friendly timestamp from September 08, 2023 04:31
+                const ts = chatItem.timestamp
+                  .replace(/ /g, "-")
+                  .replace(/:/g, "-")
+                  .replace(/,/g, "");
+
+                const fileName = `${chatItem.role}-${ts}.${fileExtension}`;
                 return (
                   <>
                     <br />
-                    <div className="code-block">
-                      <div className="code-container">
-                        {language && (
-                          <div className="code-title">{language}</div>
-                        )}
-                        <IconButton onClick={handleCopyCodeClick}>
+                    <div className="code-block" ref={codeBlockRef}>
+                      <div className="code-title">
+                        <IconButton
+                          onClick={() => {
+                            if (codeBlockRef.current) {
+                              const actualCode =
+                                codeBlockRef.current.querySelector("code");
+                              clipboardCopy(actualCode.innerText);
+                            }
+                          }}
+                        >
                           <ContentCopyIcon />
                         </IconButton>
-                        <IconButton onClick={handleDownloadCodeClick}>
+                        <IconButton
+                          onClick={() => {
+                            if (codeBlockRef.current) {
+                              const actualCode =
+                                codeBlockRef.current.querySelector("code");
+
+                              const element = document.createElement("a");
+                              const file = new Blob([actualCode.innerText], {
+                                type: "text/plain;charset=utf-8",
+                              });
+                              element.href = URL.createObjectURL(file);
+
+                              element.download = fileName;
+                              document.body.appendChild(element);
+                              element.click();
+                            }
+                          }}
+                        >
                           <DownloadIcon />
                         </IconButton>
+                        {fileName} | {language}
+                      </div>
+                      <div className="code-container">
                         <code className={"code-block"} {...props}>
                           {children}
                         </code>
@@ -231,14 +267,13 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
           style={{
             color: theme.palette.text.secondary,
             width: "100%",
-            textAlign: chatItem.role === "USER" ? "right" : "left",
             display: "inline-block",
           }}
         >
           {chatItem.role === "USER" ? "You" : chatItem.role} •{" "}
           {chatItem.timestamp}
         </Typography>
-        {chatItem.role != "USER" && (
+        {chatItem.role != "USER" && !isLoading && (
           <>
             <IconButton onClick={() => handleClickOpen(1)}>
               <ThumbUp color={vote === 1 ? "success" : "inherit"} />

@@ -36,6 +36,8 @@ export default function AgentPrompt({
   const [lastResponse, setLastResponse] = useState("");
   const [promptCategory, setPromptCategory] = useState("Default");
   const [promptName, setPromptName] = useState("Chat");
+  const [isLoading, setIsLoading] = useState(false);
+
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const { data: conversations } = useSWR(
@@ -56,10 +58,8 @@ export default function AgentPrompt({
     `prompts/${promptCategory}`,
     async () => await sdk.getPrompts(promptCategory)
   );
-  const { data: promptArgs } = useSWR(
-    `promptArgs/${promptName}`,
-    async () => await sdk.getPromptArgs(promptName, promptCategory)
-  );
+  const [promptArgs, setPromptArgs] = useState({});
+
   const { data: prompt } = useSWR(
     `prompt/${promptName}`,
     async () => await sdk.getPrompt(promptName, promptCategory)
@@ -90,11 +90,27 @@ export default function AgentPrompt({
     if (prompts) {
       setPromptName(promptName);
     }
-    mutate(`promptArgs/${promptName}`);
     mutate(`prompt/${promptName}`);
   }, [promptName]);
+  useEffect(() => {
+    const getArgs = async (promptName, promptCategory) => {
+      const promptArgData = await sdk.getPromptArgs(promptName, promptCategory);
+      if (promptArgData) {
+        let newArgs = {};
+        for (const arg of promptArgData) {
+          if (arg !== "") {
+            newArgs[arg] = "";
+          }
+        }
+        setPromptArgs(newArgs);
+      }
+    };
+    getArgs(promptName, promptCategory);
+  }, [promptName]);
   const runChain = async () => {
+    setIsLoading(true);
     const agentOverride = useSelectedAgent ? agentName : "";
+    chainArgs["conversation_name"] = conversationName;
     if (singleStep) {
       const response = await sdk.runChainStep(
         selectedChain,
@@ -102,6 +118,7 @@ export default function AgentPrompt({
         message,
         agentOverride
       );
+      setIsLoading(false);
       setLastResponse(response);
     } else {
       const response = await sdk.runChain(
@@ -112,6 +129,7 @@ export default function AgentPrompt({
         fromStep,
         chainArgs
       );
+      setIsLoading(false);
       setLastResponse(response);
     }
   };
@@ -128,6 +146,7 @@ export default function AgentPrompt({
     injectMemoriesFromCollectionNumber = 0,
     conversationResults = 5
   ) => {
+    setIsLoading(true);
     const promptArguments = {
       user_input: message,
       prompt_category: promptCategory,
@@ -151,6 +170,7 @@ export default function AgentPrompt({
       promptName,
       promptArguments
     );
+    setIsLoading(false);
     setLastResponse(response);
   };
 
@@ -161,7 +181,6 @@ export default function AgentPrompt({
     }
   };
   const handleSendMessage = async () => {
-    if (!message) return;
     await PromptAgent(
       message,
       promptName,
@@ -184,7 +203,7 @@ export default function AgentPrompt({
         conversationName={conversationName}
         setConversationName={setConversationName}
       />
-      <ConversationHistory chatHistory={chatHistory} />
+      <ConversationHistory chatHistory={chatHistory} isLoading={isLoading} />
       {mode == "Prompt" ? (
         <>
           <br />
@@ -196,12 +215,15 @@ export default function AgentPrompt({
             setPromptName={setPromptName}
             prompt={prompt}
             promptArgs={promptArgs}
+            setPromptArgs={setPromptArgs}
+            disabled={isLoading}
           />
           <Button
             variant="contained"
             color="primary"
             onClick={handleSendMessage}
             sx={{ height: "56px" }}
+            disabled={isLoading}
           >
             Send
           </Button>
@@ -213,18 +235,21 @@ export default function AgentPrompt({
             sdk={sdk}
             selectedChain={selectedChain}
             setSelectedChain={setSelectedChain}
+            disabled={isLoading}
           />
           <TextField
             label="User Input"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             sx={{ mb: 2, width: "85%" }}
+            disabled={isLoading}
           />
           <Button
             onClick={runChain}
             variant="contained"
             color="primary"
             sx={{ height: "56px", width: "15%" }}
+            disabled={isLoading}
           >
             Execute Chain
           </Button>
@@ -238,12 +263,14 @@ export default function AgentPrompt({
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             sx={{ mb: 2, width: "90%" }}
+            disabled={isLoading}
           />
           <Button
             variant="contained"
             color="primary"
             onClick={handleSendMessage}
             sx={{ height: "56px", width: "10%" }}
+            disabled={isLoading}
           >
             Send
           </Button>

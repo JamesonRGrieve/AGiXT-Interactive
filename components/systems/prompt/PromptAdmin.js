@@ -49,7 +49,6 @@ export default function PromptAdmin() {
     mutate(`prompt/${promptCategory}/${promptName}`);
   }, [promptCategories.data, promptName, promptCategory, prompts.data]);
 
-  const [newName, setNewName] = useState(promptName);
   const [newBody, setNewBody] = useState(prompt.data);
   const [openDialog, setOpenDialog] = useState(false);
   const [newPromptName, setNewPromptName] = useState("");
@@ -60,14 +59,12 @@ export default function PromptAdmin() {
     router.push(`/prompt`);
   };
   const handleSave = async () => {
-    await sdk.updatePrompt(newName, promptCategory, newBody);
+    await sdk.updatePrompt(promptName, newBody, promptCategory);
     mutate(`prompt`);
-    router.push(`/prompt/${newName}`);
   };
   const handleCreate = async () => {
     await sdk.addPrompt(newPromptName, newBody, promptCategory);
     mutate("prompt");
-    router.push(`/prompt/${promptName}`);
   };
   const handleNewCategory = async () => {
     // Need to add this endpoint to SDK
@@ -75,7 +72,12 @@ export default function PromptAdmin() {
     mutate("promptCategories");
     router.push(`/prompt`);
   };
-
+  useEffect(() => {
+    if (prompt.data) {
+      setNewBody(prompt.data);
+    }
+  }, [prompt.data]);
+  const sortedPrompts = prompts.data ? Object.values(prompts.data).sort() : [];
   return (
     <Container>
       <Button onClick={() => setOpenDialog(true)} color="info">
@@ -114,12 +116,11 @@ export default function PromptAdmin() {
             value={promptName}
             onChange={(e) => setPromptName(e.target.value)}
           >
-            {prompts.data &&
-              Object.values(prompts.data).map((p) => (
-                <MenuItem key={p} value={p}>
-                  {p}
-                </MenuItem>
-              ))}
+            {sortedPrompts.map((p) => (
+              <MenuItem key={p} value={p}>
+                {p}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
@@ -128,7 +129,8 @@ export default function PromptAdmin() {
           id="promptContent"
           multiline
           rows={20}
-          defaultValue={prompt.data}
+          value={newBody}
+          onChange={(e) => setNewBody(e.target.value)}
         />
       </Box>
       <Button
