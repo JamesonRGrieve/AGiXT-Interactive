@@ -1,14 +1,24 @@
 import React, { useState, useEffect, use } from "react";
-import { TextField } from "@mui/material";
+import { TextField, Container } from "@mui/material";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import Divider from "@mui/material/Divider";
+import { all } from "axios";
 
 const ChainArgsEditor = ({
   selectedChain,
   sdk,
   chainArgs,
   setChainArgs,
+  singleStep = false,
+  fromStep = 0,
+  allResponses = false,
+  setSingleStep,
+  setFromStep,
+  setAllResponses,
+  useSelectedAgent,
+  setUseSelectedAgent,
   onChange,
 }) => {
   const [argNames, setArgNames] = useState([]);
@@ -45,7 +55,64 @@ const ChainArgsEditor = ({
   };
 
   return (
-    <>
+    <Container>
+      {/* Use selected agent checkbox */}
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={useSelectedAgent}
+              onChange={(e) => setUseSelectedAgent(e.target.checked)}
+            />
+          }
+          label="Use Selected Agent"
+        />
+      </FormGroup>
+
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={allResponses}
+              onChange={(e) => setAllResponses(e.target.checked)}
+            />
+          }
+          label="Show All Responses"
+        />
+      </FormGroup>
+      <FormGroup>
+        <FormControlLabel
+          control={
+            <Switch
+              checked={singleStep}
+              onChange={(e) => setSingleStep(e.target.checked)}
+            />
+          }
+          label="Single Step"
+        />
+      </FormGroup>
+      {singleStep ? (
+        <FormGroup>
+          <TextField
+            fullWidth
+            type="number"
+            label="Step"
+            value={fromStep}
+            onChange={(e) => setFromStep(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+        </FormGroup>
+      ) : (
+        <TextField
+          fullWidth
+          type="number"
+          label="From Step"
+          value={fromStep}
+          onChange={(e) => setFromStep(e.target.value)}
+          sx={{ mb: 2 }}
+        />
+      )}
+      <Divider />
       {argNames.map((name) => {
         return (
           name !== "user_input" && (
@@ -68,7 +135,7 @@ const ChainArgsEditor = ({
           )
         );
       })}
-    </>
+    </Container>
   );
 };
 
