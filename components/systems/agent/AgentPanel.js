@@ -7,7 +7,7 @@ import AgentPrompt from "./tabs/AgentPrompt";
 import { useTheme } from "@mui/material/styles";
 import { sdk } from "../../../lib/apiClient";
 import useSWR from "swr";
-
+// TODO: Need to define conversationName higher up so that it is persisted.
 export default function AgentPanel({
   data,
   chains,
