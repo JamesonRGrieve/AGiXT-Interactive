@@ -143,12 +143,8 @@ export default function AgentPanel({
       </Tabs>
       <Container
         maxWidth="xl"
-        fixed={true}
         disableGutters={true}
         sx={{
-          display: "flex",
-          flexDirection: "column",
-          height: "100%",
           width: `calc(100% - ${drawerWidth}px)`,
           padding: 0,
         }}

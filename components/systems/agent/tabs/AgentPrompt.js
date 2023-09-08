@@ -223,6 +223,7 @@ export default function AgentPrompt({
             color="primary"
             onClick={handleSendMessage}
             disabled={isLoading}
+            sx={{ height: "56px" }}
           >
             Send
           </Button>
@@ -240,7 +241,7 @@ export default function AgentPrompt({
             label="User Input"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, width: "80%" }}
             disabled={isLoading}
           />
           <Button
@@ -248,6 +249,7 @@ export default function AgentPrompt({
             variant="contained"
             color="primary"
             disabled={isLoading}
+            sx={{ height: "56px" }}
           >
             Execute Chain
           </Button>
@@ -260,7 +262,7 @@ export default function AgentPrompt({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            sx={{ mb: 2 }}
+            sx={{ mb: 2, width: "90%" }}
             disabled={isLoading}
           />
           <Button
@@ -268,6 +270,7 @@ export default function AgentPrompt({
             color="primary"
             onClick={handleSendMessage}
             disabled={isLoading}
+            sx={{ height: "56px" }}
           >
             Send
           </Button>
