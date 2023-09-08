@@ -56,10 +56,8 @@ export default function AgentPrompt({
     `prompts/${promptCategory}`,
     async () => await sdk.getPrompts(promptCategory)
   );
-  const { data: promptArgs } = useSWR(
-    `promptArgs/${promptName}`,
-    async () => await sdk.getPromptArgs(promptName, promptCategory)
-  );
+  const [promptArgs, setPromptArgs] = useState({});
+
   const { data: prompt } = useSWR(
     `prompt/${promptName}`,
     async () => await sdk.getPrompt(promptName, promptCategory)
@@ -90,8 +88,22 @@ export default function AgentPrompt({
     if (prompts) {
       setPromptName(promptName);
     }
-    mutate(`promptArgs/${promptName}`);
     mutate(`prompt/${promptName}`);
+  }, [promptName]);
+  useEffect(() => {
+    const getArgs = async (promptName, promptCategory) => {
+      const promptArgData = await sdk.getPromptArgs(promptName, promptCategory);
+      if (promptArgData) {
+        let newArgs = {};
+        for (const arg of promptArgData) {
+          if (arg !== "") {
+            newArgs[arg] = "";
+          }
+        }
+        setPromptArgs(newArgs);
+      }
+    };
+    getArgs(promptName, promptCategory);
   }, [promptName]);
   const runChain = async () => {
     const agentOverride = useSelectedAgent ? agentName : "";
@@ -161,7 +173,6 @@ export default function AgentPrompt({
     }
   };
   const handleSendMessage = async () => {
-    if (!message) return;
     await PromptAgent(
       message,
       promptName,
@@ -196,6 +207,7 @@ export default function AgentPrompt({
             setPromptName={setPromptName}
             prompt={prompt}
             promptArgs={promptArgs}
+            setPromptArgs={setPromptArgs}
           />
           <Button
             variant="contained"

@@ -88,90 +88,7 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
     document.body.appendChild(element);
     element.click();
   };
-  const handleCopyCodeClick = () => {
-    const codeBlock = document.querySelector(".code-block");
-    const actualCode = codeBlock.querySelector("code");
 
-    clipboardCopy(actualCode.innerText);
-  };
-
-  const handleDownloadCodeClick = () => {
-    const codeBlock = document.querySelector(".code-block");
-    const actualCode = codeBlock.querySelector("code");
-    const lang = codeBlock.querySelector(".code-title")
-      ? codeBlock.querySelector(".code-title").innerText
-      : ""; // set default language if it's not defined
-
-    const langMap = {
-      "": "txt",
-      python: "py",
-      javascript: "js",
-      typescript: "ts",
-      html: "html",
-      css: "css",
-      json: "json",
-      yaml: "yaml",
-      markdown: "md",
-      shell: "sh",
-      bash: "sh",
-      sql: "sql",
-      java: "java",
-      c: "c",
-      cpp: "cpp",
-      csharp: "cs",
-      go: "go",
-      rust: "rs",
-      php: "php",
-      ruby: "rb",
-      perl: "pl",
-      lua: "lua",
-      r: "r",
-      swift: "swift",
-      kotlin: "kt",
-      scala: "scala",
-      clojure: "clj",
-      elixir: "ex",
-      erlang: "erl",
-      haskell: "hs",
-      ocaml: "ml",
-      pascal: "pas",
-      scheme: "scm",
-      coffeescript: "coffee",
-      fortran: "f",
-      julia: "jl",
-      lisp: "lisp",
-      prolog: "pro",
-      vbnet: "vb",
-      dart: "dart",
-      fsharp: "fs",
-      groovy: "groovy",
-      perl6: "pl",
-      powershell: "ps1",
-      puppet: "pp",
-      qml: "qml",
-      racket: "rkt",
-      sas: "sas",
-      verilog: "v",
-      vhdl: "vhd",
-      apex: "cls",
-      matlab: "m",
-      nim: "nim",
-      ocaml: "ml",
-      pascal: "pas",
-      scheme: "scm",
-      coffeescript: "coffee",
-    };
-    const element = document.createElement("a");
-    const file = new Blob([actualCode.innerText], {
-      type: "text/plain;charset=utf-8",
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = `${chatItem.role}-${chatItem.timestamp}.${
-      langMap[lang] || "txt"
-    }`; // default to .txt if language not found
-    document.body.appendChild(element);
-    element.click();
-  };
   return (
     <Box
       sx={{
@@ -196,19 +113,113 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
           <ReactMarkdown
             components={{
               code({ node, inline, children, ...props }) {
+                const codeBlockRef = React.useRef(null);
                 const language = props.className?.replace(/language-/, "");
+
                 return (
                   <>
                     <br />
-                    <div className="code-block">
+                    <div className="code-block" ref={codeBlockRef}>
                       <div className="code-container">
                         {language && (
                           <div className="code-title">{language}</div>
                         )}
-                        <IconButton onClick={handleCopyCodeClick}>
+                        <IconButton
+                          onClick={() => {
+                            if (codeBlockRef.current) {
+                              const actualCode =
+                                codeBlockRef.current.querySelector("code");
+                              clipboardCopy(actualCode.innerText);
+                            }
+                          }}
+                        >
                           <ContentCopyIcon />
                         </IconButton>
-                        <IconButton onClick={handleDownloadCodeClick}>
+                        <IconButton
+                          onClick={() => {
+                            if (codeBlockRef.current) {
+                              const actualCode =
+                                codeBlockRef.current.querySelector("code");
+                              const lang = codeBlockRef.current.querySelector(
+                                ".code-title"
+                              )
+                                ? codeBlockRef.current.querySelector(
+                                    ".code-title"
+                                  ).innerText
+                                : "";
+                              const langMap = {
+                                "": "txt",
+                                python: "py",
+                                javascript: "js",
+                                typescript: "ts",
+                                html: "html",
+                                css: "css",
+                                json: "json",
+                                yaml: "yaml",
+                                markdown: "md",
+                                shell: "sh",
+                                bash: "sh",
+                                sql: "sql",
+                                java: "java",
+                                c: "c",
+                                cpp: "cpp",
+                                csharp: "cs",
+                                go: "go",
+                                rust: "rs",
+                                php: "php",
+                                ruby: "rb",
+                                perl: "pl",
+                                lua: "lua",
+                                r: "r",
+                                swift: "swift",
+                                kotlin: "kt",
+                                scala: "scala",
+                                clojure: "clj",
+                                elixir: "ex",
+                                erlang: "erl",
+                                haskell: "hs",
+                                ocaml: "ml",
+                                pascal: "pas",
+                                scheme: "scm",
+                                coffeescript: "coffee",
+                                fortran: "f",
+                                julia: "jl",
+                                lisp: "lisp",
+                                prolog: "pro",
+                                vbnet: "vb",
+                                dart: "dart",
+                                fsharp: "fs",
+                                groovy: "groovy",
+                                perl6: "pl",
+                                powershell: "ps1",
+                                puppet: "pp",
+                                qml: "qml",
+                                racket: "rkt",
+                                sas: "sas",
+                                verilog: "v",
+                                vhdl: "vhd",
+                                apex: "cls",
+                                matlab: "m",
+                                nim: "nim",
+                                ocaml: "ml",
+                                pascal: "pas",
+                                scheme: "scm",
+                                coffeescript: "coffee",
+                              };
+
+                              const element = document.createElement("a");
+                              const file = new Blob([actualCode.innerText], {
+                                type: "text/plain;charset=utf-8",
+                              });
+                              element.href = URL.createObjectURL(file);
+                              element.download = `${chatItem.role}-${
+                                chatItem.timestamp
+                              }.${langMap[lang] || "txt"}`;
+                              document.body.appendChild(element);
+                              element.click();
+                            }
+                          }}
+                        >
                           <DownloadIcon />
                         </IconButton>
                         <code className={"code-block"} {...props}>

@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import {
   Select,
   MenuItem,
   TextField,
   InputLabel,
   FormControl,
-  Typography,
   Tooltip,
   Box,
 } from "@mui/material";
@@ -20,6 +19,7 @@ export default function PromptSelector({
   setPromptName,
   prompt,
   promptArgs,
+  setPromptArgs,
 }) {
   const [prompts, setPrompts] = useState([]);
   useEffect(() => {
@@ -30,6 +30,7 @@ export default function PromptSelector({
     };
     fetchPrompts();
   }, [promptCategory]);
+  const sortedPrompts = [...prompts].sort();
 
   return (
     <>
@@ -60,7 +61,7 @@ export default function PromptSelector({
             value={promptName}
             onChange={(e) => setPromptName(e.target.value)}
           >
-            {prompts.map((c) => (
+            {sortedPrompts.map((c) => (
               <MenuItem key={c} value={c}>
                 {c}
               </MenuItem>
@@ -73,7 +74,7 @@ export default function PromptSelector({
       </Box>
 
       {promptArgs ? (
-        Object.values(promptArgs).map((arg) => {
+        Object.keys(promptArgs).map((arg) => {
           if (
             arg !== "conversation_history" &&
             arg !== "context" &&
@@ -82,12 +83,16 @@ export default function PromptSelector({
             arg !== "date" &&
             arg !== "agent_name" &&
             arg !== "working_directory" &&
-            arg !== "helper_agent_name"
+            arg !== "helper_agent_name" &&
+            arg !== ""
           ) {
             return (
               <TextField
                 label={arg}
                 value={promptArgs[arg]}
+                onChange={(e) =>
+                  setPromptArgs({ ...promptArgs, [arg]: e.target.value })
+                }
                 sx={{ mb: 2, width: "30%" }}
               />
             );
