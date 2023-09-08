@@ -18,7 +18,7 @@ import {
 import { useRouter } from "next/router";
 export default function MenuChainList({ data }) {
   const router = useRouter();
-  console.log(data);
+  console.log('ChainList data: ', data);
   console.log(data ? Object.keys(data) : null);
   return (
     <List>

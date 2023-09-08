@@ -131,7 +131,7 @@ export default function ChainStep({
       prompt: promptText,
       agent_name: agentName,
     };
-    console.log(args);
+    console.log('ChainStep args: ', args);
     await sdk.updateStep(
       router.query.chain,
       step_number,
@@ -145,7 +145,7 @@ export default function ChainStep({
     await sdk.deleteStep(router.query.chain, step_number);
     mutate("chain/" + router.query.chain);
   };
-  console.log(last_step);
+  console.log('ChainStep last_step: ', last_step);
   return (
     <>
       <Paper

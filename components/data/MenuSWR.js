@@ -4,7 +4,7 @@ import {
   Typography
 } from "@mui/material";
 export default function MenuSWR({ swr, menu }) {
-  console.log(swr);
+  console.log('MenuSWR swr: ', swr);
   return (
     swr.isLoading
       ?

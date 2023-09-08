@@ -52,7 +52,7 @@ export default function PromptAdmin() {
   const [newBody, setNewBody] = useState(prompt.data);
   const [openDialog, setOpenDialog] = useState(false);
   const [newPromptName, setNewPromptName] = useState("");
-  console.log(prompt);
+  console.log('PromptAdmin prompt: ', prompt);
   const handleDelete = async () => {
     await sdk.deletePrompt(promptName, promptCategory);
     mutate(`prompt`);

@@ -11,7 +11,7 @@ export default function AgentCommandsList({ name, enabled }) {
     await sdk.toggleCommand(agentName, name, enabled ? false : true);
     mutate(`agent/${agentName}/commands`);
   };
-  console.log(name);
+  console.log('AgentCommand name: ', name);
   return (
     <>
       <ListItem key={name} disablePadding>
