@@ -161,6 +161,16 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
     scheme: "scm",
     coffeescript: "coffee",
   };
+  const renderMessage = (formattedMessage) => {
+    if (formattedMessage.startsWith("#GENERATED_IMAGE")) {
+      const base64Image = formattedMessage.replace("#GENERATED_IMAGE", "");
+      return (
+        <img src={`data:image/png;base64,${base64Image}`} alt="Generated" />
+      );
+    } else {
+      return formattedMessage;
+    }
+  };
   return (
     <Box
       sx={{
@@ -258,10 +268,9 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
               },
             }}
           >
-            {formattedMessage}
+            {renderMessage(formattedMessage)}
           </ReactMarkdown>
         </Box>
-        {/* Caption */}
         <Typography
           variant="caption"
           style={{
