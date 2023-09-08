@@ -10,7 +10,7 @@ import { Home, SmartToy } from "@mui/icons-material";
 import { useRouter } from "next/router";
 export default function ProviderList({ data }) {
   const router = useRouter();
-  console.log(data);
+  console.log('ProviderList data: ', data);
   return (
     <List>
       <ListItemButton
@@ -27,7 +27,7 @@ export default function ProviderList({ data }) {
       </ListItemButton>
       <Divider />
       {Object.keys(data).map((provider) => {
-        console.log(data[provider]);
+        console.log('ProviderList data[provider]: ',data[provider]);
         return (
           <ListItemButton
             key={provider}

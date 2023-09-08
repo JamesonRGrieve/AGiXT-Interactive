@@ -24,6 +24,7 @@ import AgentCommandList from "../components/systems/agent/AgentCommandList";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
 import useSWR from "swr";
 import { sdk } from "../lib/apiClient";
+import PropTypes from "prop-types";
 
 const drawerWidth = 200;
 const rightDrawerWidth = 310;
@@ -91,12 +92,6 @@ export default function App({ Component, pageProps, dark }) {
     `agent/${agentName}/commands`,
     async () => await sdk.getCommands(agentName)
   );
-
-  if (darkMode === 'false') {
-    setDarkMode(false)
-  } else if (darkMode === 'true') {
-    setDarkMode(true)
-  }
 
   const themeGenerator = (darkMode) =>
     createTheme({
@@ -283,7 +278,16 @@ export default function App({ Component, pageProps, dark }) {
     </ThemeProvider>
   );
 }
+
+App.propTypes = {
+  Component: PropTypes.elementType.isRequired,
+  pageProps: PropTypes.object.isRequired,
+  dark: PropTypes.bool.isRequired,
+};
+
 App.getInitialProps = async ({ ctx }) => {
-  const dark = getCookie("dark", ctx);
-  return { dark: dark };
+  return { 
+    dark: true,
+    pageProps: {},
+  };
 };

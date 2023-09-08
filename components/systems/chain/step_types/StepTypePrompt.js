@@ -40,7 +40,7 @@ export default function StepTypePrompt({
         : -1
     );
   }, [agents.data, agent_name]);
-  console.log(prompts.data);
+  console.log('StepTypePrompt prompts.data', prompts.data);
   return (
     <>
       <Select

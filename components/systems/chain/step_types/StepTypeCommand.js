@@ -23,8 +23,8 @@ export default function StepTypeCommand({ prompt, set_prompt, update }) {
     setArgs(args);
   }, [commands.data, prompt]);
   useEffect(() => {
-    console.log(commands.data);
-    console.log(command);
+    console.log('StepTypeCommand commands.data: ', commands.data);
+    console.log('StepTypeCommand command: ', command);
     if (command && command != -1 && args && commands.data)
       set_prompt(`${commands.data[command].name}(${args})`);
   }, [command, commands, args, set_prompt]);
