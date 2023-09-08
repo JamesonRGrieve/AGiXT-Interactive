@@ -20,6 +20,7 @@ export default function PromptSelector({
   prompt,
   promptArgs,
   setPromptArgs,
+  isLoading,
 }) {
   const [prompts, setPrompts] = useState([]);
   useEffect(() => {
@@ -43,6 +44,7 @@ export default function PromptSelector({
             labelId="prompt-category-label"
             value={promptCategory}
             onChange={(e) => setPromptCategory(e.target.value)}
+            disabled={isLoading}
           >
             {promptCategories
               ? promptCategories.map((c) => (
@@ -60,6 +62,7 @@ export default function PromptSelector({
             labelId="prompt-label"
             value={promptName}
             onChange={(e) => setPromptName(e.target.value)}
+            disabled={isLoading}
           >
             {sortedPrompts.map((c) => (
               <MenuItem key={c} value={c}>
@@ -94,6 +97,7 @@ export default function PromptSelector({
                   setPromptArgs({ ...promptArgs, [arg]: e.target.value })
                 }
                 sx={{ mb: 2, width: "30%" }}
+                disabled={isLoading}
               />
             );
           }
