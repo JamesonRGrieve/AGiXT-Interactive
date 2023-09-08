@@ -175,7 +175,6 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
     <Box
       sx={{
         p: "1rem",
-        display: "flex",
         backgroundColor:
           chatItem.role === "USER"
             ? theme.palette.background.default
@@ -185,7 +184,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
       <Box sx={{ flexDirection: "column" }}>
         <Box
           sx={{
-            maxWidth: "calc(100%-1rem)",
+            maxWidth: "80%",
             padding: "10px",
             marginBottom: "5px",
             overflow: "hidden",

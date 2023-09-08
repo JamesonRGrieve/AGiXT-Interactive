@@ -327,6 +327,8 @@ export default function App({ Component, pageProps, dark }) {
               setAllResponses={setAllResponses}
               useSelectedAgent={useSelectedAgent}
               setUseSelectedAgent={setUseSelectedAgent}
+              drawerWidth={drawerWidth}
+              rightDrawerWidth={rightDrawerWidth}
             />
           </SettingsProvider>
         </Main>
@@ -342,7 +344,7 @@ App.propTypes = {
 };
 
 App.getInitialProps = async ({ ctx }) => {
-  return { 
+  return {
     dark: true,
     pageProps: {},
   };
