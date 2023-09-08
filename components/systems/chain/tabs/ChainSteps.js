@@ -12,7 +12,7 @@ export default function ChainSteps() {
     "chain/" + router.query.chain,
     async () => (await sdk.getChain(router.query.chain))[router.query.chain]
   );
-  console.log(steps.data);
+  console.log('ChainSteps steps.data: ', steps.data);
   const handleAdd = async () => {
     // TODO: See Chain Management page in Streamlit app.  This needs modified, missing some fields..
     //  If prompt type is prompt, we need to show prompt category and prompt name drop downs.
