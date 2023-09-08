@@ -110,6 +110,7 @@ export default function AgentPrompt({
   const runChain = async () => {
     setIsLoading(true);
     const agentOverride = useSelectedAgent ? agentName : "";
+    chainArgs["conversation_name"] = conversationName;
     if (singleStep) {
       const response = await sdk.runChainStep(
         selectedChain,
