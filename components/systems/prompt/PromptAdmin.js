@@ -60,14 +60,12 @@ export default function PromptAdmin() {
     router.push(`/prompt`);
   };
   const handleSave = async () => {
-    await sdk.updatePrompt(newName, promptCategory, newBody);
+    await sdk.updatePrompt(promptName, newBody, promptCategory);
     mutate(`prompt`);
-    router.push(`/prompt/${newName}`);
   };
   const handleCreate = async () => {
     await sdk.addPrompt(newPromptName, newBody, promptCategory);
     mutate("prompt");
-    router.push(`/prompt/${promptName}`);
   };
   const handleNewCategory = async () => {
     // Need to add this endpoint to SDK
@@ -75,6 +73,11 @@ export default function PromptAdmin() {
     mutate("promptCategories");
     router.push(`/prompt`);
   };
+  useEffect(() => {
+    if (prompt.data) {
+      setNewBody(prompt.data);
+    }
+  }, [prompt.data]);
 
   return (
     <Container>
@@ -128,7 +131,8 @@ export default function PromptAdmin() {
           id="promptContent"
           multiline
           rows={20}
-          defaultValue={prompt.data}
+          value={newBody}
+          onChange={(e) => setNewBody(e.target.value)}
         />
       </Box>
       <Button
