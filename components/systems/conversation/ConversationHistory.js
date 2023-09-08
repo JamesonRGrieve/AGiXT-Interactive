@@ -19,6 +19,8 @@ import {
 } from "@mui/material";
 import { sdk } from "../../../lib/apiClient";
 
+const WAIT_MESSAGE = "Let me think about that for a moment. Please wait..";
+
 export default function ConversationHistory({ chatHistory, isLoading }) {
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
@@ -57,9 +59,10 @@ export default function ConversationHistory({ chatHistory, isLoading }) {
             key={"Please Wait"}
             chatItem={{
               role: agentName,
-              message: "Let me think about that for a moment. Please wait..",
+              message: WAIT_MESSAGE,
               timestamp: "Just Now...",
             }}
+            isLoading={isLoading}
           />
         )}
       </div>
@@ -67,7 +70,7 @@ export default function ConversationHistory({ chatHistory, isLoading }) {
   );
 }
 
-const ChatMessage = ({ chatItem, lastUserMessage }) => {
+const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
   const formattedMessage =
     typeof chatItem.message === "string"
       ? chatItem.message.replace(/\\n/g, "  \n").replace(/\n/g, "  \n")
@@ -272,7 +275,7 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
           {chatItem.role === "USER" ? "You" : chatItem.role} •{" "}
           {chatItem.timestamp}
         </Typography>
-        {chatItem.role != "USER" && (
+        {chatItem.role != "USER" && !isLoading && (
           <>
             <IconButton onClick={() => handleClickOpen(1)}>
               <ThumbUp color={vote === 1 ? "success" : "inherit"} />
