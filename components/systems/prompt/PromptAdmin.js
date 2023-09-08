@@ -49,7 +49,6 @@ export default function PromptAdmin() {
     mutate(`prompt/${promptCategory}/${promptName}`);
   }, [promptCategories.data, promptName, promptCategory, prompts.data]);
 
-  const [newName, setNewName] = useState(promptName);
   const [newBody, setNewBody] = useState(prompt.data);
   const [openDialog, setOpenDialog] = useState(false);
   const [newPromptName, setNewPromptName] = useState("");
