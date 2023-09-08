@@ -1,44 +1,41 @@
 {
-  "name": "agixt-nextjs",
-  "version": "0.0.6",
+  "name": "agixtinteractive",
+  "version": "0.0.2",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 3437",
     "lint": "next lint"
   },
   "dependencies": {
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@fontsource/ubuntu-mono": "latest",
-    "@mui/icons-material": "^5.14.7",
+    "@mui/icons-material": "^5.14.15",
     "@mui/material": "latest",
-    "@mui/system": "^5.4.1",
-    "@mui/x-data-grid": "^5.17.12",
-    "@types/axios": "^0.14.0",
-    "agixt": "^1.0.32",
-    "axios": "^1.4.0",
+    "@mui/system": "^5.14.15",
+    "@mui/x-data-grid": "^6.16.2",
+    "agixt": "^1.0.36",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "latest",
     "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-markdown": "^8.0.7",
-    "react-syntax-highlighter": "^15.5.0",
-    "swr": "latest"
+    "react-syntax-highlighter": "^15.5.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.21.8",
-    "@babel/eslint-parser": "^7.21.8",
-    "@babel/plugin-transform-typescript": "^7.22.10",
-    "@types/node": "^20.5.3",
-    "@types/react": "^18.2.21",
-    "@types/react-dom": "18.2.6",
-    "@types/webpack-env": "^1.18.1",
-    "eslint": "8.43.0",
-    "eslint-config-next": "13.4.6",
-    "ts-loader": "^9.4.4",
-    "typescript": "^5.1.6"
+    "@babel/core": "^7.23.2",
+    "@babel/eslint-parser": "^7.22.15",
+    "@babel/plugin-transform-typescript": "^7.22.15",
+    "@types/node": "^20.8.9",
+    "@types/react": "^18.2.33",
+    "@types/react-dom": "18.2.14",
+    "@types/webpack-env": "^1.18.3",
+    "eslint": "8.52.0",
+    "eslint-config-next": "14.0.0",
+    "ts-loader": "^9.5.0",
+    "typescript": "^5.2.2"
   }
 }

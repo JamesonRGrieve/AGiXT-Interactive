@@ -1,0 +1,24 @@
+version: "3.7"
+services:
+  agixtinteractive:
+    image: joshxt/agixtinteractive:main
+    env_file:
+      - .env
+    environment:
+      - NEXT_PUBLIC_AGIXT_SERVER=${AGIXT_SERVER-http://localhost:7437}
+      - NEXT_PUBLIC_AGIXT_AGENT=${AGIXT_AGENT-gpt4free}
+      - NEXT_PUBLIC_AGIXT_INSIGHT_AGENT=${AGIXT_INSIGHT_AGENT-gpt4free}
+      - NEXT_PUBLIC_AGIXT_MODE=${AGIXT_MODE-prompt}
+      - NEXT_PUBLIC_AGIXT_PROMPT_NAME=${AGIXT_PROMPT_NAME-Chat}
+      - NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY=${AGIXT_PROMPT_CATEGORY-Default}
+      - NEXT_PUBLIC_AGIXT_CHAIN=${AGIXT_CHAIN-Postgres Chat}
+      - NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT=${AGIXT_USE_SELECTED_AGENT-true}
+      - NEXT_PUBLIC_AGIXT_CHAIN_ARGS=${AGIXT_CHAIN_ARGS-{}}
+      - NEXT_PUBLIC_AGIXT_DARKMODE=${AGIXT_DARKMODE-true}
+      - NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED=${AGIXT_FILE_UPLOAD_ENABLED-false}
+      - NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR=${AGIXT_SHOW_CONVERSATION_BAR-true}
+      - NEXT_PUBLIC_AGIXT_CONVERSATION_NAME=${AGIXT_CONVERSATION_NAME-Test}
+      - TZ=${TZ-America/New_York}
+    ports:
+      - "3437:3437"
+    restart: unless-stopped

@@ -1,357 +1,118 @@
 import "../styles/globals.css";
-import { useState, useCallback } from "react";
-import { useRouter } from "next/router";
-import { setCookie, getCookie } from "cookies-next";
-import Link from "next/link";
-import { SettingsProvider } from "../lib/SettingsContext";
-import {
-  Box,
-  Drawer,
-  CssBaseline,
-  Toolbar,
-  Typography,
-  Divider,
-} from "@mui/material";
-import MuiAppBar from "@mui/material/AppBar";
-import IconButton from "@mui/material/IconButton";
-import TuneIcon from "@mui/icons-material/Tune";
-import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
-import { ChevronLeft, ChevronRight, Menu } from "@mui/icons-material";
-import MenuAgentList from "../components/systems/agent/AgentList";
-import AdvancedOptions from "../components/systems/agent/AdvancedOptions";
-import TrainOptions from "../components/systems/train/TrainOptions";
-import AgentCommandList from "../components/systems/agent/AgentCommandList";
-import ChainArgsEditor from "../components/systems/chain/ChainArgsEditor";
-import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
-import useSWR from "swr";
-import { sdk } from "../lib/apiClient";
-import PropTypes from "prop-types";
+import { useState, useEffect } from "react";
+import { getCookie, setCookie } from "cookies-next";
+import Head from "next/head";
+import Auth from "../components/Auth";
+/* 
+All of the following vars are optional and will default to the values below if not set. 
+Add desired variables that you want to configure to your .env.local file.
 
-const drawerWidth = 200;
-const rightDrawerWidth = 310;
-const Main = styled("main", {
-  shouldForwardProp: (prop) => prop !== "open" && prop !== "rightDrawerOpen",
-})(({ theme, open, rightDrawerOpen }) => ({
-  flexGrow: 1,
-  padding: theme.spacing(3),
-  transition: theme.transitions.create("margin", {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  marginLeft: open ? 0 : `-${drawerWidth}px`, // Adjust based on left drawer
-  marginRight: rightDrawerOpen ? `${rightDrawerWidth}px` : 0, // Adjust based on right drawer
-}));
-const AppBar = styled(MuiAppBar, {
-  shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
-  transition: theme.transitions.create(["margin", "width"], {
-    easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-}));
+Example of the default vars for the UI:
+AGIXT_SERVER=http://localhost:7437
+AGIXT_AGENT=gpt4free
+AGIXT_INSIGHT_AGENT=gpt4free
+AGIXT_CONVERSATION_NAME=Convert Extensions to new ones
+AGIXT_SHOW_CONVERSATION_BAR=true
+AGIXT_FILE_UPLOAD_ENABLED=false
+AGIXT_DARKMODE=true
 
-const DrawerHeader = styled("div")(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-  padding: theme.spacing(0, 1),
-  // necessary for content to be below app bar
-  ...theme.mixins.toolbar,
-  justifyContent: "flex-end",
-  backgroundColor: theme.palette.primary.main,
-  color: "white",
-}));
-export default function App({ Component, pageProps, dark }) {
-  const [open, setOpen] = useState(true);
-  const [darkMode, setDarkMode] = useState(dark);
-  const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
-  const [collectionNumber, setCollectionNumber] = useState(0);
-  const [limit, setLimit] = useState(10);
-  const [minRelevanceScore, setMinRelevanceScore] = useState(0.0);
-  const [contextResults, setContextResults] = useState(5);
-  const [shots, setShots] = useState(1);
-  const [browseLinks, setBrowseLinks] = useState(false);
-  const [websearch, setWebsearch] = useState(false);
-  const [websearchDepth, setWebsearchDepth] = useState(0);
-  const [enableMemory, setEnableMemory] = useState(false);
-  const [selectedChain, setSelectedChain] = useState("Smart Chat");
-  const [chains, setChains] = useState([]);
-  const [
-    injectMemoriesFromCollectionNumber,
-    setInjectMemoriesFromCollectionNumber,
-  ] = useState(0);
-  const [conversationResults, setConversationResults] = useState(5);
-  const [chainArgs, setChainArgs] = useState({});
-  const [singleStep, setSingleStep] = useState(false);
-  const [fromStep, setFromStep] = useState(0);
-  const [allResponses, setAllResponses] = useState(false);
-  const [useSelectedAgent, setUseSelectedAgent] = useState(true);
+Prompt mode example (In addition to the default vars):
 
-  const handleArgsChange = (args) => {
-    setChainArgs(args);
-  };
+AGIXT_MODE=prompt
+AGIXT_PROMPT_NAME=Chat
+AGIXT_PROMPT_CATEGORY=Default
 
-  const router = useRouter();
-  const pageName = router.pathname.split("/")[1];
-  const agentName = router.query.agent;
-  const tab = router.query.tab;
-  const commands = useSWR(
-    `agent/${agentName}/commands`,
-    async () => await sdk.getCommands(agentName)
+Chain mode example (In addition to the default vars):
+
+AGIXT_MODE=chain
+AGIXT_CHAIN=Postgres Chat
+AGIXT_CHAIN_ARGS={}
+AGIXT_USE_SELECTED_AGENT=true
+*/
+
+export default function App({ Component, pageProps }) {
+  // Login
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userKey, setUserKey] = useState("");
+  const [username, setUsername] = useState("");
+  const AGiXTServer =
+    process.env.NEXT_PUBLIC_AGIXT_SERVER || "http://localhost:7437";
+  const agentName = process.env.NEXT_PUBLIC_AGIXT_AGENT || "gpt4free";
+  const insightAgent =
+    process.env.NEXT_PUBLIC_AGIXT_INSIGHT_AGENT || "gpt4free";
+  const mode = process.env.NEXT_PUBLIC_AGIXT_MODE || "prompt";
+  // Prompt Mode Options
+  const promptName = process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME || "Chat";
+  const promptCategory =
+    process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY || "Default";
+  // Chain Mode Options
+  const selectedChain = process.env.NEXT_PUBLIC_AGIXT_CHAIN || "Postgres Chat";
+  const useSelectedAgent =
+    process.env.NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT || true;
+  const envChainArgs = process.env.NEXT_PUBLIC_AGIXT_CHAIN_ARGS || "{}";
+  let chainArgs = {};
+  try {
+    chainArgs = JSON.parse(envChainArgs);
+  } catch (e) {
+    console.error(e);
+  }
+  // UI Options
+  const dark = process.env.NEXT_PUBLIC_AGIXT_DARKMODE || true;
+  const fileUploadEnabled =
+    process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED || false;
+  const showConversationBar =
+    process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR || true;
+  let convo = process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME;
+  if (showConversationBar) {
+    const cookieConvo = getCookie("conversationName");
+    if (cookieConvo) {
+      convo = cookieConvo;
+    }
+  }
+  const [conversationName, setConversationName] = useState(
+    convo || "Convert Extensions to new ones"
   );
-
-  if (darkMode === "false") {
-    setDarkMode(false);
-  } else if (darkMode === "true") {
-    setDarkMode(true);
+  useEffect(() => {
+    // Login
+    if (userKey) {
+      const loggedInC = getCookie("loggedIn");
+      if (loggedInC) {
+        setLoggedIn(true);
+      }
+      const userApiKey = getCookie("apiKey");
+      if (userApiKey) {
+        setUserKey(userApiKey);
+      }
+    }
+  }, [userKey]);
+  if (!loggedIn) {
+    return (
+      <Auth username={username} userKey={userKey} setLoggedIn={setLoggedIn} />
+    );
   }
-
-  const themeGenerator = (darkMode) =>
-    createTheme({
-      palette: {
-        mode: darkMode ? "dark" : "light",
-        primary: {
-          main: "#273043",
-        },
-      },
-    });
-  const theme = themeGenerator(darkMode);
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-  const handleRightDrawerOpen = () => {
-    setRightDrawerOpen(true);
-  };
-  const handleRightDrawerClose = () => {
-    setRightDrawerOpen(false);
-  };
-
-  const handleToggleDarkMode = useCallback(() => {
-    setDarkMode((oldVal) => {
-      const newVal = !oldVal;
-      setCookie("dark", newVal.toString());
-      return newVal;
-    });
-  }, []);
-  if (pageName == "agent") {
-  }
-  const agents = useSWR("agent", async () => sdk.getAgents());
-  const handleChainChange = (event) => {
-    setSelectedChain(event.target.value);
-  };
   return (
-    <ThemeProvider theme={theme}>
-      <Box sx={{ display: "flex" }}>
-        <CssBaseline />
-        <AppBar position="fixed" open={open}>
-          <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
-            <Box sx={{ display: "flex", alignItems: "left" }}>
-              <IconButton
-                color="inherit"
-                aria-label="open drawer"
-                onClick={handleDrawerOpen}
-                edge="start"
-                sx={{ mr: 2, ...(open && { display: "none" }) }}
-              >
-                <Menu />
-              </IconButton>
-              <Typography variant="h6" component="h1" noWrap>
-                <Link href="/">AGiXT</Link>
-              </Typography>
-            </Box>
-
-            <MenuDarkSwitch
-              checked={darkMode}
-              onChange={handleToggleDarkMode}
-            />
-            <IconButton color="inherit" onClick={handleRightDrawerOpen}>
-              <TuneIcon />
-            </IconButton>
-          </Toolbar>
-        </AppBar>
-        <Drawer
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: drawerWidth,
-              boxSizing: "border-box",
-            },
-          }}
-          variant="persistent"
-          anchor="left"
-          open={open}
-        >
-          <DrawerHeader sx={{ justifyContent: "space-between", pl: "1rem" }}>
-            <IconButton onClick={handleDrawerClose}>
-              <ChevronLeft fontSize="large" sx={{ color: "white" }} />
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
-          <MenuAgentList data={agents.data ? agents.data : []} />
-        </Drawer>
-        <Drawer
-          sx={{
-            width: 0,
-            flexShrink: 0,
-            "& .MuiDrawer-paper": {
-              width: rightDrawerWidth,
-              boxSizing: "border-box",
-            },
-          }}
-          variant="persistent"
-          anchor="right"
-          open={rightDrawerOpen}
-        >
-          <DrawerHeader>
-            <IconButton onClick={handleRightDrawerClose}>
-              <Typography noWrap color="white">
-                {pageName == "agent" && tab != 3 ? "Advanced Options" : null}
-                {pageName == "train" ? "Advanced Options" : null}
-                {pageName == "settings" ? "Agent Commands" : null}
-                {pageName == "agent" && tab == 3 ? "Chain Options" : null}
-              </Typography>
-              <ChevronRight fontSize="large" sx={{ color: "white" }} />
-            </IconButton>
-          </DrawerHeader>
-          <Divider />
-          {pageName === "agent" && tab != 3 ? (
-            <AdvancedOptions
-              contextResults={contextResults}
-              setContextResults={setContextResults}
-              shots={shots}
-              setShots={setShots}
-              websearchDepth={websearchDepth}
-              setWebsearchDepth={setWebsearchDepth}
-              injectMemoriesFromCollectionNumber={
-                injectMemoriesFromCollectionNumber
-              }
-              setInjectMemoriesFromCollectionNumber={
-                setInjectMemoriesFromCollectionNumber
-              }
-              conversationResults={conversationResults}
-              setConversationResults={setConversationResults}
-              browseLinks={browseLinks}
-              setBrowseLinks={setBrowseLinks}
-              websearch={websearch}
-              setWebsearch={setWebsearch}
-              enableMemory={enableMemory}
-              setEnableMemory={setEnableMemory}
-            />
-          ) : null}
-          {pageName === "train" ? (
-            <TrainOptions
-              collectionNumber={collectionNumber}
-              limit={limit}
-              minRelevanceScore={minRelevanceScore}
-              setCollectionNumber={setCollectionNumber}
-              setLimit={setLimit}
-              setMinRelevanceScore={setMinRelevanceScore}
-            />
-          ) : null}
-          {pageName === "settings" ? (
-            commands.isLoading ? (
-              "Loading..."
-            ) : commands.error ? (
-              commands.error.message
-            ) : (
-              <AgentCommandList data={commands ? commands.data : null} />
-            )
-          ) : null}
-          {pageName === "agent" && tab == 3 ? (
-            <>
-              <ChainArgsEditor
-                selectedChain={selectedChain}
-                sdk={sdk}
-                chainArgs={chainArgs}
-                setChainArgs={setChainArgs}
-                onChange={handleArgsChange}
-                singleStep={singleStep}
-                setSingleStep={setSingleStep}
-                fromStep={fromStep}
-                setFromStep={setFromStep}
-                allResponses={allResponses}
-                setAllResponses={setAllResponses}
-                useSelectedAgent={useSelectedAgent}
-                setUseSelectedAgent={setUseSelectedAgent}
-              />
-              {/*
-              singleStep checkbox, false by default.
-              fromStep - Number to start step from, default 0.  If singleStep is checked, this is the step to run.
-              allResponses - Boolean, default false.  
-                If true, it will output all responses in the last response instead of just the last one.
-               */}
-            </>
-          ) : null}
-        </Drawer>
-
-        <Main
-          open={open}
-          rightDrawerOpen={rightDrawerOpen}
-          sx={{ padding: "0" }}
-        >
-          <DrawerHeader />
-          <SettingsProvider>
-            <Component
-              {...pageProps}
-              contextResults={contextResults}
-              shots={shots}
-              browseLinks={browseLinks}
-              websearch={websearch}
-              websearchDepth={websearchDepth}
-              enableMemory={enableMemory}
-              injectMemoriesFromCollectionNumber={
-                injectMemoriesFromCollectionNumber
-              }
-              collectionNumber={collectionNumber}
-              limit={limit}
-              minRelevanceScore={minRelevanceScore}
-              conversationResults={conversationResults}
-              selectedChain={selectedChain}
-              setSelectedChain={setSelectedChain}
-              chainArgs={chainArgs}
-              setChainArgs={setChainArgs}
-              chains={chains}
-              handleChainChange={handleChainChange}
-              singleStep={singleStep}
-              setSingleStep={setSingleStep}
-              fromStep={fromStep}
-              setFromStep={setFromStep}
-              allResponses={allResponses}
-              setAllResponses={setAllResponses}
-              useSelectedAgent={useSelectedAgent}
-              setUseSelectedAgent={setUseSelectedAgent}
-            />
-          </SettingsProvider>
-        </Main>
-      </Box>
-    </ThemeProvider>
+    <>
+      <Head>
+        <title>{conversationName}</title>
+      </Head>
+      <Component
+        {...pageProps}
+        AGiXTServer={AGiXTServer}
+        agentName={agentName}
+        insightAgent={insightAgent}
+        conversationName={conversationName}
+        setConversationName={setConversationName}
+        showConversationBar={showConversationBar}
+        dark={dark}
+        enableFileUpload={fileUploadEnabled}
+        mode={mode}
+        promptName={promptName}
+        promptCategory={promptCategory}
+        selectedChain={selectedChain}
+        chainArgs={chainArgs}
+        useSelectedAgent={useSelectedAgent}
+        setLoggedIn={setLoggedIn}
+      />
+    </>
   );
 }
-
-App.propTypes = {
-  Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired,
-  dark: PropTypes.bool.isRequired,
-};
-
-App.getInitialProps = async ({ ctx }) => {
-  let dark = getCookie("dark", ctx);
-  dark === "true" ? (dark = true) :  dark === "false" ? (dark = false) : (dark = null);
-  return { 
-    dark: dark,
-    pageProps: {},
-  };
-};
