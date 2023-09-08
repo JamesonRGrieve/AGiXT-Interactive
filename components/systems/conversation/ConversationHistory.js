@@ -166,7 +166,6 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
       sx={{
         p: "1rem",
         display: "flex",
-        flexDirection: chatItem.role === "USER" ? "row-reverse" : "row",
         backgroundColor:
           chatItem.role === "USER"
             ? theme.palette.background.default
@@ -268,7 +267,6 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
           style={{
             color: theme.palette.text.secondary,
             width: "100%",
-            textAlign: chatItem.role === "USER" ? "right" : "left",
             display: "inline-block",
           }}
         >
