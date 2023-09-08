@@ -215,12 +215,14 @@ export default function AgentPrompt({
             prompt={prompt}
             promptArgs={promptArgs}
             setPromptArgs={setPromptArgs}
+            disabled={isLoading}
           />
           <Button
             variant="contained"
             color="primary"
             onClick={handleSendMessage}
             sx={{ height: "56px" }}
+            disabled={isLoading}
           >
             Send
           </Button>
@@ -232,18 +234,21 @@ export default function AgentPrompt({
             sdk={sdk}
             selectedChain={selectedChain}
             setSelectedChain={setSelectedChain}
+            disabled={isLoading}
           />
           <TextField
             label="User Input"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             sx={{ mb: 2, width: "85%" }}
+            disabled={isLoading}
           />
           <Button
             onClick={runChain}
             variant="contained"
             color="primary"
             sx={{ height: "56px", width: "15%" }}
+            disabled={isLoading}
           >
             Execute Chain
           </Button>
@@ -257,12 +262,14 @@ export default function AgentPrompt({
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             sx={{ mb: 2, width: "90%" }}
+            disabled={isLoading}
           />
           <Button
             variant="contained"
             color="primary"
             onClick={handleSendMessage}
             sx={{ height: "56px", width: "10%" }}
+            disabled={isLoading}
           >
             Send
           </Button>
