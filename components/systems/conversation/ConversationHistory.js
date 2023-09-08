@@ -88,7 +88,65 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
     document.body.appendChild(element);
     element.click();
   };
-
+  const langMap = {
+    "": "txt",
+    python: "py",
+    javascript: "js",
+    typescript: "ts",
+    html: "html",
+    css: "css",
+    json: "json",
+    yaml: "yaml",
+    markdown: "md",
+    shell: "sh",
+    bash: "sh",
+    sql: "sql",
+    java: "java",
+    c: "c",
+    cpp: "cpp",
+    csharp: "cs",
+    go: "go",
+    rust: "rs",
+    php: "php",
+    ruby: "rb",
+    perl: "pl",
+    lua: "lua",
+    r: "r",
+    swift: "swift",
+    kotlin: "kt",
+    scala: "scala",
+    clojure: "clj",
+    elixir: "ex",
+    erlang: "erl",
+    haskell: "hs",
+    ocaml: "ml",
+    pascal: "pas",
+    scheme: "scm",
+    coffeescript: "coffee",
+    fortran: "f",
+    julia: "jl",
+    lisp: "lisp",
+    prolog: "pro",
+    vbnet: "vb",
+    dart: "dart",
+    fsharp: "fs",
+    groovy: "groovy",
+    perl6: "pl",
+    powershell: "ps1",
+    puppet: "pp",
+    qml: "qml",
+    racket: "rkt",
+    sas: "sas",
+    verilog: "v",
+    vhdl: "vhd",
+    apex: "cls",
+    matlab: "m",
+    nim: "nim",
+    ocaml: "ml",
+    pascal: "pas",
+    scheme: "scm",
+    coffeescript: "coffee",
+  };
   return (
     <Box
       sx={{
@@ -113,17 +171,35 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
           <ReactMarkdown
             components={{
               code({ node, inline, children, ...props }) {
+                if (inline) {
+                  return (
+                    <span
+                      style={{
+                        backgroundColor: "darkgray",
+                        borderRadius: "3px",
+                        padding: "0.2em",
+                        fontFamily: "monospace",
+                      }}
+                    >
+                      {children}
+                    </span>
+                  );
+                }
                 const codeBlockRef = React.useRef(null);
                 const language = props.className?.replace(/language-/, "");
+                const fileExtension = langMap[language] || "txt";
+                // COnvert the timestamp to a more filename friendly timestamp from September 08, 2023 04:31
+                const ts = chatItem.timestamp
+                  .replace(/ /g, "-")
+                  .replace(/:/g, "-")
+                  .replace(/,/g, "");
 
+                const fileName = `${chatItem.role}-${ts}.${fileExtension}`;
                 return (
                   <>
                     <br />
                     <div className="code-block" ref={codeBlockRef}>
-                      <div className="code-container">
-                        {language && (
-                          <div className="code-title">{language}</div>
-                        )}
+                      <div className="code-title">
                         <IconButton
                           onClick={() => {
                             if (codeBlockRef.current) {
@@ -140,81 +216,14 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
                             if (codeBlockRef.current) {
                               const actualCode =
                                 codeBlockRef.current.querySelector("code");
-                              const lang = codeBlockRef.current.querySelector(
-                                ".code-title"
-                              )
-                                ? codeBlockRef.current.querySelector(
-                                    ".code-title"
-                                  ).innerText
-                                : "";
-                              const langMap = {
-                                "": "txt",
-                                python: "py",
-                                javascript: "js",
-                                typescript: "ts",
-                                html: "html",
-                                css: "css",
-                                json: "json",
-                                yaml: "yaml",
-                                markdown: "md",
-                                shell: "sh",
-                                bash: "sh",
-                                sql: "sql",
-                                java: "java",
-                                c: "c",
-                                cpp: "cpp",
-                                csharp: "cs",
-                                go: "go",
-                                rust: "rs",
-                                php: "php",
-                                ruby: "rb",
-                                perl: "pl",
-                                lua: "lua",
-                                r: "r",
-                                swift: "swift",
-                                kotlin: "kt",
-                                scala: "scala",
-                                clojure: "clj",
-                                elixir: "ex",
-                                erlang: "erl",
-                                haskell: "hs",
-                                ocaml: "ml",
-                                pascal: "pas",
-                                scheme: "scm",
-                                coffeescript: "coffee",
-                                fortran: "f",
-                                julia: "jl",
-                                lisp: "lisp",
-                                prolog: "pro",
-                                vbnet: "vb",
-                                dart: "dart",
-                                fsharp: "fs",
-                                groovy: "groovy",
-                                perl6: "pl",
-                                powershell: "ps1",
-                                puppet: "pp",
-                                qml: "qml",
-                                racket: "rkt",
-                                sas: "sas",
-                                verilog: "v",
-                                vhdl: "vhd",
-                                apex: "cls",
-                                matlab: "m",
-                                nim: "nim",
-                                ocaml: "ml",
-                                pascal: "pas",
-                                scheme: "scm",
-                                coffeescript: "coffee",
-                              };
 
                               const element = document.createElement("a");
                               const file = new Blob([actualCode.innerText], {
                                 type: "text/plain;charset=utf-8",
                               });
                               element.href = URL.createObjectURL(file);
-                              element.download = `${chatItem.role}-${
-                                chatItem.timestamp
-                              }.${langMap[lang] || "txt"}`;
+
+                              element.download = fileName;
                               document.body.appendChild(element);
                               element.click();
                             }
@@ -222,6 +231,9 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
                         >
                           <DownloadIcon />
                         </IconButton>
+                        {fileName} | {language}
+                      </div>
+                      <div className="code-container">
                         <code className={"code-block"} {...props}>
                           {children}
                         </code>
