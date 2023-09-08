@@ -19,9 +19,10 @@ import {
 } from "@mui/material";
 import { sdk } from "../../../lib/apiClient";
 
-export default function ConversationHistory({ chatHistory }) {
+export default function ConversationHistory({ chatHistory, isLoading }) {
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
+  const agentName = router.query.agent;
   const tab = router.query.tab;
 
   let lastUserMessage = ""; // track the last user message
@@ -51,6 +52,16 @@ export default function ConversationHistory({ chatHistory }) {
               );
             })
           : null}
+        {isLoading && (
+          <ChatMessage
+            key={"Please Wait"}
+            chatItem={{
+              role: agentName,
+              message: "Let me think about that for a moment. Please wait..",
+              timestamp: "Just Now...",
+            }}
+          />
+        )}
       </div>
     </Paper>
   );

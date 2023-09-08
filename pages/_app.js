@@ -106,10 +106,10 @@ export default function App({ Component, pageProps, dark }) {
     async () => await sdk.getCommands(agentName)
   );
 
-  if (darkMode === 'false') {
-    setDarkMode(false)
-  } else if (darkMode === 'true') {
-    setDarkMode(true)
+  if (darkMode === "false") {
+    setDarkMode(false);
+  } else if (darkMode === "true") {
+    setDarkMode(true);
   }
 
   const themeGenerator = (darkMode) =>
@@ -220,7 +220,7 @@ export default function App({ Component, pageProps, dark }) {
                 {pageName == "agent" && tab != 3 ? "Advanced Options" : null}
                 {pageName == "train" ? "Advanced Options" : null}
                 {pageName == "settings" ? "Agent Commands" : null}
-                {pageName == "agent" && tab == 3 ? "Chain Arguments" : null}
+                {pageName == "agent" && tab == 3 ? "Chain Options" : null}
               </Typography>
               <ChevronRight fontSize="large" sx={{ color: "white" }} />
             </IconButton>
