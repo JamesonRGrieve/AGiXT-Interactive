@@ -77,7 +77,7 @@ export default function PromptAdmin() {
       setNewBody(prompt.data);
     }
   }, [prompt.data]);
-
+  const sortedPrompts = prompts.data ? Object.values(prompts.data).sort() : [];
   return (
     <Container>
       <Button onClick={() => setOpenDialog(true)} color="info">
@@ -116,12 +116,11 @@ export default function PromptAdmin() {
             value={promptName}
             onChange={(e) => setPromptName(e.target.value)}
           >
-            {prompts.data &&
-              Object.values(prompts.data).map((p) => (
-                <MenuItem key={p} value={p}>
-                  {p}
-                </MenuItem>
-              ))}
+            {sortedPrompts.map((p) => (
+              <MenuItem key={p} value={p}>
+                {p}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
