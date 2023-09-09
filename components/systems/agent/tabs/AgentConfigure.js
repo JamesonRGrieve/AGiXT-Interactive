@@ -31,6 +31,7 @@ export default function AgentConfigure({ data }) {
   const [newName, setNewName] = useState("");
   const router = useRouter();
   const agentName = router.query.agent;
+  const agents = useSWR("agent", async () => await sdk.getAgents());
   const handleDelete = async () => {
     await sdk.deleteAgent(agentName);
     mutate(`agent`);
@@ -62,7 +63,10 @@ export default function AgentConfigure({ data }) {
       document.body.removeChild(a);
     }
   };
-
+  const embedders = useSWR(
+    "embedder",
+    async () => await sdk.getEmbedProviders()
+  );
   const providers = useSWR("provider", async () => await sdk.getProviders());
 
   const transformExtensionSettings = (extensionSettings) => {
@@ -217,7 +221,8 @@ export default function AgentConfigure({ data }) {
           if (
             field.includes("USE_") ||
             field == "WORKING_DIRECTORY_RESTRICTED" ||
-            field == "stream"
+            field == "stream" ||
+            field == "AUTONOMOUS_EXECUTION"
           ) {
             if (field == "stream") {
               let value;
@@ -299,6 +304,72 @@ export default function AgentConfigure({ data }) {
                   }
                 />
               </Box>
+            );
+          } else if (field == "embedder") {
+            return (
+              <FormControl
+                key={field}
+                fullWidth
+                sx={{ my: "1rem", mx: "0.5rem" }}
+              >
+                <InputLabel id="embedder-label">Embedder</InputLabel>
+                <Select
+                  fullWidth
+                  labelId="embedder-label"
+                  id="embedder-select"
+                  value={fieldValues[field]}
+                  label="Embedder"
+                  onChange={(e) =>
+                    setFieldValues({
+                      ...fieldValues,
+                      [field]: e.target.value,
+                    })
+                  }
+                >
+                  {embedders?.data
+                    ? embedders.data.map((embedderName) => (
+                        <MenuItem key={embedderName} value={embedderName}>
+                          {embedderName}
+                        </MenuItem>
+                      ))
+                    : null}
+                </Select>
+              </FormControl>
+            );
+          } else if (field == "helper_agent_name") {
+            // Make a list of agents
+            return (
+              <FormControl
+                key={field}
+                fullWidth
+                sx={{ my: "1rem", mx: "0.5rem" }}
+              >
+                <InputLabel id="helper-agent-label">Helper Agent</InputLabel>
+                <Select
+                  fullWidth
+                  labelId="helper-agent-label"
+                  id="helper-agent-select"
+                  value={fieldValues[field]}
+                  label="Helper Agent"
+                  onChange={(e) =>
+                    setFieldValues({
+                      ...fieldValues,
+                      [field]: e.target.value,
+                    })
+                  }
+                >
+                  {agents?.data
+                    ? agents.data.map(
+                        (agent) =>
+                          agent.name != "undefined" && (
+                            <MenuItem key={agent.name} value={agent.name}>
+                              {agent.name}
+                            </MenuItem>
+                          )
+                      )
+                    : null}
+                </Select>
+              </FormControl>
             );
           } else {
             // Render a TextField for other fields
