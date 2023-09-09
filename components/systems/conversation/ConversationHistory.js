@@ -165,7 +165,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
     const message = formattedMessage.toString();
     const match = message.match(/#(.*?)(?=\n|$)/);
     if (match) {
-      return match[1].replace("#GENERATED_IMAGE:", "").trim();
+      return match[1].replace("GENERATED_IMAGE:", "").trim();
     }
     return null;
   };
@@ -173,11 +173,8 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
   const renderMessage = () => {
     const base64Image = extractBase64Image();
     if (base64Image) {
-      const formattedImage = base64Image.replace("GENERATED_IMAGE:", "");
-      const base64image = formattedImage.toString("base64");
-      // Convert the base64 data into Markdown format
-      const markdownImage = `![Generated Image](data:image/png;base64,${base64image})`;
-
+      const formattedImage = base64Image.toString("base64");
+      const markdownImage = `![Generated Image](data:image/png;base64,${formattedImage})`;
       return markdownImage;
     } else {
       console.log("NO image!");
