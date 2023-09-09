@@ -147,8 +147,10 @@ export default function AgentPrompt({
     conversationResults = 5
   ) => {
     setIsLoading(true);
+    if (message) {
+      promptArgs["user_input"] = message;
+    }
     const promptArguments = {
-      user_input: message,
       prompt_category: promptCategory,
       conversation_name: conversationName,
       context_results: contextResults,
@@ -222,8 +224,8 @@ export default function AgentPrompt({
             variant="contained"
             color="primary"
             onClick={handleSendMessage}
-            sx={{ height: "56px" }}
             disabled={isLoading}
+            sx={{ height: "56px" }}
           >
             Send
           </Button>
@@ -241,15 +243,15 @@ export default function AgentPrompt({
             label="User Input"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            sx={{ mb: 2, width: "85%" }}
+            sx={{ mb: 2, width: "80%" }}
             disabled={isLoading}
           />
           <Button
             onClick={runChain}
             variant="contained"
             color="primary"
-            sx={{ height: "56px", width: "15%" }}
             disabled={isLoading}
+            sx={{ height: "56px" }}
           >
             Execute Chain
           </Button>
@@ -269,8 +271,8 @@ export default function AgentPrompt({
             variant="contained"
             color="primary"
             onClick={handleSendMessage}
-            sx={{ height: "56px", width: "10%" }}
             disabled={isLoading}
+            sx={{ height: "56px" }}
           >
             Send
           </Button>

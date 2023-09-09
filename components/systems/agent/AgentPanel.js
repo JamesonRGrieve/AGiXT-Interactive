@@ -7,7 +7,9 @@ import AgentPrompt from "./tabs/AgentPrompt";
 import { useTheme } from "@mui/material/styles";
 import { sdk } from "../../../lib/apiClient";
 import useSWR from "swr";
-
+import { mutate } from "swr";
+import { Container } from "@mui/material";
+// TODO: Need to define conversationName higher up so that it is persisted.
 export default function AgentPanel({
   data,
   chains,
@@ -27,6 +29,8 @@ export default function AgentPanel({
   allResponses = false,
   useSelectedAgent = true,
   setUseSelectedAgent,
+  drawerWidth,
+  rightDrawerWidth,
 }) {
   const router = useRouter();
   const [tab, setTab] = useState(router.query.tab || 0);
@@ -137,7 +141,16 @@ export default function AgentPanel({
         <Tab label="Instruct Mode" selected={tab == 2} />
         <Tab label="Chain Execution" selected={tab == 3} />
       </Tabs>
-      {tabs[tab]}
+      <Container
+        maxWidth="xl"
+        disableGutters={true}
+        sx={{
+          width: `calc(100% - ${drawerWidth}px)`,
+          padding: 0,
+        }}
+      >
+        {tabs[tab]}
+      </Container>
     </>
   );
 }

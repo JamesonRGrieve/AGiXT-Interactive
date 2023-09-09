@@ -58,7 +58,7 @@ export default function ConversationSelector({
       <InputLabel id="conversation-label">Select a Conversation</InputLabel>
       <Select
         labelId="conversation-label"
-        fullWidth
+        sx={{ width: "80%" }}
         label="Select a Conversation"
         value={conversationName}
         onChange={(e) => setConversationName(e.target.value)}

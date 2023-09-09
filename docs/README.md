@@ -30,10 +30,10 @@ AGiXT is an Artificial Intelligence Automation Platform designed to power effici
 - After you have run the AGiXT back end, follow these instructions below:
 
 ```
-git clone https://github.com/AGiXT/nextjs --recurse-submodules 
+git clone https://github.com/AGiXT/nextjs
 cd nextjs
-yarn install
-yarn dev
+npm install
+npm run dev
 ```
 
 Access at http://localhost:3000

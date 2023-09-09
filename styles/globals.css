@@ -110,9 +110,10 @@ a {
 img:not([src^="https://img.shields.io"]) {
   width: 100%;
 }
+
+
 .code-container {
   border: 1px solid white;
-  width: 70%;
   overflow-x: auto;
   padding: 5px;
 }
@@ -120,13 +121,11 @@ img:not([src^="https://img.shields.io"]) {
 .code-title {
   background-color: rgb(139, 138, 138);
   border: 1px solid white;
-  width: 70%;
   color: white;
   padding: 5px;
   font-weight: bold;
 }
 
 .code-block {
-  width: 70%;
   padding: 5px;
 }

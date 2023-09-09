@@ -161,11 +161,35 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
     scheme: "scm",
     coffeescript: "coffee",
   };
+
+  const renderMessage = () => {
+    const message = formattedMessage.toString();
+    const match = message.match(/#(.*?)(?=\n|$)/);
+    if (match) {
+      if (message.includes("GENERATED_IMAGE:")) {
+        const base64Image = match[1].replace("GENERATED_IMAGE:", "").trim();
+        const formattedImage = base64Image.toString("base64");
+        return message.replace(
+          match[0],
+          `![Generated Image](data:image/png;base64,${formattedImage})`
+        );
+      }
+      if (message.includes("GENERATED_AUDIO:")) {
+        const base64Audio = match[1].replace("GENERATED_AUDIO:", "").trim();
+        const formattedAudio = base64Audio.toString("base64");
+        return message.replace(
+          match[0],
+          `![Generated Audio](data:audio/wav;base64,${formattedAudio})`
+        );
+      }
+    }
+    return formattedMessage;
+  };
+
   return (
     <Box
       sx={{
         p: "1rem",
-        display: "flex",
         backgroundColor:
           chatItem.role === "USER"
             ? theme.palette.background.default
@@ -175,7 +199,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
       <Box sx={{ flexDirection: "column" }}>
         <Box
           sx={{
-            maxWidth: "calc(100%-1rem)",
+            maxWidth: "80%",
             padding: "10px",
             marginBottom: "5px",
             overflow: "hidden",
@@ -258,10 +282,9 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
               },
             }}
           >
-            {formattedMessage}
+            {renderMessage(formattedMessage)}
           </ReactMarkdown>
         </Box>
-        {/* Caption */}
         <Typography
           variant="caption"
           style={{
