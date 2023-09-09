@@ -162,21 +162,21 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
     coffeescript: "coffee",
   };
   const extractBase64Image = () => {
-    // Convert message to string if it is not already
     const message = formattedMessage.toString();
-    console.log("Message: ", message);
     const match = message.match(/#(.*?)(?=\n|$)/);
-    return match ? match[1].trim() : null;
+    if (match) {
+      return match[1].replace("#GENERATED_IMAGE:", "").trim();
+    }
+    return null;
   };
 
   const renderMessage = () => {
     const base64Image = extractBase64Image();
     if (base64Image) {
-      const formattedImage = base64Image.replace("#GENERATED_IMAGE:", "");
-      console.log("I MADE AN IMAGE!");
-
+      const formattedImage = base64Image.replace("GENERATED_IMAGE:", "");
+      const base64image = formattedImage.toString("base64");
       // Convert the base64 data into Markdown format
-      const markdownImage = `![Generated Image](data:image/jpeg;base64,${formattedImage})`;
+      const markdownImage = `![Generated Image](data:image/png;base64,${base64image})`;
 
       return markdownImage;
     } else {
