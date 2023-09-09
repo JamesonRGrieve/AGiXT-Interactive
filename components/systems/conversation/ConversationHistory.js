@@ -161,20 +161,26 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
     scheme: "scm",
     coffeescript: "coffee",
   };
-  const renderMessage = (formattedMessage = "") => {
-    // Ensure that formattedMessage is a string
-    if (typeof formattedMessage !== "string") {
-      console.error("formattedMessage should be a string:", formattedMessage);
-      return formattedMessage; // or return some default/fallback value
-    }
+  const extractBase64Image = () => {
+    // Convert message to string if it is not already
+    const message = formattedMessage.toString();
+    console.log("Message: ", message);
+    const match = message.match(/#(.*?)(?=\n|$)/);
+    return match ? match[1].trim() : null;
+  };
 
-    // If formatted message starts with #GENERATED_IMAGE then it is an image
-    if (formattedMessage.startsWith("#GENERATED_IMAGE")) {
-      const base64Image = formattedMessage.replace("#GENERATED_IMAGE", "");
-      return (
-        <img src={`data:image/png;base64,${base64Image}`} alt="Generated" />
-      );
+  const renderMessage = () => {
+    const base64Image = extractBase64Image();
+    if (base64Image) {
+      const formattedImage = base64Image.replace("#GENERATED_IMAGE:", "");
+      console.log("I MADE AN IMAGE!");
+
+      // Convert the base64 data into Markdown format
+      const markdownImage = `![Generated Image](data:image/jpeg;base64,${formattedImage})`;
+
+      return markdownImage;
     } else {
+      console.log("NO image!");
       return formattedMessage;
     }
   };
