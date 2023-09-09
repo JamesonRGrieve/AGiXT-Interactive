@@ -148,7 +148,10 @@ export default function AgentConfigure({ data }) {
   ];
 
   const handleConfigure = async () => {
-    await sdk.updateAgent(agentName, { provider: provider, ...fieldValues });
+    await sdk.updateAgentSettings(agentName, {
+      provider: provider,
+      ...fieldValues,
+    });
     mutate(`agent/${agentName}`);
   };
 

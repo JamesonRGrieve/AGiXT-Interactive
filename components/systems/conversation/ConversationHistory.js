@@ -161,7 +161,14 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
     scheme: "scm",
     coffeescript: "coffee",
   };
-  const renderMessage = (formattedMessage) => {
+  const renderMessage = (formattedMessage = "") => {
+    // Ensure that formattedMessage is a string
+    if (typeof formattedMessage !== "string") {
+      console.error("formattedMessage should be a string:", formattedMessage);
+      return formattedMessage; // or return some default/fallback value
+    }
+
+    // If formatted message starts with #GENERATED_IMAGE then it is an image
     if (formattedMessage.startsWith("#GENERATED_IMAGE")) {
       const base64Image = formattedMessage.replace("#GENERATED_IMAGE", "");
       return (
@@ -171,6 +178,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
       return formattedMessage;
     }
   };
+
   return (
     <Box
       sx={{
