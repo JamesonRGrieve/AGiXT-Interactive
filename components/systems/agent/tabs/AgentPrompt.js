@@ -147,8 +147,10 @@ export default function AgentPrompt({
     conversationResults = 5
   ) => {
     setIsLoading(true);
+    if (message) {
+      promptArgs["user_input"] = message;
+    }
     const promptArguments = {
-      user_input: message,
       prompt_category: promptCategory,
       conversation_name: conversationName,
       context_results: contextResults,
