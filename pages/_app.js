@@ -342,8 +342,10 @@ App.propTypes = {
 };
 
 App.getInitialProps = async ({ ctx }) => {
+  let dark = getCookie("dark", ctx);
+  dark === "true" ? (dark = true) :  dark === "false" ? (dark = false) : (dark = null);
   return { 
-    dark: true,
+    dark: dark,
     pageProps: {},
   };
 };
