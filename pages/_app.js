@@ -222,48 +222,36 @@ export default function App({ Component, pageProps, dark }) {
           </DrawerHeader>
           <Divider />
           {pageName === "agent" && tab != 3 ? (
-            <AdvancedOptions
-              contextResults={contextResults}
-              setContextResults={setContextResults}
-              shots={shots}
-              setShots={setShots}
-              websearchDepth={websearchDepth}
-              setWebsearchDepth={setWebsearchDepth}
-              injectMemoriesFromCollectionNumber={
-                injectMemoriesFromCollectionNumber
-              }
-              setInjectMemoriesFromCollectionNumber={
-                setInjectMemoriesFromCollectionNumber
-              }
-              conversationResults={conversationResults}
-              setConversationResults={setConversationResults}
-              browseLinks={browseLinks}
-              setBrowseLinks={setBrowseLinks}
-              websearch={websearch}
-              setWebsearch={setWebsearch}
-              enableMemory={enableMemory}
-              setEnableMemory={setEnableMemory}
-            />
+            <>
+              <AdvancedOptions
+                contextResults={contextResults}
+                setContextResults={setContextResults}
+                shots={shots}
+                setShots={setShots}
+                websearchDepth={websearchDepth}
+                setWebsearchDepth={setWebsearchDepth}
+                injectMemoriesFromCollectionNumber={
+                  injectMemoriesFromCollectionNumber
+                }
+                setInjectMemoriesFromCollectionNumber={
+                  setInjectMemoriesFromCollectionNumber
+                }
+                conversationResults={conversationResults}
+                setConversationResults={setConversationResults}
+                browseLinks={browseLinks}
+                setBrowseLinks={setBrowseLinks}
+                websearch={websearch}
+                setWebsearch={setWebsearch}
+                enableMemory={enableMemory}
+                setEnableMemory={setEnableMemory}
+              />
+              <Typography variant="h6" component="h1" noWrap>
+                Agent Commands
+              </Typography>
+              <Divider />
+            </>
           ) : null}
-          {pageName === "train" ? (
-            <TrainOptions
-              collectionNumber={collectionNumber}
-              limit={limit}
-              minRelevanceScore={minRelevanceScore}
-              setCollectionNumber={setCollectionNumber}
-              setLimit={setLimit}
-              setMinRelevanceScore={setMinRelevanceScore}
-            />
-          ) : null}
-          {pageName === "settings" ? (
-            commands.isLoading ? (
-              "Loading..."
-            ) : commands.error ? (
-              commands.error.message
-            ) : (
-              <AgentCommandList data={commands ? commands.data : null} />
-            )
-          ) : null}
+
           {pageName === "agent" && tab == 3 ? (
             <>
               <ChainArgsEditor
@@ -288,6 +276,25 @@ export default function App({ Component, pageProps, dark }) {
                 If true, it will output all responses in the last response instead of just the last one.
                */}
             </>
+          ) : null}
+          {pageName === "train" ? (
+            <TrainOptions
+              collectionNumber={collectionNumber}
+              limit={limit}
+              minRelevanceScore={minRelevanceScore}
+              setCollectionNumber={setCollectionNumber}
+              setLimit={setLimit}
+              setMinRelevanceScore={setMinRelevanceScore}
+            />
+          ) : null}
+          {pageName === "settings" || pageName === "agent" ? (
+            commands.isLoading ? (
+              "Loading..."
+            ) : commands.error ? (
+              commands.error.message
+            ) : (
+              <AgentCommandList data={commands ? commands.data : null} />
+            )
           ) : null}
         </Drawer>
 
