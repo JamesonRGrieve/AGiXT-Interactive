@@ -7,7 +7,8 @@ import ConversationHistory from "../../conversation/ConversationHistory";
 import PromptSelector from "../../prompt/PromptSelector";
 import AdvancedOptions from "../AdvancedOptions";
 import ChainSelector from "../../chain/ChainSelector";
-import { Button, TextField } from "@mui/material";
+import { Button, TextField, InputAdornment } from "@mui/material";
+import SendIcon from "@mui/icons-material/Send";
 import useSWR from "swr";
 import { mutate } from "swr";
 
@@ -177,7 +178,7 @@ export default function AgentPrompt({
   };
 
   const handleKeyPress = async (event) => {
-    if (event.key === "Enter") {
+    if (event.key === "Enter" && !event.shiftKey && message) {
       event.preventDefault();
       handleSendMessage();
     }
@@ -241,41 +242,61 @@ export default function AgentPrompt({
           />
           <TextField
             label="User Input"
+            placeholder="User input..."
+            multiline
+            rows={2}
+            fullWidth
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            sx={{ mb: 2, width: "70%" }}
+            onKeyPress={handleKeyPress}
+            sx={{ mb: 2 }}
             disabled={isLoading}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    onClick={runChain}
+                    disabled={isLoading}
+                    sx={{ height: "56px", padding: "0px" }}
+                  >
+                    <SendIcon />
+                  </Button>
+                </InputAdornment>
+              ),
+            }}
           />
-          <Button
-            onClick={runChain}
-            variant="contained"
-            color="primary"
-            disabled={isLoading}
-            sx={{ height: "56px" }}
-          >
-            Execute Chain
-          </Button>
         </>
       ) : (
         <>
           <TextField
             label="User Input"
             placeholder="User input..."
+            multiline
+            rows={2}
+            fullWidth
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            sx={{ mb: 2, width: "70%" }}
+            sx={{ mb: 2 }}
             disabled={isLoading}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={handleSendMessage}
+                    disabled={isLoading}
+                    sx={{ height: "56px", padding: "0px" }}
+                  >
+                    <SendIcon />
+                  </Button>
+                </InputAdornment>
+              ),
+            }}
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSendMessage}
-            disabled={isLoading}
-            sx={{ height: "56px" }}
-          >
-            Send
-          </Button>
         </>
       )}
     </>
