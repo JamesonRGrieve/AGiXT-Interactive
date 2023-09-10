@@ -243,7 +243,7 @@ export default function AgentPrompt({
             label="User Input"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
-            sx={{ mb: 2, width: "80%" }}
+            sx={{ mb: 2, width: "70%" }}
             disabled={isLoading}
           />
           <Button
@@ -264,7 +264,7 @@ export default function AgentPrompt({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
-            sx={{ mb: 2, width: "90%" }}
+            sx={{ mb: 2, width: "70%" }}
             disabled={isLoading}
           />
           <Button
