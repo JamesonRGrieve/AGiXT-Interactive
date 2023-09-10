@@ -135,11 +135,12 @@ export default function AgentPanel({
         }}
         sx={{ mb: "0.5rem" }}
         textColor={theme.palette.mode == "dark" ? "white" : "black"}
+        wrapped
       >
-        <Tab label="Chat Mode" selected={tab == 0} />
-        <Tab label="Prompt Mode" selected={tab == 1} />
-        <Tab label="Instruct Mode" selected={tab == 2} />
-        <Tab label="Chain Execution" selected={tab == 3} />
+        <Tab label="Chat Mode" value="0" selected={tab == 0} />
+        <Tab label="Prompt Mode" value="1" selected={tab == 1} />
+        <Tab label="Instruct Mode" value="2" selected={tab == 2} />
+        <Tab label="Chain Execution" value="3" selected={tab == 3} />
       </Tabs>
       <Container
         maxWidth="xl"
