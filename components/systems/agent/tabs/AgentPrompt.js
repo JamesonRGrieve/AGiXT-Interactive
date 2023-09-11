@@ -117,7 +117,8 @@ export default function AgentPrompt({
         selectedChain,
         fromStep,
         message,
-        agentOverride
+        agentOverride,
+        chainArgs
       );
       setIsLoading(false);
       setLastResponse(response);
@@ -151,6 +152,7 @@ export default function AgentPrompt({
     if (message) {
       promptArgs["user_input"] = message;
     }
+    const disableMemory = !enableMemory;
     const promptArguments = {
       prompt_category: promptCategory,
       conversation_name: conversationName,
@@ -159,7 +161,7 @@ export default function AgentPrompt({
       browse_links: browseLinks,
       websearch: websearch,
       websearch_depth: websearchDepth,
-      enable_memory: enableMemory,
+      disable_memory: disableMemory,
       inject_memories_from_collection_number:
         injectMemoriesFromCollectionNumber,
       conversation_results: conversationResults,
