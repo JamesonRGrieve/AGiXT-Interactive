@@ -87,8 +87,8 @@ export default function AgentPanel({
       conversationResults={conversationResults}
     />,
     <AgentPrompt
-      key="instruct"
-      mode="instruct"
+      key="Instruction"
+      mode="Instruction"
       selectedChain={selectedChain}
       setSelectedChain={setSelectedChain}
       chains={chains}
