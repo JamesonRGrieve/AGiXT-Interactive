@@ -60,11 +60,16 @@ export default function TrainPanel({
         sx={{ mb: "0.5rem" }}
         textColor={theme.palette.mode == "dark" ? "white" : "black"}
       >
-        <Tab label="Website Training" selected={tab == 0} />
-        <Tab label="File Training" selected={tab == 1} />
-        <Tab label="Text Training" selected={tab == 2} />
-        <Tab label="GitHub Repository Training" selected={tab == 3} />
-        <Tab label="Memory Management" selected={tab == 4} />
+        <Tab label="Website Training" value="0" selected={tab == 0} wrapped />
+        <Tab label="File Training" value="1" selected={tab == 1} wrapped />
+        <Tab label="Text Training" value="2" selected={tab == 2} wrapped />
+        <Tab
+          label="GitHub Repository Training"
+          value="3"
+          selected={tab == 3}
+          wrapped
+        />
+        <Tab label="Memory Management" value="4" selected={tab == 4} wrapped />
       </Tabs>
       <Container>
         <Typography variant="h4" component="h1" gutterBottom>
