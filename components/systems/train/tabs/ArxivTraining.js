@@ -54,8 +54,9 @@ export default function ArxivTraining({ collectionNumber = 0 }) {
           />
           <TextField
             fullWidth
+            type="number"
             variant="outlined"
-            placeholder="Enter the maximum number of results to return"
+            label="Maximum articles to learn from"
             value={maxResults}
             onChange={(e) => setMaxResults(e.target.value)}
           />
@@ -73,7 +74,7 @@ export default function ArxivTraining({ collectionNumber = 0 }) {
       )}
       <br />
       <Button variant="contained" color="primary" onClick={() => onTrain(text)}>
-        Train from Text
+        Train from arXiv Articles
       </Button>
       <Typography>{learnStatus}</Typography>
     </>
