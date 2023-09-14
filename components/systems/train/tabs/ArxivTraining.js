@@ -8,7 +8,6 @@ import {
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
-import { Check } from "@mui/icons-material";
 
 export default function ArxivTraining({ collectionNumber = 0 }) {
   const [text, setText] = useState("");
@@ -21,8 +20,21 @@ export default function ArxivTraining({ collectionNumber = 0 }) {
 
   const onTrain = async (text) => {
     setLearnStatus("Please wait...");
-    await sdk.learnArxiv(agentName, userInput, text, collectionNumber);
-    setLearnStatus(`${agentName} has finished learning from the text.`);
+    if (useArticleNumbers) {
+      const articles = userInput.replace(/\s/g, "");
+      await sdk.learnArxiv(agentName, "", articles, 5, collectionNumber);
+    } else {
+      await sdk.learnArxiv(
+        agentName,
+        userInput,
+        "",
+        maxResults,
+        collectionNumber
+      );
+    }
+    setLearnStatus(
+      `${agentName} has finished learning from the arXiv articles.`
+    );
     setText("");
   };
 
