@@ -7,6 +7,7 @@ import TextTraining from "./tabs/TextTraining";
 import GithubTraining from "./tabs/GithubTraining";
 import MemoryManagement from "./tabs/MemoryManagement";
 import { useTheme } from "@mui/material/styles";
+import ArxivTraining from "./tabs/ArxivTraining";
 
 export default function TrainPanel({
   collectionNumber = 0,
@@ -45,6 +46,7 @@ export default function TrainPanel({
       minRelevanceScore={minRelevanceScore}
       limit={limit}
     />,
+    <ArxivTraining collectionNumber={collectionNumber} />,
   ];
 
   return (
@@ -69,6 +71,7 @@ export default function TrainPanel({
           selected={tab == 3}
           wrapped
         />
+        <Tab label="arXiv Training" value="5" selected={tab == 5} wrapped />
         <Tab label="Memory Management" value="4" selected={tab == 4} wrapped />
       </Tabs>
       <Container>
@@ -80,6 +83,7 @@ export default function TrainPanel({
               "Text Training",
               "GitHub Repository Training",
               "Memory Management",
+              "arXiv Training",
             ][tab]
           }
         </Typography>
