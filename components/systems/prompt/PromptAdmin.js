@@ -52,7 +52,10 @@ export default function PromptAdmin() {
   const [newBody, setNewBody] = useState(prompt.data);
   const [openDialog, setOpenDialog] = useState(false);
   const [newPromptName, setNewPromptName] = useState("");
-  console.log('PromptAdmin prompt: ', prompt);
+  const [newPromptCategoryName, setNewPromptCategoryName] = useState("");
+  const [openCategoryDialog, setOpenCategoryDialog] = useState(false);
+
+  console.log("PromptAdmin prompt: ", prompt);
   const handleDelete = async () => {
     await sdk.deletePrompt(promptName, promptCategory);
     mutate(`prompt`);
@@ -67,8 +70,7 @@ export default function PromptAdmin() {
     mutate("prompt");
   };
   const handleNewCategory = async () => {
-    // Need to add this endpoint to SDK
-    //await sdk.addPromptCategory(newPromptName);
+    await sdk.addPromptCategory(newPromptCategoryName);
     mutate("promptCategories");
     router.push(`/prompt`);
   };
@@ -181,6 +183,34 @@ export default function PromptAdmin() {
           </Button>
           <Button color="info" onClick={handleCreate}>
             Create Prompt
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openCategoryDialog}
+        onClose={() => setOpenCategoryDialog(false)}
+      >
+        <DialogTitle>Create New Prompt Category</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="New Prompt Category Name"
+            type="text"
+            fullWidth
+            value={newPromptCategoryName}
+            onChange={(e) => setNewPromptCategoryName(e.target.value)}
+            variant="outlined"
+            color="info"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button color="error" onClick={() => setOpenCategoryDialog(false)}>
+            Cancel
+          </Button>
+          <Button color="info" onClick={handleNewCategory}>
+            Create Prompt Category
           </Button>
         </DialogActions>
       </Dialog>
