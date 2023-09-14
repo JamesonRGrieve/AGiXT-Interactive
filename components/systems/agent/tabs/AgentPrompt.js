@@ -5,7 +5,6 @@ import { sdk } from "../../../../lib/apiClient";
 import ConversationSelector from "../../conversation/ConversationSelector";
 import ConversationHistory from "../../conversation/ConversationHistory";
 import PromptSelector from "../../prompt/PromptSelector";
-import AdvancedOptions from "../AdvancedOptions";
 import ChainSelector from "../../chain/ChainSelector";
 import { Button, TextField, InputAdornment } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
