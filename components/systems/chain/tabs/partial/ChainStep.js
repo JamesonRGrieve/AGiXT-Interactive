@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, use } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
 import { sdk } from "../../../../../lib/apiClient";
@@ -52,6 +52,18 @@ export default function ChainStep({
   const [promptArgs, setPromptArgs] = useState(prompt);
   const [promptCategory, setPromptCategory] = useState("Default");
   const [stepType, setStepType] = useState(-1);
+  const [contextResults, setContextResults] = useState(5);
+  const [shots, setShots] = useState(1);
+  const [browseLinks, setBrowseLinks] = useState(false);
+  const [websearch, setWebsearch] = useState(false);
+  const [websearchDepth, setWebsearchDepth] = useState(0);
+  const [enableMemory, setEnableMemory] = useState(false);
+  const [
+    injectMemoriesFromCollectionNumber,
+    setInjectMemoriesFromCollectionNumber,
+  ] = useState(0);
+  const [conversationResults, setConversationResults] = useState(5);
+
   const router = useRouter();
   const [modified, setModified] = useState(false);
   const theme = useTheme();
@@ -75,6 +87,26 @@ export default function ChainStep({
               update={setModified}
               promptArgs={promptArgs}
               setPromptArgs={setPromptArgs}
+              contextResults={contextResults}
+              setContextResults={setContextResults}
+              shots={shots}
+              setShots={setShots}
+              browseLinks={browseLinks}
+              setBrowseLinks={setBrowseLinks}
+              websearch={websearch}
+              setWebsearch={setWebsearch}
+              websearchDepth={websearchDepth}
+              setWebsearchDepth={setWebsearchDepth}
+              enableMemory={enableMemory}
+              setEnableMemory={setEnableMemory}
+              injectMemoriesFromCollectionNumber={
+                injectMemoriesFromCollectionNumber
+              }
+              setInjectMemoriesFromCollectionNumber={
+                setInjectMemoriesFromCollectionNumber
+              }
+              conversationResults={conversationResults}
+              setConversationResults={setConversationResults}
             />
           </>
         ),
