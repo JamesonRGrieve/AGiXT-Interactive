@@ -38,7 +38,7 @@ export default function ChainStep({
   const [agentName, setAgentName] = useState(agent_name);
   const [promptName, setPromptName] = useState(prompt.prompt_name);
   const [promptArgs, setPromptArgs] = useState(prompt);
-  const [promptCategory, setPromptCategory] = useState(prompt.prompt_category);
+  const [promptCategory, setPromptCategory] = useState("Default");
   const [expanded, setExpanded] = useState(false);
   const [stepType, setStepType] = useState(-1);
   const router = useRouter();
@@ -105,6 +105,10 @@ export default function ChainStep({
   useEffect(() => {
     setPromptArgs(prompt);
   }, [prompt]);
+  console.log("ChainStep prompt: ", prompt);
+  useEffect(() => {
+    setPromptCategory(prompt.prompt_category);
+  }, [prompt.prompt_category]);
 
   const handleSave = async () => {
     prompt.prompt_name = promptName;
