@@ -34,6 +34,7 @@ export default function ChainStep({
   prompt_type,
   prompt,
   commands,
+  promptCategories,
 }) {
   const [agentName, setAgentName] = useState(agent_name);
   const [promptName, setPromptName] = useState(prompt.prompt_name);
@@ -43,6 +44,7 @@ export default function ChainStep({
   const [stepType, setStepType] = useState(-1);
   const router = useRouter();
   const [modified, setModified] = useState(false);
+
   const step_types = useMemo(
     () => [
       {
@@ -52,6 +54,7 @@ export default function ChainStep({
             update={setModified}
             agent_name={agentName}
             set_agent_name={setAgentName}
+            promptCategories={promptCategories}
             promptCategory={promptCategory}
             setPromptCategory={setPromptCategory}
             promptName={promptName}

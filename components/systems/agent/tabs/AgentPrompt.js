@@ -50,8 +50,8 @@ export default function AgentPrompt({
     async () => await sdk.getConversation(agentName, conversationName, 100, 1)
   );
   const { data: promptCategories } = useSWR(
-    `promptCategories/${agentName}`,
-    async () => await sdk.getPromptCategories(agentName)
+    `promptCategories`,
+    async () => await sdk.getPromptCategories()
   );
 
   const { data: prompts } = useSWR(
@@ -80,7 +80,7 @@ export default function AgentPrompt({
     }
   }, [conversationName, conversation, lastResponse]);
   useEffect(() => {
-    mutate(`promptCategories/${agentName}`);
+    mutate(`promptCategories`);
     if (promptCategories) {
       setPromptCategory(promptCategory);
     }

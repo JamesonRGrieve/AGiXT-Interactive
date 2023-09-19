@@ -12,6 +12,10 @@ export default function ChainSteps({ commands }) {
     "chain/" + router.query.chain,
     async () => (await sdk.getChain(router.query.chain))[router.query.chain]
   );
+  const { data: promptCategories } = useSWR(
+    `promptCategories`,
+    async () => await sdk.getPromptCategories()
+  );
   console.log("ChainSteps steps.data: ", steps.data);
   const handleAdd = async () => {
     // TODO: See Chain Management page in Streamlit app.  This needs modified, missing some fields..
@@ -37,6 +41,7 @@ export default function ChainSteps({ commands }) {
             <ChainStep
               key={step.step}
               {...step}
+              promptCategories={promptCategories}
               commands={commands}
               last_step={steps.data.steps.length === index + 1}
               updateCallback={() => {
