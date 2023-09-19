@@ -34,8 +34,9 @@ export default function ChainStep({
   commands,
   promptCategories,
 }) {
+  const pn = prompt_type == "Prompt" ? prompt.prompt_name : prompt.command_name;
   const [agentName, setAgentName] = useState(agent_name);
-  const [promptName, setPromptName] = useState(prompt.prompt_name);
+  const [promptName, setPromptName] = useState(pn);
   const [promptArgs, setPromptArgs] = useState(prompt);
   const [promptCategory, setPromptCategory] = useState("Default");
   const [expanded, setExpanded] = useState(false);
@@ -101,8 +102,10 @@ export default function ChainStep({
     setAgentName(agent_name);
   }, [agent_name]);
   useEffect(() => {
-    setPromptName(prompt.prompt_name);
-  }, [prompt.prompt_name]);
+    setPromptName(
+      prompt_type == "Prompt" ? prompt.prompt_name : prompt.command_name
+    );
+  }, [prompt.prompt_name, prompt.command_name]);
   useEffect(() => {
     setPromptArgs(prompt);
   }, [prompt]);
@@ -117,6 +120,8 @@ export default function ChainStep({
 
   const handleSave = async () => {
     prompt.prompt_name = promptName;
+    prompt.prompt_category = promptCategory;
+
     const args = {
       step: step,
       prompt: prompt,
