@@ -73,6 +73,12 @@ export default function ChainStep({
         name: "Prompt",
         component: (
           <>
+            {/* 
+            TODO: Fix duplicate fields and input proper values.
+            PromptSelector is adding variables that already exist in 
+            AdvancedOptions, such as contextResults, but not setting in the promptArgs maybe.
+            Need to investigate and fix, may need to do the same on ChainArgs below.
+            */}
             <PromptSelector
               update={setModified}
               promptCategories={promptCategories}
