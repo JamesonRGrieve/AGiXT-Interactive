@@ -27,7 +27,7 @@ export default function ChainPanel({ commands }) {
   ];
   useEffect(() => {
     if (selectedChain) {
-      router.push(`/chain/${selectedChain}`);
+      router.push(`/chain/${selectedChain}?agent=${router.query.agent}`);
     }
     setSelectedChain(selectedChain);
   }, [chain, selectedChain]);

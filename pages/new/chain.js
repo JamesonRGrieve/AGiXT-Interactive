@@ -1,12 +1,15 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 import { Container, TextField, Button, Typography } from "@mui/material";
 import { mutate } from "swr";
 import { sdk } from "../../lib/apiClient";
 export default function Home() {
   const [name, setName] = useState("");
+  const router = useRouter();
   const handleCreate = async () => {
     await sdk.addChain(name);
     mutate("chain");
+    router.push(`/chain/${name}?agent=${router.query.agent}`);
   };
 
   return (

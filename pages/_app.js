@@ -17,7 +17,7 @@ import IconButton from "@mui/material/IconButton";
 import TuneIcon from "@mui/icons-material/Tune";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import { ChevronLeft, ChevronRight, Menu } from "@mui/icons-material";
-import MenuAgentList from "../components/systems/agent/AgentList";
+import MenuAgentList from "../components/menu/MainMenu";
 import AdvancedOptions from "../components/systems/agent/AdvancedOptions";
 import TrainOptions from "../components/systems/train/TrainOptions";
 import AgentCommandList from "../components/systems/agent/AgentCommandList";
