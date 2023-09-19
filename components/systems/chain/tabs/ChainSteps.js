@@ -39,39 +39,40 @@ export default function ChainSteps({ commands }) {
         margin: "1rem",
       }}
     >
-      {steps?.data?.steps.map((step, index) => {
-        return (
-          <>
-            <Box
-              sx={{
-                border: "1px solid",
-                borderRadius: "15px",
-              }}
-            >
-              <ChainStep
-                key={step.step}
-                {...step}
-                promptCategories={promptCategories}
-                commands={commands}
-                agents={agents}
-                last_step={steps.data.steps.length === index + 1}
-                updateCallback={() => {
-                  return null;
+      {steps?.data?.steps &&
+        steps?.data?.steps?.map((step, index) => {
+          return (
+            <>
+              <Box
+                sx={{
+                  border: "1px solid",
+                  borderRadius: "15px",
                 }}
-              />
-              {index === steps.data.steps.length - 1 ? null : (
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "left",
-                    alignItems: "center",
+              >
+                <ChainStep
+                  key={step.step}
+                  {...step}
+                  promptCategories={promptCategories}
+                  commands={commands}
+                  agents={agents}
+                  last_step={steps.data.steps.length === index + 1}
+                  updateCallback={() => {
+                    return null;
                   }}
-                ></Box>
-              )}
-            </Box>
-          </>
-        );
-      })}
+                />
+                {index === steps.data.steps.length - 1 ? null : (
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "left",
+                      alignItems: "center",
+                    }}
+                  ></Box>
+                )}
+              </Box>
+            </>
+          );
+        })}
       <Box
         sx={{ display: "flex", justifyContent: "left", alignItems: "center" }}
       >
