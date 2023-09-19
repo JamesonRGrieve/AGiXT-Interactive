@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
 import { mutate } from "swr";
 import useSWR from "swr";
-import { Typography, Box, IconButton } from "@mui/material";
+import { Typography, Box, IconButton, Container } from "@mui/material";
 import { AddCircleOutline, InsertLink, LowPriority } from "@mui/icons-material";
 import ChainStep from "./partial/ChainStep";
 export default function ChainSteps({}) {
@@ -39,30 +39,38 @@ export default function ChainSteps({}) {
     mutate("chain/" + router.query.chain);
   };
   return (
-    <>
+    <Container>
       {steps?.data?.steps.map((step, index) => {
         return (
           <>
-            <ChainStep
-              key={step.step}
-              {...step}
-              promptCategories={promptCategories}
-              commands={commands}
-              agents={agents}
-              last_step={steps.data.steps.length === index + 1}
-              updateCallback={() => {
-                return null;
+            <Box
+              sx={{
+                border: "1px solid",
+                borderRadius: "15px",
               }}
-            />
-            {index === steps.data.steps.length - 1 ? null : (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "left",
-                  alignItems: "center",
+            >
+              <ChainStep
+                key={step.step}
+                {...step}
+                promptCategories={promptCategories}
+                commands={commands}
+                agents={agents}
+                last_step={steps.data.steps.length === index + 1}
+                updateCallback={() => {
+                  return null;
                 }}
-              ></Box>
-            )}
+              />
+              {index === steps.data.steps.length - 1 ? null : (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "left",
+                    alignItems: "center",
+                  }}
+                ></Box>
+              )}
+            </Box>
+            <br />
           </>
         );
       })}
@@ -76,6 +84,6 @@ export default function ChainSteps({}) {
           Add Step
         </Typography>
       </Box>
-    </>
+    </Container>
   );
 }

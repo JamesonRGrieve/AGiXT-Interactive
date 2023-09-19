@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
 import { sdk } from "../../../../../lib/apiClient";
+import { useTheme } from "@emotion/react";
 import {
   Typography,
   Paper,
@@ -46,7 +47,7 @@ export default function ChainStep({
   const [stepType, setStepType] = useState(-1);
   const router = useRouter();
   const [modified, setModified] = useState(false);
-
+  const theme = useTheme();
   const step_types = useMemo(
     () => [
       {
@@ -145,68 +146,86 @@ export default function ChainStep({
   };
   console.log("Prompt Type: ", prompt_type);
   return (
-    <Container>
-      <Typography>
-        <IconButton onClick={handleDecrement} size="large" disabled={step == 1}>
-          <ArrowCircleUp sx={{ fontSize: "2rem" }} />
-        </IconButton>
-        Step {step}
-        <IconButton onClick={handleIncrement} size="large" disabled={last_step}>
-          <ArrowCircleDown sx={{ fontSize: "2rem" }} />
-        </IconButton>
-        <IconButton onClick={handleDelete} size="large">
-          <HighlightOff sx={{ fontSize: "2rem" }} color="error" />
-        </IconButton>
-      </Typography>
-      <FormControl sx={{ mb: 2, width: "30%" }}>
-        <InputLabel>Step Type</InputLabel>
-        <Select
-          label="Step Type"
-          value={stepType}
-          onChange={(e) => {
-            setStepType(e.target.value);
-            setModified(true);
-          }}
-        >
-          <MenuItem value={-1}>Select a Type...</MenuItem>
-          {step_types.map((type, index) => {
-            return (
-              <MenuItem key={index} value={index}>
-                {type.name.replace(/\b\w/g, (s) => s.toUpperCase())}
-              </MenuItem>
-            );
-          })}
-        </Select>
-      </FormControl>
-      &nbsp;&nbsp;
-      <FormControl sx={{ mb: 2, width: "30%" }}>
-        <InputLabel>Agent Name</InputLabel>
-        <Select
-          value={agentName}
-          label="Agent Name"
-          onChange={(e) => {
-            setAgentName(e.target.value);
-            setModified(true);
-          }}
-        >
-          {agents
-            ? agents.map(
-                (agent) =>
-                  agent.name != "undefined" && (
-                    <MenuItem key={agent.name} value={agent.name}>
-                      {agent.name}
-                    </MenuItem>
-                  )
-              )
-            : null}
-        </Select>
-      </FormControl>
-      {stepType !== -1 ? step_types[stepType].component : null}
-      {modified ? (
-        <IconButton onClick={handleSave} size="large">
-          <SaveRounded sx={{ fontSize: "2rem" }} />
-        </IconButton>
-      ) : null}
-    </Container>
+    <>
+      <Box
+        sx={{
+          backgroundColor: theme.palette.action.selected,
+          borderRadius: "15px 15px 0 0",
+        }}
+      >
+        <Typography>
+          <IconButton
+            onClick={handleDecrement}
+            size="large"
+            disabled={step == 1}
+          >
+            <ArrowCircleUp sx={{ fontSize: "2rem" }} />
+          </IconButton>
+          Step {step}
+          <IconButton
+            onClick={handleIncrement}
+            size="large"
+            disabled={last_step}
+          >
+            <ArrowCircleDown sx={{ fontSize: "2rem" }} />
+          </IconButton>
+          <IconButton onClick={handleDelete} size="large">
+            <HighlightOff sx={{ fontSize: "2rem" }} color="error" />
+          </IconButton>
+        </Typography>
+      </Box>
+      <Container>
+        <br />
+        <FormControl sx={{ mb: 2, width: "30%" }}>
+          <InputLabel>Step Type</InputLabel>
+          <Select
+            label="Step Type"
+            value={stepType}
+            onChange={(e) => {
+              setStepType(e.target.value);
+              setModified(true);
+            }}
+          >
+            <MenuItem value={-1}>Select a Type...</MenuItem>
+            {step_types.map((type, index) => {
+              return (
+                <MenuItem key={index} value={index}>
+                  {type.name.replace(/\b\w/g, (s) => s.toUpperCase())}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+        &nbsp;&nbsp;
+        <FormControl sx={{ mb: 2, width: "30%" }}>
+          <InputLabel>Agent Name</InputLabel>
+          <Select
+            value={agentName}
+            label="Agent Name"
+            onChange={(e) => {
+              setAgentName(e.target.value);
+              setModified(true);
+            }}
+          >
+            {agents
+              ? agents.map(
+                  (agent) =>
+                    agent.name != "undefined" && (
+                      <MenuItem key={agent.name} value={agent.name}>
+                        {agent.name}
+                      </MenuItem>
+                    )
+                )
+              : null}
+          </Select>
+        </FormControl>
+        {stepType !== -1 ? step_types[stepType].component : null}
+        {modified ? (
+          <IconButton onClick={handleSave} size="large">
+            <SaveRounded sx={{ fontSize: "2rem" }} />
+          </IconButton>
+        ) : null}
+      </Container>
+    </>
   );
 }
