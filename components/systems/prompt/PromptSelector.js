@@ -71,9 +71,13 @@ export default function PromptSelector({
             ))}
           </Select>
         </FormControl>
-        <Tooltip title={prompt} placement="right">
-          <InfoOutlinedIcon style={{ cursor: "pointer", color: "green" }} />
-        </Tooltip>
+        {prompt ? (
+          <Tooltip title={prompt} placement="right">
+            <InfoOutlinedIcon style={{ cursor: "pointer", color: "green" }} />
+          </Tooltip>
+        ) : (
+          <></>
+        )}
       </Box>
 
       {promptArgs ? (
@@ -87,6 +91,7 @@ export default function PromptSelector({
             arg !== "agent_name" &&
             arg !== "working_directory" &&
             arg !== "helper_agent_name" &&
+            arg !== "prompt_name" &&
             arg !== ""
           ) {
             return (

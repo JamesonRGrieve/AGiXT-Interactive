@@ -1,15 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
-import useSWR from "swr";
 import { sdk } from "../../../../../lib/apiClient";
 import {
   Typography,
   Paper,
   MenuItem,
   TextField,
-  Input,
-  Button,
   IconButton,
   Box,
   Select,
@@ -17,86 +14,75 @@ import {
   AccordionDetails,
   AccordionSummary,
   Avatar,
+  Container,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import {
   ArrowCircleUp,
   ArrowCircleDown,
-  AddCircleOutline,
   HighlightOff,
   ExpandCircleDownOutlined,
-  InsertLink,
   SaveRounded,
-  LowPriority,
 } from "@mui/icons-material";
-import StepTypePrompt from "../../step_types/StepTypePrompt";
-import StepTypeCommand from "../../step_types/StepTypeCommand";
 import StepTypeChain from "../../step_types/StepTypeChain";
-import StepTypeInstruction from "../../step_types/StepTypeInstruction";
+import PromptSelector from "../../../prompt/PromptSelector";
+import CommandSelector from "../../../command/CommandSelector";
 export default function ChainStep({
-  step_number,
+  step,
   last_step,
   agent_name,
-  prompt_name,
   prompt_type,
   prompt,
+  commands,
+  promptCategories,
+  agents,
 }) {
+  const pn = prompt_type == "Prompt" ? prompt.prompt_name : prompt.command_name;
   const [agentName, setAgentName] = useState(agent_name);
-  const [promptName, setPromptName] = useState(prompt_name);
-  const [promptText, setPromptText] = useState(prompt);
-  const [expanded, setExpanded] = useState(false);
+  const [promptName, setPromptName] = useState(pn);
+  const [promptArgs, setPromptArgs] = useState(prompt);
+  const [promptCategory, setPromptCategory] = useState("Default");
   const [stepType, setStepType] = useState(-1);
   const router = useRouter();
   const [modified, setModified] = useState(false);
+
   const step_types = useMemo(
     () => [
       {
-        name: "prompt",
+        name: "Prompt",
         component: (
-          <StepTypePrompt
+          <PromptSelector
             update={setModified}
-            agent_name={agentName}
-            set_agent_name={setAgentName}
-            prompt_name={promptName}
-            set_prompt_name={setPromptName}
-            prompt={promptText}
-            set_prompt={setPromptText}
+            promptCategories={promptCategories}
+            promptCategory={promptCategory}
+            setPromptCategory={setPromptCategory}
+            promptName={promptName}
+            setPromptName={setPromptName}
+            promptArgs={promptArgs}
+            setPromptArgs={setPromptArgs}
           />
         ),
       },
       {
-        name: "command",
+        name: "Command",
         component: (
-          <StepTypeCommand
+          <CommandSelector
             update={setModified}
-            prompt={promptText}
-            set_prompt={setPromptText}
+            commands={commands}
+            commandName={promptName}
+            setCommandName={setPromptName}
+            commandArgs={promptArgs}
+            setCommandArgs={setPromptArgs}
           />
         ),
       },
       {
-        name: "instruction",
-        component: (
-          <StepTypeInstruction
-            update={setModified}
-            agent_name={agentName}
-            set_agent_name={setAgentName}
-            prompt={promptText}
-            set_prompt={setPromptText}
-          />
-        ),
-      },
-      {
-        name: "chain",
-        component: (
-          <StepTypeChain
-            update={setModified}
-            prompt={promptText}
-            set_prompt={setPromptText}
-          />
-        ),
+        name: "Chain",
+        component: <StepTypeChain update={setModified} />,
       },
     ],
-    [agentName, promptName, promptText]
+    [agentName, promptName]
   );
   useEffect(() => {
     setStepType(
@@ -104,37 +90,49 @@ export default function ChainStep({
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prompt_type]);
-  const handleChange = () => {
-    setExpanded((old) => !old);
-  };
+
   const handleIncrement = async () => {
-    await sdk.moveStep(step_number, Number(step_number) + 1);
+    await sdk.moveStep(router.query.chain, step, Number(step) + 1);
     mutate("chain/" + router.query.chain);
   };
   const handleDecrement = async () => {
-    await sdk.moveStep(step_number, Number(step_number) - 1);
+    await sdk.moveStep(router.query.chain, step, Number(step) - 1);
     mutate("chain/" + router.query.chain);
   };
   useEffect(() => {
     setAgentName(agent_name);
   }, [agent_name]);
   useEffect(() => {
-    setPromptName(prompt_name);
-  }, [prompt_name]);
+    setPromptName(
+      prompt_type == "Prompt" ? prompt.prompt_name : prompt.command_name
+    );
+  }, [prompt.prompt_name, prompt.command_name]);
   useEffect(() => {
-    setPromptText(prompt);
+    setPromptArgs(prompt);
   }, [prompt]);
+  console.log("ChainStep prompt: ", prompt);
+  useEffect(() => {
+    if (prompt.prompt_category) {
+      setPromptCategory(prompt.prompt_category);
+    } else {
+      setPromptCategory("Default");
+    }
+  }, [prompt.prompt_category]);
+
   const handleSave = async () => {
+    prompt.prompt_name = promptName;
+    prompt.prompt_category = promptCategory;
+
     const args = {
-      step_number: step_number,
-      prompt_name: promptName,
-      prompt: promptText,
+      step: step,
+      prompt: prompt,
       agent_name: agentName,
+      prompt_type: prompt_type,
     };
-    console.log('ChainStep args: ', args);
+    console.log("ChainStep args: ", args);
     await sdk.updateStep(
       router.query.chain,
-      step_number,
+      step,
       agentName,
       step_types[stepType].name,
       args
@@ -142,128 +140,73 @@ export default function ChainStep({
     mutate("chain/" + router.query.chain);
   };
   const handleDelete = async () => {
-    await sdk.deleteStep(router.query.chain, step_number);
+    await sdk.deleteStep(router.query.chain, step);
     mutate("chain/" + router.query.chain);
   };
-  console.log('ChainStep last_step: ', last_step);
+  console.log("Prompt Type: ", prompt_type);
   return (
-    <>
-      <Paper
-        elevation={5}
-        sx={{
-          padding: "0.5rem",
-          display: "flex",
-          flexDirection: "column",
-          my: "1rem",
-          fontSize: "1rem",
-        }}
-      >
-        <Accordion expanded={expanded} onChange={handleChange}>
-          <AccordionSummary
-            sx={{ flexDirection: "row-reverse", alignItems: "center" }}
-            expandIcon={<ExpandCircleDownOutlined />}
-          >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "flex-start",
-                alignItems: "center",
-                mx: "0.5rem",
-                flex: 1,
-              }}
-            >
-              {expanded ? null : (
-                <Typography variant="h6" sx={{ mr: "2rem" }}>
-                  Step Inputs
-                </Typography>
-              )}
-              <Box
-                onClick={(e) => {
-                  e.stopPropagation();
-                }}
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  flex: 1,
-                }}
-              >
-                <IconButton
-                  onClick={handleDecrement}
-                  size="large"
-                  disabled={step_number == 1}
-                >
-                  <ArrowCircleUp sx={{ fontSize: "2rem" }} />
-                </IconButton>
-                <Avatar sx={{ fontWeight: "bolder" }}>{step_number}</Avatar>
-                <IconButton
-                  onClick={handleIncrement}
-                  size="large"
-                  disabled={last_step}
-                >
-                  <ArrowCircleDown sx={{ fontSize: "2rem" }} />
-                </IconButton>
-                <Select
-                  label="Type"
-                  sx={{ mx: "0.5rem" }}
-                  value={stepType}
-                  onChange={(e) => {
-                    setStepType(e.target.value);
-                    setModified(true);
-                  }}
-                >
-                  <MenuItem value={-1}>Select a Type...</MenuItem>
-                  {step_types.map((type, index) => {
-                    return (
-                      <MenuItem key={index} value={index}>
-                        {type.name.replace(/\b\w/g, (s) => s.toUpperCase())}
-                      </MenuItem>
-                    );
-                  })}
-                </Select>
-                {stepType !== -1 ? step_types[stepType].component : null}
-                {modified ? (
-                  <IconButton onClick={handleSave} size="large">
-                    <SaveRounded sx={{ fontSize: "2rem" }} />
-                  </IconButton>
-                ) : null}
-                <IconButton onClick={handleDelete} size="large">
-                  <HighlightOff sx={{ fontSize: "2rem" }} />
-                </IconButton>
-              </Box>
-            </Box>
-          </AccordionSummary>
-          <AccordionDetails>
-            
-                        {expanded?<Typography variant="h6">Step Inputs</Typography>:null}
-                        <Paper elevation={3} sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", my: "0.5rem", mx: "2rem", p: "0.3rem" }}>
-                            <IconButton size="large"><HighlightOff sx={{ fontSize: "2rem" }} /></IconButton>
-                            <Select label="Type" sx={{ mx: "0.5rem" }} value={0}>
-                                <MenuItem value={0}>Select an Input Type...</MenuItem>
-                            </Select>
-                        </Paper>
-                        <Paper elevation={3} sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", my: "0.5rem", mx: "2rem", p: "0.3rem" }}>
-                            <IconButton size="large"><HighlightOff sx={{ fontSize: "2rem" }} /></IconButton>
-                            <Select label="Type" sx={{ mx: "0.5rem" }} value={0}>
-                                <MenuItem value={0}>Saved Output</MenuItem>
-                            </Select>
-                            <Select label="Output" sx={{ mx: "0.5rem" }} value={0}>
-                                <MenuItem value={0}>&quot;Step 3 Output&quot;</MenuItem>
-                            </Select>
-                            <TextField variant="outlined" value="{step3}"></TextField>
-                        </Paper>
-                        <Paper elevation={3} sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", my: "0.5rem", mx: "2rem", p: "0.3rem" }}>
-                            <IconButton size="large"><HighlightOff sx={{ fontSize: "2rem" }} /></IconButton>
-                            <Select label="Type" sx={{ mx: "0.5rem" }} value={0}>
-                                <MenuItem value={0}>Literal Value</MenuItem>
-                            </Select>
-                            <TextField variant="outlined" value="console.log('Hello, World!');"></TextField>
-                            <TextField variant="outlined" value="{myLiteral}"></TextField>
-                        </Paper>
-                                
-          </AccordionDetails>
-        </Accordion>
-      </Paper>
-    </>
+    <Container>
+      <Typography>
+        <IconButton onClick={handleDecrement} size="large" disabled={step == 1}>
+          <ArrowCircleUp sx={{ fontSize: "2rem" }} />
+        </IconButton>
+        Step {step}
+        <IconButton onClick={handleIncrement} size="large" disabled={last_step}>
+          <ArrowCircleDown sx={{ fontSize: "2rem" }} />
+        </IconButton>
+        <IconButton onClick={handleDelete} size="large">
+          <HighlightOff sx={{ fontSize: "2rem" }} color="error" />
+        </IconButton>
+      </Typography>
+      <FormControl sx={{ mb: 2, width: "30%" }}>
+        <InputLabel>Step Type</InputLabel>
+        <Select
+          label="Step Type"
+          value={stepType}
+          onChange={(e) => {
+            setStepType(e.target.value);
+            setModified(true);
+          }}
+        >
+          <MenuItem value={-1}>Select a Type...</MenuItem>
+          {step_types.map((type, index) => {
+            return (
+              <MenuItem key={index} value={index}>
+                {type.name.replace(/\b\w/g, (s) => s.toUpperCase())}
+              </MenuItem>
+            );
+          })}
+        </Select>
+      </FormControl>
+      &nbsp;&nbsp;
+      <FormControl sx={{ mb: 2, width: "30%" }}>
+        <InputLabel>Agent Name</InputLabel>
+        <Select
+          value={agentName}
+          label="Agent Name"
+          onChange={(e) => {
+            setAgentName(e.target.value);
+            setModified(true);
+          }}
+        >
+          {agents
+            ? agents.map(
+                (agent) =>
+                  agent.name != "undefined" && (
+                    <MenuItem key={agent.name} value={agent.name}>
+                      {agent.name}
+                    </MenuItem>
+                  )
+              )
+            : null}
+        </Select>
+      </FormControl>
+      {stepType !== -1 ? step_types[stepType].component : null}
+      {modified ? (
+        <IconButton onClick={handleSave} size="large">
+          <SaveRounded sx={{ fontSize: "2rem" }} />
+        </IconButton>
+      ) : null}
+    </Container>
   );
 }
