@@ -8,7 +8,7 @@ import { useTheme } from "@mui/material/styles";
 import { sdk } from "../../../lib/apiClient";
 import useSWR from "swr";
 import { mutate } from "swr";
-import { Container } from "@mui/material";
+import { Box } from "@mui/material";
 // TODO: Need to define conversationName higher up so that it is persisted.
 export default function AgentPanel({
   data,
@@ -142,16 +142,14 @@ export default function AgentPanel({
         <Tab label="Instruct Mode" value="2" selected={tab == 2} wrapped />
         <Tab label="Chain Execution" value="3" selected={tab == 3} wrapped />
       </Tabs>
-      <Container
-        maxWidth="xl"
-        disableGutters={true}
+      <Box
         sx={{
           width: `calc(100% - ${drawerWidth}px)`,
-          padding: 0,
+          padding: "0.2rem",
         }}
       >
         {tabs[tab]}
-      </Container>
+      </Box>
     </>
   );
 }
