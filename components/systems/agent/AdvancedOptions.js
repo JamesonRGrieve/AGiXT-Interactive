@@ -18,12 +18,12 @@ export default function AdvancedOptions({
   setWebsearch,
   enableMemory,
   setEnableMemory,
+  fullWidth = true,
 }) {
   return (
     <>
-      <br />
       <TextField
-        fullWidth
+        fullWidth={fullWidth}
         type="number"
         label="Context Results"
         value={contextResults}
@@ -31,7 +31,7 @@ export default function AdvancedOptions({
         sx={{ mb: 2 }}
       />
       <TextField
-        fullWidth
+        fullWidth={fullWidth}
         type="number"
         label="Shots"
         value={shots}
@@ -39,7 +39,7 @@ export default function AdvancedOptions({
         sx={{ mb: 2 }}
       />
       <TextField
-        fullWidth
+        fullWidth={fullWidth}
         type="number"
         label="Websearch Depth"
         value={websearchDepth}
@@ -47,7 +47,7 @@ export default function AdvancedOptions({
         sx={{ mb: 2 }}
       />
       <TextField
-        fullWidth
+        fullWidth={fullWidth}
         type="number"
         label="Inject Memories from Collection"
         value={injectMemoriesFromCollectionNumber}
@@ -55,7 +55,7 @@ export default function AdvancedOptions({
         sx={{ mb: 2 }}
       />
       <TextField
-        fullWidth
+        fullWidth={fullWidth}
         label="Conversation Results"
         type="number"
         min={0}

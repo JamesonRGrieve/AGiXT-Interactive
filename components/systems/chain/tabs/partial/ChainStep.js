@@ -107,6 +107,7 @@ export default function ChainStep({
               }
               conversationResults={conversationResults}
               setConversationResults={setConversationResults}
+              fullWidth={false}
             />
           </>
         ),
