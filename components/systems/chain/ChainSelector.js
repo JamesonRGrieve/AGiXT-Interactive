@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Select, MenuItem, FormControl, InputLabel } from "@mui/material";
-
+import { sdk } from "../../../lib/apiClient";
 export default function ChainSelector({
   chains,
-  sdk,
   selectedChain,
   setSelectedChain,
 }) {

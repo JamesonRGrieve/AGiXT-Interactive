@@ -13,6 +13,7 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
 import ChatBubble from "@mui/icons-material/ChatBubble";
 import InsertLink from "@mui/icons-material/InsertLink";
+import AddLink from "@mui/icons-material/AddLink";
 import { useRouter } from "next/router";
 
 export default function MenuAgentList({ data }) {
@@ -49,10 +50,23 @@ export default function MenuAgentList({ data }) {
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <AddCircle />
           </ListItemIcon>
-          <ListItemText primary="Add A New Agent" />
+          <ListItemText primary="New Agent" />
         </ListItemButton>
       </Link>
-
+      <Link href={`/new/chain`}>
+        <ListItemButton
+          key={"new"}
+          selected={
+            router.pathname.split("/")[1] == "new" &&
+            router.pathname.split("/")[2] == "chain"
+          }
+        >
+          <ListItemIcon sx={{ minWidth: "30px" }}>
+            <AddLink />
+          </ListItemIcon>
+          <ListItemText primary="New Chain" />
+        </ListItemButton>
+      </Link>
       <Divider />
 
       {Array.isArray(data) &&
