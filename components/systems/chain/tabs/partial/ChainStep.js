@@ -22,8 +22,6 @@ import {
   ExpandCircleDownOutlined,
   SaveRounded,
 } from "@mui/icons-material";
-import StepTypePrompt from "../../step_types/StepTypePrompt";
-import StepTypeCommand from "../../step_types/StepTypeCommand";
 import StepTypeChain from "../../step_types/StepTypeChain";
 import PromptSelector from "../../../prompt/PromptSelector";
 import CommandSelector from "../../../command/CommandSelector";
@@ -52,8 +50,6 @@ export default function ChainStep({
         component: (
           <PromptSelector
             update={setModified}
-            agent_name={agentName}
-            set_agent_name={setAgentName}
             promptCategories={promptCategories}
             promptCategory={promptCategory}
             setPromptCategory={setPromptCategory}
@@ -110,7 +106,11 @@ export default function ChainStep({
   }, [prompt]);
   console.log("ChainStep prompt: ", prompt);
   useEffect(() => {
-    setPromptCategory(prompt.prompt_category);
+    if (prompt.prompt_category) {
+      setPromptCategory(prompt.prompt_category);
+    } else {
+      setPromptCategory("Default");
+    }
   }, [prompt.prompt_category]);
 
   const handleSave = async () => {

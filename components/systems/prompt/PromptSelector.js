@@ -71,9 +71,13 @@ export default function PromptSelector({
             ))}
           </Select>
         </FormControl>
-        <Tooltip title={prompt} placement="right">
-          <InfoOutlinedIcon style={{ cursor: "pointer", color: "green" }} />
-        </Tooltip>
+        {prompt ? (
+          <Tooltip title={prompt} placement="right">
+            <InfoOutlinedIcon style={{ cursor: "pointer", color: "green" }} />
+          </Tooltip>
+        ) : (
+          <></>
+        )}
       </Box>
 
       {promptArgs ? (
