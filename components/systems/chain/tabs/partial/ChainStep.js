@@ -26,9 +26,11 @@ import {
   ExpandCircleDownOutlined,
   SaveRounded,
 } from "@mui/icons-material";
-import StepTypeChain from "../../step_types/StepTypeChain";
 import PromptSelector from "../../../prompt/PromptSelector";
 import CommandSelector from "../../../command/CommandSelector";
+import AdvancedOptions from "../../../agent/AdvancedOptions";
+import ChainArgs from "../../ChainArgs";
+import ChainSelector from "../../ChainSelector";
 export default function ChainStep({
   step,
   last_step,
@@ -39,7 +41,12 @@ export default function ChainStep({
   promptCategories,
   agents,
 }) {
-  const pn = prompt_type == "Prompt" ? prompt.prompt_name : prompt.command_name;
+  const pn =
+    prompt_type == "Prompt"
+      ? prompt.prompt_name
+      : prompt_type == "Command"
+      ? prompt.command_name
+      : prompt.chain;
   const [agentName, setAgentName] = useState(agent_name);
   const [promptName, setPromptName] = useState(pn);
   const [promptArgs, setPromptArgs] = useState(prompt);
@@ -53,16 +60,23 @@ export default function ChainStep({
       {
         name: "Prompt",
         component: (
-          <PromptSelector
-            update={setModified}
-            promptCategories={promptCategories}
-            promptCategory={promptCategory}
-            setPromptCategory={setPromptCategory}
-            promptName={promptName}
-            setPromptName={setPromptName}
-            promptArgs={promptArgs}
-            setPromptArgs={setPromptArgs}
-          />
+          <>
+            <PromptSelector
+              update={setModified}
+              promptCategories={promptCategories}
+              promptCategory={promptCategory}
+              setPromptCategory={setPromptCategory}
+              promptName={promptName}
+              setPromptName={setPromptName}
+              promptArgs={promptArgs}
+              setPromptArgs={setPromptArgs}
+            />
+            <AdvancedOptions
+              update={setModified}
+              promptArgs={promptArgs}
+              setPromptArgs={setPromptArgs}
+            />
+          </>
         ),
       },
       {
@@ -80,7 +94,23 @@ export default function ChainStep({
       },
       {
         name: "Chain",
-        component: <StepTypeChain update={setModified} />,
+        component: (
+          <>
+            <ChainSelector
+              update={setModified}
+              sdk={sdk}
+              selectedChain={promptName}
+              setSelectedChain={setPromptName}
+            />
+            <ChainArgs
+              update={setModified}
+              selectedChain={promptName}
+              chainArgs={promptArgs}
+              setChainArgs={setPromptArgs}
+              sdk={sdk}
+            />
+          </>
+        ),
       },
     ],
     [agentName, promptName]
@@ -105,9 +135,13 @@ export default function ChainStep({
   }, [agent_name]);
   useEffect(() => {
     setPromptName(
-      prompt_type == "Prompt" ? prompt.prompt_name : prompt.command_name
+      prompt_type == "Prompt"
+        ? prompt.prompt_name
+        : prompt_type == "Command"
+        ? prompt.command_name
+        : prompt.chain
     );
-  }, [prompt.prompt_name, prompt.command_name]);
+  }, [prompt.prompt_name, prompt.command_name, prompt.chain]);
   useEffect(() => {
     setPromptArgs(prompt);
   }, [prompt]);
@@ -153,27 +187,20 @@ export default function ChainStep({
           borderRadius: "15px 15px 0 0",
         }}
       >
-        <Typography>
-          <IconButton
-            onClick={handleDecrement}
-            size="large"
-            disabled={step == 1}
-          >
-            <ArrowCircleUp sx={{ fontSize: "2rem" }} />
+        <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
+          &nbsp;&nbsp;&nbsp;&nbsp;Step {step}
+          <IconButton onClick={handleDecrement} disabled={step == 1}>
+            <ArrowCircleUp />
           </IconButton>
-          Step {step}
-          <IconButton
-            onClick={handleIncrement}
-            size="large"
-            disabled={last_step}
-          >
-            <ArrowCircleDown sx={{ fontSize: "2rem" }} />
+          <IconButton onClick={handleIncrement} disabled={last_step}>
+            <ArrowCircleDown />
           </IconButton>
-          <IconButton onClick={handleDelete} size="large">
-            <HighlightOff sx={{ fontSize: "2rem" }} color="error" />
+          <IconButton onClick={handleDelete}>
+            <HighlightOff color="error" />
           </IconButton>
         </Typography>
       </Box>
+
       <Container>
         <br />
         <FormControl sx={{ mb: 2, width: "30%" }}>

@@ -40,6 +40,9 @@ export default function ChainSteps({}) {
   };
   return (
     <Container>
+      <Typography variant="h4" sx={{ fontWeight: "bolder" }}>
+        {router.query.chain}
+      </Typography>
       {steps?.data?.steps.map((step, index) => {
         return (
           <>
