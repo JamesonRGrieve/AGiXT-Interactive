@@ -26,11 +26,10 @@ import {
   ExpandCircleDownOutlined,
   SaveRounded,
 } from "@mui/icons-material";
-import StepTypeChain from "../../step_types/StepTypeChain";
 import PromptSelector from "../../../prompt/PromptSelector";
 import CommandSelector from "../../../command/CommandSelector";
 import AdvancedOptions from "../../../agent/AdvancedOptions";
-import ChainArgsEditor from "../../ChainArgsEditor";
+import ChainArgs from "../../ChainArgs";
 import ChainSelector from "../../ChainSelector";
 export default function ChainStep({
   step,
@@ -103,7 +102,7 @@ export default function ChainStep({
               selectedChain={promptName}
               setSelectedChain={setPromptName}
             />
-            <ChainArgsEditor
+            <ChainArgs
               update={setModified}
               selectedChain={promptName}
               chainArgs={promptArgs}
