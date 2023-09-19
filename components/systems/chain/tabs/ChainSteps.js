@@ -20,6 +20,7 @@ export default function ChainSteps({}) {
     `commands`,
     async () => await sdk.getCommands("gpt4free")
   );
+  const { data: agents } = useSWR("agent", async () => await sdk.getAgents());
   console.log("ChainSteps steps.data: ", steps.data);
   const handleAdd = async () => {
     // TODO: See Chain Management page in Streamlit app.  This needs modified, missing some fields..
@@ -47,6 +48,7 @@ export default function ChainSteps({}) {
               {...step}
               promptCategories={promptCategories}
               commands={commands}
+              agents={agents}
               last_step={steps.data.steps.length === index + 1}
               updateCallback={() => {
                 return null;

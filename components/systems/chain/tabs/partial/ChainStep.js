@@ -36,6 +36,7 @@ export default function ChainStep({
   prompt,
   commands,
   promptCategories,
+  agents,
 }) {
   const pn = prompt_type == "Prompt" ? prompt.prompt_name : prompt.command_name;
   const [agentName, setAgentName] = useState(agent_name);
@@ -145,18 +146,22 @@ export default function ChainStep({
   console.log("Prompt Type: ", prompt_type);
   return (
     <Container>
-      <IconButton onClick={handleDecrement} size="large" disabled={step == 1}>
-        <ArrowCircleUp sx={{ fontSize: "2rem" }} />
-      </IconButton>
-      <Typography>Step {step}</Typography>
-      <IconButton onClick={handleIncrement} size="large" disabled={last_step}>
-        <ArrowCircleDown sx={{ fontSize: "2rem" }} />
-      </IconButton>
+      <Typography>
+        <IconButton onClick={handleDecrement} size="large" disabled={step == 1}>
+          <ArrowCircleUp sx={{ fontSize: "2rem" }} />
+        </IconButton>
+        Step {step}
+        <IconButton onClick={handleIncrement} size="large" disabled={last_step}>
+          <ArrowCircleDown sx={{ fontSize: "2rem" }} />
+        </IconButton>
+        <IconButton onClick={handleDelete} size="large">
+          <HighlightOff sx={{ fontSize: "2rem" }} color="error" />
+        </IconButton>
+      </Typography>
       <FormControl sx={{ mb: 2, width: "30%" }}>
-        <InputLabel>Type</InputLabel>
+        <InputLabel>Step Type</InputLabel>
         <Select
-          label="Type"
-          sx={{ mx: "0.5rem" }}
+          label="Step Type"
           value={stepType}
           onChange={(e) => {
             setStepType(e.target.value);
@@ -173,24 +178,35 @@ export default function ChainStep({
           })}
         </Select>
       </FormControl>
-      <TextField
-        label="Agent Name"
-        sx={{ mx: "0.5rem" }}
-        value={agentName}
-        onChange={(e) => {
-          setAgentName(e.target.value);
-          setModified(true);
-        }}
-      />
+      &nbsp;&nbsp;
+      <FormControl sx={{ mb: 2, width: "30%" }}>
+        <InputLabel>Agent Name</InputLabel>
+        <Select
+          value={agentName}
+          label="Agent Name"
+          onChange={(e) => {
+            setAgentName(e.target.value);
+            setModified(true);
+          }}
+        >
+          {agents
+            ? agents.map(
+                (agent) =>
+                  agent.name != "undefined" && (
+                    <MenuItem key={agent.name} value={agent.name}>
+                      {agent.name}
+                    </MenuItem>
+                  )
+              )
+            : null}
+        </Select>
+      </FormControl>
       {stepType !== -1 ? step_types[stepType].component : null}
       {modified ? (
         <IconButton onClick={handleSave} size="large">
           <SaveRounded sx={{ fontSize: "2rem" }} />
         </IconButton>
       ) : null}
-      <IconButton onClick={handleDelete} size="large">
-        <HighlightOff sx={{ fontSize: "2rem" }} />
-      </IconButton>
     </Container>
   );
 }
