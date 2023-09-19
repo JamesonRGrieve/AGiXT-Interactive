@@ -91,6 +91,7 @@ export default function PromptSelector({
             arg !== "agent_name" &&
             arg !== "working_directory" &&
             arg !== "helper_agent_name" &&
+            arg !== "prompt_name" &&
             arg !== ""
           ) {
             return (

@@ -15,7 +15,6 @@ import useSWR from "swr";
 export default function CommandSelector({
   commandName,
   setCommandName,
-  command,
   commandArgs,
   setCommandArgs,
   isLoading,
@@ -36,7 +35,6 @@ export default function CommandSelector({
     };
     fetchCommands();
   }, []);
-  console.log("CommandSelector commands: ", commands);
 
   return (
     <>
@@ -56,9 +54,6 @@ export default function CommandSelector({
             ))}
           </Select>
         </FormControl>
-        <Tooltip title={command} placement="right">
-          <InfoOutlinedIcon style={{ cursor: "pointer", color: "green" }} />
-        </Tooltip>
       </Box>
 
       {commandArgs ? (
@@ -72,6 +67,7 @@ export default function CommandSelector({
             arg !== "agent_name" &&
             arg !== "working_directory" &&
             arg !== "helper_agent_name" &&
+            arg !== "command_name" &&
             arg !== ""
           ) {
             return (
@@ -81,7 +77,7 @@ export default function CommandSelector({
                 onChange={(e) =>
                   setCommandArgs({ ...commandArgs, [arg]: e.target.value })
                 }
-                sx={{ mb: 2, width: "30%" }}
+                sx={{ mb: 2 }}
                 disabled={isLoading}
               />
             );

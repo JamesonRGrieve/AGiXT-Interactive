@@ -65,9 +65,11 @@ export default function ChainStep({
         component: (
           <CommandSelector
             update={setModified}
+            commands={commands}
+            commandName={promptName}
+            setCommandName={setPromptName}
             commandArgs={promptArgs}
             setCommandArgs={setPromptArgs}
-            commands={commands}
           />
         ),
       },

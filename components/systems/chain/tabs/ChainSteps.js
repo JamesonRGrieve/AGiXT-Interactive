@@ -6,7 +6,7 @@ import useSWR from "swr";
 import { Typography, Box, IconButton } from "@mui/material";
 import { AddCircleOutline, InsertLink, LowPriority } from "@mui/icons-material";
 import ChainStep from "./partial/ChainStep";
-export default function ChainSteps({ commands }) {
+export default function ChainSteps({}) {
   const router = useRouter();
   const steps = useSWR(
     "chain/" + router.query.chain,
@@ -15,6 +15,10 @@ export default function ChainSteps({ commands }) {
   const { data: promptCategories } = useSWR(
     `promptCategories`,
     async () => await sdk.getPromptCategories()
+  );
+  const { data: commands } = useSWR(
+    `commands`,
+    async () => await sdk.getCommands("gpt4free")
   );
   console.log("ChainSteps steps.data: ", steps.data);
   const handleAdd = async () => {
