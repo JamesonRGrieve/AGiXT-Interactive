@@ -23,6 +23,7 @@ import TrainOptions from "../components/systems/train/TrainOptions";
 import AgentCommandList from "../components/systems/agent/AgentCommandList";
 import ChainArgsEditor from "../components/systems/chain/ChainArgsEditor";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
+import Container from "@mui/material/Container";
 import useSWR from "swr";
 import { sdk } from "../lib/apiClient";
 import PropTypes from "prop-types";
@@ -222,7 +223,7 @@ export default function App({ Component, pageProps, dark }) {
           </DrawerHeader>
           <Divider />
           {pageName === "agent" && tab != 3 ? (
-            <>
+            <Container>
               <AdvancedOptions
                 contextResults={contextResults}
                 setContextResults={setContextResults}
@@ -249,7 +250,7 @@ export default function App({ Component, pageProps, dark }) {
                 Agent Commands
               </Typography>
               <Divider />
-            </>
+            </Container>
           ) : null}
 
           {pageName === "agent" && tab == 3 ? (

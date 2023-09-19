@@ -20,7 +20,7 @@ export default function AdvancedOptions({
   setEnableMemory,
 }) {
   return (
-    <Container>
+    <>
       <br />
       <TextField
         fullWidth
@@ -96,6 +96,6 @@ export default function AdvancedOptions({
         }
         label="Enable Memory"
       />
-    </Container>
+    </>
   );
 }
