@@ -145,19 +145,47 @@ export default function App({ Component, pageProps, dark }) {
   const handleChainChange = (event) => {
     setSelectedChain(event.target.value);
   };
+  const pageTitle = () => {
+    if (pageName == "chain") {
+      return "Chain Management";
+    } else if (pageName == "agent") {
+      if (tab == 0) {
+        return "Chat";
+      } else if (tab == 1) {
+        return "Prompt";
+      } else if (tab == 2) {
+        return "Instruct";
+      } else if (tab == 3) {
+        return "Chain Execution";
+      } else {
+        return "Agent Interactions";
+      }
+    } else if (pageName == "prompt") {
+      return "Prompt Management";
+    } else if (pageName == "train") {
+      if (tab == 0) {
+        return "Website Training";
+      } else if (tab == 1) {
+        return "File Training";
+      } else if (tab == 2) {
+        return "Text Training";
+      } else if (tab == 3) {
+        return "GitHub Training";
+      } else if (tab == 5) {
+        return "arXiv Training";
+      } else if (tab == 4) {
+        return "Memory Management";
+      } else {
+        return "Agent Training";
+      }
+    } else if (pageName == "settings") {
+      return "Agent Settings";
+    }
+  };
   return (
     <>
       <Head>
-        <title>
-          AGiXT -&nbsp;{pageName == "chain" ? "Chain Management" : null}
-          {pageName == "agent" && tab == 0 ? "Chat" : null}
-          {pageName == "agent" && tab == 1 ? "Prompt" : null}
-          {pageName == "agent" && tab == 2 ? "Instruct" : null}
-          {pageName == "agent" && tab == 3 ? "Chain Execution" : null}
-          {pageName == "prompt" ? "Prompt Management" : null}
-          {pageName == "train" ? "Agent Training" : null}
-          {pageName == "settings" ? "Agent Settings" : null}
-        </title>
+        <title>AGiXT - {pageTitle()}</title>
         <meta name="description" content="AGiXT" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
