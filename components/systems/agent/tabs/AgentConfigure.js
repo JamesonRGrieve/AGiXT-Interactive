@@ -22,7 +22,7 @@ import {
   InputLabel,
 } from "@mui/material";
 
-export default function AgentConfigure({ data }) {
+export default function AgentConfigure({ data, drawerWidth }) {
   const { providerSettings, extensionSettings } = useSettings();
   const [provider, setProvider] = useState(null);
   const [fields, setFields] = useState({});
@@ -190,7 +190,12 @@ export default function AgentConfigure({ data }) {
   }, [provider, providerSettings, extensionSettings, agentName, data]);
 
   return (
-    <Container>
+    <Box
+      sx={{
+        width: `calc(100% - ${drawerWidth}px)`,
+        padding: "1rem",
+      }}
+    >
       <Typography variant="h6" sx={{ my: "1rem" }}>
         {agentName} Agent Configuration&nbsp;&nbsp;
         <Button color="info" onClick={handleExport}>
@@ -420,6 +425,6 @@ export default function AgentConfigure({ data }) {
       <Button onClick={handleDelete} variant="contained" color="error">
         Delete Agent
       </Button>
-    </Container>
+    </Box>
   );
 }

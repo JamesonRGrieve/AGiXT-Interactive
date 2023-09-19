@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { Container, TextField, Button, Typography } from "@mui/material";
 import { mutate } from "swr";
-import useSWR from "swr";
 import { sdk } from "../../lib/apiClient";
 export default function Home() {
   const router = useRouter();
@@ -10,9 +9,8 @@ export default function Home() {
   const handleCreate = async () => {
     sdk.addAgent(name, {});
     mutate("agent");
-    router.push(`/agent/${name}?config=true`);
+    router.push(`/settings?agent=${name}`);
   };
-  const agents = useSWR("agent", async () => sdk.getAgents());
   return (
     <Container>
       <Typography variant="h6" component="h2" marginY={"1rem"}>

@@ -22,37 +22,6 @@ export default function MenuAgentList({ data }) {
   const agentName = router.query.agent;
   return (
     <List>
-      <Link href={`/prompt`} passHref>
-        <ListItemButton selected={pageName == "prompt"}>
-          <ListItemIcon sx={{ minWidth: "30px" }}>
-            <ChatBubble />
-          </ListItemIcon>
-          <ListItemText primary="Manage Prompts" />
-        </ListItemButton>
-      </Link>
-      <Link href={`/chain`} passHref>
-        <ListItemButton selected={pageName == "chain"}>
-          <ListItemIcon sx={{ minWidth: "30px" }}>
-            <InsertLink />
-          </ListItemIcon>
-          <ListItemText primary="Manage Chains" />
-        </ListItemButton>
-      </Link>
-      <Divider />
-
-      <Link href={`/new/agent`} passHref>
-        <ListItemButton
-          selected={
-            router.pathname.split("/")[1] == "new" &&
-            router.pathname.split("/")[2] == "agent"
-          }
-        >
-          <ListItemIcon sx={{ minWidth: "30px" }}>
-            <AddCircle />
-          </ListItemIcon>
-          <ListItemText primary="New Agent" />
-        </ListItemButton>
-      </Link>
       <Link href={`/new/chain`}>
         <ListItemButton
           key={"new"}
@@ -67,6 +36,20 @@ export default function MenuAgentList({ data }) {
           <ListItemText primary="New Chain" />
         </ListItemButton>
       </Link>
+      <Link href={`/new/agent`} passHref>
+        <ListItemButton
+          selected={
+            router.pathname.split("/")[1] == "new" &&
+            router.pathname.split("/")[2] == "agent"
+          }
+        >
+          <ListItemIcon sx={{ minWidth: "30px" }}>
+            <AddCircle />
+          </ListItemIcon>
+          <ListItemText primary="New Agent" />
+        </ListItemButton>
+      </Link>
+
       <Divider />
 
       {Array.isArray(data) &&
@@ -114,6 +97,32 @@ export default function MenuAgentList({ data }) {
                           <ModelTrainingOutlinedIcon />
                         </ListItemIcon>
                         Training
+                      </ListItemButton>
+                    </Link>
+                    <Link href={`/prompt?agent=${agent.name}`} passHref>
+                      <ListItemButton
+                        variant="contained"
+                        color="primary"
+                        sx={{ pl: "2rem" }}
+                        selected={pageName == "prompt"}
+                      >
+                        <ListItemIcon sx={{ minWidth: "30px" }}>
+                          <ChatBubble />
+                        </ListItemIcon>
+                        <ListItemText primary="Prompts" />
+                      </ListItemButton>
+                    </Link>
+                    <Link href={`/chain/?agent=${agent.name}`} passHref>
+                      <ListItemButton
+                        variant="contained"
+                        color="primary"
+                        sx={{ pl: "2rem" }}
+                        selected={pageName == "chain"}
+                      >
+                        <ListItemIcon sx={{ minWidth: "30px" }}>
+                          <InsertLink />
+                        </ListItemIcon>
+                        <ListItemText primary="Chains" />
                       </ListItemButton>
                     </Link>
                     <Link href={`/settings?agent=${agent.name}`} passHref>

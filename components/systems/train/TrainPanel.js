@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Tab, Tabs, Container, Typography } from "@mui/material";
+import { Tab, Tabs, Box, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import WebTraining from "./tabs/WebTraining";
 import FileTraining from "./tabs/FileTraining";
@@ -74,22 +74,13 @@ export default function TrainPanel({
         <Tab label="arXiv Training" value="5" selected={tab == 5} wrapped />
         <Tab label="Memory Management" value="4" selected={tab == 4} wrapped />
       </Tabs>
-      <Container>
-        <Typography variant="h4" component="h1" gutterBottom>
-          {
-            [
-              "Website Training",
-              "File Training",
-              "Text Training",
-              "GitHub Repository Training",
-              "Memory Management",
-              "arXiv Training",
-            ][tab]
-          }
-        </Typography>
-        <br />
+      <Box
+        sx={{
+          padding: "1rem",
+        }}
+      >
         {tabs[tab]}
-      </Container>
+      </Box>
     </>
   );
 }
