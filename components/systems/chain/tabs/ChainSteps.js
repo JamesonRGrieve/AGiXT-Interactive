@@ -6,13 +6,13 @@ import useSWR from "swr";
 import { Typography, Box, IconButton } from "@mui/material";
 import { AddCircleOutline, InsertLink, LowPriority } from "@mui/icons-material";
 import ChainStep from "./partial/ChainStep";
-export default function ChainSteps() {
+export default function ChainSteps({ commands }) {
   const router = useRouter();
   const steps = useSWR(
     "chain/" + router.query.chain,
     async () => (await sdk.getChain(router.query.chain))[router.query.chain]
   );
-  console.log('ChainSteps steps.data: ', steps.data);
+  console.log("ChainSteps steps.data: ", steps.data);
   const handleAdd = async () => {
     // TODO: See Chain Management page in Streamlit app.  This needs modified, missing some fields..
     //  If prompt type is prompt, we need to show prompt category and prompt name drop downs.
@@ -37,6 +37,7 @@ export default function ChainSteps() {
             <ChainStep
               key={step.step}
               {...step}
+              commands={commands}
               last_step={steps.data.steps.length === index + 1}
               updateCallback={() => {
                 return null;

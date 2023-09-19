@@ -1,15 +1,12 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
-import useSWR from "swr";
 import { sdk } from "../../../../../lib/apiClient";
 import {
   Typography,
   Paper,
   MenuItem,
   TextField,
-  Input,
-  Button,
   IconButton,
   Box,
   Select,
@@ -21,28 +18,27 @@ import {
 import {
   ArrowCircleUp,
   ArrowCircleDown,
-  AddCircleOutline,
   HighlightOff,
   ExpandCircleDownOutlined,
-  InsertLink,
   SaveRounded,
-  LowPriority,
 } from "@mui/icons-material";
 import StepTypePrompt from "../../step_types/StepTypePrompt";
 import StepTypeCommand from "../../step_types/StepTypeCommand";
 import StepTypeChain from "../../step_types/StepTypeChain";
-import StepTypeInstruction from "../../step_types/StepTypeInstruction";
+import PromptSelector from "../../../prompt/PromptSelector";
+import CommandSelector from "../../../command/CommandSelector";
 export default function ChainStep({
-  step_number,
+  step,
   last_step,
   agent_name,
-  prompt_name,
   prompt_type,
   prompt,
+  commands,
 }) {
   const [agentName, setAgentName] = useState(agent_name);
-  const [promptName, setPromptName] = useState(prompt_name);
-  const [promptText, setPromptText] = useState(prompt);
+  const [promptName, setPromptName] = useState(prompt.prompt_name);
+  const [promptArgs, setPromptArgs] = useState(prompt);
+  const [promptCategory, setPromptCategory] = useState(prompt.prompt_category);
   const [expanded, setExpanded] = useState(false);
   const [stepType, setStepType] = useState(-1);
   const router = useRouter();
@@ -50,53 +46,38 @@ export default function ChainStep({
   const step_types = useMemo(
     () => [
       {
-        name: "prompt",
+        name: "Prompt",
         component: (
-          <StepTypePrompt
+          <PromptSelector
             update={setModified}
             agent_name={agentName}
             set_agent_name={setAgentName}
-            prompt_name={promptName}
-            set_prompt_name={setPromptName}
-            prompt={promptText}
-            set_prompt={setPromptText}
+            promptCategory={promptCategory}
+            setPromptCategory={setPromptCategory}
+            promptName={promptName}
+            setPromptName={setPromptName}
+            promptArgs={promptArgs}
+            setPromptArgs={setPromptArgs}
           />
         ),
       },
       {
-        name: "command",
+        name: "Command",
         component: (
-          <StepTypeCommand
+          <CommandSelector
             update={setModified}
-            prompt={promptText}
-            set_prompt={setPromptText}
+            commandArgs={promptArgs}
+            setCommandArgs={setPromptArgs}
+            commands={commands}
           />
         ),
       },
       {
-        name: "instruction",
-        component: (
-          <StepTypeInstruction
-            update={setModified}
-            agent_name={agentName}
-            set_agent_name={setAgentName}
-            prompt={promptText}
-            set_prompt={setPromptText}
-          />
-        ),
-      },
-      {
-        name: "chain",
-        component: (
-          <StepTypeChain
-            update={setModified}
-            prompt={promptText}
-            set_prompt={setPromptText}
-          />
-        ),
+        name: "Chain",
+        component: <StepTypeChain update={setModified} />,
       },
     ],
-    [agentName, promptName, promptText]
+    [agentName, promptName]
   );
   useEffect(() => {
     setStepType(
@@ -108,33 +89,35 @@ export default function ChainStep({
     setExpanded((old) => !old);
   };
   const handleIncrement = async () => {
-    await sdk.moveStep(step_number, Number(step_number) + 1);
+    await sdk.moveStep(router.query.chain, step, Number(step) + 1);
     mutate("chain/" + router.query.chain);
   };
   const handleDecrement = async () => {
-    await sdk.moveStep(step_number, Number(step_number) - 1);
+    await sdk.moveStep(router.query.chain, step, Number(step) - 1);
     mutate("chain/" + router.query.chain);
   };
   useEffect(() => {
     setAgentName(agent_name);
   }, [agent_name]);
   useEffect(() => {
-    setPromptName(prompt_name);
-  }, [prompt_name]);
+    setPromptName(prompt.prompt_name);
+  }, [prompt.prompt_name]);
   useEffect(() => {
-    setPromptText(prompt);
+    setPromptArgs(prompt);
   }, [prompt]);
+
   const handleSave = async () => {
+    prompt.prompt_name = promptName;
     const args = {
-      step_number: step_number,
-      prompt_name: promptName,
-      prompt: promptText,
+      step: step,
+      prompt: prompt,
       agent_name: agentName,
+      prompt_type: prompt_type,
     };
-    console.log('ChainStep args: ', args);
+    console.log("ChainStep args: ", args);
     await sdk.updateStep(
       router.query.chain,
-      step_number,
+      step,
       agentName,
       step_types[stepType].name,
       args
@@ -142,10 +125,10 @@ export default function ChainStep({
     mutate("chain/" + router.query.chain);
   };
   const handleDelete = async () => {
-    await sdk.deleteStep(router.query.chain, step_number);
+    await sdk.deleteStep(router.query.chain, step);
     mutate("chain/" + router.query.chain);
   };
-  console.log('ChainStep last_step: ', last_step);
+  console.log("Prompt Type: ", prompt_type);
   return (
     <>
       <Paper
@@ -191,11 +174,11 @@ export default function ChainStep({
                 <IconButton
                   onClick={handleDecrement}
                   size="large"
-                  disabled={step_number == 1}
+                  disabled={step == 1}
                 >
                   <ArrowCircleUp sx={{ fontSize: "2rem" }} />
                 </IconButton>
-                <Avatar sx={{ fontWeight: "bolder" }}>{step_number}</Avatar>
+                <Avatar sx={{ fontWeight: "bolder" }}>{step}</Avatar>
                 <IconButton
                   onClick={handleIncrement}
                   size="large"
@@ -234,33 +217,72 @@ export default function ChainStep({
             </Box>
           </AccordionSummary>
           <AccordionDetails>
-            
-                        {expanded?<Typography variant="h6">Step Inputs</Typography>:null}
-                        <Paper elevation={3} sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", my: "0.5rem", mx: "2rem", p: "0.3rem" }}>
-                            <IconButton size="large"><HighlightOff sx={{ fontSize: "2rem" }} /></IconButton>
-                            <Select label="Type" sx={{ mx: "0.5rem" }} value={0}>
-                                <MenuItem value={0}>Select an Input Type...</MenuItem>
-                            </Select>
-                        </Paper>
-                        <Paper elevation={3} sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", my: "0.5rem", mx: "2rem", p: "0.3rem" }}>
-                            <IconButton size="large"><HighlightOff sx={{ fontSize: "2rem" }} /></IconButton>
-                            <Select label="Type" sx={{ mx: "0.5rem" }} value={0}>
-                                <MenuItem value={0}>Saved Output</MenuItem>
-                            </Select>
-                            <Select label="Output" sx={{ mx: "0.5rem" }} value={0}>
-                                <MenuItem value={0}>&quot;Step 3 Output&quot;</MenuItem>
-                            </Select>
-                            <TextField variant="outlined" value="{step3}"></TextField>
-                        </Paper>
-                        <Paper elevation={3} sx={{ display: "flex", justifyContent: "flex-start", alignItems: "center", my: "0.5rem", mx: "2rem", p: "0.3rem" }}>
-                            <IconButton size="large"><HighlightOff sx={{ fontSize: "2rem" }} /></IconButton>
-                            <Select label="Type" sx={{ mx: "0.5rem" }} value={0}>
-                                <MenuItem value={0}>Literal Value</MenuItem>
-                            </Select>
-                            <TextField variant="outlined" value="console.log('Hello, World!');"></TextField>
-                            <TextField variant="outlined" value="{myLiteral}"></TextField>
-                        </Paper>
-                                
+            {expanded ? (
+              <Typography variant="h6">Step Inputs</Typography>
+            ) : null}
+            <Paper
+              elevation={3}
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                my: "0.5rem",
+                mx: "2rem",
+                p: "0.3rem",
+              }}
+            >
+              <IconButton size="large">
+                <HighlightOff sx={{ fontSize: "2rem" }} />
+              </IconButton>
+              <Select label="Type" sx={{ mx: "0.5rem" }} value={0}>
+                <MenuItem value={0}>Select an Input Type...</MenuItem>
+              </Select>
+            </Paper>
+            <Paper
+              elevation={3}
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                my: "0.5rem",
+                mx: "2rem",
+                p: "0.3rem",
+              }}
+            >
+              <IconButton size="large">
+                <HighlightOff sx={{ fontSize: "2rem" }} />
+              </IconButton>
+              <Select label="Type" sx={{ mx: "0.5rem" }} value={0}>
+                <MenuItem value={0}>Saved Output</MenuItem>
+              </Select>
+              <Select label="Output" sx={{ mx: "0.5rem" }} value={0}>
+                <MenuItem value={0}>&quot;Step 3 Output&quot;</MenuItem>
+              </Select>
+              <TextField variant="outlined" value="{step3}"></TextField>
+            </Paper>
+            <Paper
+              elevation={3}
+              sx={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+                my: "0.5rem",
+                mx: "2rem",
+                p: "0.3rem",
+              }}
+            >
+              <IconButton size="large">
+                <HighlightOff sx={{ fontSize: "2rem" }} />
+              </IconButton>
+              <Select label="Type" sx={{ mx: "0.5rem" }} value={0}>
+                <MenuItem value={0}>Literal Value</MenuItem>
+              </Select>
+              <TextField
+                variant="outlined"
+                value="console.log('Hello, World!');"
+              ></TextField>
+              <TextField variant="outlined" value="{myLiteral}"></TextField>
+            </Paper>
           </AccordionDetails>
         </Accordion>
       </Paper>

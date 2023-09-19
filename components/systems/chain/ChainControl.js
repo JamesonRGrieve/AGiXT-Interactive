@@ -4,7 +4,7 @@ import useSWR from "swr";
 import ChainPanel from "../chain/ChainPanel";
 import PopoutDrawerWrapper from "../../menu/PopoutDrawerWrapper";
 import ChainList from "./ChainList";
-export default function ChainControl({ data }) {
+export default function ChainControl({ data, commands }) {
   const chainName = useRouter().query.chain;
   const chains = useSWR("chain", async () => await sdk.getChains());
   return (
@@ -17,7 +17,7 @@ export default function ChainControl({ data }) {
       rightSWR={null}
       rightMenu={null}
     >
-      <ChainPanel />
+      <ChainPanel commands={commands} />
     </PopoutDrawerWrapper>
   );
 }

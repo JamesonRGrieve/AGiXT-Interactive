@@ -3,10 +3,13 @@ import { sdk } from "../../../../lib/apiClient";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
+import { PromptSelector } from "../../../systems/prompt/PromptSelector";
 import useSWR from "swr";
 export default function StepTypePrompt({
   agent_name,
   set_agent_name,
+  prompt_category,
+  set_prompt_category,
   prompt_name,
   set_prompt_name,
   prompt,
@@ -40,7 +43,7 @@ export default function StepTypePrompt({
         : -1
     );
   }, [agents.data, agent_name]);
-  console.log('StepTypePrompt prompts.data', prompts.data);
+  console.log("StepTypePrompt prompts.data", prompts.data);
   return (
     <>
       <Select

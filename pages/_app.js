@@ -305,38 +305,45 @@ export default function App({ Component, pageProps, dark }) {
         >
           <DrawerHeader />
           <SettingsProvider>
-            <Component
-              {...pageProps}
-              contextResults={contextResults}
-              shots={shots}
-              browseLinks={browseLinks}
-              websearch={websearch}
-              websearchDepth={websearchDepth}
-              enableMemory={enableMemory}
-              injectMemoriesFromCollectionNumber={
-                injectMemoriesFromCollectionNumber
-              }
-              collectionNumber={collectionNumber}
-              limit={limit}
-              minRelevanceScore={minRelevanceScore}
-              conversationResults={conversationResults}
-              selectedChain={selectedChain}
-              setSelectedChain={setSelectedChain}
-              chainArgs={chainArgs}
-              setChainArgs={setChainArgs}
-              chains={chains}
-              handleChainChange={handleChainChange}
-              singleStep={singleStep}
-              setSingleStep={setSingleStep}
-              fromStep={fromStep}
-              setFromStep={setFromStep}
-              allResponses={allResponses}
-              setAllResponses={setAllResponses}
-              useSelectedAgent={useSelectedAgent}
-              setUseSelectedAgent={setUseSelectedAgent}
-              drawerWidth={drawerWidth}
-              rightDrawerWidth={rightDrawerWidth}
-            />
+            {commands.isLoading ? (
+              "Loading..."
+            ) : commands.error ? (
+              commands.error.message
+            ) : (
+              <Component
+                {...pageProps}
+                contextResults={contextResults}
+                shots={shots}
+                browseLinks={browseLinks}
+                websearch={websearch}
+                websearchDepth={websearchDepth}
+                enableMemory={enableMemory}
+                injectMemoriesFromCollectionNumber={
+                  injectMemoriesFromCollectionNumber
+                }
+                collectionNumber={collectionNumber}
+                limit={limit}
+                minRelevanceScore={minRelevanceScore}
+                conversationResults={conversationResults}
+                selectedChain={selectedChain}
+                setSelectedChain={setSelectedChain}
+                chainArgs={chainArgs}
+                setChainArgs={setChainArgs}
+                chains={chains}
+                handleChainChange={handleChainChange}
+                singleStep={singleStep}
+                setSingleStep={setSingleStep}
+                fromStep={fromStep}
+                setFromStep={setFromStep}
+                allResponses={allResponses}
+                setAllResponses={setAllResponses}
+                useSelectedAgent={useSelectedAgent}
+                setUseSelectedAgent={setUseSelectedAgent}
+                drawerWidth={drawerWidth}
+                rightDrawerWidth={rightDrawerWidth}
+                commands={commands.data}
+              />
+            )}
           </SettingsProvider>
         </Main>
       </Box>
@@ -352,8 +359,12 @@ App.propTypes = {
 
 App.getInitialProps = async ({ ctx }) => {
   let dark = getCookie("dark", ctx);
-  dark === "true" ? (dark = true) :  dark === "false" ? (dark = false) : (dark = false);
-  return { 
+  dark === "true"
+    ? (dark = true)
+    : dark === "false"
+    ? (dark = false)
+    : (dark = false);
+  return {
     dark: dark,
     pageProps: {},
   };
