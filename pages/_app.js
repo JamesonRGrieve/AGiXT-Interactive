@@ -166,14 +166,19 @@ export default function App({ Component, pageProps, dark }) {
                 <Link href="/">AGiXT</Link>
               </Typography>
             </Box>
-
-            <MenuDarkSwitch
-              checked={darkMode}
-              onChange={handleToggleDarkMode}
-            />
-            <IconButton color="inherit" onClick={handleRightDrawerOpen}>
-              <TuneIcon />
-            </IconButton>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <MenuDarkSwitch
+                checked={darkMode}
+                onChange={handleToggleDarkMode}
+              />
+              {pageName != "prompt" &&
+              pageName != "chain" &&
+              pageName != "new" ? (
+                <IconButton color="inherit" onClick={handleRightDrawerOpen}>
+                  <TuneIcon />
+                </IconButton>
+              ) : null}
+            </Box>
           </Toolbar>
         </AppBar>
         <Drawer
