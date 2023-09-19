@@ -150,13 +150,13 @@ export default function App({ Component, pageProps, dark }) {
       return "Chain Management";
     } else if (pageName == "agent") {
       if (tab == 0) {
-        return "Chat";
+        return "Chat Mode";
       } else if (tab == 1) {
-        return "Prompt";
+        return "Prompt Mode";
       } else if (tab == 2) {
-        return "Instruct";
+        return "Instruct Mode";
       } else if (tab == 3) {
-        return "Chain Execution";
+        return "Chain Execution Mode";
       } else {
         return "Agent Interactions";
       }
@@ -205,7 +205,7 @@ export default function App({ Component, pageProps, dark }) {
                   <Menu />
                 </IconButton>
                 <Typography variant="h6" component="h1" noWrap>
-                  <Link href="/">AGiXT</Link>
+                  <Link href="/">AGiXT</Link> - {pageTitle()}
                 </Typography>
               </Box>
               <Box sx={{ display: "flex", alignItems: "center" }}>

@@ -4,6 +4,7 @@ import {
   Typography,
   Checkbox,
   FormControlLabel,
+  Container,
 } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -64,6 +65,9 @@ export default function ArxivTraining({ collectionNumber = 0 }) {
             value={userInput}
             onChange={(e) => setUserInput(e.target.value)}
           />
+          <br />
+          &nbsp;
+          <br />
           <TextField
             fullWidth
             type="number"
@@ -84,6 +88,7 @@ export default function ArxivTraining({ collectionNumber = 0 }) {
           />
         </>
       )}
+      <br />
       <br />
       <Button variant="contained" color="primary" onClick={() => onTrain(text)}>
         Train from arXiv Articles
