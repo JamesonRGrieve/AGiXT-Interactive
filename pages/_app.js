@@ -171,7 +171,9 @@ export default function App({ Component, pageProps, dark }) {
                 checked={darkMode}
                 onChange={handleToggleDarkMode}
               />
-              {pageName != "prompt" && pageName != "chain" ? (
+              {pageName != "prompt" &&
+              pageName != "chain" &&
+              pageName != "new" ? (
                 <IconButton color="inherit" onClick={handleRightDrawerOpen}>
                   <TuneIcon />
                 </IconButton>
