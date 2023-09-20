@@ -34,6 +34,21 @@ export default function MenuAgentList({ data, theme, dark }) {
   }, [dark]);
   return (
     <List>
+      <Link href={`/`} passHref>
+        <ListItemButton
+          selected={router.pathname == "/"}
+          sx={{
+            "&&.Mui-selected": {
+              backgroundColor: selectedColor,
+            },
+          }}
+        >
+          <ListItemIcon sx={{ minWidth: "30px" }}>
+            <Home />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItemButton>
+      </Link>
       <Link href={`/new/chain`}>
         <ListItemButton
           key={"new"}

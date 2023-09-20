@@ -275,7 +275,6 @@ export default function App({ Component, pageProps, dark }) {
                 <ChevronLeft fontSize="large" sx={{ color: "white" }} />
               </IconButton>
             </DrawerHeader>
-            <Divider />
             <MenuAgentList
               data={agents.data ? agents.data : []}
               theme={theme}
@@ -351,12 +350,6 @@ export default function App({ Component, pageProps, dark }) {
                     useSelectedAgent={useSelectedAgent}
                     setUseSelectedAgent={setUseSelectedAgent}
                   />
-                  {/*
-              singleStep checkbox, false by default.
-              fromStep - Number to start step from, default 0.  If singleStep is checked, this is the step to run.
-              allResponses - Boolean, default false.  
-                If true, it will output all responses in the last response instead of just the last one.
-               */}
                 </>
               ) : null}
               {pageName === "train" ? (
