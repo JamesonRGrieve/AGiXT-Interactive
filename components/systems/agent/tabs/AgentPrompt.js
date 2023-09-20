@@ -6,6 +6,7 @@ import ConversationSelector from "../../conversation/ConversationSelector";
 import ConversationHistory from "../../conversation/ConversationHistory";
 import PromptSelector from "../../prompt/PromptSelector";
 import ChainSelector from "../../chain/ChainSelector";
+import AudioRecorder from "../../command/AudioRecorder";
 import { Button, TextField, InputAdornment, Box } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import useSWR from "swr";
@@ -295,6 +296,7 @@ export default function AgentPrompt({
                   >
                     <SendIcon />
                   </Button>
+                  <AudioRecorder conversationName={conversationName} />
                 </InputAdornment>
               ),
             }}
