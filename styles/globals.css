@@ -113,14 +113,14 @@ img:not([src^="https://img.shields.io"]) {
 
 
 .code-container {
-  border: 1px solid white;
+  border: 1px solid rgb(139, 138, 138);
   overflow-x: auto;
   padding: 5px;
 }
 
 .code-title {
   background-color: rgb(139, 138, 138);
-  border: 1px solid white;
+  border: 1px solid rgb(139, 138, 138);
   color: white;
   padding: 5px;
   font-weight: bold;
@@ -128,4 +128,94 @@ img:not([src^="https://img.shields.io"]) {
 
 .code-block {
   padding: 5px;
+}
+
+.react-markdown ul {
+  list-style-type: disc;
+  padding-left: 2em;
+}
+
+.react-markdown li {
+  margin-bottom: 0.5em;
+}
+
+.react-markdown ul ul {
+  list-style-type: circle;
+}
+
+.react-markdown img {
+  max-width: 50%;
+  height: auto;
+  display: inline-block; /* Change from block to inline-block */
+  margin: 0 0.5em; /* Adjust margins to be inline with text */
+  vertical-align: middle; /* Align with the middle of the surrounding text */
+}
+
+
+.react-markdown h1 {
+  font-size: 2em;
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 0.3em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.react-markdown h2 {
+  font-size: 1.5em;
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 0.3em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.react-markdown h3 {
+  font-size: 1.17em;
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 0.3em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.react-markdown h4 {
+  font-size: 1em;
+  border-bottom: 1px solid #eaecef;
+  padding-bottom: 0.3em;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.react-markdown a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.react-markdown a:hover {
+  text-decoration: underline;
+}
+
+.react-markdown blockquote {
+  padding-left: 1em;
+  border-left: 0.25em solid #dfe2e5;
+  color: #6a737d;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+.react-markdown table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  margin: 1em 0;
+}
+
+.react-markdown table th,
+.react-markdown table td {
+  padding: 0.5em;
+  border: 1px solid #dfe2e5;
+  text-align: left;
+}
+
+.react-markdown table th {
+  background-color: #f6f8fa;
+  font-weight: bold;
 }
