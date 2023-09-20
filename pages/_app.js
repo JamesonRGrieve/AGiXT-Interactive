@@ -223,7 +223,6 @@ export default function App({ Component, pageProps, dark }) {
                 display: "flex",
                 justifyContent: "space-between",
                 backgroundColor: theme.palette.primary.main,
-                height: darkMode ? "65px" : "64px",
               }}
             >
               <Box sx={{ display: "flex", alignItems: "left" }}>
@@ -270,7 +269,7 @@ export default function App({ Component, pageProps, dark }) {
             anchor="left"
             open={open}
           >
-            <DrawerHeader sx={{ justifyContent: "space-between", pl: "1rem" }}>
+            <DrawerHeader>
               <IconButton onClick={handleDrawerClose}>
                 <ChevronLeft fontSize="large" sx={{ color: "white" }} />
               </IconButton>
@@ -298,7 +297,11 @@ export default function App({ Component, pageProps, dark }) {
               anchor="right"
               open={rightDrawerOpen}
             >
-              <DrawerHeader>
+              <DrawerHeader
+                sx={{
+                  marginTop: "-1px",
+                }}
+              >
                 <IconButton onClick={handleRightDrawerClose}>
                   <ChevronRight fontSize="large" sx={{ color: "white" }} />
                 </IconButton>
