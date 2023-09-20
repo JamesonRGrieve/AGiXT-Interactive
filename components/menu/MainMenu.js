@@ -94,9 +94,11 @@ export default function MenuAgentList({ data, theme, dark }) {
                       <Link href={`/agent?agent=${agent.name}`} passHref>
                         <ListItemButton
                           variant="contained"
-                          color="secondary"
                           sx={{
                             pl: "2rem",
+                            "&&.Mui-selected": {
+                              backgroundColor: selectedColor,
+                            },
                           }}
                           selected={
                             pageName == "agent" && router.query.tab != 4
@@ -110,7 +112,6 @@ export default function MenuAgentList({ data, theme, dark }) {
                       </Link>
                       <ListItemButton
                         variant="contained"
-                        color="secondary"
                         sx={{
                           pl: "2rem",
                           "&&.Mui-selected": {
@@ -128,7 +129,6 @@ export default function MenuAgentList({ data, theme, dark }) {
                     <Link href={`/prompt?agent=${agent.name}`} passHref>
                       <ListItemButton
                         variant="contained"
-                        color="secondary"
                         sx={{
                           pl: "2rem",
                           "&&.Mui-selected": {
@@ -146,7 +146,6 @@ export default function MenuAgentList({ data, theme, dark }) {
                     <Link href={`/chain/?agent=${agent.name}`} passHref>
                       <ListItemButton
                         variant="contained"
-                        color="secondary"
                         sx={{
                           pl: "2rem",
                           "&&.Mui-selected": {
@@ -164,7 +163,6 @@ export default function MenuAgentList({ data, theme, dark }) {
                     <Link href={`/settings?agent=${agent.name}`} passHref>
                       <ListItemButton
                         variant="contained"
-                        color="secondary"
                         sx={{
                           pl: "2rem",
                           "&&.Mui-selected": {
