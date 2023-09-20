@@ -194,16 +194,21 @@ export default function ChainStep({
   }, [prompt.prompt_category]);
 
   const handleSave = async () => {
-    prompt.prompt_name = promptName;
-    prompt.prompt_category = promptCategory;
-
     const args = {
-      step: step,
-      prompt: prompt,
-      agent_name: agentName,
+      prompt_category: promptCategory,
+      prompt_name: promptName,
       prompt_type: prompt_type,
+      context_results: contextResults,
+      shots: shots,
+      browse_links: browseLinks,
+      websearch: websearch,
+      websearch_depth: websearchDepth,
+      enable_memory: enableMemory,
+      inject_memories_from_collection_number:
+        injectMemoriesFromCollectionNumber,
+      conversation_results: conversationResults,
+      ...prompt,
     };
-    console.log("ChainStep args: ", args);
     await sdk.updateStep(
       router.query.chain,
       step,
@@ -217,7 +222,6 @@ export default function ChainStep({
     await sdk.deleteStep(router.query.chain, step);
     mutate("chain/" + router.query.chain);
   };
-  console.log("Prompt Type: ", prompt_type);
   return (
     <>
       <Box
