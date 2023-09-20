@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -26,6 +26,18 @@ const WAIT_MESSAGE = "Let me think about that for a moment. Please wait..";
 export default function ConversationHistory({ chatHistory, isLoading }) {
   const router = useRouter();
   const agentName = router.query.agent;
+  const tab = router.query.tab;
+  const [contentHeight, setContentHeight] = useState("calc(100vh - 280px)");
+
+  useEffect(() => {
+    if (tab == 1) {
+      setContentHeight(`calc(100vh - 400px)`);
+    } else if (tab == 3) {
+      setContentHeight(`calc(100vh - 334px)`);
+    } else {
+      setContentHeight(`calc(100vh - 280px)`);
+    }
+  }, [tab]);
 
   let lastUserMessage = ""; // track the last user message
 
@@ -36,7 +48,7 @@ export default function ConversationHistory({ chatHistory, isLoading }) {
         overflowY: "auto",
         display: "flex",
         flexDirection: "column-reverse",
-        height: "65vh",
+        height: contentHeight,
       }}
     >
       <div>
