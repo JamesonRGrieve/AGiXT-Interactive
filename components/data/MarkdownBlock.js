@@ -1,11 +1,13 @@
 import React from "react";
-import { Box, IconButton } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { a11yDark } from "react-syntax-highlighter/dist/cjs/styles/hljs";
-import { ContentCopy as ContentCopyIcon } from "@mui/icons-material";
-import DownloadIcon from "@mui/icons-material/Download";
 import clipboardCopy from "clipboard-copy";
+import { IconButton } from "@mui/material";
+import {
+  ContentCopy as ContentCopyIcon,
+  Download as DownloadIcon,
+} from "@mui/icons-material";
 
 export default function MarkdownBlock({ content, chatItem }) {
   const langMap = {
@@ -93,14 +95,7 @@ export default function MarkdownBlock({ content, chatItem }) {
   };
 
   return (
-    <Box
-      sx={{
-        padding: "10px",
-        marginBottom: "5px",
-        overflow: "hidden",
-        position: "center",
-      }}
-    >
+    <>
       <ReactMarkdown
         children={renderMessage(content)}
         className="react-markdown"
@@ -194,6 +189,6 @@ export default function MarkdownBlock({ content, chatItem }) {
           },
         }}
       />
-    </Box>
+    </>
   );
 }

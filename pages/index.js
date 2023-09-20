@@ -1,6 +1,7 @@
 import axios from "axios";
 import useSWR from "swr";
 import MarkdownBlock from "../components/data/MarkdownBlock";
+import { Box } from "@mui/system";
 export default function Home() {
   const readme = useSWR(
     "docs",
@@ -12,12 +13,20 @@ export default function Home() {
       ).data
   );
   return (
-    <>
+    <Box
+      sx={{
+        padding: "10px",
+        marginBottom: "5px",
+        marginTop: "-30px",
+        overflow: "hidden",
+        position: "center",
+      }}
+    >
       {!readme.isLoading && readme.data ? (
         <MarkdownBlock content={readme.data} />
       ) : (
         <>Loading...</>
       )}
-    </>
+    </Box>
   );
 }
