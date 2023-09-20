@@ -198,7 +198,6 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
     >
       <Box
         sx={{
-          maxWidth: "80%",
           padding: "10px",
           marginBottom: "5px",
           overflow: "hidden",
