@@ -31,6 +31,7 @@ import Head from "next/head";
 const drawerWidth = 200;
 const rightDrawerWidth = 310;
 const bothDrawersWidth = drawerWidth + rightDrawerWidth;
+
 const Main = styled("main", {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "rightDrawerOpen",
 })(({ theme, open, rightDrawerOpen }) => ({
@@ -106,7 +107,14 @@ export default function App({ Component, pageProps, dark }) {
   const [fromStep, setFromStep] = useState(0);
   const [allResponses, setAllResponses] = useState(false);
   const [useSelectedAgent, setUseSelectedAgent] = useState(true);
-
+  const contentWidth =
+    open && rightDrawerOpen
+      ? `calc(100% - ${bothDrawersWidth}px)`
+      : open && !rightDrawerOpen
+      ? `calc(100% - ${drawerWidth}px)`
+      : rightDrawerOpen
+      ? `calc(100% - ${rightDrawerWidth}px)`
+      : "100%";
   const handleArgsChange = (args) => {
     setChainArgs(args);
   };
@@ -379,7 +387,7 @@ export default function App({ Component, pageProps, dark }) {
           <Main
             open={open}
             rightDrawerOpen={rightDrawerOpen}
-            sx={{ padding: "0" }}
+            sx={{ padding: "0", maxWidth: contentWidth }}
           >
             <DrawerHeader />
             <SettingsProvider>
