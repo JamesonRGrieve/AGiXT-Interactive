@@ -93,110 +93,107 @@ export default function MarkdownBlock({ content, chatItem }) {
   };
 
   return (
-    <Box sx={{ flexDirection: "column" }}>
-      <Box
-        sx={{
-          maxWidth: "100%",
-          padding: "10px",
-          marginBottom: "5px",
-          overflow: "hidden",
-          position: "center",
-        }}
-      >
-        <ReactMarkdown
-          children={renderMessage(content)}
-          className="react-markdown"
-          components={{
-            code({ node, inline, children, ...props }) {
-              if (inline) {
-                return (
-                  <span
-                    style={{
-                      backgroundColor: "darkgray",
-                      borderRadius: "3px",
-                      padding: "0.2em",
-                      fontFamily: "monospace",
-                    }}
-                  >
-                    {children}
-                  </span>
-                );
-              }
-              const codeBlockRef = React.useRef(null);
-              const language = props.className?.replace(/language-/, "");
-              const fileExtension = langMap[language] || "txt";
-              const ts = chatItem
-                ? chatItem.timestamp
-                    .replace(/ /g, "-")
-                    .replace(/:/g, "-")
-                    .replace(/,/g, "")
-                : new Date().toLocaleString().replace(/[^0-9]/g, "");
-
-              const fileName = chatItem
-                ? `${chatItem.role}-${ts}.${fileExtension}`
-                : `${ts}.${fileExtension}`;
+    <Box
+      sx={{
+        padding: "10px",
+        marginBottom: "5px",
+        overflow: "hidden",
+        position: "center",
+      }}
+    >
+      <ReactMarkdown
+        children={renderMessage(content)}
+        className="react-markdown"
+        components={{
+          code({ node, inline, children, ...props }) {
+            if (inline) {
               return (
-                <>
-                  <br />
-                  <div className="code-block" ref={codeBlockRef}>
-                    <div className="code-title">
-                      <IconButton
-                        onClick={() => {
-                          if (codeBlockRef.current) {
-                            const actualCode =
-                              codeBlockRef.current.querySelector("code");
-                            clipboardCopy(actualCode.innerText);
-                          }
-                        }}
-                      >
-                        <ContentCopyIcon />
-                      </IconButton>
-                      <IconButton
-                        onClick={() => {
-                          if (codeBlockRef.current) {
-                            const actualCode =
-                              codeBlockRef.current.querySelector("code");
-
-                            const element = document.createElement("a");
-                            const file = new Blob([actualCode.innerText], {
-                              type: "text/plain;charset=utf-8",
-                            });
-                            element.href = URL.createObjectURL(file);
-
-                            element.download = fileName;
-                            document.body.appendChild(element);
-                            element.click();
-                          }
-                        }}
-                      >
-                        <DownloadIcon />
-                      </IconButton>
-                      {fileName} | {language}
-                    </div>
-                    <div className="code-container">
-                      {language in langMap ? (
-                        <SyntaxHighlighter
-                          {...props}
-                          children={children}
-                          language={language}
-                          PreTag="div"
-                          showLineNumbers={true}
-                          style={a11yDark}
-                        />
-                      ) : (
-                        <code className={"code-block"} {...props}>
-                          {children}
-                        </code>
-                      )}
-                    </div>
-                  </div>
-                  <br />
-                </>
+                <span
+                  style={{
+                    backgroundColor: "darkgray",
+                    borderRadius: "3px",
+                    padding: "0.2em",
+                    fontFamily: "monospace",
+                  }}
+                >
+                  {children}
+                </span>
               );
-            },
-          }}
-        />
-      </Box>
+            }
+            const codeBlockRef = React.useRef(null);
+            const language = props.className?.replace(/language-/, "");
+            const fileExtension = langMap[language] || "txt";
+            const ts = chatItem
+              ? chatItem.timestamp
+                  .replace(/ /g, "-")
+                  .replace(/:/g, "-")
+                  .replace(/,/g, "")
+              : new Date().toLocaleString().replace(/[^0-9]/g, "");
+
+            const fileName = chatItem
+              ? `${chatItem.role}-${ts}.${fileExtension}`
+              : `${ts}.${fileExtension}`;
+            return (
+              <>
+                <br />
+                <div className="code-block" ref={codeBlockRef}>
+                  <div className="code-title">
+                    <IconButton
+                      onClick={() => {
+                        if (codeBlockRef.current) {
+                          const actualCode =
+                            codeBlockRef.current.querySelector("code");
+                          clipboardCopy(actualCode.innerText);
+                        }
+                      }}
+                    >
+                      <ContentCopyIcon />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        if (codeBlockRef.current) {
+                          const actualCode =
+                            codeBlockRef.current.querySelector("code");
+
+                          const element = document.createElement("a");
+                          const file = new Blob([actualCode.innerText], {
+                            type: "text/plain;charset=utf-8",
+                          });
+                          element.href = URL.createObjectURL(file);
+
+                          element.download = fileName;
+                          document.body.appendChild(element);
+                          element.click();
+                        }
+                      }}
+                    >
+                      <DownloadIcon />
+                    </IconButton>
+                    {fileName} | {language}
+                  </div>
+                  <div className="code-container">
+                    {language in langMap ? (
+                      <SyntaxHighlighter
+                        {...props}
+                        children={children}
+                        language={language}
+                        PreTag="div"
+                        showLineNumbers={true}
+                        style={a11yDark}
+                      />
+                    ) : (
+                      <code className={"code-block"} {...props}>
+                        {children}
+                      </code>
+                    )}
+                  </div>
+                </div>
+                <br />
+              </>
+            );
+          },
+        }}
+      />
     </Box>
   );
 }

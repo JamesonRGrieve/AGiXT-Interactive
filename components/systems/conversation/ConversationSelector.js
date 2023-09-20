@@ -47,7 +47,6 @@ export default function ConversationSelector({
 
   return (
     <FormControl
-      fullWidth
       sx={{
         mb: 2,
         display: "flex",
@@ -58,7 +57,7 @@ export default function ConversationSelector({
       <InputLabel id="conversation-label">Select a Conversation</InputLabel>
       <Select
         labelId="conversation-label"
-        sx={{ width: "80%" }}
+        sx={{ width: "50%" }}
         label="Select a Conversation"
         value={conversationName}
         onChange={(e) => setConversationName(e.target.value)}

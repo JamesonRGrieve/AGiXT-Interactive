@@ -20,7 +20,7 @@ import { sdk } from "../../../lib/apiClient";
 import MarkdownBlock from "../../data/MarkdownBlock";
 const WAIT_MESSAGE = "Let me think about that for a moment. Please wait..";
 
-export default function ConversationHistory({ chatHistory, isLoading, theme }) {
+export default function ConversationHistory({ chatHistory, isLoading }) {
   const router = useRouter();
   const agentName = router.query.agent;
 
@@ -36,7 +36,7 @@ export default function ConversationHistory({ chatHistory, isLoading, theme }) {
         height: "65vh",
       }}
     >
-      <div style={{ width: "100%" }}>
+      <div>
         {chatHistory
           ? chatHistory.map((chatItem, index) => {
               if (chatItem.role === "USER") {

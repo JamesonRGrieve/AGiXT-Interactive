@@ -32,7 +32,6 @@ export default function AgentPanel({
   drawerWidth,
   rightDrawerWidth,
   dark,
-  theme,
 }) {
   const router = useRouter();
   const [tab, setTab] = useState(router.query.tab || 0);
@@ -130,7 +129,6 @@ export default function AgentPanel({
       theme={theme}
     />,
   ];
-
   return (
     <>
       <Tabs
@@ -150,7 +148,6 @@ export default function AgentPanel({
       </Tabs>
       <Box
         sx={{
-          width: `calc(100% - ${drawerWidth}px)`,
           padding: "0.2rem",
         }}
       >
