@@ -242,7 +242,11 @@ export default function App({ Component, pageProps, dark }) {
               </IconButton>
             </DrawerHeader>
             <Divider />
-            <MenuAgentList data={agents.data ? agents.data : []} />
+            <MenuAgentList
+              data={agents.data ? agents.data : []}
+              theme={theme}
+              dark={darkMode}
+            />
           </Drawer>
           <Drawer
             sx={{
