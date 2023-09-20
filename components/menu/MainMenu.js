@@ -15,11 +15,23 @@ import ChatBubble from "@mui/icons-material/ChatBubble";
 import InsertLink from "@mui/icons-material/InsertLink";
 import AddLink from "@mui/icons-material/AddLink";
 import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
-export default function MenuAgentList({ data }) {
+export default function MenuAgentList({ data, theme, dark }) {
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
   const agentName = router.query.agent;
+  const defaultColor = dark
+    ? theme.palette.primary.dark
+    : theme.palette.primary.light;
+  const [selectedColor, setSelectedColor] = useState(defaultColor);
+  useEffect(() => {
+    if (dark) {
+      setSelectedColor(theme.palette.primary.dark);
+    } else {
+      setSelectedColor(theme.palette.primary);
+    }
+  }, [dark]);
   return (
     <List>
       <Link href={`/new/chain`}>
@@ -63,7 +75,14 @@ export default function MenuAgentList({ data }) {
                 key={agent.name}
                 passHref
               >
-                <ListItemButton selected={agentName == agent.name}>
+                <ListItemButton
+                  selected={agentName == agent.name}
+                  sx={{
+                    "&&.Mui-selected": {
+                      backgroundColor: selectedColor,
+                    },
+                  }}
+                >
                   <ListItemIcon sx={{ minWidth: "30px" }}>
                     <SmartToyOutlinedIcon />
                   </ListItemIcon>
@@ -75,8 +94,10 @@ export default function MenuAgentList({ data }) {
                       <Link href={`/agent?agent=${agent.name}`} passHref>
                         <ListItemButton
                           variant="contained"
-                          color="primary"
-                          sx={{ pl: "2rem" }}
+                          color="secondary"
+                          sx={{
+                            pl: "2rem",
+                          }}
                           selected={
                             pageName == "agent" && router.query.tab != 4
                           }
@@ -89,8 +110,13 @@ export default function MenuAgentList({ data }) {
                       </Link>
                       <ListItemButton
                         variant="contained"
-                        color="primary"
-                        sx={{ pl: "2rem" }}
+                        color="secondary"
+                        sx={{
+                          pl: "2rem",
+                          "&&.Mui-selected": {
+                            backgroundColor: selectedColor,
+                          },
+                        }}
                         selected={pageName == "train"}
                       >
                         <ListItemIcon sx={{ minWidth: "30px" }}>
@@ -102,8 +128,13 @@ export default function MenuAgentList({ data }) {
                     <Link href={`/prompt?agent=${agent.name}`} passHref>
                       <ListItemButton
                         variant="contained"
-                        color="primary"
-                        sx={{ pl: "2rem" }}
+                        color="secondary"
+                        sx={{
+                          pl: "2rem",
+                          "&&.Mui-selected": {
+                            backgroundColor: selectedColor,
+                          },
+                        }}
                         selected={pageName == "prompt"}
                       >
                         <ListItemIcon sx={{ minWidth: "30px" }}>
@@ -115,8 +146,13 @@ export default function MenuAgentList({ data }) {
                     <Link href={`/chain/?agent=${agent.name}`} passHref>
                       <ListItemButton
                         variant="contained"
-                        color="primary"
-                        sx={{ pl: "2rem" }}
+                        color="secondary"
+                        sx={{
+                          pl: "2rem",
+                          "&&.Mui-selected": {
+                            backgroundColor: selectedColor,
+                          },
+                        }}
                         selected={pageName == "chain"}
                       >
                         <ListItemIcon sx={{ minWidth: "30px" }}>
@@ -128,8 +164,13 @@ export default function MenuAgentList({ data }) {
                     <Link href={`/settings?agent=${agent.name}`} passHref>
                       <ListItemButton
                         variant="contained"
-                        color="primary"
-                        sx={{ pl: "2rem" }}
+                        color="secondary"
+                        sx={{
+                          pl: "2rem",
+                          "&&.Mui-selected": {
+                            backgroundColor: selectedColor,
+                          },
+                        }}
                         selected={pageName == "settings"}
                       >
                         <ListItemIcon sx={{ minWidth: "30px" }}>
