@@ -123,7 +123,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
         }}
       >
         <MarkdownBlock
-          content={chatItem.message}
+          content={formattedMessage}
           chatItem={chatItem}
           theme={theme}
         />
