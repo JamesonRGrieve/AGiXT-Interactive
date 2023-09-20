@@ -30,6 +30,7 @@ import PropTypes from "prop-types";
 import Head from "next/head";
 const drawerWidth = 200;
 const rightDrawerWidth = 310;
+const bothDrawersWidth = drawerWidth + rightDrawerWidth;
 const Main = styled("main", {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "rightDrawerOpen",
 })(({ theme, open, rightDrawerOpen }) => ({
@@ -44,14 +45,26 @@ const Main = styled("main", {
 }));
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+})(({ theme, open, rightDrawerOpen }) => ({
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: `${drawerWidth}px`,
+    width: rightDrawerOpen
+      ? `calc(100% - ${bothDrawersWidth}px)`
+      : `calc(100% - ${drawerWidth}px)`, // Adjust based on left drawer
+    marginLeft: `${drawerWidth}px`, // Adjust based on left drawer
+    marginRight: rightDrawerOpen ? `${rightDrawerWidth}px` : 0,
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+  ...(!open && {
+    width: rightDrawerOpen ? `calc(100% - ${rightDrawerWidth}px)` : "100%",
+    marginLeft: `${drawerWidth}px`, // Adjust based on left drawer
+    marginRight: rightDrawerOpen ? `${rightDrawerWidth}px` : 0,
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
@@ -192,7 +205,11 @@ export default function App({ Component, pageProps, dark }) {
       <ThemeProvider theme={theme}>
         <Box sx={{ display: "flex" }}>
           <CssBaseline />
-          <AppBar position="fixed" open={open}>
+          <AppBar
+            position="fixed"
+            open={open}
+            rightDrawerOpen={rightDrawerOpen}
+          >
             <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
               <Box sx={{ display: "flex", alignItems: "left" }}>
                 <IconButton
@@ -213,7 +230,8 @@ export default function App({ Component, pageProps, dark }) {
                   checked={darkMode}
                   onChange={handleToggleDarkMode}
                 />
-                {pageName != "prompt" &&
+                {rightDrawerOpen == false &&
+                pageName != "prompt" &&
                 pageName != "chain" &&
                 pageName != "new" ? (
                   <IconButton color="inherit" onClick={handleRightDrawerOpen}>
