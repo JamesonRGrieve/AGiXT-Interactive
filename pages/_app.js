@@ -210,7 +210,14 @@ export default function App({ Component, pageProps, dark }) {
             open={open}
             rightDrawerOpen={rightDrawerOpen}
           >
-            <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+            <Toolbar
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                backgroundColor: theme.palette.primary.main,
+                height: "65px",
+              }}
+            >
               <Box sx={{ display: "flex", alignItems: "left" }}>
                 <IconButton
                   color="inherit"
