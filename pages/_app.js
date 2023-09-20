@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/router";
 import { setCookie, getCookie } from "cookies-next";
 import Link from "next/link";
@@ -152,8 +152,6 @@ export default function App({ Component, pageProps, dark }) {
       return newVal;
     });
   }, []);
-  if (pageName == "agent") {
-  }
   const agents = useSWR("agent", async () => sdk.getAgents());
   const handleChainChange = (event) => {
     setSelectedChain(event.target.value);
@@ -193,8 +191,18 @@ export default function App({ Component, pageProps, dark }) {
       }
     } else if (pageName == "settings") {
       return "Agent Settings";
+    } else {
+      return "Home";
     }
   };
+  useEffect(() => {
+    if (["prompt", "chain", "new"].includes(pageName)) {
+      setRightDrawerOpen(false);
+    }
+    if (pageName == "settings") {
+      setRightDrawerOpen(true);
+    }
+  }, [pageName]);
   return (
     <>
       <Head>
@@ -273,100 +281,101 @@ export default function App({ Component, pageProps, dark }) {
               dark={darkMode}
             />
           </Drawer>
-          <Drawer
-            sx={{
-              width: 0,
-              flexShrink: 0,
-              "& .MuiDrawer-paper": {
-                width: rightDrawerWidth,
-                boxSizing: "border-box",
-              },
-            }}
-            variant="persistent"
-            anchor="right"
-            open={rightDrawerOpen}
-          >
-            <DrawerHeader>
-              <IconButton onClick={handleRightDrawerClose}>
-                <ChevronRight fontSize="large" sx={{ color: "white" }} />
-              </IconButton>
-            </DrawerHeader>
-            <Divider />
-            {pageName === "agent" && tab != 3 ? (
-              <Container>
-                <br />
-                <AdvancedOptions
-                  contextResults={contextResults}
-                  setContextResults={setContextResults}
-                  shots={shots}
-                  setShots={setShots}
-                  websearchDepth={websearchDepth}
-                  setWebsearchDepth={setWebsearchDepth}
-                  injectMemoriesFromCollectionNumber={
-                    injectMemoriesFromCollectionNumber
-                  }
-                  setInjectMemoriesFromCollectionNumber={
-                    setInjectMemoriesFromCollectionNumber
-                  }
-                  conversationResults={conversationResults}
-                  setConversationResults={setConversationResults}
-                  browseLinks={browseLinks}
-                  setBrowseLinks={setBrowseLinks}
-                  websearch={websearch}
-                  setWebsearch={setWebsearch}
-                  enableMemory={enableMemory}
-                  setEnableMemory={setEnableMemory}
-                />
-                <Divider />
-              </Container>
-            ) : null}
+          {pageName != "prompt" && pageName != "chain" && pageName != "new" ? (
+            <Drawer
+              sx={{
+                width: 0,
+                flexShrink: 0,
+                "& .MuiDrawer-paper": {
+                  width: rightDrawerWidth,
+                  boxSizing: "border-box",
+                },
+              }}
+              variant="persistent"
+              anchor="right"
+              open={rightDrawerOpen}
+            >
+              <DrawerHeader>
+                <IconButton onClick={handleRightDrawerClose}>
+                  <ChevronRight fontSize="large" sx={{ color: "white" }} />
+                </IconButton>
+              </DrawerHeader>
+              <Divider />
+              {pageName === "agent" && tab != 3 ? (
+                <Container>
+                  <br />
+                  <AdvancedOptions
+                    contextResults={contextResults}
+                    setContextResults={setContextResults}
+                    shots={shots}
+                    setShots={setShots}
+                    websearchDepth={websearchDepth}
+                    setWebsearchDepth={setWebsearchDepth}
+                    injectMemoriesFromCollectionNumber={
+                      injectMemoriesFromCollectionNumber
+                    }
+                    setInjectMemoriesFromCollectionNumber={
+                      setInjectMemoriesFromCollectionNumber
+                    }
+                    conversationResults={conversationResults}
+                    setConversationResults={setConversationResults}
+                    browseLinks={browseLinks}
+                    setBrowseLinks={setBrowseLinks}
+                    websearch={websearch}
+                    setWebsearch={setWebsearch}
+                    enableMemory={enableMemory}
+                    setEnableMemory={setEnableMemory}
+                  />
+                  <Divider />
+                </Container>
+              ) : null}
 
-            {pageName === "agent" && tab == 3 ? (
-              <>
-                <ChainArgsEditor
-                  selectedChain={selectedChain}
-                  sdk={sdk}
-                  chainArgs={chainArgs}
-                  setChainArgs={setChainArgs}
-                  onChange={handleArgsChange}
-                  singleStep={singleStep}
-                  setSingleStep={setSingleStep}
-                  fromStep={fromStep}
-                  setFromStep={setFromStep}
-                  allResponses={allResponses}
-                  setAllResponses={setAllResponses}
-                  useSelectedAgent={useSelectedAgent}
-                  setUseSelectedAgent={setUseSelectedAgent}
-                />
-                {/*
+              {pageName === "agent" && tab == 3 ? (
+                <>
+                  <ChainArgsEditor
+                    selectedChain={selectedChain}
+                    sdk={sdk}
+                    chainArgs={chainArgs}
+                    setChainArgs={setChainArgs}
+                    onChange={handleArgsChange}
+                    singleStep={singleStep}
+                    setSingleStep={setSingleStep}
+                    fromStep={fromStep}
+                    setFromStep={setFromStep}
+                    allResponses={allResponses}
+                    setAllResponses={setAllResponses}
+                    useSelectedAgent={useSelectedAgent}
+                    setUseSelectedAgent={setUseSelectedAgent}
+                  />
+                  {/*
               singleStep checkbox, false by default.
               fromStep - Number to start step from, default 0.  If singleStep is checked, this is the step to run.
               allResponses - Boolean, default false.  
                 If true, it will output all responses in the last response instead of just the last one.
                */}
-              </>
-            ) : null}
-            {pageName === "train" ? (
-              <TrainOptions
-                collectionNumber={collectionNumber}
-                limit={limit}
-                minRelevanceScore={minRelevanceScore}
-                setCollectionNumber={setCollectionNumber}
-                setLimit={setLimit}
-                setMinRelevanceScore={setMinRelevanceScore}
-              />
-            ) : null}
-            {pageName === "settings" || pageName === "agent" ? (
-              commands.isLoading ? (
-                "Loading..."
-              ) : commands.error ? (
-                commands.error.message
-              ) : (
-                <AgentCommandList data={commands ? commands.data : null} />
-              )
-            ) : null}
-          </Drawer>
-
+                </>
+              ) : null}
+              {pageName === "train" ? (
+                <TrainOptions
+                  collectionNumber={collectionNumber}
+                  limit={limit}
+                  minRelevanceScore={minRelevanceScore}
+                  setCollectionNumber={setCollectionNumber}
+                  setLimit={setLimit}
+                  setMinRelevanceScore={setMinRelevanceScore}
+                />
+              ) : null}
+              {pageName === "settings" || pageName === "agent" ? (
+                commands.isLoading ? (
+                  "Loading..."
+                ) : commands.error ? (
+                  commands.error.message
+                ) : (
+                  <AgentCommandList data={commands ? commands.data : null} />
+                )
+              ) : null}
+            </Drawer>
+          ) : null}
           <Main
             open={open}
             rightDrawerOpen={rightDrawerOpen}
