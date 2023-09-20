@@ -2,7 +2,6 @@ import React from "react";
 import { useRouter } from "next/router";
 import { Paper, Box, Typography, IconButton } from "@mui/material";
 import { ThumbUp, ThumbDown } from "@mui/icons-material";
-import ReactMarkdown from "react-markdown";
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
 import { ContentCopy as ContentCopyIcon } from "@mui/icons-material";
@@ -23,9 +22,7 @@ const WAIT_MESSAGE = "Let me think about that for a moment. Please wait..";
 
 export default function ConversationHistory({ chatHistory, isLoading }) {
   const router = useRouter();
-  const pageName = router.pathname.split("/")[1];
   const agentName = router.query.agent;
-  const tab = router.query.tab;
 
   let lastUserMessage = ""; // track the last user message
 
@@ -39,7 +36,7 @@ export default function ConversationHistory({ chatHistory, isLoading }) {
         height: "65vh",
       }}
     >
-      <div style={{ width: "100%" }}>
+      <div>
         {chatHistory
           ? chatHistory.map((chatItem, index) => {
               if (chatItem.role === "USER") {
@@ -205,7 +202,11 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
           position: "center",
         }}
       >
-        <MarkdownBlock content={chatItem.message} chatItem={chatItem} />
+        <MarkdownBlock
+          content={chatItem.message}
+          chatItem={chatItem}
+          theme={theme}
+        />
         <Typography
           variant="caption"
           style={{

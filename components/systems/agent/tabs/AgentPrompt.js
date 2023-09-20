@@ -6,7 +6,7 @@ import ConversationSelector from "../../conversation/ConversationSelector";
 import ConversationHistory from "../../conversation/ConversationHistory";
 import PromptSelector from "../../prompt/PromptSelector";
 import ChainSelector from "../../chain/ChainSelector";
-import { Button, TextField, InputAdornment } from "@mui/material";
+import { Button, TextField, InputAdornment, Box } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import useSWR from "swr";
 import { mutate } from "swr";
@@ -29,6 +29,7 @@ export default function AgentPrompt({
   fromStep = 0,
   allResponses = false,
   useSelectedAgent = true,
+  theme,
 }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
