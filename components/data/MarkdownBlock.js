@@ -1,29 +1,11 @@
 import React from "react";
 import { Box, IconButton } from "@mui/material";
 import ReactMarkdown from "react-markdown";
-import { useTheme } from "@emotion/react";
 import { ContentCopy as ContentCopyIcon } from "@mui/icons-material";
 import DownloadIcon from "@mui/icons-material/Download";
 import clipboardCopy from "clipboard-copy";
-import { useRouter } from "next/router";
 
-export default function MarkdownBlock({ content, isLoading }) {
-  const theme = useTheme();
-  const router = useRouter();
-  const pageName = router.pathname.split("/")[1];
-  const handleCopyClick = () => {
-    clipboardCopy(content);
-  };
-  const handleDownloadClick = () => {
-    const element = document.createElement("a");
-    const file = new Blob([content], {
-      type: "text/plain;charset=utf-8",
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = `${pageName ? pageName : "AGiXT"}.md`;
-    document.body.appendChild(element);
-    element.click();
-  };
+export default function MarkdownBlock({ content, chatItem }) {
   const langMap = {
     "": "txt",
     python: "py",
@@ -112,10 +94,11 @@ export default function MarkdownBlock({ content, isLoading }) {
     <Box sx={{ flexDirection: "column" }}>
       <Box
         sx={{
-          maxWidth: "80%",
+          maxWidth: "100%",
           padding: "10px",
           marginBottom: "5px",
           overflow: "hidden",
+          position: "center",
         }}
       >
         <ReactMarkdown
@@ -140,9 +123,16 @@ export default function MarkdownBlock({ content, isLoading }) {
               const codeBlockRef = React.useRef(null);
               const language = props.className?.replace(/language-/, "");
               const fileExtension = langMap[language] || "txt";
-              const ts = new Date().toLocaleString().replace(/[^0-9]/g, "");
+              const ts = chatItem
+                ? chatItem.timestamp
+                    .replace(/ /g, "-")
+                    .replace(/:/g, "-")
+                    .replace(/,/g, "")
+                : new Date().toLocaleString().replace(/[^0-9]/g, "");
 
-              const fileName = `${ts}.${fileExtension}`;
+              const fileName = chatItem
+                ? `${chatItem.role}-${ts}.${fileExtension}`
+                : `${ts}.${fileExtension}`;
               return (
                 <>
                   <br />
