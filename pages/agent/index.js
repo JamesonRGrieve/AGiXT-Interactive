@@ -23,6 +23,7 @@ export default function Agents({
   conversationResults = 5,
   useSelectedAgent,
   setUseSelectedAgent,
+  theme,
 }) {
   const docs = useSWR(
     "docs/agent",
@@ -53,6 +54,7 @@ export default function Agents({
         conversationResults={conversationResults}
         useSelectedAgent={useSelectedAgent}
         setUseSelectedAgent={setUseSelectedAgent}
+        theme={theme}
       />
     );
   } else {

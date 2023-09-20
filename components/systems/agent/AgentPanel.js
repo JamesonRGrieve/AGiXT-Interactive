@@ -31,6 +31,8 @@ export default function AgentPanel({
   setUseSelectedAgent,
   drawerWidth,
   rightDrawerWidth,
+  dark,
+  theme,
 }) {
   const router = useRouter();
   const [tab, setTab] = useState(router.query.tab || 0);
@@ -69,6 +71,7 @@ export default function AgentPanel({
       enableMemory={enableMemory}
       injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
       conversationResults={conversationResults}
+      theme={theme}
     />,
     <AgentPrompt
       key="prompt"
@@ -85,6 +88,7 @@ export default function AgentPanel({
       enableMemory={enableMemory}
       injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
       conversationResults={conversationResults}
+      theme={theme}
     />,
     <AgentPrompt
       key="Instruction"
@@ -101,6 +105,7 @@ export default function AgentPanel({
       enableMemory={enableMemory}
       injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
       conversationResults={conversationResults}
+      theme={theme}
     />,
     <AgentPrompt
       key="chainExecution"
@@ -122,6 +127,7 @@ export default function AgentPanel({
       allResponses={allResponses}
       useSelectedAgent={useSelectedAgent}
       setUseSelectedAgent={setUseSelectedAgent}
+      theme={theme}
     />,
   ];
 

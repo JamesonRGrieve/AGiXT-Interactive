@@ -1,6 +1,8 @@
 import React from "react";
 import { Box, IconButton } from "@mui/material";
 import ReactMarkdown from "react-markdown";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { a11yDark } from "react-syntax-highlighter/dist/cjs/styles/hljs";
 import { ContentCopy as ContentCopyIcon } from "@mui/icons-material";
 import DownloadIcon from "@mui/icons-material/Download";
 import clipboardCopy from "clipboard-copy";
@@ -172,9 +174,20 @@ export default function MarkdownBlock({ content, chatItem }) {
                       {fileName} | {language}
                     </div>
                     <div className="code-container">
-                      <code className={"code-block"} {...props}>
-                        {children}
-                      </code>
+                      {language in langMap ? (
+                        <SyntaxHighlighter
+                          {...props}
+                          children={children}
+                          language={language}
+                          PreTag="div"
+                          showLineNumbers={true}
+                          style={a11yDark}
+                        />
+                      ) : (
+                        <code className={"code-block"} {...props}>
+                          {children}
+                        </code>
+                      )}
                     </div>
                   </div>
                   <br />

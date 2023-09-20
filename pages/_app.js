@@ -416,6 +416,7 @@ export default function App({ Component, pageProps, dark }) {
                   drawerWidth={drawerWidth}
                   rightDrawerWidth={rightDrawerWidth}
                   commands={commands.data}
+                  theme={theme}
                 />
               )}
             </SettingsProvider>

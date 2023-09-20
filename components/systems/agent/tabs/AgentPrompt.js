@@ -29,6 +29,7 @@ export default function AgentPrompt({
   fromStep = 0,
   allResponses = false,
   useSelectedAgent = true,
+  theme,
 }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
@@ -207,7 +208,11 @@ export default function AgentPrompt({
         conversationName={conversationName}
         setConversationName={setConversationName}
       />
-      <ConversationHistory chatHistory={chatHistory} isLoading={isLoading} />
+      <ConversationHistory
+        chatHistory={chatHistory}
+        isLoading={isLoading}
+        theme={theme}
+      />
       {mode == "Prompt" ? (
         <>
           <br />
