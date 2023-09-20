@@ -28,6 +28,7 @@ export default function ChainSteps({ commands }) {
     );
     mutate("chain/" + router.query.chain);
   };
+
   return (
     <Box
       sx={{
