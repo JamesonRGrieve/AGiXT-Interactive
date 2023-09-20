@@ -26,6 +26,8 @@ const WAIT_MESSAGE = "Let me think about that for a moment. Please wait..";
 export default function ConversationHistory({ chatHistory, isLoading }) {
   const router = useRouter();
   const agentName = router.query.agent;
+  const tab = router.query.tab;
+  const marginTop = tab == 1 ? "400px" : tab == 3 ? "334px" : "280px";
 
   let lastUserMessage = ""; // track the last user message
 
@@ -36,7 +38,7 @@ export default function ConversationHistory({ chatHistory, isLoading }) {
         overflowY: "auto",
         display: "flex",
         flexDirection: "column-reverse",
-        height: "65vh",
+        height: `calc(100vh - ${marginTop})`,
       }}
     >
       <div>
@@ -102,90 +104,6 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
     document.body.appendChild(element);
     element.click();
   };
-  const langMap = {
-    "": "txt",
-    python: "py",
-    javascript: "js",
-    typescript: "ts",
-    html: "html",
-    css: "css",
-    json: "json",
-    yaml: "yaml",
-    markdown: "md",
-    shell: "sh",
-    bash: "sh",
-    sql: "sql",
-    java: "java",
-    c: "c",
-    cpp: "cpp",
-    csharp: "cs",
-    go: "go",
-    rust: "rs",
-    php: "php",
-    ruby: "rb",
-    perl: "pl",
-    lua: "lua",
-    r: "r",
-    swift: "swift",
-    kotlin: "kt",
-    scala: "scala",
-    clojure: "clj",
-    elixir: "ex",
-    erlang: "erl",
-    haskell: "hs",
-    ocaml: "ml",
-    pascal: "pas",
-    scheme: "scm",
-    coffeescript: "coffee",
-    fortran: "f",
-    julia: "jl",
-    lisp: "lisp",
-    prolog: "pro",
-    vbnet: "vb",
-    dart: "dart",
-    fsharp: "fs",
-    groovy: "groovy",
-    perl6: "pl",
-    powershell: "ps1",
-    puppet: "pp",
-    qml: "qml",
-    racket: "rkt",
-    sas: "sas",
-    verilog: "v",
-    vhdl: "vhd",
-    apex: "cls",
-    matlab: "m",
-    nim: "nim",
-    ocaml: "ml",
-    pascal: "pas",
-    scheme: "scm",
-    coffeescript: "coffee",
-  };
-
-  const renderMessage = () => {
-    const message = formattedMessage.toString();
-    const match = message.match(/#(.*?)(?=\n|$)/);
-    if (match) {
-      if (message.includes("GENERATED_IMAGE:")) {
-        const base64Image = match[1].replace("GENERATED_IMAGE:", "").trim();
-        const formattedImage = base64Image.toString("base64");
-        return message.replace(
-          match[0],
-          `![Generated Image](data:image/png;base64,${formattedImage})`
-        );
-      }
-      if (message.includes("GENERATED_AUDIO:")) {
-        const base64Audio = match[1].replace("GENERATED_AUDIO:", "").trim();
-        const formattedAudio = base64Audio.toString("base64");
-        return message.replace(
-          match[0],
-          `![Generated Audio](data:audio/wav;base64,${formattedAudio})`
-        );
-      }
-    }
-    return formattedMessage;
-  };
-
   return (
     <Box
       sx={{
@@ -205,7 +123,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
         }}
       >
         <MarkdownBlock
-          content={chatItem.message}
+          content={formattedMessage}
           chatItem={chatItem}
           theme={theme}
         />
