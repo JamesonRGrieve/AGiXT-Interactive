@@ -29,11 +29,11 @@ export default function AgentPrompt({
   fromStep = 0,
   allResponses = false,
   useSelectedAgent = true,
-  theme,
+  conversationName,
+  setConversationName,
 }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
-  const [conversationName, setConversationName] = useState("Test");
   const [lastResponse, setLastResponse] = useState("");
   const [promptCategory, setPromptCategory] = useState("Default");
   const [promptName, setPromptName] = useState("Chat");

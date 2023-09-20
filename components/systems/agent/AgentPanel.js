@@ -35,7 +35,7 @@ export default function AgentPanel({
 }) {
   const router = useRouter();
   const [tab, setTab] = useState(router.query.tab || 0);
-
+  const [conversationName, setConversationName] = useState("Test");
   useEffect(() => {
     // Push the current tab to the router query
     router.push(
@@ -70,6 +70,8 @@ export default function AgentPanel({
       enableMemory={enableMemory}
       injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
       conversationResults={conversationResults}
+      conversationName={conversationName}
+      setConversationName={setConversationName}
       theme={theme}
     />,
     <AgentPrompt
@@ -87,6 +89,8 @@ export default function AgentPanel({
       enableMemory={enableMemory}
       injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
       conversationResults={conversationResults}
+      conversationName={conversationName}
+      setConversationName={setConversationName}
       theme={theme}
     />,
     <AgentPrompt
@@ -104,6 +108,8 @@ export default function AgentPanel({
       enableMemory={enableMemory}
       injectMemoriesFromCollectionNumber={injectMemoriesFromCollectionNumber}
       conversationResults={conversationResults}
+      conversationName={conversationName}
+      setConversationName={setConversationName}
       theme={theme}
     />,
     <AgentPrompt
@@ -126,6 +132,8 @@ export default function AgentPanel({
       allResponses={allResponses}
       useSelectedAgent={useSelectedAgent}
       setUseSelectedAgent={setUseSelectedAgent}
+      conversationName={conversationName}
+      setConversationName={setConversationName}
       theme={theme}
     />,
   ];
