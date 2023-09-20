@@ -1,11 +1,14 @@
 import React from "react";
-import { useRouter } from "next/router";
-import { Paper, Box, Typography, IconButton } from "@mui/material";
-import { ThumbUp, ThumbDown } from "@mui/icons-material";
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
-import { ContentCopy as ContentCopyIcon } from "@mui/icons-material";
-import DownloadIcon from "@mui/icons-material/Download";
+import { useRouter } from "next/router";
+import { Paper, Box, Typography, IconButton } from "@mui/material";
+import {
+  ContentCopy as ContentCopyIcon,
+  Download as DownloadIcon,
+  ThumbUp,
+  ThumbDown,
+} from "@mui/icons-material";
 import clipboardCopy from "clipboard-copy";
 import {
   Dialog,
