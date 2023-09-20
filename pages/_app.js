@@ -288,18 +288,13 @@ export default function App({ Component, pageProps, dark }) {
           >
             <DrawerHeader>
               <IconButton onClick={handleRightDrawerClose}>
-                <Typography noWrap color="white">
-                  {pageName == "agent" && tab != 3 ? "Advanced Options" : null}
-                  {pageName == "train" ? "Advanced Options" : null}
-                  {pageName == "settings" ? "Agent Commands" : null}
-                  {pageName == "agent" && tab == 3 ? "Chain Options" : null}
-                </Typography>
                 <ChevronRight fontSize="large" sx={{ color: "white" }} />
               </IconButton>
             </DrawerHeader>
             <Divider />
             {pageName === "agent" && tab != 3 ? (
               <Container>
+                <br />
                 <AdvancedOptions
                   contextResults={contextResults}
                   setContextResults={setContextResults}
@@ -322,9 +317,6 @@ export default function App({ Component, pageProps, dark }) {
                   enableMemory={enableMemory}
                   setEnableMemory={setEnableMemory}
                 />
-                <Typography variant="h6" component="h1" noWrap>
-                  Agent Commands
-                </Typography>
                 <Divider />
               </Container>
             ) : null}
