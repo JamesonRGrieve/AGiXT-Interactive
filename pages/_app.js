@@ -215,7 +215,7 @@ export default function App({ Component, pageProps, dark }) {
                 display: "flex",
                 justifyContent: "space-between",
                 backgroundColor: theme.palette.primary.main,
-                height: "65px",
+                height: darkMode ? "65px" : "64px",
               }}
             >
               <Box sx={{ display: "flex", alignItems: "left" }}>
