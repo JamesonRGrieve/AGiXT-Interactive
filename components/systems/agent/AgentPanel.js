@@ -1,17 +1,10 @@
 import { useState, useEffect } from "react";
 import { Tab, Tabs } from "@mui/material";
 import { useRouter } from "next/router";
-import AgentAdmin from "./tabs/AgentAdmin";
-import AgentConfigure from "./tabs/AgentConfigure";
 import AgentPrompt from "./tabs/AgentPrompt";
 import { useTheme } from "@mui/material/styles";
-import { sdk } from "../../../lib/apiClient";
-import useSWR from "swr";
-import { mutate } from "swr";
 import { Box } from "@mui/material";
-// TODO: Need to define conversationName higher up so that it is persisted.
 export default function AgentPanel({
-  data,
   chains,
   selectedChain,
   setSelectedChain,
@@ -29,9 +22,6 @@ export default function AgentPanel({
   allResponses = false,
   useSelectedAgent = true,
   setUseSelectedAgent,
-  drawerWidth,
-  rightDrawerWidth,
-  dark,
 }) {
   const router = useRouter();
   const [tab, setTab] = useState(router.query.tab || 0);
