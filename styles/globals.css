@@ -151,7 +151,6 @@ img:not([src^="https://img.shields.io"]) {
   vertical-align: middle; /* Align with the middle of the surrounding text */
 }
 
-
 .react-markdown h1 {
   font-size: 2em;
   border-bottom: 1px solid #eaecef;
