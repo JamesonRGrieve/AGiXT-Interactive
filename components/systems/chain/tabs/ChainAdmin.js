@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
 import { TextField, Button, Divider, Box, Typography } from "@mui/material";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { sdk } from "../../../../lib/apiClient";
 
-export default function ChainAdmin({ friendly_name, name, args, enabled }) {
+export default function ChainAdmin({ steps }) {
   const router = useRouter();
   const chainName = router.query.chain;
   const [newName, setNewName] = useState("");
@@ -18,8 +19,21 @@ export default function ChainAdmin({ friendly_name, name, args, enabled }) {
     mutate(`chain`);
     router.push(`/chain/${newName}`);
   };
+  const handleExportChain = async () => {
+    const element = document.createElement("a");
+    const file = new Blob([JSON.stringify(steps.data)], {
+      type: "application/json",
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = `${chainName}.json`;
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
   return (
     <Box sx={{ margin: "1rem" }}>
+      <Button onClick={handleExportChain} color={"info"}>
+        <FileDownloadOutlinedIcon color={"info"} /> Export Chain
+      </Button>
       <Typography variant="h6" component="h2" marginY={"0.5rem"}>
         Rename Chain
       </Typography>
