@@ -24,7 +24,7 @@ export default function AgentPanel({
   setUseSelectedAgent,
 }) {
   const router = useRouter();
-  const [tab, setTab] = useState(router.query.tab || 0);
+  const [tab, setTab] = useState(router.query.tab || "0");
   const [conversationName, setConversationName] = useState("Test");
   useEffect(() => {
     // Push the current tab to the router query
