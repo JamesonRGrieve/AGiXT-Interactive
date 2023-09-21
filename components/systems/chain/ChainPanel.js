@@ -5,6 +5,8 @@ import ChainSteps from "./tabs/ChainSteps";
 import ChainAdmin from "./tabs/ChainAdmin";
 import ChainSelector from "./ChainSelector";
 import { useTheme } from "@mui/material/styles";
+import { sdk } from "../../../lib/apiClient";
+import useSWR from "swr";
 
 export default function ChainPanel({ commands }) {
   const router = useRouter();
@@ -14,16 +16,20 @@ export default function ChainPanel({ commands }) {
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
   };
-
+  const steps = useSWR(
+    "chain/" + router.query.chain,
+    async () => await sdk.getChain(router.query.chain)
+  );
   const theme = useTheme();
   const tabs = [
     <ChainSteps
       key="steps"
+      steps={steps}
       commands={commands}
       selectedChain={selectedChain}
       setSelectedChain={setSelectedChain}
     />,
-    <ChainAdmin key="admin" />,
+    <ChainAdmin key="admin" steps={steps} />,
   ];
   useEffect(() => {
     if (selectedChain) {
@@ -51,6 +57,7 @@ export default function ChainPanel({ commands }) {
         setSelectedChain={setSelectedChain}
         onChange={(e) => setSelectedChain(e.target.value)}
       />
+
       {tabs[tab]}
     </>
   );

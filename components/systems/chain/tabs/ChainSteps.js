@@ -6,12 +6,8 @@ import useSWR from "swr";
 import { Typography, Box, IconButton, Container } from "@mui/material";
 import { AddCircleOutline, InsertLink, LowPriority } from "@mui/icons-material";
 import ChainStep from "./partial/ChainStep";
-export default function ChainSteps({ commands }) {
+export default function ChainSteps({ commands, steps }) {
   const router = useRouter();
-  const steps = useSWR(
-    "chain/" + router.query.chain,
-    async () => await sdk.getChain(router.query.chain)
-  );
   const { data: promptCategories } = useSWR(
     `promptCategories`,
     async () => await sdk.getPromptCategories()
