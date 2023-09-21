@@ -37,14 +37,21 @@ export default function AudioRecorder({ conversationName }) {
       reader.readAsDataURL(audioData);
       reader.onloadend = () => {
         const base64Audio = reader.result.split(",")[1];
-        sdk.executeCommand(
+        const response = sdk.executeCommand(
           agentName,
           "Transcribe Base64 Audio",
           {
             base64_audio: base64Audio,
-          },
-          conversationName
+          }
         );
+        response.then((userInput) => {
+          sdk.promptAgent(
+            agentName,
+            "Chat",
+            { user_input: userInput.data },
+            conversationName
+          );
+        });
         setAudioData(null); // Clear the audio data after sending
       };
     }
