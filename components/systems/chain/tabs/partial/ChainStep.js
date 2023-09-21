@@ -49,20 +49,31 @@ export default function ChainStep({
       : prompt.chain;
   const [agentName, setAgentName] = useState(agent_name);
   const [promptName, setPromptName] = useState(pn);
-  const [promptArgs, setPromptArgs] = useState(prompt);
-  const [promptCategory, setPromptCategory] = useState("Default");
+  const [promptArgs, setPromptArgs] = useState(step);
+  const [promptCategory, setPromptCategory] = useState(
+    step?.prompt_category || "Default"
+  );
   const [stepType, setStepType] = useState(-1);
-  const [contextResults, setContextResults] = useState(5);
-  const [shots, setShots] = useState(1);
-  const [browseLinks, setBrowseLinks] = useState(false);
-  const [websearch, setWebsearch] = useState(false);
-  const [websearchDepth, setWebsearchDepth] = useState(0);
-  const [enableMemory, setEnableMemory] = useState(false);
+  const [contextResults, setContextResults] = useState(
+    step?.context_results || 5
+  );
+
+  const [shots, setShots] = useState(step?.shots || step?.shot_count || 1);
+  const [browseLinks, setBrowseLinks] = useState(step?.browse_links || false);
+  const [websearch, setWebsearch] = useState(step?.websearch || false);
+  const [websearchDepth, setWebsearchDepth] = useState(
+    step?.websearch_depth || 0
+  );
+  const [enableMemory, setEnableMemory] = useState(
+    !step?.disable_memory || false
+  );
   const [
     injectMemoriesFromCollectionNumber,
     setInjectMemoriesFromCollectionNumber,
-  ] = useState(0);
-  const [conversationResults, setConversationResults] = useState(5);
+  ] = useState(step?.inject_memories_from_collection_number || 0);
+  const [conversationResults, setConversationResults] = useState(
+    step?.conversation_results || 5
+  );
 
   const router = useRouter();
   const [modified, setModified] = useState(false);
@@ -73,12 +84,6 @@ export default function ChainStep({
         name: "Prompt",
         component: (
           <>
-            {/* 
-            // TODO: Fix duplicate fields and input proper values.
-            PromptSelector is adding variables that already exist in 
-            AdvancedOptions, such as contextResults, but not setting in the promptArgs maybe.
-            Need to investigate and fix, may need to do the same on ChainArgs below.
-            */}
             <PromptSelector
               update={setModified}
               promptCategories={promptCategories}
@@ -192,6 +197,19 @@ export default function ChainStep({
       setPromptCategory("Default");
     }
   }, [prompt.prompt_category]);
+
+  useEffect(() => {
+    setContextResults(step?.context_results || 5);
+    setShots(step?.shots || step?.shot_count || 1);
+    setBrowseLinks(step?.browse_links || false);
+    setWebsearch(step?.websearch || false);
+    setWebsearchDepth(step?.websearch_depth || 0);
+    setEnableMemory(!step?.disable_memory || false);
+    setInjectMemoriesFromCollectionNumber(
+      step?.inject_memories_from_collection_number || 0
+    );
+    setConversationResults(step?.conversation_results || 5);
+  }, [step]);
 
   const handleSave = async () => {
     const args = {

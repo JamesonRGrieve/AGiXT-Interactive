@@ -92,6 +92,10 @@ export default function PromptSelector({
             arg !== "working_directory" &&
             arg !== "helper_agent_name" &&
             arg !== "prompt_name" &&
+            arg !== "context_results" &&
+            arg !== "conversation_results" &&
+            arg !== "conversation_name" &&
+            arg !== "prompt_category" &&
             arg !== ""
           ) {
             return (
