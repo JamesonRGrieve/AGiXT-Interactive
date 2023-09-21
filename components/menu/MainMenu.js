@@ -84,9 +84,13 @@ export default function MenuAgentList({ data, theme, dark }) {
           (agent) =>
             agent.name != "undefined" && (
               <Link
-                href={`/${pageName}?agent=${agent.name}&tab=${
-                  router.query.tab || 0
-                }`}
+                href={
+                  pageName != "new"
+                    ? `/${pageName}?agent=${agent.name}&tab=${
+                        router.query.tab || 0
+                      }`
+                    : `/agent?agent=${agent.name}`
+                }
                 key={agent.name}
                 passHref
               >
