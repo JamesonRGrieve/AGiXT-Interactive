@@ -15,7 +15,7 @@ export default function TrainPanel({
   minRelevanceScore = 0.0,
 }) {
   const router = useRouter();
-  const [tab, setTab] = useState(router.query.tab || 0);
+  const [tab, setTab] = useState(router.query.tab || "0");
 
   useEffect(() => {
     // Push the current tab to the router query
