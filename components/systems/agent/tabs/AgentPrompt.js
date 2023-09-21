@@ -296,7 +296,10 @@ export default function AgentPrompt({
                   >
                     <SendIcon />
                   </Button>
-                  <AudioRecorder conversationName={conversationName} />
+                  <AudioRecorder
+                    conversationName={conversationName}
+                    promptName={promptName}
+                  />
                 </InputAdornment>
               ),
             }}

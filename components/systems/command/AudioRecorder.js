@@ -8,7 +8,7 @@ import {
 } from "@mui/icons-material";
 import { sdk } from "../../../lib/apiClient";
 
-export default function AudioRecorder({ conversationName }) {
+export default function AudioRecorder({ conversationName, promptName }) {
   const [recording, setRecording] = useState(false);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
@@ -47,7 +47,7 @@ export default function AudioRecorder({ conversationName }) {
         response.then((userInput) => {
           sdk.promptAgent(
             agentName,
-            "Chat",
+            promptName,
             { user_input: userInput.data },
             conversationName
           );
