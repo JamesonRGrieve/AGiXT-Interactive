@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useMemo } from "react";
-import AgentConfigure from "../../components/systems/agent/tabs/AgentConfigure";
+import AgentConfigure from "../../components/systems/settings/AgentConfigure";
 import { sdk } from "../../lib/apiClient";
 import ContentSWR from "../../components/data/ContentSWR";
 import useSWR from "swr";
