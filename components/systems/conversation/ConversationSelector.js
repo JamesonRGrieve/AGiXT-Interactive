@@ -9,6 +9,9 @@ import {
   DialogContent,
   DialogActions,
   TextField,
+  Input,
+  Divider,
+  Typography,
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -59,6 +62,20 @@ export default function ConversationSelector({
     element.click();
   };
 
+  const handleImportConversation = async (event) => {
+    const files = Array.from(event.target.files);
+    for (let file of files) {
+      const fileContent = await file.text();
+      if (!newConversationName) {
+        const fileName = file.name.replace(".json", "");
+        setNewConversationName(fileName);
+      }
+      await sdk.newConversation(agentName, newConversationName, fileContent);
+      conversations = await sdk.getConversations();
+      setConversationName(fileName);
+    }
+  };
+
   return (
     <FormControl
       sx={{
@@ -107,6 +124,15 @@ export default function ConversationSelector({
             onChange={(e) => setNewConversationName(e.target.value)}
             variant="outlined"
             color="info"
+          />
+          <Divider />
+          <Typography variant="h6" component="h2" marginY={"1rem"}>
+            Import a Conversation
+          </Typography>
+          <Input
+            type="file"
+            onChange={handleImportConversation}
+            sx={{ mt: 2 }}
           />
         </DialogContent>
         <DialogActions>
