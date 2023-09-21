@@ -93,13 +93,64 @@ export default function MarkdownBlock({ content, chatItem }) {
     }
     return content;
   };
+  const generateId = (text) => {
+    return text ? text.toLowerCase().replace(/[^\w]+/g, "-") : "";
+  };
+  const handleAnchorClick = (e) => {
+    const href = e.target.getAttribute("href");
+    if (href.startsWith("#")) {
+      e.preventDefault();
+      const id = href.slice(1);
+      const element = document.getElementById(id);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      e.preventDefault();
+      window.open(href, "_blank");
+    }
+  };
 
+  const renderHeader = (Tag, children) => {
+    let text = "";
+    if (children && children[0]) {
+      text = children[0];
+    }
+    const id = generateId(text);
+    return <Tag id={id}>{children}</Tag>;
+  };
+  const renderLink = ({ node, children, ...props }) => {
+    const isExternal = props.href && !props.href.startsWith("#");
+    return (
+      <a
+        {...props}
+        target={isExternal ? "_blank" : undefined}
+        rel={isExternal ? "noopener noreferrer" : undefined}
+        onClick={isExternal ? undefined : handleAnchorClick}
+      >
+        {children}
+      </a>
+    );
+  };
   return (
     <>
       <ReactMarkdown
         children={renderMessage(content)}
         className="react-markdown"
         components={{
+          a: renderLink,
+          h1({ node, children }) {
+            return renderHeader("h1", children);
+          },
+          h2({ node, children }) {
+            return renderHeader("h2", children);
+          },
+          h3({ node, children }) {
+            return renderHeader("h3", children);
+          },
+          h4({ node, children }) {
+            return renderHeader("h4", children);
+          },
           code({ node, inline, children, ...props }) {
             if (inline) {
               return (
