@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { sdk } from "../../../../lib/apiClient";
-import { useSettings } from "../../../../lib/SettingsContext";
+import { sdk } from "../../../lib/apiClient";
+import { useSettings } from "../../../lib/SettingsContext";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import useSWR from "swr";
 import { mutate } from "swr";
@@ -9,7 +9,6 @@ import {
   TextField,
   Button,
   Divider,
-  Container,
   Slider,
   Box,
   MenuItem,
@@ -18,7 +17,6 @@ import {
   Switch,
   FormControlLabel,
   FormControl,
-  Link,
   InputLabel,
 } from "@mui/material";
 
