@@ -15,11 +15,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../lib/apiClient";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
 export default function ConversationSelector({
   conversations,
   conversationName,
   setConversationName,
+  conversation,
 }) {
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
@@ -43,6 +45,18 @@ export default function ConversationSelector({
       (c) => c !== conversationName
     );
     setConversationName(updatedConversations[0] || "");
+  };
+
+  const handleExportConversation = async () => {
+    if (!conversationName) return;
+    const element = document.createElement("a");
+    const file = new Blob([JSON.stringify(conversation)], {
+      type: "application/json",
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = `${conversationName}.json`;
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
   };
 
   return (
@@ -70,6 +84,9 @@ export default function ConversationSelector({
             ))
           : null}
       </Select>
+      <Button onClick={handleExportConversation}>
+        <FileDownloadOutlinedIcon color={"info"} />
+      </Button>
       <Button onClick={() => setOpenDialog(true)}>
         <AddIcon color={"info"} />
       </Button>
@@ -78,7 +95,6 @@ export default function ConversationSelector({
       </Button>
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Create New Conversation</DialogTitle>
-
         <DialogContent>
           <TextField
             autoFocus

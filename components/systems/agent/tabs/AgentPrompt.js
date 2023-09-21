@@ -208,6 +208,7 @@ export default function AgentPrompt({
         conversations={conversations}
         conversationName={conversationName}
         setConversationName={setConversationName}
+        conversation={conversation}
       />
       <ConversationHistory chatHistory={chatHistory} isLoading={isLoading} />
       {mode == "Prompt" ? (
