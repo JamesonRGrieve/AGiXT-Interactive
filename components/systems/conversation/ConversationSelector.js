@@ -59,6 +59,18 @@ export default function ConversationSelector({
     element.click();
   };
 
+  const handleImportConversation = async (event) => {
+    const files = Array.from(event.target.files);
+    for (let file of files) {
+      const fileContent = await file.text();
+      const fileName = file.name.replace(".json", "");
+      await sdk.newConversation(agentName, fileName);
+      await sdk.importConversation(fileName, fileContent);
+      conversations = await sdk.getConversations();
+      setConversationName(fileName);
+    }
+  };
+
   return (
     <FormControl
       sx={{
