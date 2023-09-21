@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import { useRouter } from "next/router";
 import { IconButton } from "@mui/material";
 import {
@@ -8,7 +8,7 @@ import {
 } from "@mui/icons-material";
 import { sdk } from "../../../lib/apiClient";
 
-export default function AudioRecorder({ conversationName, promptName }) {
+export default function AudioRecorder({ setUserInput, handleSendMessage }) {
   const [recording, setRecording] = useState(false);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
@@ -45,12 +45,8 @@ export default function AudioRecorder({ conversationName, promptName }) {
           }
         );
         response.then((userInput) => {
-          sdk.promptAgent(
-            agentName,
-            promptName,
-            { user_input: userInput.data },
-            conversationName
-          );
+          setUserInput(userInput.data);
+          handleSendMessage();
         });
         setAudioData(null); // Clear the audio data after sending
       };
