@@ -25,6 +25,7 @@ import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import ModelTrainingOutlinedIcon from "@mui/icons-material/ModelTrainingOutlined";
 import EngineeringIcon from "@mui/icons-material/Engineering";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import MapsUgcIcon from "@mui/icons-material/MapsUgc";
 import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
@@ -33,6 +34,7 @@ import InsertLink from "@mui/icons-material/InsertLink";
 import AddLink from "@mui/icons-material/AddLink";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { sdk } from "../../lib/apiClient";
 
 export default function MenuAgentList({
   data,
@@ -41,6 +43,8 @@ export default function MenuAgentList({
   setPrompts,
   promptCategories,
   setPromptCategories,
+  setConversationName,
+  setConversations,
 }) {
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
@@ -52,6 +56,8 @@ export default function MenuAgentList({
   const [openNewAgentDialog, setNewAgentOpenDialog] = useState(false);
   const [openNewPromptDialog, setNewPromptOpenDialog] = useState(false);
   const [openNewChainDialog, setNewChainOpenDialog] = useState(false);
+  const [newConversationName, setNewConversationName] = useState("");
+  const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newPromptName, setNewPromptName] = useState("");
   const [promptCategory, setPromptCategory] = useState("Default");
   const [toggleNewPromptCategory, setToggleNewPromptCategory] = useState(false);
@@ -102,6 +108,38 @@ export default function MenuAgentList({
     }
     setNewAgentOpenDialog(false);
   };
+  const handleImportConversation = async (event) => {
+    const files = Array.from(event.target.files);
+    for (let file of files) {
+      const fileContent = await file.text();
+      if (!newConversationName) {
+        const fileName = file.name.replace(".json", "");
+        setNewConversationName(fileName);
+      }
+      await sdk.newConversation(agentName, newConversationName, fileContent);
+      const fetchConversations = async () => {
+        const updatedConversations = await sdk.getConversations();
+        setConversations(updatedConversations);
+      };
+      fetchConversations();
+      setConversationName(newConversationName);
+      router.push(`/agent?agent=${agentName}`);
+    }
+    setOpenNewConversation(false);
+  };
+  const handleAddConversation = async () => {
+    if (!newConversationName) return;
+    await sdk.newConversation(agentName, newConversationName);
+    setNewConversationName("");
+    setOpenNewConversation(false);
+    const fetchConversations = async () => {
+      const updatedConversations = await sdk.getConversations();
+      setConversations(updatedConversations);
+    };
+    fetchConversations();
+    setConversationName(newConversationName);
+    router.push(`/agent?agent=${agentName}`);
+  };
   const handleNewPrompt = async () => {
     await sdk.addPrompt(newPromptName, promptBody, promptCategory);
     const fetchPrompts = async () => {
@@ -148,40 +186,28 @@ export default function MenuAgentList({
         </Link>
         <Divider />
 
-        <ListItemButton
-          key={"new"}
-          selected={
-            router.pathname.split("/")[1] == "new" &&
-            router.pathname.split("/")[2] == "chain"
-          }
-          onClick={() => setNewChainOpenDialog(true)}
-        >
+        <ListItemButton onClick={() => setNewChainOpenDialog(true)}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <AddLink />
           </ListItemIcon>
           <ListItemText primary="New Chain" />
         </ListItemButton>
 
-        <ListItemButton
-          selected={
-            router.pathname.split("/")[1] == "new" &&
-            router.pathname.split("/")[2] == "prompt"
-          }
-          onClick={() => setNewPromptOpenDialog(true)}
-        >
+        <ListItemButton onClick={() => setNewPromptOpenDialog(true)}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <AddCommentOutlinedIcon />
           </ListItemIcon>
           <ListItemText primary="New Prompt" />
         </ListItemButton>
 
-        <ListItemButton
-          selected={
-            router.pathname.split("/")[1] == "new" &&
-            router.pathname.split("/")[2] == "agent"
-          }
-          onClick={() => setNewAgentOpenDialog(true)}
-        >
+        <ListItemButton onClick={() => setOpenNewConversation(true)}>
+          <ListItemIcon sx={{ minWidth: "30px" }}>
+            <MapsUgcIcon />
+          </ListItemIcon>
+          <ListItemText primary="New Conversation" />
+        </ListItemButton>
+
+        <ListItemButton onClick={() => setNewAgentOpenDialog(true)}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <PersonAddOutlinedIcon />
           </ListItemIcon>
@@ -472,6 +498,43 @@ export default function MenuAgentList({
             </Button>
           </DialogActions>
         </DialogContent>
+      </Dialog>
+      <Dialog
+        open={openNewConversation}
+        onClose={() => setOpenNewConversation(false)}
+      >
+        <DialogTitle>Create New Conversation</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="New Conversation Name"
+            type="text"
+            fullWidth
+            value={newConversationName}
+            onChange={(e) => setNewConversationName(e.target.value)}
+            variant="outlined"
+            color="info"
+          />
+          <Divider />
+          <Typography variant="h6" component="h2" marginY={"1rem"}>
+            Import a Conversation
+          </Typography>
+          <Input
+            type="file"
+            onChange={handleImportConversation}
+            sx={{ mt: 2 }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenNewConversation(false)} color="error">
+            Cancel
+          </Button>
+          <Button onClick={handleAddConversation} color="info">
+            Create
+          </Button>
+        </DialogActions>
       </Dialog>
     </>
   );

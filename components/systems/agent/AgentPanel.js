@@ -22,10 +22,13 @@ export default function AgentPanel({
   allResponses = false,
   useSelectedAgent = true,
   setUseSelectedAgent,
+  conversationName,
+  setConversationName,
+  setConversations,
 }) {
   const router = useRouter();
   const [tab, setTab] = useState(router.query.tab || "0");
-  const [conversationName, setConversationName] = useState("Test");
+
   useEffect(() => {
     // Push the current tab to the router query
     router.push(
@@ -62,6 +65,7 @@ export default function AgentPanel({
       conversationResults={conversationResults}
       conversationName={conversationName}
       setConversationName={setConversationName}
+      setConversations={setConversations}
       theme={theme}
     />,
     <AgentPrompt
@@ -81,6 +85,7 @@ export default function AgentPanel({
       conversationResults={conversationResults}
       conversationName={conversationName}
       setConversationName={setConversationName}
+      setConversations={setConversations}
       theme={theme}
     />,
     <AgentPrompt
@@ -100,6 +105,7 @@ export default function AgentPanel({
       conversationResults={conversationResults}
       conversationName={conversationName}
       setConversationName={setConversationName}
+      setConversations={setConversations}
       theme={theme}
     />,
     <AgentPrompt
@@ -124,6 +130,7 @@ export default function AgentPanel({
       setUseSelectedAgent={setUseSelectedAgent}
       conversationName={conversationName}
       setConversationName={setConversationName}
+      setConversations={setConversations}
       theme={theme}
     />,
   ];

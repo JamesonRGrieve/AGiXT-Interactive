@@ -11,6 +11,7 @@ import { Button, TextField, InputAdornment, Box } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import useSWR from "swr";
 import { mutate } from "swr";
+import { useSettings } from "../../../../lib/SettingsContext";
 
 export default function AgentPrompt({
   chains,
@@ -32,6 +33,7 @@ export default function AgentPrompt({
   useSelectedAgent = true,
   conversationName,
   setConversationName,
+  setConversations,
 }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
@@ -39,39 +41,19 @@ export default function AgentPrompt({
   const [promptCategory, setPromptCategory] = useState("Default");
   const [promptName, setPromptName] = useState("Chat");
   const [isLoading, setIsLoading] = useState(false);
-
+  const { conversations, promptCategories, prompts } = useSettings();
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
-  const { data: conversations } = useSWR(
-    "getConversations",
-    async () => await sdk.getConversations()
-  );
-
+  const [promptArgs, setPromptArgs] = useState({});
   const { data: conversation } = useSWR(
     `conversation/${agentName}/${conversationName}`,
     async () => await sdk.getConversation(agentName, conversationName, 100, 1)
   );
-  const { data: promptCategories } = useSWR(
-    `promptCategories`,
-    async () => await sdk.getPromptCategories()
-  );
-
-  const { data: prompts } = useSWR(
-    `prompts/${promptCategory}`,
-    async () => await sdk.getPrompts(promptCategory)
-  );
-  const [promptArgs, setPromptArgs] = useState({});
 
   const { data: prompt } = useSWR(
     `prompt/${promptName}`,
     async () => await sdk.getPrompt(promptName, promptCategory)
   );
-  useEffect(() => {
-    mutate("getConversations");
-    if (conversations) {
-      setConversationName(conversationName);
-    }
-  }, [conversationName]);
   useEffect(() => {
     mutate(`conversation/${agentName}/${conversationName}`);
     if (
@@ -209,6 +191,7 @@ export default function AgentPrompt({
         conversationName={conversationName}
         setConversationName={setConversationName}
         conversation={conversation}
+        setConversations={setConversations}
       />
       <ConversationHistory chatHistory={chatHistory} isLoading={isLoading} />
       {mode == "Prompt" ? (

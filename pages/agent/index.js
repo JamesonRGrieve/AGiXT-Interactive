@@ -18,6 +18,9 @@ export default function Agents({
   useSelectedAgent,
   setUseSelectedAgent,
   theme,
+  setConversationName,
+  conversationName,
+  setConversations,
 }) {
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
@@ -39,6 +42,9 @@ export default function Agents({
         useSelectedAgent={useSelectedAgent}
         setUseSelectedAgent={setUseSelectedAgent}
         theme={theme}
+        setConversationName={setConversationName}
+        conversationName={conversationName}
+        setConversations={setConversations}
       />
     );
   } else {

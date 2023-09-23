@@ -107,9 +107,11 @@ export default function App({ Component, pageProps, dark }) {
   const [fromStep, setFromStep] = useState(0);
   const [allResponses, setAllResponses] = useState(false);
   const [useSelectedAgent, setUseSelectedAgent] = useState(true);
-  const [commands, setCommands] = useState({ isLoading: true });
+  const [commands, setCommands] = useState({});
   const [promptCategories, setPromptCategories] = useState([]);
   const [prompts, setPrompts] = useState([]);
+  const [conversations, setConversations] = useState([]);
+  const [conversationName, setConversationName] = useState("Test");
   const contentWidth =
     open && rightDrawerOpen
       ? `calc(100% - ${bothDrawersWidth}px)`
@@ -286,6 +288,10 @@ export default function App({ Component, pageProps, dark }) {
               setPrompts={setPrompts}
               promptCategories={promptCategories}
               setPromptCategories={setPromptCategories}
+              conversations={conversations}
+              setConversations={setConversations}
+              setConversationName={setConversationName}
+              conversationName={conversationName}
             />
           </Drawer>
           {pageName != "prompt" && pageName != "chain" && pageName != "" ? (
@@ -391,6 +397,8 @@ export default function App({ Component, pageProps, dark }) {
               setPromptCategories={setPromptCategories}
               prompts={prompts}
               setPrompts={setPrompts}
+              conversations={conversations}
+              setConversations={setConversations}
             >
               {commands.isLoading ? (
                 "Loading..."
@@ -431,6 +439,10 @@ export default function App({ Component, pageProps, dark }) {
                   theme={theme}
                   prompts={prompts}
                   setPrompts={setPrompts}
+                  conversations={conversations}
+                  setConversationName={setConversationName}
+                  conversationName={conversationName}
+                  setConversations={setConversations}
                 />
               )}
             </SettingsProvider>
