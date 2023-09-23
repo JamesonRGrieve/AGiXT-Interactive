@@ -12,7 +12,7 @@ import AgentCommand from "./AgentCommand";
 import { sdk } from "../../../lib/apiClient";
 import { useSettings } from "../../../lib/SettingsContext";
 
-export default function AgentCommandList({ data }) {
+export default function AgentCommandList() {
   const agentName = useRouter().query.agent;
   const { commands } = useSettings();
   const handleToggleAllCommands = async () => {
