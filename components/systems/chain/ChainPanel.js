@@ -8,7 +8,7 @@ import { useTheme } from "@mui/material/styles";
 import { sdk } from "../../../lib/apiClient";
 import useSWR from "swr";
 
-export default function ChainPanel() {
+export default function ChainPanel({ commands }) {
   const router = useRouter();
   const chain = router.query.chain;
   const [tab, setTab] = useState(0);
@@ -25,6 +25,7 @@ export default function ChainPanel() {
     <ChainSteps
       key="steps"
       steps={steps}
+      commands={commands}
       selectedChain={selectedChain}
       setSelectedChain={setSelectedChain}
     />,
