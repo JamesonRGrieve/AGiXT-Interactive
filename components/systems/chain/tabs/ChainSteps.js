@@ -51,7 +51,6 @@ export default function ChainSteps({ steps }) {
                   {...step}
                   promptCategories={promptCategories}
                   agents={agents}
-                  stepData={step}
                   last_step={steps.data.steps.length === index + 1}
                   updateCallback={() => {
                     return null;

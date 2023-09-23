@@ -181,7 +181,6 @@ export default function ChainStep({
   useEffect(() => {
     setPromptArgs(prompt);
   }, [prompt]);
-  console.log("ChainStep prompt: ", prompt);
   useEffect(() => {
     if (prompt.prompt_category) {
       setPromptCategory(prompt.prompt_category);
