@@ -7,8 +7,9 @@ import {
   Divider,
 } from "@mui/material";
 import { AddCircle, Home } from "@mui/icons-material";
-import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
+import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import ModelTrainingOutlinedIcon from "@mui/icons-material/ModelTrainingOutlined";
+import PermIdentityOutlinedIcon from "@mui/icons-material/PermIdentityOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
@@ -99,34 +100,58 @@ export default function MenuAgentList({ data, theme, dark }) {
         data.map(
           (agent) =>
             agent.name != "undefined" && (
-              <Link
-                href={
-                  pageName != "new"
-                    ? `/${pageName}?agent=${agent.name}&tab=${
-                        router.query.tab || 0
-                      }`
-                    : `/agent?agent=${agent.name}`
-                }
-                key={agent.name}
-                passHref
-              >
-                <ListItemButton
-                  selected={agentName == agent.name}
-                  sx={{
-                    "&&.Mui-selected": {
-                      backgroundColor: selectedColor,
-                    },
-                  }}
+              <>
+                {agentName == agent.name ? <Divider /> : null}
+                <Link
+                  href={
+                    pageName != "new"
+                      ? `/${pageName}?agent=${agent.name}&tab=${
+                          router.query.tab || 0
+                        }`
+                      : `/agent?agent=${agent.name}`
+                  }
+                  key={agent.name}
+                  passHref
                 >
-                  <ListItemIcon sx={{ minWidth: "30px" }}>
-                    <SmartToyOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary={agent.name} />
-                </ListItemButton>
-                {agentName == agent.name ? (
-                  <>
-                    <Link href={`/train?agent=${agent.name}`} passHref>
-                      <Link href={`/agent?agent=${agent.name}`} passHref>
+                  <ListItemButton
+                    selected={agentName == agent.name}
+                    sx={{
+                      "&&.Mui-selected": {
+                        backgroundColor: selectedColor,
+                      },
+                    }}
+                  >
+                    <ListItemIcon sx={{ minWidth: "30px" }}>
+                      {agentName != agent.name ? (
+                        <PermIdentityOutlinedIcon />
+                      ) : (
+                        <DirectionsRunIcon />
+                      )}
+                    </ListItemIcon>
+                    <ListItemText primary={agent.name} />
+                  </ListItemButton>
+                  {agentName == agent.name ? (
+                    <>
+                      <Link href={`/train?agent=${agent.name}`} passHref>
+                        <Link href={`/agent?agent=${agent.name}`} passHref>
+                          <ListItemButton
+                            variant="contained"
+                            sx={{
+                              pl: "2rem",
+                              "&&.Mui-selected": {
+                                backgroundColor: selectedColor,
+                              },
+                            }}
+                            selected={
+                              pageName == "agent" && router.query.tab != 4
+                            }
+                          >
+                            <ListItemIcon sx={{ minWidth: "30px" }}>
+                              <PlayCircleFilledWhiteOutlinedIcon />
+                            </ListItemIcon>
+                            Interact
+                          </ListItemButton>
+                        </Link>
                         <ListItemButton
                           variant="contained"
                           sx={{
@@ -135,86 +160,70 @@ export default function MenuAgentList({ data, theme, dark }) {
                               backgroundColor: selectedColor,
                             },
                           }}
-                          selected={
-                            pageName == "agent" && router.query.tab != 4
-                          }
+                          selected={pageName == "train"}
                         >
                           <ListItemIcon sx={{ minWidth: "30px" }}>
-                            <PlayCircleFilledWhiteOutlinedIcon />
+                            <ModelTrainingOutlinedIcon />
                           </ListItemIcon>
-                          Interact
+                          Training
                         </ListItemButton>
                       </Link>
-                      <ListItemButton
-                        variant="contained"
-                        sx={{
-                          pl: "2rem",
-                          "&&.Mui-selected": {
-                            backgroundColor: selectedColor,
-                          },
-                        }}
-                        selected={pageName == "train"}
-                      >
-                        <ListItemIcon sx={{ minWidth: "30px" }}>
-                          <ModelTrainingOutlinedIcon />
-                        </ListItemIcon>
-                        Training
-                      </ListItemButton>
-                    </Link>
-                    <Link href={`/prompt?agent=${agent.name}`} passHref>
-                      <ListItemButton
-                        variant="contained"
-                        sx={{
-                          pl: "2rem",
-                          "&&.Mui-selected": {
-                            backgroundColor: selectedColor,
-                          },
-                        }}
-                        selected={pageName == "prompt"}
-                      >
-                        <ListItemIcon sx={{ minWidth: "30px" }}>
-                          <RateReviewOutlinedIcon />
-                        </ListItemIcon>
-                        <ListItemText primary="Prompts" />
-                      </ListItemButton>
-                    </Link>
-                    <Link href={`/chain/?agent=${agent.name}`} passHref>
-                      <ListItemButton
-                        variant="contained"
-                        sx={{
-                          pl: "2rem",
-                          "&&.Mui-selected": {
-                            backgroundColor: selectedColor,
-                          },
-                        }}
-                        selected={pageName == "chain"}
-                      >
-                        <ListItemIcon sx={{ minWidth: "30px" }}>
-                          <InsertLink />
-                        </ListItemIcon>
-                        <ListItemText primary="Chains" />
-                      </ListItemButton>
-                    </Link>
-                    <Link href={`/settings?agent=${agent.name}`} passHref>
-                      <ListItemButton
-                        variant="contained"
-                        sx={{
-                          pl: "2rem",
-                          "&&.Mui-selected": {
-                            backgroundColor: selectedColor,
-                          },
-                        }}
-                        selected={pageName == "settings"}
-                      >
-                        <ListItemIcon sx={{ minWidth: "30px" }}>
-                          <SettingsOutlinedIcon />
-                        </ListItemIcon>
-                        Settings
-                      </ListItemButton>
-                    </Link>
-                  </>
-                ) : null}
-              </Link>
+                      <Link href={`/prompt?agent=${agent.name}`} passHref>
+                        <ListItemButton
+                          variant="contained"
+                          sx={{
+                            pl: "2rem",
+                            "&&.Mui-selected": {
+                              backgroundColor: selectedColor,
+                            },
+                          }}
+                          selected={pageName == "prompt"}
+                        >
+                          <ListItemIcon sx={{ minWidth: "30px" }}>
+                            <RateReviewOutlinedIcon />
+                          </ListItemIcon>
+                          <ListItemText primary="Prompts" />
+                        </ListItemButton>
+                      </Link>
+                      <Link href={`/chain/?agent=${agent.name}`} passHref>
+                        <ListItemButton
+                          variant="contained"
+                          sx={{
+                            pl: "2rem",
+                            "&&.Mui-selected": {
+                              backgroundColor: selectedColor,
+                            },
+                          }}
+                          selected={pageName == "chain"}
+                        >
+                          <ListItemIcon sx={{ minWidth: "30px" }}>
+                            <InsertLink />
+                          </ListItemIcon>
+                          <ListItemText primary="Chains" />
+                        </ListItemButton>
+                      </Link>
+                      <Link href={`/settings?agent=${agent.name}`} passHref>
+                        <ListItemButton
+                          variant="contained"
+                          sx={{
+                            pl: "2rem",
+                            "&&.Mui-selected": {
+                              backgroundColor: selectedColor,
+                            },
+                          }}
+                          selected={pageName == "settings"}
+                        >
+                          <ListItemIcon sx={{ minWidth: "30px" }}>
+                            <SettingsOutlinedIcon />
+                          </ListItemIcon>
+                          Settings
+                        </ListItemButton>
+                      </Link>
+                      <Divider />
+                    </>
+                  ) : null}
+                </Link>
+              </>
             )
         )}
     </List>
