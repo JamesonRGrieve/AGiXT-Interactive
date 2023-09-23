@@ -45,11 +45,13 @@ export default function CommandSelector({
             onChange={(e) => setCommandName(e.target.value)}
             disabled={isLoading}
           >
-            {Object.keys(commands).map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))}
+            {commands
+              ? Object.keys(commands).map((c) => (
+                  <MenuItem key={c} value={c}>
+                    {c}
+                  </MenuItem>
+                ))
+              : null}
           </Select>
         </FormControl>
       </Box>
