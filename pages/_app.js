@@ -108,6 +108,7 @@ export default function App({ Component, pageProps, dark }) {
   const [allResponses, setAllResponses] = useState(false);
   const [useSelectedAgent, setUseSelectedAgent] = useState(true);
   const [commands, setCommands] = useState({ isLoading: true });
+  const [promptCategories, setPromptCategories] = useState([]);
   const contentWidth =
     open && rightDrawerOpen
       ? `calc(100% - ${bothDrawersWidth}px)`
@@ -122,7 +123,6 @@ export default function App({ Component, pageProps, dark }) {
 
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
-  const agentName = router.query.agent;
   const tab = router.query.tab;
 
   const themeGenerator = (darkMode) =>
@@ -381,7 +381,12 @@ export default function App({ Component, pageProps, dark }) {
             sx={{ padding: "0", maxWidth: contentWidth }}
           >
             <DrawerHeader />
-            <SettingsProvider setCommands={setCommands} commands={commands}>
+            <SettingsProvider
+              setCommands={setCommands}
+              commands={commands}
+              promptCategories={promptCategories}
+              setPromptCategories={setPromptCategories}
+            >
               {commands.isLoading ? (
                 "Loading..."
               ) : commands.error ? (

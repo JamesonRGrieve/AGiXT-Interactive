@@ -5,12 +5,10 @@ import useSWR from "swr";
 import { Typography, Box, IconButton } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import ChainStep from "./partial/ChainStep";
+import { useSettings } from "../../../../lib/SettingsContext";
 export default function ChainSteps({ commands, steps }) {
   const router = useRouter();
-  const { data: promptCategories } = useSWR(
-    `promptCategories`,
-    async () => await sdk.getPromptCategories()
-  );
+  const { promptCategories } = useSettings();
 
   const { data: agents } = useSWR("agent", async () => await sdk.getAgents());
   const handleAdd = async () => {
