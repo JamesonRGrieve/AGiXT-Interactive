@@ -557,9 +557,6 @@ export default function MenuAgentList({
       >
         <DialogTitle>Create New Chain</DialogTitle>
         <DialogContent>
-          <Typography variant="h6" component="h2" marginY={"1rem"}>
-            Add a New Chain
-          </Typography>
           <TextField
             fullWidth
             variant="outlined"
