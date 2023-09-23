@@ -14,7 +14,9 @@ import {
   FormControl,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import { useSettings } from "../../../lib/SettingsContext";
+
 export default function PromptAdmin() {
   const router = useRouter();
   const agentName = router.query.agent;
@@ -58,6 +60,20 @@ export default function PromptAdmin() {
       setNewBody(prompt.data);
     }
   }, [prompt.data]);
+
+  const handleExportPrompt = async () => {
+    // Export to a txt file with the prompt name as the file name .txt
+    const element = document.createElement("a");
+    const file = new Blob([newBody], {
+      type: "text/plain",
+    });
+
+    element.href = URL.createObjectURL(file);
+    element.download = `${promptName}.txt`;
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
+
   const sortedPrompts = prompts ? Object.values(prompts).sort() : [];
   return (
     <>
@@ -113,6 +129,10 @@ export default function PromptAdmin() {
         sx={{ marginY: "1rem" }}
       >
         Save Prompt
+      </Button>
+      &nbsp;&nbsp;
+      <Button color="info" onClick={handleExportPrompt}>
+        <FileDownloadOutlinedIcon color="info" /> Export Prompt
       </Button>
       &nbsp;&nbsp;
       <Button onClick={handleDelete} color="error">

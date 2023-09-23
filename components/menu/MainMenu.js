@@ -30,6 +30,7 @@ import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
 import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
 import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import InsertLink from "@mui/icons-material/InsertLink";
 import AddLink from "@mui/icons-material/AddLink";
 import { useRouter } from "next/router";
@@ -167,6 +168,35 @@ export default function MenuAgentList({
       `/prompt?agent=${agentName}&promptCategory=${promptCategory}&prompt=${newPromptName}`
     );
   };
+
+  const handleImportPrompt = async (event) => {
+    const files = Array.from(event.target.files);
+    for (let file of files) {
+      const fileContent = await file.text();
+      if (newPromptName == "") {
+        const fileName = file.name.replace(".json", "");
+        setNewPromptName(fileName);
+      }
+      await sdk.addPrompt(newPromptName, fileContent, promptCategory);
+      const fetchPrompts = async () => {
+        const prompts = await sdk.getPrompts(promptCategory);
+        setPrompts(prompts);
+      };
+      fetchPrompts();
+      if (toggleNewPromptCategory) {
+        const fetchPromptCategories = async () => {
+          const categories = await sdk.getPromptCategories();
+          setPromptCategories(categories);
+        };
+        fetchPromptCategories();
+      }
+      setNewPromptOpenDialog(false);
+      router.push(
+        `/prompt?agent=${agentName}&promptCategory=${promptCategory}&prompt=${newPromptName}`
+      );
+    }
+  };
+
   useEffect(() => {
     if (dark) {
       setSelectedColor(theme.palette.primary.dark);
@@ -174,6 +204,16 @@ export default function MenuAgentList({
       setSelectedColor(theme.palette.primary);
     }
   }, [dark]);
+  const helpLink =
+    pageName == "prompt"
+      ? "https://josh-xt.github.io/AGiXT/2-Concepts/5-Prompts.html"
+      : pageName == "chain"
+      ? "https://josh-xt.github.io/AGiXT/2-Concepts/6-Chains.html"
+      : pageName == "train"
+      ? "https://josh-xt.github.io/AGiXT/2-Concepts/8-Agent%20Training.html"
+      : pageName == "settings"
+      ? "https://josh-xt.github.io/AGiXT/2-Concepts/3-Agents.html"
+      : "https://josh-xt.github.io/AGiXT/2-Concepts/9-Agent%20Interactions.html";
   return (
     <>
       <List>
@@ -192,36 +232,45 @@ export default function MenuAgentList({
             <ListItemText primary="Home" />
           </ListItemButton>
         </Link>
+        <a href={helpLink} target="_blank" rel="noreferrer">
+          <ListItemButton
+            sx={{
+              "&&.Mui-selected": {
+                backgroundColor: selectedColor,
+              },
+            }}
+          >
+            <ListItemIcon sx={{ minWidth: "30px" }}>
+              <HelpOutlineIcon />
+            </ListItemIcon>
+            <ListItemText primary="Need Help?" />
+          </ListItemButton>
+        </a>
         <Divider />
-
         <ListItemButton onClick={() => setNewChainOpenDialog(true)}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <AddLink />
           </ListItemIcon>
           <ListItemText primary="New Chain" />
         </ListItemButton>
-
         <ListItemButton onClick={() => setNewPromptOpenDialog(true)}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <AddCommentOutlinedIcon />
           </ListItemIcon>
           <ListItemText primary="New Prompt" />
         </ListItemButton>
-
         <ListItemButton onClick={() => setOpenNewConversation(true)}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <MapsUgcIcon />
           </ListItemIcon>
           <ListItemText primary="New Conversation" />
         </ListItemButton>
-
         <ListItemButton onClick={() => setNewAgentOpenDialog(true)}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
             <PersonAddOutlinedIcon />
           </ListItemIcon>
           <ListItemText primary="New Agent" />
         </ListItemButton>
-
         <Divider />
         {agentName && (
           <Link
@@ -335,7 +384,6 @@ export default function MenuAgentList({
             <Divider />
           </Link>
         )}
-
         {Array.isArray(agents) &&
           agents.map(
             (agent) =>
@@ -457,6 +505,10 @@ export default function MenuAgentList({
             multiline
             rows={4}
           />
+          <Typography variant="h6" component="h2" marginY={"1rem"}>
+            Import Prompts
+          </Typography>
+          <Input type="file" onChange={handleImportPrompt} />
         </DialogContent>
         <DialogActions>
           <Button color="error" onClick={() => setNewPromptOpenDialog(false)}>

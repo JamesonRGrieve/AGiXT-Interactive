@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
 import { useSettings } from "../../../../lib/SettingsContext";
-import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import useSWR from "swr";
 import { mutate } from "swr";
 import {
@@ -188,36 +187,7 @@ export default function AgentConfigure({ data, drawerWidth }) {
             field == "AUTONOMOUS_EXECUTION"
           ) {
             if (field == "stream") {
-              let value;
-              if (fieldValues[field] == "false") {
-                value = false;
-              } else if (fieldValues[field] == "true") {
-                value = true;
-              } else {
-                value = null;
-              }
-              return (
-                <>
-                  <br />
-                  <FormControlLabel
-                    key={field}
-                    control={
-                      <Switch
-                        checked={value}
-                        onChange={(e) =>
-                          setFieldValues({
-                            ...fieldValues,
-                            [field]: e.target.checked,
-                          })
-                        }
-                        name={field}
-                      />
-                    }
-                    label={displayNames[field] || field}
-                  />
-                  <br />
-                </>
-              );
+              return <></>;
             } else {
               return (
                 <>
