@@ -96,6 +96,14 @@ export default function PromptSelector({
             arg !== "conversation_results" &&
             arg !== "conversation_name" &&
             arg !== "prompt_category" &&
+            arg !== "websearch" &&
+            arg !== "websearch_depth" &&
+            arg !== "enable_memory" &&
+            arg !== "inject_memories_from_collection_number" &&
+            arg !== "context_results" &&
+            arg !== "shots" &&
+            arg !== "browse_links" &&
+            arg !== "shot_count" &&
             arg !== ""
           ) {
             return (
