@@ -1,8 +1,7 @@
 import { useRouter } from "next/router";
 import { useMemo } from "react";
-import AgentConfigure from "../../components/systems/settings/AgentConfigure";
+import SettingsPanel from "../../components/systems/settings/SettingsPanel";
 import { sdk } from "../../lib/apiClient";
-import ContentSWR from "../../components/data/ContentSWR";
 import useSWR from "swr";
 export default function AgentSettings() {
   const router = useRouter();
@@ -12,5 +11,5 @@ export default function AgentSettings() {
     async () => await sdk.getAgentConfig(agentName)
   );
 
-  return <ContentSWR swr={agent} content={AgentConfigure} />;
+  return <SettingsPanel agent={agent} />;
 }
