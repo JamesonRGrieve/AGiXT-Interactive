@@ -7,6 +7,8 @@ import {
   Box,
 } from "@mui/material";
 import { useSettings } from "../../../lib/SettingsContext";
+import { sdk } from "../../../lib/apiClient";
+import { useEffect, useState } from "react";
 
 export default function CommandSelector({
   commandName,
@@ -16,7 +18,21 @@ export default function CommandSelector({
   isLoading,
 }) {
   const { commands } = useSettings();
-
+  const [newCommandArgs, setNewCommandArgs] = useState({});
+  useEffect(() => {
+    if (commandName) {
+      const fetchCommandArgs = async () => {
+        const command = await sdk.getCommandArgs(commandName);
+        console.log("command", command);
+        setCommandArgs(command);
+        setNewCommandArgs(command);
+      };
+      fetchCommandArgs();
+    }
+  }, [commandName, commands]);
+  useEffect(() => {
+    setCommandArgs(newCommandArgs);
+  }, [newCommandArgs]);
   return (
     <>
       <Box display="flex" alignItems="center" gap={2}>
@@ -37,8 +53,8 @@ export default function CommandSelector({
         </FormControl>
       </Box>
 
-      {commandArgs ? (
-        Object.keys(commandArgs).map((arg) => {
+      {newCommandArgs ? (
+        Object.keys(newCommandArgs).map((arg) => {
           if (
             arg !== "conversation_history" &&
             arg !== "context" &&
@@ -54,9 +70,9 @@ export default function CommandSelector({
             return (
               <TextField
                 label={arg}
-                value={commandArgs[arg]}
+                value={newCommandArgs[arg]}
                 onChange={(e) =>
-                  setCommandArgs({ ...commandArgs, [arg]: e.target.value })
+                  setCommandArgs({ ...newCommandArgs, [arg]: e.target.value })
                 }
                 sx={{ mb: 2 }}
                 disabled={isLoading}
