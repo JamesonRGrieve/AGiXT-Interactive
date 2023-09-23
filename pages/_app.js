@@ -109,6 +109,7 @@ export default function App({ Component, pageProps, dark }) {
   const [useSelectedAgent, setUseSelectedAgent] = useState(true);
   const [commands, setCommands] = useState({ isLoading: true });
   const [promptCategories, setPromptCategories] = useState([]);
+  const [prompts, setPrompts] = useState([]);
   const contentWidth =
     open && rightDrawerOpen
       ? `calc(100% - ${bothDrawersWidth}px)`
@@ -201,7 +202,7 @@ export default function App({ Component, pageProps, dark }) {
     }
   };
   useEffect(() => {
-    if (["prompt", "chain", "new", ""].includes(pageName)) {
+    if (["prompt", "chain", ""].includes(pageName)) {
       setRightDrawerOpen(false);
     }
     if (pageName == "settings") {
@@ -252,7 +253,6 @@ export default function App({ Component, pageProps, dark }) {
                 {rightDrawerOpen == false &&
                 pageName != "prompt" &&
                 pageName != "chain" &&
-                pageName != "new" &&
                 pageName != "" ? (
                   <IconButton color="inherit" onClick={handleRightDrawerOpen}>
                     <TuneIcon />
@@ -283,12 +283,12 @@ export default function App({ Component, pageProps, dark }) {
               data={agents.data ? agents.data : []}
               theme={theme}
               dark={darkMode}
+              setPrompts={setPrompts}
+              promptCategories={promptCategories}
+              setPromptCategories={setPromptCategories}
             />
           </Drawer>
-          {pageName != "prompt" &&
-          pageName != "chain" &&
-          pageName != "new" &&
-          pageName != "" ? (
+          {pageName != "prompt" && pageName != "chain" && pageName != "" ? (
             <Drawer
               sx={{
                 width: 0,
@@ -389,6 +389,8 @@ export default function App({ Component, pageProps, dark }) {
               commands={commands}
               promptCategories={promptCategories}
               setPromptCategories={setPromptCategories}
+              prompts={prompts}
+              setPrompts={setPrompts}
             >
               {commands.isLoading ? (
                 "Loading..."
@@ -427,6 +429,8 @@ export default function App({ Component, pageProps, dark }) {
                   rightDrawerWidth={rightDrawerWidth}
                   commands={commands.data}
                   theme={theme}
+                  prompts={prompts}
+                  setPrompts={setPrompts}
                 />
               )}
             </SettingsProvider>
