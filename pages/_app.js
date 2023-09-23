@@ -107,6 +107,7 @@ export default function App({ Component, pageProps, dark }) {
   const [fromStep, setFromStep] = useState(0);
   const [allResponses, setAllResponses] = useState(false);
   const [useSelectedAgent, setUseSelectedAgent] = useState(true);
+  const [commands, setCommands] = useState([]);
   const contentWidth =
     open && rightDrawerOpen
       ? `calc(100% - ${bothDrawersWidth}px)`
@@ -370,7 +371,7 @@ export default function App({ Component, pageProps, dark }) {
                 />
               ) : null}
               {pageName === "settings" || pageName === "agent" ? (
-                <AgentCommandList />
+                <AgentCommandList commands={commands} />
               ) : null}
             </Drawer>
           ) : null}
@@ -380,7 +381,7 @@ export default function App({ Component, pageProps, dark }) {
             sx={{ padding: "0", maxWidth: contentWidth }}
           >
             <DrawerHeader />
-            <SettingsProvider>
+            <SettingsProvider setCommands={setCommands} commands={commands}>
               <Component
                 {...pageProps}
                 contextResults={contextResults}
