@@ -46,6 +46,14 @@ export default function MenuAgentList({
   setConversationName,
   setConversations,
 }) {
+  const agents = data;
+  agents.sort((a, b) => {
+    let nameA = typeof a.name === "string" ? a.name.trim().toLowerCase() : "";
+    let nameB = typeof b.name === "string" ? b.name.trim().toLowerCase() : "";
+    if (nameA < nameB) return -1;
+    if (nameA > nameB) return 1;
+    return 0;
+  });
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
   const agentName = router.query.agent;
@@ -215,133 +223,157 @@ export default function MenuAgentList({
         </ListItemButton>
 
         <Divider />
-        {Array.isArray(data) &&
-          data.map(
+        {agentName && (
+          <Link
+            href={
+              pageName != "new"
+                ? `/${pageName}?agent=${agentName}&tab=${router.query.tab || 0}`
+                : `/agent?agent=${agentName}`
+            }
+            key={agentName}
+            passHref
+          >
+            <ListItemButton
+              sx={{
+                "&&.Mui-selected": {
+                  backgroundColor: selectedColor,
+                },
+              }}
+              selected={true}
+            >
+              <ListItemIcon sx={{ minWidth: "30px" }}>
+                <DirectionsRunIcon />
+              </ListItemIcon>
+              <ListItemText primary={agentName} />
+            </ListItemButton>
+
+            <Link href={`/train?agent=${agentName}`} passHref>
+              <Link href={`/agent?agent=${agentName}`} passHref>
+                <ListItemButton
+                  variant="contained"
+                  sx={{
+                    pl: "2rem",
+                    "&&.Mui-selected": {
+                      backgroundColor: selectedColor,
+                    },
+                  }}
+                  selected={pageName == "agent" && router.query.tab != 4}
+                >
+                  <ListItemIcon sx={{ minWidth: "30px" }}>
+                    <PlayCircleFilledWhiteOutlinedIcon />
+                  </ListItemIcon>
+                  Interact
+                </ListItemButton>
+              </Link>
+              <ListItemButton
+                variant="contained"
+                sx={{
+                  pl: "2rem",
+                  "&&.Mui-selected": {
+                    backgroundColor: selectedColor,
+                  },
+                }}
+                selected={pageName == "train"}
+              >
+                <ListItemIcon sx={{ minWidth: "30px" }}>
+                  <ModelTrainingOutlinedIcon />
+                </ListItemIcon>
+                Training
+              </ListItemButton>
+            </Link>
+            <Link href={`/prompt?agent=${agentName}`} passHref>
+              <ListItemButton
+                variant="contained"
+                sx={{
+                  pl: "2rem",
+                  "&&.Mui-selected": {
+                    backgroundColor: selectedColor,
+                  },
+                }}
+                selected={pageName == "prompt"}
+              >
+                <ListItemIcon sx={{ minWidth: "30px" }}>
+                  <RateReviewOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText primary="Prompts" />
+              </ListItemButton>
+            </Link>
+            <Link href={`/chain/?agent=${agentName}`} passHref>
+              <ListItemButton
+                variant="contained"
+                sx={{
+                  pl: "2rem",
+                  "&&.Mui-selected": {
+                    backgroundColor: selectedColor,
+                  },
+                }}
+                selected={pageName == "chain"}
+              >
+                <ListItemIcon sx={{ minWidth: "30px" }}>
+                  <InsertLink />
+                </ListItemIcon>
+                <ListItemText primary="Chains" />
+              </ListItemButton>
+            </Link>
+            <Link href={`/settings?agent=${agentName}`} passHref>
+              <ListItemButton
+                variant="contained"
+                sx={{
+                  pl: "2rem",
+                  "&&.Mui-selected": {
+                    backgroundColor: selectedColor,
+                  },
+                }}
+                selected={pageName == "settings"}
+              >
+                <ListItemIcon sx={{ minWidth: "30px" }}>
+                  <SettingsOutlinedIcon />
+                </ListItemIcon>
+                Settings
+              </ListItemButton>
+            </Link>
+            <Divider />
+          </Link>
+        )}
+
+        {Array.isArray(agents) &&
+          agents.map(
             (agent) =>
               agent.name != "undefined" && (
                 <>
-                  {agentName == agent.name ? <Divider /> : null}
-                  <Link
-                    href={
-                      pageName != "new"
-                        ? `/${pageName}?agent=${agent.name}&tab=${
-                            router.query.tab || 0
-                          }`
-                        : `/agent?agent=${agent.name}`
-                    }
-                    key={agent.name}
-                    passHref
-                  >
-                    <ListItemButton
-                      selected={agentName == agent.name}
-                      sx={{
-                        "&&.Mui-selected": {
-                          backgroundColor: selectedColor,
-                        },
-                      }}
+                  {agentName == agent.name ? (
+                    <></>
+                  ) : (
+                    <Link
+                      href={
+                        pageName != "new"
+                          ? `/${pageName}?agent=${agent.name}&tab=${
+                              router.query.tab || 0
+                            }`
+                          : `/agent?agent=${agent.name}`
+                      }
+                      key={agent.name}
+                      passHref
                     >
-                      <ListItemIcon sx={{ minWidth: "30px" }}>
-                        {agentName != agent.name ? (
-                          <EngineeringIcon />
-                        ) : (
-                          <DirectionsRunIcon />
-                        )}
-                      </ListItemIcon>
-                      <ListItemText primary={agent.name} />
-                    </ListItemButton>
-                    {agentName == agent.name ? (
-                      <>
-                        <Link href={`/train?agent=${agent.name}`} passHref>
-                          <Link href={`/agent?agent=${agent.name}`} passHref>
-                            <ListItemButton
-                              variant="contained"
-                              sx={{
-                                pl: "2rem",
-                                "&&.Mui-selected": {
-                                  backgroundColor: selectedColor,
-                                },
-                              }}
-                              selected={
-                                pageName == "agent" && router.query.tab != 4
-                              }
-                            >
-                              <ListItemIcon sx={{ minWidth: "30px" }}>
-                                <PlayCircleFilledWhiteOutlinedIcon />
-                              </ListItemIcon>
-                              Interact
-                            </ListItemButton>
-                          </Link>
-                          <ListItemButton
-                            variant="contained"
-                            sx={{
-                              pl: "2rem",
-                              "&&.Mui-selected": {
-                                backgroundColor: selectedColor,
-                              },
-                            }}
-                            selected={pageName == "train"}
-                          >
-                            <ListItemIcon sx={{ minWidth: "30px" }}>
-                              <ModelTrainingOutlinedIcon />
-                            </ListItemIcon>
-                            Training
-                          </ListItemButton>
-                        </Link>
-                        <Link href={`/prompt?agent=${agent.name}`} passHref>
-                          <ListItemButton
-                            variant="contained"
-                            sx={{
-                              pl: "2rem",
-                              "&&.Mui-selected": {
-                                backgroundColor: selectedColor,
-                              },
-                            }}
-                            selected={pageName == "prompt"}
-                          >
-                            <ListItemIcon sx={{ minWidth: "30px" }}>
-                              <RateReviewOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItemText primary="Prompts" />
-                          </ListItemButton>
-                        </Link>
-                        <Link href={`/chain/?agent=${agent.name}`} passHref>
-                          <ListItemButton
-                            variant="contained"
-                            sx={{
-                              pl: "2rem",
-                              "&&.Mui-selected": {
-                                backgroundColor: selectedColor,
-                              },
-                            }}
-                            selected={pageName == "chain"}
-                          >
-                            <ListItemIcon sx={{ minWidth: "30px" }}>
-                              <InsertLink />
-                            </ListItemIcon>
-                            <ListItemText primary="Chains" />
-                          </ListItemButton>
-                        </Link>
-                        <Link href={`/settings?agent=${agent.name}`} passHref>
-                          <ListItemButton
-                            variant="contained"
-                            sx={{
-                              pl: "2rem",
-                              "&&.Mui-selected": {
-                                backgroundColor: selectedColor,
-                              },
-                            }}
-                            selected={pageName == "settings"}
-                          >
-                            <ListItemIcon sx={{ minWidth: "30px" }}>
-                              <SettingsOutlinedIcon />
-                            </ListItemIcon>
-                            Settings
-                          </ListItemButton>
-                        </Link>
-                        <Divider />
-                      </>
-                    ) : null}
-                  </Link>
+                      <ListItemButton
+                        selected={agentName == agent.name}
+                        sx={{
+                          "&&.Mui-selected": {
+                            backgroundColor: selectedColor,
+                          },
+                        }}
+                      >
+                        <ListItemIcon sx={{ minWidth: "30px" }}>
+                          {agentName != agent.name ? (
+                            <EngineeringIcon />
+                          ) : (
+                            <DirectionsRunIcon />
+                          )}
+                        </ListItemIcon>
+                        <ListItemText primary={agent.name} />
+                      </ListItemButton>
+                    </Link>
+                  )}
                 </>
               )
           )}
