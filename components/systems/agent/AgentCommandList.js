@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { mutate } from "swr";
+import { useEffect, useState } from "react";
 import {
   List,
   ListItem,
@@ -11,16 +11,25 @@ import {
 import AgentCommand from "./AgentCommand";
 import { sdk } from "../../../lib/apiClient";
 
-export default function AgentCommandList({ commands }) {
+export default function AgentCommandList({ commands, setCommands }) {
   const agentName = useRouter().query.agent;
+  const [commandToggled, setCommandToggled] = useState(false);
   const handleToggleAllCommands = async () => {
     await sdk.toggleCommand(
       agentName,
       "*",
       Object.values(commands).every((command) => command) ? false : true
     );
-    mutate(`agent/${agentName}/commands`);
   };
+  useEffect(() => {
+    const fetchCommands = async () => {
+      const commandList = await sdk.getCommands(agentName);
+      setCommands(commandList);
+    };
+    if (agentName) {
+      fetchCommands();
+    }
+  }, [commandToggled]);
   return (
     <List dense>
       <ListItem disablePadding>
@@ -39,6 +48,7 @@ export default function AgentCommandList({ commands }) {
           key={command}
           name={command}
           enabled={commands[command]}
+          setCommandToggled={setCommandToggled}
         />
       ))}
     </List>
