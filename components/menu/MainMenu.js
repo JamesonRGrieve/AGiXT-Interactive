@@ -199,7 +199,7 @@ export default function MenuAgentList({
 
   useEffect(() => {
     if (dark) {
-      setSelectedColor(theme.palette.primary.dark);
+      setSelectedColor("black");
     } else {
       setSelectedColor(theme.palette.primary);
     }
@@ -216,7 +216,7 @@ export default function MenuAgentList({
       : "https://josh-xt.github.io/AGiXT/2-Concepts/9-Agent%20Interactions.html";
   return (
     <>
-      <List>
+      <List sx={{ marginTop: "-8px" }}>
         <Link href={`/`} passHref>
           <ListItemButton
             selected={router.pathname == "/"}

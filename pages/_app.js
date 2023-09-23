@@ -133,7 +133,7 @@ export default function App({ Component, pageProps, dark }) {
       palette: {
         mode: darkMode ? "dark" : "light",
         primary: {
-          main: "#273043",
+          main: darkMode ? "#000000" : "#273043",
         },
       },
     });
@@ -219,12 +219,15 @@ export default function App({ Component, pageProps, dark }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <ThemeProvider theme={theme}>
-        <Box sx={{ display: "flex" }}>
+        <Box sx={{ display: "flex", marginTop: "-20px" }}>
           <CssBaseline />
           <AppBar
             position="fixed"
             open={open}
             rightDrawerOpen={rightDrawerOpen}
+            sx={{
+              marginTop: "-20px",
+            }}
           >
             <Toolbar
               sx={{
@@ -233,7 +236,14 @@ export default function App({ Component, pageProps, dark }) {
                 backgroundColor: theme.palette.primary.main,
               }}
             >
-              <Box sx={{ display: "flex", alignItems: "left" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "bottom",
+                  marginTop: "15px",
+                }}
+              >
                 <IconButton
                   color="inherit"
                   aria-label="open drawer"
@@ -243,11 +253,20 @@ export default function App({ Component, pageProps, dark }) {
                 >
                   <Menu />
                 </IconButton>
-                <Typography variant="h6" component="h1" noWrap>
-                  <Link href="/">AGiXT</Link> - {pageTitle()}
+                <Typography component="h1" noWrap>
+                  <Link href="/">
+                    <b>AGiXT</b>
+                  </Link>{" "}
+                  - {pageTitle()}
                 </Typography>
               </Box>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginTop: "15px",
+                }}
+              >
                 <MenuDarkSwitch
                   checked={darkMode}
                   onChange={handleToggleDarkMode}
@@ -276,9 +295,16 @@ export default function App({ Component, pageProps, dark }) {
             anchor="left"
             open={open}
           >
-            <DrawerHeader>
+            <DrawerHeader
+              sx={{
+                marginTop: "-27px",
+              }}
+            >
               <IconButton onClick={handleDrawerClose}>
-                <ChevronLeft fontSize="large" sx={{ color: "white" }} />
+                <ChevronLeft
+                  fontSize="large"
+                  sx={{ color: "white", marginTop: "20px" }}
+                />
               </IconButton>
             </DrawerHeader>
             <MenuAgentList
@@ -310,11 +336,14 @@ export default function App({ Component, pageProps, dark }) {
             >
               <DrawerHeader
                 sx={{
-                  marginTop: "-1px",
+                  marginTop: "-20px",
                 }}
               >
                 <IconButton onClick={handleRightDrawerClose}>
-                  <ChevronRight fontSize="large" sx={{ color: "white" }} />
+                  <ChevronRight
+                    fontSize="large"
+                    sx={{ color: "white", marginTop: "20px" }}
+                  />
                 </IconButton>
               </DrawerHeader>
               <Divider />
