@@ -32,6 +32,11 @@ export default function MemoryManagement({
     await queryMemory();
   };
 
+  const deleteMemories = async () => {
+    await sdk.wipeAgentMemories(agentName, collectionNumber);
+    await queryMemory();
+  };
+
   return (
     <>
       <Typography component="h1" gutterBottom>
@@ -44,6 +49,7 @@ export default function MemoryManagement({
           the memory collection here.
         </ReactMarkdown>
       </Typography>
+
       <div className="query-section">
         <TextField
           value={memoryQuery}
@@ -60,6 +66,15 @@ export default function MemoryManagement({
           style={{ marginTop: "10px" }}
         >
           Query Memory
+        </Button>
+        &nbsp;
+        <Button
+          variant="contained"
+          color="error"
+          onClick={() => deleteMemories()}
+          style={{ marginTop: "10px" }}
+        >
+          Wipe All Memories
         </Button>
       </div>
 
