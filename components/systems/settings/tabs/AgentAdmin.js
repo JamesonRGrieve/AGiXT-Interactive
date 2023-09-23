@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
 import { TextField, Button, Divider, Typography } from "@mui/material";
+import { sdk } from "../../../../lib/apiClient";
 export default function AgentAdmin({}) {
   const router = useRouter();
   const agentName = router.query.agent;
