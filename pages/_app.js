@@ -109,6 +109,7 @@ export default function App({ Component, pageProps, dark }) {
   const [useSelectedAgent, setUseSelectedAgent] = useState(true);
   const [commands, setCommands] = useState({ isLoading: true });
   const [promptCategories, setPromptCategories] = useState([]);
+  const [prompts, setPrompts] = useState([]);
   const contentWidth =
     open && rightDrawerOpen
       ? `calc(100% - ${bothDrawersWidth}px)`
@@ -389,6 +390,8 @@ export default function App({ Component, pageProps, dark }) {
               commands={commands}
               promptCategories={promptCategories}
               setPromptCategories={setPromptCategories}
+              prompts={prompts}
+              setPrompts={setPrompts}
             >
               {commands.isLoading ? (
                 "Loading..."
@@ -427,6 +430,8 @@ export default function App({ Component, pageProps, dark }) {
                   rightDrawerWidth={rightDrawerWidth}
                   commands={commands.data}
                   theme={theme}
+                  prompts={prompts}
+                  setPrompts={setPrompts}
                 />
               )}
             </SettingsProvider>

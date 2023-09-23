@@ -21,30 +21,26 @@ import {
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useSettings } from "../../../lib/SettingsContext";
-export default function PromptAdmin() {
+export default function PromptAdmin({ setPrompts }) {
   const router = useRouter();
   const [promptCategory, setPromptCategory] = useState("Default");
   const [promptName, setPromptName] = useState("Chat");
-  const { promptCategories } = useSettings();
+  const { promptCategories, prompts } = useSettings();
 
   const prompt = useSWR(
     `prompt/${promptCategory}/${promptName}`,
     async () => await sdk.getPrompt(promptName, promptCategory)
-  );
-  const prompts = useSWR(
-    "prompt",
-    async () => await sdk.getPrompts(promptCategory)
   );
   useEffect(() => {
     if (promptCategories) {
       setPromptCategory(promptCategory);
     }
     mutate("prompt");
-    if (prompts.data) {
+    if (prompts) {
       setPromptName(promptName);
     }
     mutate(`prompt/${promptCategory}/${promptName}`);
-  }, [promptCategories, promptName, promptCategory, prompts.data]);
+  }, [promptCategories, promptName, promptCategory, prompts]);
 
   const [newBody, setNewBody] = useState(prompt.data);
   const [openDialog, setOpenDialog] = useState(false);
@@ -65,6 +61,11 @@ export default function PromptAdmin() {
   const handleCreate = async () => {
     await sdk.addPrompt(newPromptName, newBody, promptCategory);
     mutate("prompt");
+    const fetchPrompts = async () => {
+      const prompts = await sdk.getPrompts(promptCategory);
+      setPrompts(prompts);
+    };
+    fetchPrompts();
   };
   const handleNewCategory = async () => {
     await sdk.addPromptCategory(newPromptCategoryName);
@@ -76,7 +77,7 @@ export default function PromptAdmin() {
       setNewBody(prompt.data);
     }
   }, [prompt.data]);
-  const sortedPrompts = prompts.data ? Object.values(prompts.data).sort() : [];
+  const sortedPrompts = prompts ? Object.values(prompts).sort() : [];
   return (
     <Container>
       <Button onClick={() => setOpenDialog(true)} color="info">
