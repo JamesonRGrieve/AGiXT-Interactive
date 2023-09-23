@@ -284,6 +284,9 @@ export default function App({ Component, pageProps, dark }) {
               data={agents.data ? agents.data : []}
               theme={theme}
               dark={darkMode}
+              setPrompts={setPrompts}
+              promptCategories={promptCategories}
+              setPromptCategories={setPromptCategories}
             />
           </Drawer>
           {pageName != "prompt" &&
