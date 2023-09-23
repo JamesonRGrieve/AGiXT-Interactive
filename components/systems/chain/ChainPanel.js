@@ -11,7 +11,7 @@ import useSWR from "swr";
 export default function ChainPanel({ commands }) {
   const router = useRouter();
   const chain = router.query.chain;
-  const [tab, setTab] = useState(0);
+  const [tab, setTab] = useState(router.query.tab || "0");
   const [selectedChain, setSelectedChain] = useState(chain || "Smart Chat");
   const handleTabChange = (event, newTab) => {
     setTab(newTab);
@@ -48,9 +48,11 @@ export default function ChainPanel({ commands }) {
         }}
         sx={{ mb: "0.5rem" }}
         textColor={theme.palette.mode == "dark" ? "white" : "black"}
+        allowScrollButtonsMobile={true}
+        variant="fullWidth"
       >
-        <Tab label="Manage Chain Steps" />
-        <Tab label="Administrate Chain" />
+        <Tab label="Modify Chain" value="0" wrapped={true} />
+        <Tab label="Chain Administration" value="1" wrapped={true} />
       </Tabs>
       <ChainSelector
         selectedChain={selectedChain}
