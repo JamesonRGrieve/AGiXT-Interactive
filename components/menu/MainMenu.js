@@ -17,6 +17,8 @@ import {
   MenuItem,
   FormControlLabel,
   Switch,
+  Input,
+  Typography,
 } from "@mui/material";
 import { Home } from "@mui/icons-material";
 import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
@@ -47,13 +49,60 @@ export default function MenuAgentList({
     ? theme.palette.primary.dark
     : theme.palette.primary.light;
   const [selectedColor, setSelectedColor] = useState(defaultColor);
+  const [openNewAgentDialog, setNewAgentOpenDialog] = useState(false);
   const [openNewPromptDialog, setNewPromptOpenDialog] = useState(false);
+  const [openNewChainDialog, setNewChainOpenDialog] = useState(false);
   const [newPromptName, setNewPromptName] = useState("");
   const [promptCategory, setPromptCategory] = useState("Default");
   const [toggleNewPromptCategory, setToggleNewPromptCategory] = useState(false);
   const [promptBody, setPromptBody] = useState("");
-
-  const handleCreate = async () => {
+  const [name, setName] = useState("");
+  const [newChainName, setNewChainName] = useState("");
+  const handleNewChain = async () => {
+    await sdk.addChain(newChainName);
+    mutate("chain");
+    router.push(`/chain/${newChainName}?agent=${agentName}`);
+    setNewChainOpenDialog(false);
+  };
+  const handleChainImport = async (event) => {
+    const files = Array.from(event.target.files);
+    for (let file of files) {
+      const fileContent = await file.text();
+      if (newChainName == "") {
+        const filename = file.newChainName.replace(".json", "");
+        setNewChainName(filename);
+      }
+      const steps = JSON.parse(fileContent);
+      await sdk.addChain(newChainName);
+      await sdk.importChain(newChainName, steps);
+      mutate("chain");
+      router.push(`/chain/${newChainName}?agent=${agentName}`);
+    }
+    setNewChainOpenDialog(false);
+  };
+  const handleNewAgent = async () => {
+    sdk.addAgent(name, {});
+    mutate("agent");
+    router.push(`/settings?agent=${name}`);
+    setNewAgentOpenDialog(false);
+  };
+  const handleAgentImport = async (event) => {
+    const files = Array.from(event.target.files);
+    for (let file of files) {
+      // Create agent from file
+      const fileContent = await file.text();
+      if (name == "") {
+        const fileName = file.name.replace(".json", "");
+        setName(fileName);
+      }
+      const settings = JSON.parse(fileContent);
+      sdk.addAgent(name, settings);
+      mutate("agent");
+      router.push(`/settings?agent=${name}`);
+    }
+    setNewAgentOpenDialog(false);
+  };
+  const handleNewPrompt = async () => {
     await sdk.addPrompt(newPromptName, promptBody, promptCategory);
     const fetchPrompts = async () => {
       const prompts = await sdk.getPrompts(promptCategory);
@@ -98,20 +147,20 @@ export default function MenuAgentList({
           </ListItemButton>
         </Link>
         <Divider />
-        <Link href={`/new/chain`}>
-          <ListItemButton
-            key={"new"}
-            selected={
-              router.pathname.split("/")[1] == "new" &&
-              router.pathname.split("/")[2] == "chain"
-            }
-          >
-            <ListItemIcon sx={{ minWidth: "30px" }}>
-              <AddLink />
-            </ListItemIcon>
-            <ListItemText primary="New Chain" />
-          </ListItemButton>
-        </Link>
+
+        <ListItemButton
+          key={"new"}
+          selected={
+            router.pathname.split("/")[1] == "new" &&
+            router.pathname.split("/")[2] == "chain"
+          }
+          onClick={() => setNewChainOpenDialog(true)}
+        >
+          <ListItemIcon sx={{ minWidth: "30px" }}>
+            <AddLink />
+          </ListItemIcon>
+          <ListItemText primary="New Chain" />
+        </ListItemButton>
 
         <ListItemButton
           selected={
@@ -126,19 +175,19 @@ export default function MenuAgentList({
           <ListItemText primary="New Prompt" />
         </ListItemButton>
 
-        <Link href={`/new/agent`} passHref>
-          <ListItemButton
-            selected={
-              router.pathname.split("/")[1] == "new" &&
-              router.pathname.split("/")[2] == "agent"
-            }
-          >
-            <ListItemIcon sx={{ minWidth: "30px" }}>
-              <PersonAddOutlinedIcon />
-            </ListItemIcon>
-            <ListItemText primary="New Agent" />
-          </ListItemButton>
-        </Link>
+        <ListItemButton
+          selected={
+            router.pathname.split("/")[1] == "new" &&
+            router.pathname.split("/")[2] == "agent"
+          }
+          onClick={() => setNewAgentOpenDialog(true)}
+        >
+          <ListItemIcon sx={{ minWidth: "30px" }}>
+            <PersonAddOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="New Agent" />
+        </ListItemButton>
+
         <Divider />
         {Array.isArray(data) &&
           data.map(
@@ -275,7 +324,7 @@ export default function MenuAgentList({
         open={openNewPromptDialog}
         onClose={() => setNewPromptOpenDialog(false)}
       >
-        <DialogTitle>Create New Prompt</DialogTitle>
+        <DialogTitle>Create New Prompt Template</DialogTitle>
         <DialogContent>
           <FormControlLabel
             control={
@@ -288,7 +337,7 @@ export default function MenuAgentList({
                 color="primary"
               />
             }
-            label={"Enter Custom Prompt Category Name"}
+            label={"New Category"}
           />
           {toggleNewPromptCategory ? (
             <TextField
@@ -355,10 +404,74 @@ export default function MenuAgentList({
           <Button color="error" onClick={() => setNewPromptOpenDialog(false)}>
             Cancel
           </Button>
-          <Button color="info" onClick={handleCreate}>
+          <Button color="info" onClick={handleNewPrompt}>
             Create Prompt
           </Button>
         </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openNewAgentDialog}
+        onClose={() => setNewAgentOpenDialog(false)}
+      >
+        <DialogTitle>Create New Agent</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="New Agent Name"
+            type="text"
+            fullWidth
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            variant="outlined"
+            color="info"
+          />
+          <Typography variant="h6" component="h2" marginY={"1rem"}>
+            Import an Agent
+          </Typography>
+          <Input type="file" onChange={handleAgentImport} />
+        </DialogContent>
+        <DialogActions>
+          <Button color="error" onClick={() => setNewAgentOpenDialog(false)}>
+            Cancel
+          </Button>
+          <Button color="info" onClick={handleNewAgent}>
+            Create Agent
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openNewChainDialog}
+        onClose={() => setNewChainOpenDialog(false)}
+      >
+        <DialogTitle>Create New Chain</DialogTitle>
+        <DialogContent>
+          <Typography variant="h6" component="h2" marginY={"1rem"}>
+            Add a New Chain
+          </Typography>
+          <TextField
+            fullWidth
+            variant="outlined"
+            label="Chain Name"
+            value={newChainName}
+            onChange={(e) => {
+              setNewChainName(e.target.value);
+            }}
+          />
+          <Typography variant="h6" component="h2" marginY={"1rem"}>
+            Import a Chain
+          </Typography>
+          <Input type="file" onChange={handleChainImport} />
+          <DialogActions>
+            <Button color="error" onClick={() => setNewChainOpenDialog(false)}>
+              Cancel
+            </Button>
+            <Button color="info" onClick={handleNewChain}>
+              Create Chain
+            </Button>
+          </DialogActions>
+        </DialogContent>
       </Dialog>
     </>
   );

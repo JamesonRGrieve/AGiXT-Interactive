@@ -202,7 +202,7 @@ export default function App({ Component, pageProps, dark }) {
     }
   };
   useEffect(() => {
-    if (["prompt", "chain", "new", ""].includes(pageName)) {
+    if (["prompt", "chain", ""].includes(pageName)) {
       setRightDrawerOpen(false);
     }
     if (pageName == "settings") {
@@ -253,7 +253,6 @@ export default function App({ Component, pageProps, dark }) {
                 {rightDrawerOpen == false &&
                 pageName != "prompt" &&
                 pageName != "chain" &&
-                pageName != "new" &&
                 pageName != "" ? (
                   <IconButton color="inherit" onClick={handleRightDrawerOpen}>
                     <TuneIcon />
@@ -289,10 +288,7 @@ export default function App({ Component, pageProps, dark }) {
               setPromptCategories={setPromptCategories}
             />
           </Drawer>
-          {pageName != "prompt" &&
-          pageName != "chain" &&
-          pageName != "new" &&
-          pageName != "" ? (
+          {pageName != "prompt" && pageName != "chain" && pageName != "" ? (
             <Drawer
               sx={{
                 width: 0,
