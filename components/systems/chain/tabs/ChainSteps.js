@@ -5,8 +5,7 @@ import useSWR from "swr";
 import { Typography, Box, IconButton } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import ChainStep from "./partial/ChainStep";
-
-export default function ChainSteps({ steps }) {
+export default function ChainSteps({ commands, steps }) {
   const router = useRouter();
   const { data: promptCategories } = useSWR(
     `promptCategories`,
@@ -50,6 +49,7 @@ export default function ChainSteps({ steps }) {
                   key={step.step}
                   {...step}
                   promptCategories={promptCategories}
+                  commands={commands}
                   agents={agents}
                   last_step={steps.data.steps.length === index + 1}
                   updateCallback={() => {

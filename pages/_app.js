@@ -107,7 +107,6 @@ export default function App({ Component, pageProps, dark }) {
   const [fromStep, setFromStep] = useState(0);
   const [allResponses, setAllResponses] = useState(false);
   const [useSelectedAgent, setUseSelectedAgent] = useState(true);
-  const [commands, setCommands] = useState([]);
   const contentWidth =
     open && rightDrawerOpen
       ? `calc(100% - ${bothDrawersWidth}px)`
@@ -124,6 +123,10 @@ export default function App({ Component, pageProps, dark }) {
   const pageName = router.pathname.split("/")[1];
   const agentName = router.query.agent;
   const tab = router.query.tab;
+  const commands = useSWR(
+    `agent/${agentName}/commands`,
+    async () => await sdk.getCommands(agentName)
+  );
 
   const themeGenerator = (darkMode) =>
     createTheme({
@@ -371,7 +374,13 @@ export default function App({ Component, pageProps, dark }) {
                 />
               ) : null}
               {pageName === "settings" || pageName === "agent" ? (
-                <AgentCommandList commands={commands} />
+                commands.isLoading ? (
+                  "Loading..."
+                ) : commands.error ? (
+                  commands.error.message
+                ) : (
+                  <AgentCommandList data={commands ? commands.data : null} />
+                )
               ) : null}
             </Drawer>
           ) : null}
@@ -381,39 +390,46 @@ export default function App({ Component, pageProps, dark }) {
             sx={{ padding: "0", maxWidth: contentWidth }}
           >
             <DrawerHeader />
-            <SettingsProvider setCommands={setCommands} commands={commands}>
-              <Component
-                {...pageProps}
-                contextResults={contextResults}
-                shots={shots}
-                browseLinks={browseLinks}
-                websearch={websearch}
-                websearchDepth={websearchDepth}
-                enableMemory={enableMemory}
-                injectMemoriesFromCollectionNumber={
-                  injectMemoriesFromCollectionNumber
-                }
-                collectionNumber={collectionNumber}
-                limit={limit}
-                minRelevanceScore={minRelevanceScore}
-                conversationResults={conversationResults}
-                selectedChain={selectedChain}
-                setSelectedChain={setSelectedChain}
-                chainArgs={chainArgs}
-                setChainArgs={setChainArgs}
-                handleChainChange={handleChainChange}
-                singleStep={singleStep}
-                setSingleStep={setSingleStep}
-                fromStep={fromStep}
-                setFromStep={setFromStep}
-                allResponses={allResponses}
-                setAllResponses={setAllResponses}
-                useSelectedAgent={useSelectedAgent}
-                setUseSelectedAgent={setUseSelectedAgent}
-                drawerWidth={drawerWidth}
-                rightDrawerWidth={rightDrawerWidth}
-                theme={theme}
-              />
+            <SettingsProvider>
+              {commands.isLoading ? (
+                "Loading..."
+              ) : commands.error ? (
+                commands.error.message
+              ) : (
+                <Component
+                  {...pageProps}
+                  contextResults={contextResults}
+                  shots={shots}
+                  browseLinks={browseLinks}
+                  websearch={websearch}
+                  websearchDepth={websearchDepth}
+                  enableMemory={enableMemory}
+                  injectMemoriesFromCollectionNumber={
+                    injectMemoriesFromCollectionNumber
+                  }
+                  collectionNumber={collectionNumber}
+                  limit={limit}
+                  minRelevanceScore={minRelevanceScore}
+                  conversationResults={conversationResults}
+                  selectedChain={selectedChain}
+                  setSelectedChain={setSelectedChain}
+                  chainArgs={chainArgs}
+                  setChainArgs={setChainArgs}
+                  handleChainChange={handleChainChange}
+                  singleStep={singleStep}
+                  setSingleStep={setSingleStep}
+                  fromStep={fromStep}
+                  setFromStep={setFromStep}
+                  allResponses={allResponses}
+                  setAllResponses={setAllResponses}
+                  useSelectedAgent={useSelectedAgent}
+                  setUseSelectedAgent={setUseSelectedAgent}
+                  drawerWidth={drawerWidth}
+                  rightDrawerWidth={rightDrawerWidth}
+                  commands={commands.data}
+                  theme={theme}
+                />
+              )}
             </SettingsProvider>
           </Main>
         </Box>
