@@ -33,6 +33,7 @@ export default function CommandSelector({
   useEffect(() => {
     setCommandArgs(newCommandArgs);
   }, [newCommandArgs]);
+  console.log("commandArgs", commandArgs);
   return (
     <>
       <Box display="flex" alignItems="center" gap={2}>
@@ -70,7 +71,7 @@ export default function CommandSelector({
             return (
               <TextField
                 label={arg}
-                value={newCommandArgs[arg]}
+                value={commandArgs[arg]}
                 onChange={(e) =>
                   setCommandArgs({ ...newCommandArgs, [arg]: e.target.value })
                 }
