@@ -371,13 +371,7 @@ export default function App({ Component, pageProps, dark }) {
                 />
               ) : null}
               {pageName === "settings" || pageName === "agent" ? (
-                commands.isLoading ? (
-                  "Loading..."
-                ) : commands.error ? (
-                  commands.error.message
-                ) : (
-                  <AgentCommandList data={commands ? commands.data : null} />
-                )
+                <AgentCommandList commands={commands} />
               ) : null}
             </Drawer>
           ) : null}
