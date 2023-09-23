@@ -371,7 +371,10 @@ export default function App({ Component, pageProps, dark }) {
                 />
               ) : null}
               {pageName === "settings" || pageName === "agent" ? (
-                <AgentCommandList commands={commands} />
+                <AgentCommandList
+                  commands={commands}
+                  setCommands={setCommands}
+                />
               ) : null}
             </Drawer>
           ) : null}
