@@ -6,7 +6,6 @@ import { sdk } from "../../../lib/apiClient";
 import {
   TextField,
   Button,
-  Divider,
   Container,
   Select,
   MenuItem,
@@ -21,15 +20,13 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import { useSettings } from "../../../lib/SettingsContext";
 export default function PromptAdmin() {
   const router = useRouter();
   const [promptCategory, setPromptCategory] = useState("Default");
   const [promptName, setPromptName] = useState("Chat");
+  const { promptCategories } = useSettings();
 
-  const promptCategories = useSWR(
-    "promptCategories",
-    async () => await sdk.getPromptCategories()
-  );
   const prompt = useSWR(
     `prompt/${promptCategory}/${promptName}`,
     async () => await sdk.getPrompt(promptName, promptCategory)
@@ -39,7 +36,7 @@ export default function PromptAdmin() {
     async () => await sdk.getPrompts(promptCategory)
   );
   useEffect(() => {
-    if (promptCategories.data) {
+    if (promptCategories) {
       setPromptCategory(promptCategory);
     }
     mutate("prompt");
@@ -47,7 +44,7 @@ export default function PromptAdmin() {
       setPromptName(promptName);
     }
     mutate(`prompt/${promptCategory}/${promptName}`);
-  }, [promptCategories.data, promptName, promptCategory, prompts.data]);
+  }, [promptCategories, promptName, promptCategory, prompts.data]);
 
   const [newBody, setNewBody] = useState(prompt.data);
   const [openDialog, setOpenDialog] = useState(false);
@@ -102,8 +99,8 @@ export default function PromptAdmin() {
             value={promptCategory}
             onChange={(e) => setPromptCategory(e.target.value)}
           >
-            {promptCategories.data &&
-              Object.values(promptCategories.data).map((category) => (
+            {promptCategories &&
+              Object.values(promptCategories).map((category) => (
                 <MenuItem key={category} value={category}>
                   {category}
                 </MenuItem>
@@ -156,8 +153,8 @@ export default function PromptAdmin() {
               value={promptCategory}
               onChange={(e) => setPromptCategory(e.target.value)}
             >
-              {promptCategories.data &&
-                Object.values(promptCategories.data).map((category) => (
+              {promptCategories &&
+                Object.values(promptCategories).map((category) => (
                   <MenuItem key={category} value={category}>
                     {category}
                   </MenuItem>
