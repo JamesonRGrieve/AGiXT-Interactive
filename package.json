@@ -16,7 +16,7 @@
     "@mui/material": "latest",
     "@mui/system": "^5.14.10",
     "@mui/x-data-grid": "^5.17.12",
-    "agixt": "^1.0.34",
+    "agixt": "^1.0.35",
     "axios": "^1.5.0",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "latest",

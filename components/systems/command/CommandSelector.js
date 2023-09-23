@@ -1,16 +1,12 @@
-import { useState, useEffect, use } from "react";
 import {
   Select,
   MenuItem,
   TextField,
   InputLabel,
   FormControl,
-  Tooltip,
   Box,
 } from "@mui/material";
-import { sdk } from "../../../lib/apiClient";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import useSWR from "swr";
+import { useSettings } from "../../../lib/SettingsContext";
 
 export default function CommandSelector({
   commandName,
@@ -19,22 +15,7 @@ export default function CommandSelector({
   setCommandArgs,
   isLoading,
 }) {
-  const commandList = useSWR(
-    "command",
-    async () => await sdk.getCommands("gpt4free")
-  );
-
-  const [commands, setCommands] = useState(
-    commandList.isLoading ? [] : commandList.data
-  );
-  useEffect(() => {
-    // Fetch commands for category
-    const fetchCommands = async () => {
-      const commands = await sdk.getCommands("gpt4free");
-      setCommands(commands);
-    };
-    fetchCommands();
-  }, []);
+  const { commands } = useSettings();
 
   return (
     <>

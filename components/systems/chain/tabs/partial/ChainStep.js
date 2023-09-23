@@ -1,20 +1,14 @@
-import { useState, useEffect, useCallback, useMemo, use } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import { mutate } from "swr";
 import { sdk } from "../../../../../lib/apiClient";
 import { useTheme } from "@emotion/react";
 import {
   Typography,
-  Paper,
   MenuItem,
-  TextField,
   IconButton,
   Box,
   Select,
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  Avatar,
   Container,
   FormControl,
   InputLabel,
@@ -23,7 +17,6 @@ import {
   ArrowCircleUp,
   ArrowCircleDown,
   HighlightOff,
-  ExpandCircleDownOutlined,
   SaveRounded,
 } from "@mui/icons-material";
 import PromptSelector from "../../../prompt/PromptSelector";
@@ -37,7 +30,6 @@ export default function ChainStep({
   agent_name,
   prompt_type,
   prompt,
-  commands,
   promptCategories,
   agents,
 }) {
@@ -128,7 +120,6 @@ export default function ChainStep({
         component: (
           <CommandSelector
             update={setModified}
-            commands={commands}
             commandName={promptName}
             setCommandName={setPromptName}
             commandArgs={promptArgs}
