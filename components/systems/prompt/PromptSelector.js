@@ -1,4 +1,3 @@
-import { useState, useEffect, use } from "react";
 import {
   Select,
   MenuItem,
@@ -8,8 +7,8 @@ import {
   Tooltip,
   Box,
 } from "@mui/material";
-import { sdk } from "../../../lib/apiClient";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { useSettings } from "../../../lib/SettingsContext";
 
 export default function PromptSelector({
   promptCategories,
@@ -22,15 +21,7 @@ export default function PromptSelector({
   setPromptArgs,
   isLoading,
 }) {
-  const [prompts, setPrompts] = useState([]);
-  useEffect(() => {
-    // Fetch prompts for category
-    const fetchPrompts = async () => {
-      const prompts = await sdk.getPrompts(promptCategory);
-      setPrompts(prompts);
-    };
-    fetchPrompts();
-  }, [promptCategory]);
+  const { prompts } = useSettings();
   const sortedPrompts = [...prompts].sort();
 
   return (
