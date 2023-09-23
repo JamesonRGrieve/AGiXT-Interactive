@@ -54,8 +54,7 @@ export default function MenuAgentList({
   const [promptBody, setPromptBody] = useState("");
 
   const handleCreate = async () => {
-    await sdk.addPrompt(newPromptName, "", promptCategory);
-    mutate("prompt");
+    await sdk.addPrompt(newPromptName, promptBody, promptCategory);
     const fetchPrompts = async () => {
       const prompts = await sdk.getPrompts(promptCategory);
       setPrompts(prompts);
@@ -66,7 +65,12 @@ export default function MenuAgentList({
         const categories = await sdk.getPromptCategories();
         setPromptCategories(categories);
       };
+      fetchPromptCategories();
     }
+    setNewPromptOpenDialog(false);
+    router.push(
+      `/prompt?agent=${agentName}&promptCategory=${promptCategory}&prompt=${newPromptName}`
+    );
   };
   useEffect(() => {
     if (dark) {

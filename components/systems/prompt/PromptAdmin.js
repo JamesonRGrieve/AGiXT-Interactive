@@ -6,27 +6,31 @@ import { sdk } from "../../../lib/apiClient";
 import {
   TextField,
   Button,
-  Container,
   Select,
   MenuItem,
   Typography,
   Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   InputLabel,
   FormControl,
 } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useSettings } from "../../../lib/SettingsContext";
-export default function PromptAdmin({ setPrompts }) {
+export default function PromptAdmin() {
   const router = useRouter();
-  const [promptCategory, setPromptCategory] = useState("Default");
-  const [promptName, setPromptName] = useState("Chat");
+  const agentName = router.query.agent;
+  const promptName = router.query.prompt || "Chat";
+  const promptCategory = router.query.promptCategory || "Default";
   const { promptCategories, prompts } = useSettings();
-
+  const setPromptCategory = (category) => {
+    router.push(
+      `/prompt/?agent=${agentName}&promptCategory=${category}&prompt=${promptName}`
+    );
+  };
+  const setPromptName = (name) => {
+    router.push(
+      `/prompt/?agent=${agentName}&promptCategory=${promptCategory}&prompt=${name}`
+    );
+  };
   const prompt = useSWR(
     `prompt/${promptCategory}/${promptName}`,
     async () => await sdk.getPrompt(promptName, promptCategory)
@@ -35,17 +39,10 @@ export default function PromptAdmin({ setPrompts }) {
     if (promptCategories) {
       setPromptCategory(promptCategory);
     }
-    mutate("prompt");
-    if (prompts) {
-      setPromptName(promptName);
-    }
     mutate(`prompt/${promptCategory}/${promptName}`);
   }, [promptCategories, promptName, promptCategory, prompts]);
 
   const [newBody, setNewBody] = useState(prompt.data);
-  const [openDialog, setOpenDialog] = useState(false);
-
-  console.log("PromptAdmin prompt: ", prompt);
   const handleDelete = async () => {
     await sdk.deletePrompt(promptName, promptCategory);
     mutate(`prompt`);
