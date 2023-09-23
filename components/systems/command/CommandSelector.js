@@ -1,16 +1,14 @@
-import { useState, useEffect, use } from "react";
 import {
   Select,
   MenuItem,
   TextField,
   InputLabel,
   FormControl,
-  Tooltip,
   Box,
 } from "@mui/material";
+import { useSettings } from "../../../lib/SettingsContext";
 import { sdk } from "../../../lib/apiClient";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import useSWR from "swr";
+import { useEffect, useState } from "react";
 
 export default function CommandSelector({
   commandName,
@@ -19,23 +17,23 @@ export default function CommandSelector({
   setCommandArgs,
   isLoading,
 }) {
-  const commandList = useSWR(
-    "command",
-    async () => await sdk.getCommands("gpt4free")
-  );
-
-  const [commands, setCommands] = useState(
-    commandList.isLoading ? [] : commandList.data
-  );
+  const { commands } = useSettings();
+  const [newCommandArgs, setNewCommandArgs] = useState({});
   useEffect(() => {
-    // Fetch commands for category
-    const fetchCommands = async () => {
-      const commands = await sdk.getCommands("gpt4free");
-      setCommands(commands);
-    };
-    fetchCommands();
-  }, []);
-
+    if (commandName) {
+      const fetchCommandArgs = async () => {
+        const command = await sdk.getCommandArgs(commandName);
+        console.log("command", command);
+        setCommandArgs(command);
+        setNewCommandArgs(command);
+      };
+      fetchCommandArgs();
+    }
+  }, [commandName, commands]);
+  useEffect(() => {
+    setCommandArgs(newCommandArgs);
+  }, [newCommandArgs]);
+  console.log("commandArgs", commandArgs);
   return (
     <>
       <Box display="flex" alignItems="center" gap={2}>
@@ -47,17 +45,19 @@ export default function CommandSelector({
             onChange={(e) => setCommandName(e.target.value)}
             disabled={isLoading}
           >
-            {Object.keys(commands).map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))}
+            {commands
+              ? Object.keys(commands).map((c) => (
+                  <MenuItem key={c} value={c}>
+                    {c}
+                  </MenuItem>
+                ))
+              : null}
           </Select>
         </FormControl>
       </Box>
 
-      {commandArgs ? (
-        Object.keys(commandArgs).map((arg) => {
+      {newCommandArgs ? (
+        Object.keys(newCommandArgs).map((arg) => {
           if (
             arg !== "conversation_history" &&
             arg !== "context" &&
@@ -75,7 +75,7 @@ export default function CommandSelector({
                 label={arg}
                 value={commandArgs[arg]}
                 onChange={(e) =>
-                  setCommandArgs({ ...commandArgs, [arg]: e.target.value })
+                  setCommandArgs({ ...newCommandArgs, [arg]: e.target.value })
                 }
                 sx={{ mb: 2 }}
                 disabled={isLoading}
