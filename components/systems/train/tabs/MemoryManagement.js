@@ -2,7 +2,20 @@ import React, { useState, useMemo } from "react";
 import ReactMarkdown from "react-markdown";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
-import { Button, TextField, Typography, Divider } from "@mui/material";
+import {
+  Button,
+  TextField,
+  Typography,
+  Divider,
+  Input,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@mui/material";
+import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import PublishIcon from "@mui/icons-material/Publish";
 
 export default function MemoryManagement({
   collectionNumber = 0,
@@ -27,6 +40,18 @@ export default function MemoryManagement({
     }
   };
 
+  const [openImportDialog, setOpenImportDialog] = useState(false);
+
+  const handleImportMemories = async (event) => {
+    const files = Array.from(event.target.files);
+    for (let file of files) {
+      const fileContent = await file.text();
+      await sdk.importAgentMemories(agentName, fileContent);
+      await queryMemory();
+    }
+    setOpenImportDialog(false);
+  };
+
   const deleteMemory = async (memoryId) => {
     await sdk.deleteAgentMemory(agentName, memoryId, collectionNumber);
     await queryMemory();
@@ -36,9 +61,56 @@ export default function MemoryManagement({
     await sdk.wipeAgentMemories(agentName, collectionNumber);
     await queryMemory();
   };
+  const handleExportMemories = async () => {
+    const memories = await sdk.exportAgentMemories(agentName);
+    const element = document.createElement("a");
+    const file = new Blob([JSON.stringify(memories)], {
+      type: "application/json",
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = `${agentName}-Memories.json`;
+    document.body.appendChild(element); // Required for this to work in FireFox
+    element.click();
+  };
 
   return (
     <>
+      <Typography variant="h6" sx={{ my: "1rem" }}>
+        <Button onClick={handleExportMemories} color={"info"}>
+          <FileDownloadOutlinedIcon color={"info"} /> Export Agent Memories
+        </Button>
+        &nbsp;&nbsp;
+        <Button onClick={() => setOpenImportDialog(true)} color={"info"}>
+          <PublishIcon color={"info"} /> Import Agent Memories
+        </Button>
+      </Typography>
+
+      <Dialog
+        open={openImportDialog}
+        onClose={() => setOpenImportDialog(false)}
+      >
+        <DialogTitle>Import Agent Memories</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            You can import agent memories from a JSON file here. This will add
+            to any existing memories the agent has.
+          </DialogContentText>
+          <Input
+            type="file"
+            variant="contained"
+            label="Import Agent Memories"
+            color="primary"
+            onClick={handleImportMemories}
+          >
+            Import Agent Memories
+          </Input>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenImportDialog(false)} color="error">
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Typography component="h1" gutterBottom>
         <ReactMarkdown>
           The `Search Query` is essentially what you would type to the AI when
@@ -49,7 +121,6 @@ export default function MemoryManagement({
           the memory collection here.
         </ReactMarkdown>
       </Typography>
-
       <div className="query-section">
         <TextField
           value={memoryQuery}
@@ -77,7 +148,6 @@ export default function MemoryManagement({
           Wipe All Memories
         </Button>
       </div>
-
       {Object.values(response).map((memory) => (
         <div key={memory.id}>
           <Divider style={{ margin: "20px 0" }} />
