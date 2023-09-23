@@ -10,8 +10,10 @@ import { AddCircle, Home } from "@mui/icons-material";
 import SmartToyOutlinedIcon from "@mui/icons-material/SmartToyOutlined";
 import ModelTrainingOutlinedIcon from "@mui/icons-material/ModelTrainingOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
 import PlayCircleFilledWhiteOutlinedIcon from "@mui/icons-material/PlayCircleFilledWhiteOutlined";
-import ChatBubble from "@mui/icons-material/ChatBubble";
+import RateReviewOutlinedIcon from "@mui/icons-material/RateReviewOutlined";
+import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import InsertLink from "@mui/icons-material/InsertLink";
 import AddLink from "@mui/icons-material/AddLink";
 import { useRouter } from "next/router";
@@ -49,6 +51,7 @@ export default function MenuAgentList({ data, theme, dark }) {
           <ListItemText primary="Home" />
         </ListItemButton>
       </Link>
+      <Divider />
       <Link href={`/new/chain`}>
         <ListItemButton
           key={"new"}
@@ -63,6 +66,19 @@ export default function MenuAgentList({ data, theme, dark }) {
           <ListItemText primary="New Chain" />
         </ListItemButton>
       </Link>
+      <Link href={`/new/prompt`} passHref>
+        <ListItemButton
+          selected={
+            router.pathname.split("/")[1] == "new" &&
+            router.pathname.split("/")[2] == "prompt"
+          }
+        >
+          <ListItemIcon sx={{ minWidth: "30px" }}>
+            <AddCommentOutlinedIcon />
+          </ListItemIcon>
+          <ListItemText primary="New Prompt" />
+        </ListItemButton>
+      </Link>
       <Link href={`/new/agent`} passHref>
         <ListItemButton
           selected={
@@ -71,7 +87,7 @@ export default function MenuAgentList({ data, theme, dark }) {
           }
         >
           <ListItemIcon sx={{ minWidth: "30px" }}>
-            <AddCircle />
+            <PersonAddOutlinedIcon />
           </ListItemIcon>
           <ListItemText primary="New Agent" />
         </ListItemButton>
@@ -157,7 +173,7 @@ export default function MenuAgentList({ data, theme, dark }) {
                         selected={pageName == "prompt"}
                       >
                         <ListItemIcon sx={{ minWidth: "30px" }}>
-                          <ChatBubble />
+                          <RateReviewOutlinedIcon />
                         </ListItemIcon>
                         <ListItemText primary="Prompts" />
                       </ListItemButton>
