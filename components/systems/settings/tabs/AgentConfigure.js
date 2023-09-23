@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { sdk } from "../../../lib/apiClient";
-import { useSettings } from "../../../lib/SettingsContext";
+import { sdk } from "../../../../lib/apiClient";
+import { useSettings } from "../../../../lib/SettingsContext";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import useSWR from "swr";
 import { mutate } from "swr";
@@ -26,41 +26,9 @@ export default function AgentConfigure({ data, drawerWidth }) {
   const [fields, setFields] = useState({});
   const [fieldValues, setFieldValues] = useState({});
   const [displayNames, setDisplayNames] = useState({});
-  const [newName, setNewName] = useState("");
   const router = useRouter();
   const agentName = router.query.agent;
   const agents = useSWR("agent", async () => await sdk.getAgents());
-  const handleDelete = async () => {
-    await sdk.deleteAgent(agentName);
-    mutate(`agent`);
-    router.push(`/agent`);
-  };
-  const handleRename = async () => {
-    await sdk.renameAgent(agentName, newName);
-    mutate(`agent`);
-    router.push(`/agent/${newName}`);
-  };
-  const handleExport = async () => {
-    // Download the content of data to a json file with the agentname.json
-    const filename = `${agentName}.json`;
-    const contentType = "application/json;charset=utf-8;";
-    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
-      var blob = new Blob(
-        [decodeURIComponent(encodeURI(JSON.stringify(data)))],
-        { type: contentType }
-      );
-      navigator.msSaveOrOpenBlob(blob, filename);
-    } else {
-      var a = document.createElement("a");
-      a.download = filename;
-      a.href =
-        "data:" + contentType + "," + encodeURIComponent(JSON.stringify(data));
-      a.target = "_blank";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    }
-  };
   const embedders = useSWR(
     "embedder",
     async () => await sdk.getEmbedProviders()
@@ -194,14 +162,6 @@ export default function AgentConfigure({ data, drawerWidth }) {
         padding: "1rem",
       }}
     >
-      <Typography variant="h6" sx={{ my: "1rem" }}>
-        {agentName} Agent Configuration&nbsp;&nbsp;
-        <Button color="info" onClick={handleExport}>
-          <FileDownloadOutlinedIcon color="info" /> Export Agent
-        </Button>
-      </Typography>
-
-      <Divider />
       <Typography sx={{ my: "1rem" }}>Provider</Typography>
       <Select
         label="Provider"
@@ -397,31 +357,6 @@ export default function AgentConfigure({ data, drawerWidth }) {
       <br />
       <Button onClick={handleConfigure} variant="contained" color="error">
         Save Agent Configuration
-      </Button>
-      <Divider />
-      <Typography variant="h6" sx={{ my: "1rem" }}>
-        Agent Admin
-      </Typography>
-      <TextField
-        fullWidth
-        variant="outlined"
-        label="New Agent Name"
-        value={newName}
-        onChange={(e) => {
-          setNewName(e.target.value);
-        }}
-      />
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleRename}
-        sx={{ marginY: "1rem" }}
-      >
-        Rename Agent
-      </Button>
-      <Divider sx={{ my: "1.5rem" }} />
-      <Button onClick={handleDelete} variant="contained" color="error">
-        Delete Agent
       </Button>
     </Box>
   );
