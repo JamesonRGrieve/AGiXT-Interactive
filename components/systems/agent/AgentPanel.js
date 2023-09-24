@@ -142,15 +142,35 @@ export default function AgentPanel({
         TabIndicatorProps={{
           style: { background: theme.palette.mode == "dark" ? "#FFF" : "#000" },
         }}
-        sx={{ marginTop: "-14px", marginBottom: "5px" }}
+        sx={{ marginTop: "-10px", marginBottom: "0px", minHeight: "6px" }}
         textColor={theme.palette.mode == "dark" ? "white" : "black"}
         allowScrollButtonsMobile={true}
         variant="fullWidth"
       >
-        <Tab label="Chat Mode" value="0" wrapped={true} />
-        <Tab label="Instruct Mode" value="2" wrapped={true} />
-        <Tab label="Prompt Mode" value="1" wrapped={true} />
-        <Tab label="Chain Execution" value="3" wrapped={true} />
+        <Tab
+          label="Chat Mode"
+          value="0"
+          wrapped={true}
+          sx={{ minHeight: "6px" }}
+        />
+        <Tab
+          label="Instruct Mode"
+          value="2"
+          wrapped={true}
+          sx={{ minHeight: "6px" }}
+        />
+        <Tab
+          label="Prompt Mode"
+          value="1"
+          wrapped={true}
+          sx={{ minHeight: "6px" }}
+        />
+        <Tab
+          label="Chain Execution"
+          value="3"
+          wrapped={true}
+          sx={{ minHeight: "6px" }}
+        />
       </Tabs>
       <Box
         sx={{
