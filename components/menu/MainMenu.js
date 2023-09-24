@@ -33,6 +33,10 @@ import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import InsertLink from "@mui/icons-material/InsertLink";
 import AddLink from "@mui/icons-material/AddLink";
+import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
+import QuickreplyOutlinedIcon from "@mui/icons-material/QuickreplyOutlined";
+import ElectricBoltOutlinedIcon from "@mui/icons-material/ElectricBoltOutlined";
+import SensorOccupiedOutlinedIcon from "@mui/icons-material/SensorOccupiedOutlined";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { sdk } from "../../lib/apiClient";
@@ -296,24 +300,75 @@ export default function MenuAgentList({
               <ListItemText primary={agentName} />
             </ListItemButton>
 
+            <Link href={`/agent?agent=${agentName}&tab=0`} passHref>
+              <ListItemButton
+                variant="contained"
+                sx={{
+                  pl: "2rem",
+                  "&&.Mui-selected": {
+                    backgroundColor: selectedColor,
+                  },
+                }}
+                selected={pageName == "agent" && router.query.tab == 0}
+              >
+                <ListItemIcon sx={{ minWidth: "30px" }}>
+                  <ChatBubbleOutlineOutlinedIcon />
+                </ListItemIcon>
+                Chat
+              </ListItemButton>
+            </Link>
+            <Link href={`/agent?agent=${agentName}&tab=3`} passHref>
+              <ListItemButton
+                variant="contained"
+                sx={{
+                  pl: "2rem",
+                  "&&.Mui-selected": {
+                    backgroundColor: selectedColor,
+                  },
+                }}
+                selected={pageName == "agent" && router.query.tab == 3}
+              >
+                <ListItemIcon sx={{ minWidth: "30px" }}>
+                  <ElectricBoltOutlinedIcon />
+                </ListItemIcon>
+                Instruct
+              </ListItemButton>
+            </Link>
+            <Link href={`/agent?agent=${agentName}&tab=1`} passHref>
+              <ListItemButton
+                variant="contained"
+                sx={{
+                  pl: "2rem",
+                  "&&.Mui-selected": {
+                    backgroundColor: selectedColor,
+                  },
+                }}
+                selected={pageName == "agent" && router.query.tab == 1}
+              >
+                <ListItemIcon sx={{ minWidth: "30px" }}>
+                  <QuickreplyOutlinedIcon />
+                </ListItemIcon>
+                Run Prompt
+              </ListItemButton>
+            </Link>
+            <Link href={`/agent?agent=${agentName}&tab=2`} passHref>
+              <ListItemButton
+                variant="contained"
+                sx={{
+                  pl: "2rem",
+                  "&&.Mui-selected": {
+                    backgroundColor: selectedColor,
+                  },
+                }}
+                selected={pageName == "agent" && router.query.tab == 2}
+              >
+                <ListItemIcon sx={{ minWidth: "30px" }}>
+                  <PlayCircleFilledWhiteOutlinedIcon />
+                </ListItemIcon>
+                Run Chain
+              </ListItemButton>
+            </Link>
             <Link href={`/train?agent=${agentName}`} passHref>
-              <Link href={`/agent?agent=${agentName}`} passHref>
-                <ListItemButton
-                  variant="contained"
-                  sx={{
-                    pl: "2rem",
-                    "&&.Mui-selected": {
-                      backgroundColor: selectedColor,
-                    },
-                  }}
-                  selected={pageName == "agent" && router.query.tab != 4}
-                >
-                  <ListItemIcon sx={{ minWidth: "30px" }}>
-                    <PlayCircleFilledWhiteOutlinedIcon />
-                  </ListItemIcon>
-                  Interact
-                </ListItemButton>
-              </Link>
               <ListItemButton
                 variant="contained"
                 sx={{

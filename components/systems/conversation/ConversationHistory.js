@@ -27,7 +27,7 @@ export default function ConversationHistory({ chatHistory, isLoading }) {
   const router = useRouter();
   const agentName = router.query.agent;
   const tab = router.query.tab;
-  const marginTop = tab == 1 ? "220px" : tab == 3 ? "202px" : "145px";
+  const marginTop = tab == 1 ? "180px" : tab == 2 ? "182px" : "126px";
 
   let lastUserMessage = ""; // track the last user message
 
@@ -39,7 +39,7 @@ export default function ConversationHistory({ chatHistory, isLoading }) {
         display: "flex",
         flexDirection: "column-reverse",
         height: `calc(100vh - ${marginTop})`,
-        marginTop: "-10px",
+        marginTop: "0px",
       }}
     >
       <div>

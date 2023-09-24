@@ -41,8 +41,20 @@ export default function AgentPrompt({
   const [isLoading, setIsLoading] = useState(false);
   const { conversation, promptCategories, prompts } = useSettings();
   const router = useRouter();
+  const tab = router.query.tab;
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const [promptArgs, setPromptArgs] = useState({});
+
+  const handleTabChange = (event, newTab) => {
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, tab: newTab },
+      },
+      undefined,
+      { shallow: true }
+    );
+  };
 
   const { data: prompt } = useSWR(
     `prompt/${promptName}`,
@@ -85,6 +97,7 @@ export default function AgentPrompt({
     };
     getArgs(promptName, promptCategory);
   }, [promptName]);
+
   const runChain = async () => {
     setIsLoading(true);
     const agentOverride = useSelectedAgent ? agentName : "";
@@ -181,9 +194,8 @@ export default function AgentPrompt({
   return (
     <>
       <ConversationHistory chatHistory={chatHistory} isLoading={isLoading} />
-      {mode == "Prompt" ? (
+      {tab == 1 ? (
         <>
-          <br />
           <PromptSelector
             promptCategories={promptCategories}
             promptCategory={promptCategory}
@@ -205,7 +217,7 @@ export default function AgentPrompt({
             Send
           </Button>
         </>
-      ) : mode == "Chain" ? (
+      ) : tab == 2 ? (
         <>
           <ChainSelector
             chains={chains}

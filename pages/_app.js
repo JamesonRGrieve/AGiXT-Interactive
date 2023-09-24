@@ -174,9 +174,9 @@ export default function App({ Component, pageProps, dark }) {
         return "Chat Mode";
       } else if (tab == 1) {
         return "Prompt Mode";
-      } else if (tab == 2) {
-        return "Instruct Mode";
       } else if (tab == 3) {
+        return "Instruct Mode";
+      } else if (tab == 2) {
         return "Chain Execution Mode";
       } else {
         return "Agent Interactions";
