@@ -1,5 +1,4 @@
 import { TextField, FormControlLabel, Switch, Container } from "@mui/material";
-import { useState } from "react";
 
 export default function AdvancedOptions({
   contextResults,
@@ -28,7 +27,7 @@ export default function AdvancedOptions({
         label="Context Results"
         value={contextResults}
         onChange={(e) => setContextResults(e.target.value)}
-        sx={{ mb: 2 }}
+        sx={{ mb: fullWidth ? 1 : 2 }}
       />
       <TextField
         fullWidth={fullWidth}
@@ -36,7 +35,7 @@ export default function AdvancedOptions({
         label="Shots"
         value={shots}
         onChange={(e) => setShots(e.target.value)}
-        sx={{ mb: 2 }}
+        sx={{ mb: fullWidth ? 1 : 2 }}
       />
       <TextField
         fullWidth={fullWidth}
@@ -44,7 +43,7 @@ export default function AdvancedOptions({
         label="Websearch Depth"
         value={websearchDepth}
         onChange={(e) => setWebsearchDepth(e.target.value)}
-        sx={{ mb: 2 }}
+        sx={{ mb: fullWidth ? 1 : 2 }}
       />
       <TextField
         fullWidth={fullWidth}
@@ -52,7 +51,7 @@ export default function AdvancedOptions({
         label="Inject Memories from Collection"
         value={injectMemoriesFromCollectionNumber}
         onChange={(e) => setInjectMemoriesFromCollectionNumber(e.target.value)}
-        sx={{ mb: 2 }}
+        sx={{ mb: fullWidth ? 1 : 2 }}
       />
       <TextField
         fullWidth={fullWidth}
@@ -63,7 +62,7 @@ export default function AdvancedOptions({
         step={1}
         value={conversationResults}
         onChange={(e) => setConversationResults(e.target.value)}
-        sx={{ mb: 2 }}
+        sx={{ mb: fullWidth ? 1 : 2 }}
       />
       <br />
       <FormControlLabel
@@ -91,10 +90,10 @@ export default function AdvancedOptions({
           <Switch
             checked={enableMemory}
             onChange={(e) => setEnableMemory(e.target.checked)}
-            name="Enable Memory"
+            name="Enable Memory Training"
           />
         }
-        label="Enable Memory"
+        label="Enable Memory Training"
       />
     </>
   );

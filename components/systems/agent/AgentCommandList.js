@@ -43,14 +43,16 @@ export default function AgentCommandList({ commands, setCommands }) {
         />
       </ListItem>
       <Divider />
-      {Object.keys(commands).map((command) => (
-        <AgentCommand
-          key={command}
-          name={command}
-          enabled={commands[command]}
-          setCommandToggled={setCommandToggled}
-        />
-      ))}
+      {Object.keys(commands)
+        .sort()
+        .map((command) => (
+          <AgentCommand
+            key={command}
+            name={command}
+            enabled={commands[command]}
+            setCommandToggled={setCommandToggled}
+          />
+        ))}
     </List>
   );
 }
