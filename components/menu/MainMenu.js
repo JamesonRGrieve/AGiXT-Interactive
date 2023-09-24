@@ -251,11 +251,11 @@ export default function MenuAgentList({
           </ListItemButton>
         </a>
         <Divider />
-        <ListItemButton onClick={() => setNewChainOpenDialog(true)}>
+        <ListItemButton onClick={() => setOpenNewConversation(true)}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
-            <AddLink />
+            <MapsUgcIcon />
           </ListItemIcon>
-          <ListItemText primary="New Chain" />
+          <ListItemText primary="New Chat" />
         </ListItemButton>
         <ListItemButton onClick={() => setNewPromptOpenDialog(true)}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
@@ -263,11 +263,11 @@ export default function MenuAgentList({
           </ListItemIcon>
           <ListItemText primary="New Prompt" />
         </ListItemButton>
-        <ListItemButton onClick={() => setOpenNewConversation(true)}>
+        <ListItemButton onClick={() => setNewChainOpenDialog(true)}>
           <ListItemIcon sx={{ minWidth: "30px" }}>
-            <MapsUgcIcon />
+            <AddLink />
           </ListItemIcon>
-          <ListItemText primary="New Conversation" />
+          <ListItemText primary="New Chain" />
         </ListItemButton>
         <ListItemButton onClick={() => setNewAgentOpenDialog(true)}>
           <ListItemIcon sx={{ minWidth: "30px" }}>

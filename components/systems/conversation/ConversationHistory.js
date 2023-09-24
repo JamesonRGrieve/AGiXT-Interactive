@@ -27,7 +27,7 @@ export default function ConversationHistory({ chatHistory, isLoading }) {
   const router = useRouter();
   const agentName = router.query.agent;
   const tab = router.query.tab;
-  const marginTop = tab == 1 ? "180px" : tab == 2 ? "182px" : "126px";
+  const marginTop = tab == 1 ? "190px" : tab == 2 ? "195px" : "140px";
 
   let lastUserMessage = ""; // track the last user message
 
@@ -108,7 +108,6 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
   return (
     <Box
       sx={{
-        p: "1rem",
         backgroundColor:
           chatItem.role === "USER"
             ? theme.palette.background.default
@@ -118,7 +117,6 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
       <Box
         sx={{
           padding: "10px",
-          marginBottom: "5px",
           overflow: "hidden",
           position: "center",
         }}
