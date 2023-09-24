@@ -148,8 +148,8 @@ export default function AgentPanel({
         variant="fullWidth"
       >
         <Tab label="Chat Mode" value="0" wrapped={true} />
-        <Tab label="Prompt Mode" value="1" wrapped={true} />
         <Tab label="Instruct Mode" value="2" wrapped={true} />
+        <Tab label="Prompt Mode" value="1" wrapped={true} />
         <Tab label="Chain Execution" value="3" wrapped={true} />
       </Tabs>
       <Box
