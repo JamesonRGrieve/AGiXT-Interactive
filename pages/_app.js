@@ -272,7 +272,7 @@ export default function App({ Component, pageProps, dark }) {
                   <Link href="/">
                     <b>AGiXT</b>
                   </Link>{" "}
-                  - {pageTitle()}
+                  {pageName != "agent" ? <>- {pageTitle()}</> : null}
                   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </Typography>
                 {pageName == "agent" ? (

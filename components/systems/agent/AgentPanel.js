@@ -151,30 +151,46 @@ export default function AgentPanel({
           label="Chat Mode"
           value="0"
           wrapped={true}
-          sx={{ minHeight: "6px" }}
+          sx={{
+            minHeight: "6px",
+            fontWeight: tab == "0" ? "bold" : "normal",
+            textDecoration: tab == "0" ? "underline" : "none",
+          }}
         />
         <Tab
           label="Instruct Mode"
           value="2"
           wrapped={true}
-          sx={{ minHeight: "6px" }}
+          sx={{
+            minHeight: "6px",
+            fontWeight: tab == "2" ? "bold" : "normal",
+            textDecoration: tab == "2" ? "underline" : "none",
+          }}
         />
         <Tab
           label="Prompt Mode"
           value="1"
           wrapped={true}
-          sx={{ minHeight: "6px" }}
+          sx={{
+            minHeight: "6px",
+            fontWeight: tab == "1" ? "bold" : "normal",
+            textDecoration: tab == "1" ? "underline" : "none",
+          }}
         />
         <Tab
           label="Chain Execution"
           value="3"
           wrapped={true}
-          sx={{ minHeight: "6px" }}
+          sx={{
+            minHeight: "6px",
+            fontWeight: tab == "3" ? "bold" : "normal",
+            textDecoration: tab == "3" ? "underline" : "none",
+          }}
         />
       </Tabs>
       <Box
         sx={{
-          padding: "0.2rem",
+          padding: "0.1rem",
         }}
       >
         {tabs[tab]}
