@@ -64,10 +64,6 @@ export default function MarkdownBlock({ content, chatItem }) {
     apex: "cls",
     matlab: "m",
     nim: "nim",
-    ocaml: "ml",
-    pascal: "pas",
-    scheme: "scm",
-    coffeescript: "coffee",
   };
 
   const renderMessage = () => {
