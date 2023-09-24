@@ -46,17 +46,18 @@ export default function ConversationSelector({
   return (
     <FormControl
       sx={{
-        mb: 2,
         display: "flex",
         flexDirection: "row",
         alignItems: "center",
       }}
+      fullWidth
     >
       <InputLabel id="conversation-label">Select a Conversation</InputLabel>
       <Select
         labelId="conversation-label"
-        sx={{ width: "60%" }}
+        fullWidth
         label="Select a Conversation"
+        sx={{ height: "30px" }}
         value={conversationName}
         onChange={(e) => setConversationName(e.target.value)}
       >
@@ -68,11 +69,20 @@ export default function ConversationSelector({
             ))
           : null}
       </Select>
-      <Button onClick={handleExportConversation} color={"info"}>
-        <FileDownloadOutlinedIcon color={"info"} /> Export Conversation
+      &nbsp;
+      <Button
+        onClick={handleExportConversation}
+        color={"info"}
+        sx={{ minWidth: "30px" }}
+      >
+        <FileDownloadOutlinedIcon sx={{ maxWidth: "30px" }} color={"info"} />
       </Button>
-      <Button onClick={handleDeleteConversation} color={"error"}>
-        <DeleteIcon color={"error"} /> Delete Conversation
+      <Button
+        onClick={handleDeleteConversation}
+        color={"error"}
+        sx={{ minWidth: "30px" }}
+      >
+        <DeleteIcon sx={{ minWidth: "30px" }} color={"error"} />
       </Button>
     </FormControl>
   );

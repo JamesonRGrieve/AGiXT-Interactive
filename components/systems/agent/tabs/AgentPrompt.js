@@ -32,8 +32,6 @@ export default function AgentPrompt({
   allResponses = false,
   useSelectedAgent = true,
   conversationName,
-  setConversationName,
-  setConversations,
 }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
@@ -41,14 +39,10 @@ export default function AgentPrompt({
   const [promptCategory, setPromptCategory] = useState("Default");
   const [promptName, setPromptName] = useState("Chat");
   const [isLoading, setIsLoading] = useState(false);
-  const { conversations, promptCategories, prompts } = useSettings();
+  const { conversation, promptCategories, prompts } = useSettings();
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const [promptArgs, setPromptArgs] = useState({});
-  const { data: conversation } = useSWR(
-    `conversation/${agentName}/${conversationName}`,
-    async () => await sdk.getConversation(agentName, conversationName, 100, 1)
-  );
 
   const { data: prompt } = useSWR(
     `prompt/${promptName}`,
@@ -186,13 +180,6 @@ export default function AgentPrompt({
   };
   return (
     <>
-      <ConversationSelector
-        conversations={conversations}
-        conversationName={conversationName}
-        setConversationName={setConversationName}
-        conversation={conversation}
-        setConversations={setConversations}
-      />
       <ConversationHistory chatHistory={chatHistory} isLoading={isLoading} />
       {mode == "Prompt" ? (
         <>

@@ -23,6 +23,7 @@ import TrainOptions from "../components/systems/train/TrainOptions";
 import AgentCommandList from "../components/systems/agent/AgentCommandList";
 import ChainArgsEditor from "../components/systems/chain/ChainArgsEditor";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
+import ConversationSelector from "../components/systems/conversation/ConversationSelector";
 import Container from "@mui/material/Container";
 import useSWR from "swr";
 import { sdk } from "../lib/apiClient";
@@ -112,6 +113,7 @@ export default function App({ Component, pageProps, dark }) {
   const [prompts, setPrompts] = useState([]);
   const [conversations, setConversations] = useState([]);
   const [conversationName, setConversationName] = useState("Test");
+  const [conversation, setConversation] = useState([]);
   const contentWidth =
     open && rightDrawerOpen
       ? `calc(100% - ${bothDrawersWidth}px)`
@@ -211,6 +213,19 @@ export default function App({ Component, pageProps, dark }) {
       setRightDrawerOpen(true);
     }
   }, [pageName]);
+  useEffect(() => {
+    const fetchConversation = async () => {
+      const convo = await sdk.getConversation(
+        router.query.agent,
+        conversationName,
+        100,
+        1
+      );
+      setConversation(convo);
+    };
+    fetchConversation();
+  }, [conversationName]);
+
   return (
     <>
       <Head>
@@ -258,7 +273,25 @@ export default function App({ Component, pageProps, dark }) {
                     <b>AGiXT</b>
                   </Link>{" "}
                   - {pageTitle()}
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 </Typography>
+                {pageName == "agent" ? (
+                  <Box
+                    sx={{
+                      marginLeft: "10px",
+                      marginTop: "-14px",
+                      height: "10px",
+                    }}
+                  >
+                    <ConversationSelector
+                      conversations={conversations}
+                      conversationName={conversationName}
+                      setConversationName={setConversationName}
+                      conversation={conversation}
+                      setConversations={setConversations}
+                    />
+                  </Box>
+                ) : null}
               </Box>
               <Box
                 sx={{
@@ -281,6 +314,7 @@ export default function App({ Component, pageProps, dark }) {
                 ) : null}
               </Box>
             </Toolbar>
+            <Divider />
           </AppBar>
           <Drawer
             sx={{
@@ -307,6 +341,7 @@ export default function App({ Component, pageProps, dark }) {
                 />
               </IconButton>
             </DrawerHeader>
+            <Divider />
             <MenuAgentList
               data={agents.data ? agents.data : []}
               theme={theme}
@@ -428,6 +463,10 @@ export default function App({ Component, pageProps, dark }) {
               setPrompts={setPrompts}
               conversations={conversations}
               setConversations={setConversations}
+              conversation={conversation}
+              setConversationName={setConversationName}
+              conversationName={conversationName}
+              setConversation={setConversation}
             >
               {commands.isLoading ? (
                 "Loading..."
@@ -472,6 +511,8 @@ export default function App({ Component, pageProps, dark }) {
                   setConversationName={setConversationName}
                   conversationName={conversationName}
                   setConversations={setConversations}
+                  conversation={conversation}
+                  setConversation={setConversation}
                 />
               )}
             </SettingsProvider>

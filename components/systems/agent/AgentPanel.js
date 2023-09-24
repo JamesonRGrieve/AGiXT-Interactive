@@ -142,7 +142,7 @@ export default function AgentPanel({
         TabIndicatorProps={{
           style: { background: theme.palette.mode == "dark" ? "#FFF" : "#000" },
         }}
-        sx={{ mb: "0.5rem" }}
+        sx={{ marginTop: "-14px", marginBottom: "5px" }}
         textColor={theme.palette.mode == "dark" ? "white" : "black"}
         allowScrollButtonsMobile={true}
         variant="fullWidth"
