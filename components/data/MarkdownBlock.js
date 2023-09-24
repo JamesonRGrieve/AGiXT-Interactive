@@ -151,6 +151,12 @@ export default function MarkdownBlock({ content, chatItem }) {
           h4({ node, children }) {
             return renderHeader("h4", children);
           },
+          ol({ children }) {
+            return <ol style={{ paddingLeft: "2em" }}>{children}</ol>;
+          },
+          li({ children }) {
+            return <li style={{ marginBottom: "0.5em" }}>{children}</li>;
+          },
           code({ node, inline, children, ...props }) {
             if (inline) {
               return (

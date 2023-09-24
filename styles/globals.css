@@ -31,7 +31,12 @@ a {
   padding-left: 2em;
 }
 
-.react-markdown li {
+.react-markdown ol {
+  list-style-type: decimal;
+  padding-left: 2em;
+}
+
+.react-markdown ol li {
   margin-bottom: 0.5em;
 }
 
