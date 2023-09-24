@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
-import ConversationSelector from "../../conversation/ConversationSelector";
 import ConversationHistory from "../../conversation/ConversationHistory";
 import PromptSelector from "../../prompt/PromptSelector";
 import ChainSelector from "../../chain/ChainSelector";
@@ -18,7 +17,6 @@ export default function AgentPrompt({
   selectedChain,
   setSelectedChain,
   chainArgs,
-  mode = "Prompt",
   contextResults = 5,
   shots = 1,
   browseLinks = false,
@@ -44,17 +42,6 @@ export default function AgentPrompt({
   const tab = router.query.tab;
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const [promptArgs, setPromptArgs] = useState({});
-
-  const handleTabChange = (event, newTab) => {
-    router.push(
-      {
-        pathname: router.pathname,
-        query: { ...router.query, tab: newTab },
-      },
-      undefined,
-      { shallow: true }
-    );
-  };
 
   const { data: prompt } = useSWR(
     `prompt/${promptName}`,
@@ -157,8 +144,14 @@ export default function AgentPrompt({
       conversation_results: conversationResults,
       ...promptArgs,
     };
-    if (mode != "Prompt") {
-      promptName = mode;
+    if (tab == 0) {
+      promptName = "Chat";
+    } else if (tab == 3) {
+      promptName = "Instruction";
+    } else if (tab == 1) {
+      promptName = promptName;
+    } else if (tab == 2) {
+      promptName = selectedChain;
     }
     const response = await sdk.promptAgent(
       agentName,
