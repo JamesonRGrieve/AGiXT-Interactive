@@ -160,6 +160,14 @@ export default function AgentPrompt({
     );
     setIsLoading(false);
     setLastResponse(response);
+    const fetchConversation = async () => {
+      const conversation = await sdk.getConversation(
+        agentName,
+        conversationName
+      );
+      setChatHistory(conversation);
+    };
+    fetchConversation();
   };
 
   const handleKeyPress = async (event) => {

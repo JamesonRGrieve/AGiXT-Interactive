@@ -224,7 +224,6 @@ export default function MarkdownBlock({ content, chatItem }) {
                         children={children}
                         language={language}
                         PreTag="div"
-                        showLineNumbers={true}
                         style={a11yDark}
                       />
                     ) : (
