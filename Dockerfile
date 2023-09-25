@@ -1,4 +1,4 @@
-FROM node:18.8-alpine AS deps
+FROM node:18.8-alpine AS dependencies
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
 COPY ./yarn.lock ./
@@ -6,7 +6,7 @@ RUN yarn --frozen-lockfile
 
 FROM node:18.8-alpine AS builder
 WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1
