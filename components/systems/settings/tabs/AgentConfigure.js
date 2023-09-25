@@ -25,6 +25,7 @@ export default function AgentConfigure({ data, drawerWidth }) {
   const [fields, setFields] = useState({});
   const [fieldValues, setFieldValues] = useState({});
   const [displayNames, setDisplayNames] = useState({});
+  const [persona, setPersona] = useState("");
   const router = useRouter();
   const agentName = router.query.agent;
   const agents = useSWR("agent", async () => await sdk.getAgents());
@@ -161,6 +162,20 @@ export default function AgentConfigure({ data, drawerWidth }) {
         padding: "1rem",
       }}
     >
+      <TextField
+        label="Agent Persona"
+        sx={{ my: "1rem", mx: "0.5rem", width: "100%" }}
+        value={fieldValues["PERSONA"]}
+        onChange={(e) =>
+          setFieldValues({
+            ...fieldValues,
+            persona: e.target.value,
+          })
+        }
+        multiline
+        rows={4}
+      />
+      <Divider />
       <Typography sx={{ my: "1rem" }}>Provider</Typography>
       <Select
         label="Provider"
@@ -304,6 +319,8 @@ export default function AgentConfigure({ data, drawerWidth }) {
                 </Select>
               </FormControl>
             );
+          } else if (field == "persona") {
+            <></>;
           } else {
             // Render a TextField for other fields
             return (
