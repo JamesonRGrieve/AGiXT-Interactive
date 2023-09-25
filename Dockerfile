@@ -5,7 +5,7 @@ ENV NODE_ENV=production \
 RUN apk add --no-cache libc6-compat
 COPY package.json ./
 RUN --mount=type=cache,target=/root/.npm,sharing=locked \
-    npm install
+    npm ci
 
 FROM node:18.8-alpine AS builder
 WORKDIR /app
