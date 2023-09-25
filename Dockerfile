@@ -1,16 +1,12 @@
 FROM node:18.8-alpine AS deps
 WORKDIR /app
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1
 RUN apk add --no-cache libc6-compat
 COPY package.json ./
 RUN --mount=type=cache,target=/app/node_modules \
-    npm install --production
-
-FROM node:18.8-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
+    npm install
 COPY . .
-ENV NODE_ENV=production \
-    NEXT_TELEMETRY_DISABLED=1
 RUN npm run build
 
 FROM node:18.8-alpine AS runner
