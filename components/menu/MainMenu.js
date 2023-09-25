@@ -277,29 +277,27 @@ export default function MenuAgentList({
         </ListItemButton>
         <Divider />
         {agentName && (
-          <Link
-            href={
-              pageName != "new"
-                ? `/${pageName}?agent=${agentName}&tab=${router.query.tab || 0}`
-                : `/agent?agent=${agentName}&tab=0`
-            }
-            key={agentName}
-            passHref
-          >
-            <ListItemButton
-              sx={{
-                "&&.Mui-selected": {
-                  backgroundColor: selectedColor,
-                },
-              }}
-              selected={true}
+          <>
+            <Link
+              href={`/${
+                pageName != "" ? pageName : "agent"
+              }?agent=${agentName}&tab=${router.query.tab || "0"}`}
+              passHref
             >
-              <ListItemIcon sx={{ minWidth: "30px" }}>
-                <DirectionsRunIcon />
-              </ListItemIcon>
-              <ListItemText primary={agentName} />
-            </ListItemButton>
-
+              <ListItemButton
+                sx={{
+                  "&&.Mui-selected": {
+                    backgroundColor: selectedColor,
+                  },
+                }}
+                selected={true}
+              >
+                <ListItemIcon sx={{ minWidth: "30px" }}>
+                  <DirectionsRunIcon />
+                </ListItemIcon>
+                <ListItemText primary={agentName} />
+              </ListItemButton>
+            </Link>
             <Link href={`/agent?agent=${agentName}&tab=0`} passHref>
               <ListItemButton
                 variant="contained"
@@ -437,7 +435,7 @@ export default function MenuAgentList({
               </ListItemButton>
             </Link>
             <Divider />
-          </Link>
+          </>
         )}
         {Array.isArray(agents) &&
           agents.map(
@@ -448,14 +446,9 @@ export default function MenuAgentList({
                     <></>
                   ) : (
                     <Link
-                      href={
-                        pageName != "new"
-                          ? `/${pageName}?agent=${agent.name}&tab=${
-                              router.query.tab || 0
-                            }`
-                          : `/agent?agent=${agent.name}`
-                      }
-                      key={agent.name}
+                      href={`/${pageName != "" ? pageName : "agent"}?agent=${
+                        agent.name
+                      }&tab=${router.query.tab || "0"}`}
                       passHref
                     >
                       <ListItemButton
