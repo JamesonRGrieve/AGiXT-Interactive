@@ -130,6 +130,31 @@ export default function AgentPrompt({
       promptArgs["user_input"] = message;
     }
     const disableMemory = !enableMemory;
+    const skipArgs = [
+      "conversation_history",
+      "context",
+      "COMMANDS",
+      "command_list",
+      "date",
+      "agent_name",
+      "working_directory",
+      "helper_agent_name",
+      "prompt_name",
+      "context_results",
+      "conversation_results",
+      "conversation_name",
+      "prompt_category",
+      "websearch",
+      "websearch_depth",
+      "enable_memory",
+      "inject_memories_from_collection_number",
+      "context_results",
+      "persona",
+      "",
+    ];
+    for (const arg of skipArgs) {
+      delete promptArgs[arg];
+    }
     const promptArguments = {
       prompt_category: promptCategory,
       conversation_name: conversationName,
