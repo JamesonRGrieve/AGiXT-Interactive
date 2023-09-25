@@ -23,7 +23,31 @@ export default function PromptSelector({
 }) {
   const { prompts } = useSettings();
   const sortedPrompts = [...prompts].sort();
-
+  const skipArgs = [
+    "conversation_history",
+    "context",
+    "COMMANDS",
+    "command_list",
+    "date",
+    "agent_name",
+    "working_directory",
+    "helper_agent_name",
+    "prompt_name",
+    "context_results",
+    "conversation_results",
+    "conversation_name",
+    "prompt_category",
+    "websearch",
+    "websearch_depth",
+    "enable_memory",
+    "inject_memories_from_collection_number",
+    "context_results",
+    "shots",
+    "browse_links",
+    "shot_count",
+    "persona",
+    "",
+  ];
   return (
     <>
       <Box display="flex" alignItems="center" gap={2}>
@@ -73,30 +97,7 @@ export default function PromptSelector({
 
       {promptArgs ? (
         Object.keys(promptArgs).map((arg) => {
-          if (
-            arg !== "conversation_history" &&
-            arg !== "context" &&
-            arg !== "COMMANDS" &&
-            arg !== "command_list" &&
-            arg !== "date" &&
-            arg !== "agent_name" &&
-            arg !== "working_directory" &&
-            arg !== "helper_agent_name" &&
-            arg !== "prompt_name" &&
-            arg !== "context_results" &&
-            arg !== "conversation_results" &&
-            arg !== "conversation_name" &&
-            arg !== "prompt_category" &&
-            arg !== "websearch" &&
-            arg !== "websearch_depth" &&
-            arg !== "enable_memory" &&
-            arg !== "inject_memories_from_collection_number" &&
-            arg !== "context_results" &&
-            arg !== "shots" &&
-            arg !== "browse_links" &&
-            arg !== "shot_count" &&
-            arg !== ""
-          ) {
+          if (!skipArgs.includes(arg)) {
             return (
               <TextField
                 label={arg}
