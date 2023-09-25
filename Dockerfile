@@ -2,7 +2,6 @@ FROM node:18.8-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
 COPY package.json ./
-RUN npm install -g npm@latest
 RUN --mount=type=cache,target=/app/node_modules \
     npm install --production
 
