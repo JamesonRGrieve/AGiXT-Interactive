@@ -4,8 +4,7 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1
 RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json ./
-RUN --mount=type=cache,target=/root/.npm,sharing=locked \
-    npm ci
+RUN npm ci
 
 FROM node:18.8-alpine AS builder
 WORKDIR /app
