@@ -2,7 +2,7 @@ FROM node:18.8-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
 COPY ./package.json ./package-lock.json ./
-RUN npm ci
+RUN --mount=type=cache,target=/root/.npm npm ci
 
 FROM node:18.8-alpine AS builder
 WORKDIR /app
