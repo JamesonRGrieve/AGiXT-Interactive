@@ -35,7 +35,7 @@ export default function AgentPrompt({
   const [message, setMessage] = useState("");
   const [lastResponse, setLastResponse] = useState("");
   const [promptCategory, setPromptCategory] = useState("Default");
-  const [promptName, setPromptName] = useState("Chat");
+  const [promptName, setPromptName] = useState("Chat with Commands");
   const [isLoading, setIsLoading] = useState(false);
   const { conversation, promptCategories, prompts } = useSettings();
   const router = useRouter();
@@ -114,7 +114,7 @@ export default function AgentPrompt({
   };
   const PromptAgent = async (
     message,
-    promptName = "Chat",
+    promptName = "Chat with Commands",
     promptCategory = "Default",
     contextResults = 5,
     shots = 1,
@@ -145,7 +145,7 @@ export default function AgentPrompt({
       ...promptArgs,
     };
     if (tab == 0) {
-      promptName = "Chat";
+      promptName = "Chat with Commands";
     } else if (tab == 3) {
       promptName = "Instruction";
     } else if (tab == 1) {
