@@ -50,7 +50,6 @@ export default function ConversationSelector({
         flexDirection: "row",
         alignItems: "center",
       }}
-      fullWidth
     >
       <InputLabel
         id="conversation-label"
@@ -61,8 +60,8 @@ export default function ConversationSelector({
         Select a Conversation
       </InputLabel>
       <Select
-        labelId="conversation-label"
         fullWidth
+        labelId="conversation-label"
         label="Select a Conversation"
         sx={{
           height: "30px",
@@ -85,7 +84,7 @@ export default function ConversationSelector({
         color={"info"}
         sx={{ minWidth: "30px" }}
       >
-        <FileDownloadOutlinedIcon sx={{ maxWidth: "30px" }} color={"info"} />
+        <FileDownloadOutlinedIcon sx={{ minWidth: "30px" }} color={"info"} />
       </Button>
       <Button
         onClick={handleDeleteConversation}

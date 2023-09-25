@@ -256,7 +256,7 @@ export default function App({ Component, pageProps, dark }) {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "bottom",
-                  marginTop: "15px",
+                  marginTop: "20px",
                 }}
               >
                 <IconButton
@@ -273,14 +273,24 @@ export default function App({ Component, pageProps, dark }) {
                     <b>AGiXT</b>
                   </Link>{" "}
                   {pageName != "agent" ? <>- {pageTitle()}</> : null}
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                  &nbsp;
                 </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginTop: "15px",
+                  flexGrow: 1,
+                }}
+              >
                 {pageName == "agent" ? (
                   <Box
                     sx={{
                       marginLeft: "10px",
                       marginTop: "-14px",
                       height: "10px",
+                      width: "100%",
                     }}
                   >
                     <ConversationSelector
@@ -297,13 +307,9 @@ export default function App({ Component, pageProps, dark }) {
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  marginTop: "15px",
+                  marginTop: "22px",
                 }}
               >
-                <MenuDarkSwitch
-                  checked={darkMode}
-                  onChange={handleToggleDarkMode}
-                />
                 {rightDrawerOpen == false &&
                 pageName != "prompt" &&
                 pageName != "chain" &&
@@ -334,6 +340,18 @@ export default function App({ Component, pageProps, dark }) {
                 marginTop: "-27px",
               }}
             >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  marginTop: "22px",
+                }}
+              >
+                <MenuDarkSwitch
+                  checked={darkMode}
+                  onChange={handleToggleDarkMode}
+                />
+              </Box>
               <IconButton onClick={handleDrawerClose}>
                 <ChevronLeft
                   fontSize="large"
