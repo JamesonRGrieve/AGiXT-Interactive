@@ -2,7 +2,9 @@ FROM node:18.8-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
 COPY package.json ./
-RUN npm install --prefer-offline
+RUN npm install -g npm@latest
+RUN --mount=type=cache,target=/app/node_modules \
+    npm install --production
 
 FROM node:18.8-alpine AS builder
 WORKDIR /app
@@ -21,6 +23,6 @@ COPY --from=builder /app/package-lock.json ./package-lock.json
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 USER nextjs
-EXPOSE 3000
+EXPOSE 24498
 
 CMD ["npm", "start"]
