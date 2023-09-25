@@ -6,7 +6,18 @@ import ConversationHistory from "../../conversation/ConversationHistory";
 import PromptSelector from "../../prompt/PromptSelector";
 import ChainSelector from "../../chain/ChainSelector";
 import AudioRecorder from "../../command/AudioRecorder";
-import { Button, TextField, InputAdornment, Box } from "@mui/material";
+import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
+import {
+  Button,
+  TextField,
+  InputAdornment,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  IconButton,
+} from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import useSWR from "swr";
 import { mutate } from "swr";
@@ -37,7 +48,9 @@ export default function AgentPrompt({
   const [promptCategory, setPromptCategory] = useState("Default");
   const [promptName, setPromptName] = useState("Chat with Commands");
   const [isLoading, setIsLoading] = useState(false);
-  const { conversation, promptCategories, prompts } = useSettings();
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [openFileUpload, setOpenFileUpload] = useState(false);
+  const { conversation, promptCategories, prompts, hasFiles } = useSettings();
   const router = useRouter();
   const tab = router.query.tab;
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
@@ -47,6 +60,22 @@ export default function AgentPrompt({
     `prompt/${promptName}`,
     async () => await sdk.getPrompt(promptName, promptCategory)
   );
+
+  const handleCloseFileUpload = () => {
+    setOpenFileUpload(false);
+  };
+  const handleUploadFiles = async () => {
+    let newUploadedFiles = [];
+    // Format for uploadedFiles should be [{"file_name": "file_content"}]
+    // Iterate through the files and add them to the form data
+    for (const file of uploadedFiles) {
+      const fileContent = await file.text();
+      newUploadedFiles.push({ [file.name]: fileContent });
+    }
+    setUploadedFiles(newUploadedFiles);
+    setOpenFileUpload(false);
+  };
+
   useEffect(() => {
     mutate(`conversation/${agentName}/${conversationName}`);
     if (
@@ -84,6 +113,7 @@ export default function AgentPrompt({
     };
     getArgs(promptName, promptCategory);
   }, [promptName]);
+  // Uploaded files will be formatted like [{"file_name": "file_content"}]
 
   const runChain = async () => {
     setIsLoading(true);
@@ -128,6 +158,12 @@ export default function AgentPrompt({
     setIsLoading(true);
     if (message) {
       promptArgs["user_input"] = message;
+    }
+    if (hasFiles && promptName == "Chat with Commands") {
+      promptName = "Chat with Commands and Files";
+    }
+    if (uploadedFiles != []) {
+      promptArgs["import_files"] = uploadedFiles;
     }
     const disableMemory = !enableMemory;
     const skipArgs = [
@@ -185,6 +221,7 @@ export default function AgentPrompt({
     );
     setIsLoading(false);
     setLastResponse(response);
+    setUploadedFiles([]);
     const fetchConversation = async () => {
       const conversation = await sdk.getConversation(
         agentName,
@@ -266,7 +303,7 @@ export default function AgentPrompt({
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <Button
+                  <IconButton
                     color="primary"
                     variant="contained"
                     onClick={runChain}
@@ -274,7 +311,7 @@ export default function AgentPrompt({
                     sx={{ height: "56px", padding: "0px" }}
                   >
                     <SendIcon />
-                  </Button>
+                  </IconButton>
                 </InputAdornment>
               ),
             }}
@@ -296,15 +333,65 @@ export default function AgentPrompt({
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
-                  <Button
+                  {tab == 0 && (
+                    <>
+                      <IconButton
+                        variant="contained"
+                        color="info"
+                        onClick={() => {
+                          setUploadedFiles([]);
+                          setOpenFileUpload(true);
+                        }}
+                        disabled={isLoading}
+                        sx={{ height: "56px" }}
+                      >
+                        <NoteAddOutlinedIcon />
+                      </IconButton>
+                      <Dialog
+                        open={openFileUpload}
+                        onClose={handleCloseFileUpload}
+                      >
+                        <DialogTitle id="form-dialog-title">
+                          Upload Files
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>
+                            Please upload the files you would like to send.
+                          </DialogContentText>
+                          <input
+                            accept="*"
+                            id="contained-button-file"
+                            multiple
+                            type="file"
+                            onChange={(e) => {
+                              setUploadedFiles(e.target.files);
+                            }}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button onClick={handleCloseFileUpload} color="error">
+                            Cancel
+                          </Button>
+                          <Button
+                            onClick={handleUploadFiles}
+                            color="info"
+                            disabled={isLoading}
+                          >
+                            Upload
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  )}
+                  <IconButton
                     variant="contained"
-                    color="primary"
+                    color="info"
                     onClick={handleSendMessage}
                     disabled={isLoading}
                     sx={{ height: "56px", padding: "0px" }}
                   >
                     <SendIcon />
-                  </Button>
+                  </IconButton>
                   <AudioRecorder
                     setUserInput={setMessage}
                     handleSendMessage={handleSendMessage}
