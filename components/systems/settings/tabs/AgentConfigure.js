@@ -40,13 +40,13 @@ export default function AgentConfigure({ data, drawerWidth }) {
     let displayNames = {};
 
     for (let extension in extensionSettings) {
-      const extensionName = extension
+      let extensionName = extension
         .split("_")
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ");
 
       for (let setting in extensionSettings[extension]) {
-        const settingName = setting
+        let settingName = setting
           .split("_")
           .map(
             (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
