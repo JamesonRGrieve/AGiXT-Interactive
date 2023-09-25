@@ -1,21 +1,26 @@
-FROM node:20-alpine as BUILD_IMAGE
+FROM node:18.8-alpine AS deps
+WORKDIR /app
+RUN apk add --no-cache libc6-compat
+COPY ./package-lock.json ./
+RUN npm ci
+
+FROM node:18.8-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1
+RUN npm run build
+
+FROM node:18.8-alpine AS runner
 WORKDIR /app
-COPY package.json yarn.lock ./
-# install dependencies
-RUN yarn install --frozen-lockfile
-COPY . .
-# build
-RUN yarn build
-# remove dev dependencies
-RUN npm prune --production
-FROM node:20-alpine
-WORKDIR /app
-# copy from build image
-COPY --from=BUILD_IMAGE /app/package.json ./package.json
-COPY --from=BUILD_IMAGE /app/node_modules ./node_modules
-COPY --from=BUILD_IMAGE /app/.next ./.next
-COPY --from=BUILD_IMAGE /app/public ./public
+RUN addgroup -g 1001 nodejs && adduser -D -u 1001 -G nodejs nextjs
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/package-lock.json ./package-lock.json
+COPY --from=builder /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
+USER nextjs
 EXPOSE 3000
-CMD ["yarn", "start"]
+
+CMD ["npm", "start"]
