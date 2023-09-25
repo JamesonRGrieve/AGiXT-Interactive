@@ -4,8 +4,7 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1
 RUN apk add --no-cache libc6-compat
 COPY package.json package-lock.json ./
-RUN --mount=type=cache,target=/app,sharing=locked \
-    npm ci
+RUN npm ci
 COPY . .
 RUN npm run build
 
