@@ -229,7 +229,7 @@ export default function App({ Component, pageProps, dark }) {
   return (
     <>
       <Head>
-        <title>AGiXT - {pageTitle()}</title>
+        <title>{pageName ? "AGiXT - " + pageTitle() : "AGiXT"}</title>
         <meta name="description" content="AGiXT" />
         <link rel="icon" href="/favicon.ico" />
       </Head>

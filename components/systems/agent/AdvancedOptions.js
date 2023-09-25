@@ -1,4 +1,4 @@
-import { TextField, FormControlLabel, Switch, Container } from "@mui/material";
+import { TextField, FormControlLabel, Switch } from "@mui/material";
 
 export default function AdvancedOptions({
   contextResults,
@@ -24,30 +24,6 @@ export default function AdvancedOptions({
       <TextField
         fullWidth={fullWidth}
         type="number"
-        label="Context Results"
-        value={contextResults}
-        onChange={(e) => setContextResults(e.target.value)}
-        sx={{ mb: fullWidth ? 1 : 2 }}
-      />
-      <TextField
-        fullWidth={fullWidth}
-        type="number"
-        label="Shots"
-        value={shots}
-        onChange={(e) => setShots(e.target.value)}
-        sx={{ mb: fullWidth ? 1 : 2 }}
-      />
-      <TextField
-        fullWidth={fullWidth}
-        type="number"
-        label="Websearch Depth"
-        value={websearchDepth}
-        onChange={(e) => setWebsearchDepth(e.target.value)}
-        sx={{ mb: fullWidth ? 1 : 2 }}
-      />
-      <TextField
-        fullWidth={fullWidth}
-        type="number"
         label="Inject Memories from Collection"
         value={injectMemoriesFromCollectionNumber}
         onChange={(e) => setInjectMemoriesFromCollectionNumber(e.target.value)}
@@ -55,7 +31,15 @@ export default function AdvancedOptions({
       />
       <TextField
         fullWidth={fullWidth}
-        label="Conversation Results"
+        type="number"
+        label="Memories to Inject"
+        value={contextResults}
+        onChange={(e) => setContextResults(e.target.value)}
+        sx={{ mb: fullWidth ? 1 : 2 }}
+      />
+      <TextField
+        fullWidth={fullWidth}
+        label="Chat interactions to inject"
         type="number"
         min={0}
         max={100}
@@ -64,17 +48,17 @@ export default function AdvancedOptions({
         onChange={(e) => setConversationResults(e.target.value)}
         sx={{ mb: fullWidth ? 1 : 2 }}
       />
-      <br />
-      <FormControlLabel
-        control={
-          <Switch
-            checked={browseLinks}
-            onChange={(e) => setBrowseLinks(e.target.checked)}
-            name="Browse Links"
-          />
-        }
-        label="Browse Links"
+      <TextField
+        fullWidth={fullWidth}
+        type="number"
+        label="How many times to send the prompt"
+        value={shots}
+        onChange={(e) => setShots(e.target.value)}
+        sx={{ mb: fullWidth ? 1 : 2 }}
       />
+
+      <br />
+
       <FormControlLabel
         control={
           <Switch
@@ -85,6 +69,16 @@ export default function AdvancedOptions({
         }
         label="Websearch"
       />
+      {websearch && (
+        <TextField
+          fullWidth={fullWidth}
+          type="number"
+          label="How many links to browse"
+          value={websearchDepth}
+          onChange={(e) => setWebsearchDepth(e.target.value)}
+          sx={{ mb: fullWidth ? 1 : 2 }}
+        />
+      )}
       <FormControlLabel
         control={
           <Switch
