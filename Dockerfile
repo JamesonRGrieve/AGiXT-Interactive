@@ -1,8 +1,8 @@
 FROM node:18.8-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
-COPY ./package.json ./package-lock.json ./
-RUN --mount=type=cache,target=/root/.npm npm ci
+COPY ./yarn.lock ./
+RUN yarn --frozen-lockfile
 
 FROM node:18.8-alpine AS builder
 WORKDIR /app
@@ -10,7 +10,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+RUN yarn build
 
 FROM node:18.8-alpine AS runner
 WORKDIR /app
@@ -23,4 +23,4 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 USER nextjs
 EXPOSE 3000
 
-CMD ["npm", "start"]
+CMD ["yarn", "start"]
