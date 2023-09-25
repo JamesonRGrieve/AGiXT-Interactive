@@ -281,7 +281,7 @@ export default function MenuAgentList({
             href={
               pageName != "new"
                 ? `/${pageName}?agent=${agentName}&tab=${router.query.tab || 0}`
-                : `/agent?agent=${agentName}`
+                : `/agent?agent=${agentName}&tab=0`
             }
             key={agentName}
             passHref
