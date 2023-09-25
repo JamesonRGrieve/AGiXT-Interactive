@@ -1,14 +1,11 @@
-FROM node:20-alpine AS deps
-WORKDIR /app
-RUN apk add --no-cache libc6-compat
-COPY package.json package-lock.json ./
-RUN npm ci
-
 FROM node:20-alpine AS builder
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1
-COPY --from=deps /app/node_modules ./node_modules
+RUN apk add --no-cache libc6-compat
+COPY package.json package-lock.json ./
+RUN --mount=type=cache,target=/app,sharing=locked \
+    npm ci
 COPY . .
 RUN npm run build
 
