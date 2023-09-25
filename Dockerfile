@@ -1,4 +1,4 @@
-FROM node:18.8-alpine AS deps
+FROM node:18.8-alpine AS builder
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1
