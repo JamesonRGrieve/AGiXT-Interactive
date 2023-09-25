@@ -1,16 +1,13 @@
-FROM node:18.8-alpine AS dependencies
+FROM node:18.8-alpine AS builder
 WORKDIR /app
+ENV NODE_ENV=production \
+    NEXT_TELEMETRY_DISABLED=1
 RUN apk add --no-cache libc6-compat
 COPY ./yarn.lock ./
 RUN yarn --frozen-lockfile
-
-FROM node:18.8-alpine AS builder
-WORKDIR /app
-COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
-ENV NODE_ENV=production \
-    NEXT_TELEMETRY_DISABLED=1
 RUN yarn build
+RUN npm prune --production
 
 FROM node:18.8-alpine AS runner
 WORKDIR /app
