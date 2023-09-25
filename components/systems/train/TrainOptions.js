@@ -55,7 +55,11 @@ export default function TrainOptions({
               <TableCell>RLHF - Negative Feedback memory storage</TableCell>
             </TableRow>
             <TableRow>
-              <TableCell>4-10</TableCell>
+              <TableCell>4</TableCell>
+              <TableCell>Chat File Storage</TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell>5-10</TableCell>
               <TableCell>Reserved for future use.</TableCell>
             </TableRow>
           </TableBody>
