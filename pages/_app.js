@@ -400,7 +400,7 @@ export default function App({ Component, pageProps, dark }) {
                 </IconButton>
               </DrawerHeader>
               <Divider />
-              {pageName === "agent" && tab != 3 ? (
+              {pageName === "agent" && tab != 2 ? (
                 <Container>
                   <br />
                   <AdvancedOptions
@@ -429,7 +429,7 @@ export default function App({ Component, pageProps, dark }) {
                 </Container>
               ) : null}
 
-              {pageName === "agent" && tab == 3 ? (
+              {pageName === "agent" && tab == 2 ? (
                 <>
                   <ChainArgsEditor
                     selectedChain={selectedChain}
