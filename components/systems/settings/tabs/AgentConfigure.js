@@ -36,9 +36,9 @@ export default function AgentConfigure({ data, drawerWidth }) {
   );
   const providers = Object.keys(providerSettings);
 
-  const transformExtensionSettings = (extensionSettings) => {
+  const transformExtensionSettings = () => {
     let transformed = {};
-    let displayNames = {};
+    let newDisplayNames = {};
 
     for (let extension in extensionSettings) {
       let extensionName = extension
@@ -71,11 +71,11 @@ export default function AgentConfigure({ data, drawerWidth }) {
 
         if (extensionName != "Dalle") {
           const displayName = `${extensionName} - ${settingName}`;
-          displayNames[setting] = displayName;
+          newDisplayNames[setting] = displayName;
         }
-        if (extensionName == "Dalle" && data?.settings?.provider != "openai") {
+        if (extensionName == "Dalle" && data?.settings.provider != "openai") {
           const displayName = `${extensionName} - ${settingName}`;
-          displayNames[setting] = displayName;
+          newDisplayNames[setting] = displayName;
         }
         if (
           extensionName == "Stable Diffusion" &&
@@ -83,7 +83,7 @@ export default function AgentConfigure({ data, drawerWidth }) {
         ) {
           // Change it to "Huggingface" from "Stable Diffusion"
           const displayName = `Huggingface - API Key`;
-          displayNames[setting] = displayName;
+          newDisplayNames[setting] = displayName;
         }
         transformed[setting] = extensionSettings[extension][setting];
       }
@@ -91,7 +91,7 @@ export default function AgentConfigure({ data, drawerWidth }) {
 
     return {
       transformedSettings: transformed,
-      displayNames: displayNames,
+      displayNames: newDisplayNames,
     };
   };
 
@@ -130,14 +130,14 @@ export default function AgentConfigure({ data, drawerWidth }) {
       setProvider(data?.settings.provider);
       if (
         provider !== null &&
-        providerSettings[provider] &&
+        providerSettings[data?.settings.provider] &&
         extensionSettings
       ) {
         const { transformedSettings, displayNames } =
-          transformExtensionSettings(extensionSettings);
+          transformExtensionSettings();
 
         const mergedSettings = {
-          ...providerSettings[provider],
+          ...providerSettings[data?.settings.provider],
           ...transformedSettings,
         };
 
@@ -175,7 +175,6 @@ export default function AgentConfigure({ data, drawerWidth }) {
         rows={4}
       />
       <Divider />
-      <Typography sx={{ my: "1rem" }}>Provider</Typography>
       <FormControl fullWidth sx={{ my: "1rem", mx: "0.5rem" }}>
         <InputLabel id="provider-label">Select a Provider</InputLabel>
         <Select
