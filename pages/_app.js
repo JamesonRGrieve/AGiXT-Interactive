@@ -237,7 +237,6 @@ export default function App({ Component, pageProps, dark }) {
   }, [conversationName]);
 
   useEffect(() => {
-    // TODO: Agent Command List is not updating the toggles when agents are changed.
     const fetchAgentConfig = async () => {
       const agentConfig = await sdk.getAgentConfig(agentName);
       setAgentSettings(agentConfig.settings);
