@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
 import { useSettings } from "../../../../lib/SettingsContext";
@@ -25,7 +25,6 @@ export default function AgentConfigure({ data, drawerWidth }) {
   const [fields, setFields] = useState({});
   const [fieldValues, setFieldValues] = useState({});
   const [displayNames, setDisplayNames] = useState({});
-  const [persona, setPersona] = useState("");
   const router = useRouter();
   const agentName = router.query.agent;
   const agents = useSWR("agent", async () => await sdk.getAgents());
@@ -141,20 +140,15 @@ export default function AgentConfigure({ data, drawerWidth }) {
         ...mergedSettings,
       }));
     }
-    const currentProvider = data?.settings.provider;
-    if (provider !== null) {
-      setProvider(provider);
-    } else {
-      setProvider(currentProvider);
-    }
+  }, [provider, providerSettings, extensionSettings]);
 
-    const currentSettings = { ...data.settings };
+  useEffect(() => {
+    setProvider(data?.settings.provider);
     setFieldValues((prev) => ({
       ...prev,
-      ...currentSettings,
+      ...data.settings,
     }));
-  }, [provider, providerSettings, extensionSettings, agentName, data]);
-
+  }, [data]);
   return (
     <Box
       sx={{
@@ -177,21 +171,23 @@ export default function AgentConfigure({ data, drawerWidth }) {
       />
       <Divider />
       <Typography sx={{ my: "1rem" }}>Provider</Typography>
-      <Select
-        label="Provider"
-        sx={{ mx: "0.5rem", display: "block", width: "100%" }}
-        value={provider}
-        onChange={(e) => setProvider(e.target.value)}
-      >
-        <MenuItem value={null}>Select a Provider...</MenuItem>
-        {providers?.data
-          ? providers.data.map((providerName) => (
-              <MenuItem key={providerName} value={providerName}>
-                {providerName}
-              </MenuItem>
-            ))
-          : null}
-      </Select>
+      <FormControl fullWidth sx={{ my: "1rem", mx: "0.5rem" }}>
+        <InputLabel id="provider-label">Select a Provider</InputLabel>
+        <Select
+          fullWidth
+          label="Select a Provider"
+          value={provider}
+          onChange={(e) => setProvider(e.target.value)}
+        >
+          {providers?.data
+            ? providers.data.map((providerName) => (
+                <MenuItem key={providerName} value={providerName}>
+                  {providerName}
+                </MenuItem>
+              ))
+            : null}
+        </Select>
+      </FormControl>
 
       {Object.keys(fields).map((field) => {
         if (field !== "provider") {
