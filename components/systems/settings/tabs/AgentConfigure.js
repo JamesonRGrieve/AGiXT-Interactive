@@ -21,9 +21,11 @@ import {
 
 export default function AgentConfigure({ data, drawerWidth }) {
   const { providerSettings, extensionSettings } = useSettings();
-  const [provider, setProvider] = useState(null);
+  const [provider, setProvider] = useState(
+    data?.settings?.provider || "gpt4free"
+  );
   const [fields, setFields] = useState({});
-  const [fieldValues, setFieldValues] = useState({});
+  const [fieldValues, setFieldValues] = useState(data?.settings || {});
   const [displayNames, setDisplayNames] = useState({});
   const router = useRouter();
   const agentName = router.query.agent;
@@ -32,7 +34,7 @@ export default function AgentConfigure({ data, drawerWidth }) {
     "embedder",
     async () => await sdk.getEmbedProviders()
   );
-  const providers = useSWR("provider", async () => await sdk.getProviders());
+  const providers = Object.keys(providerSettings);
 
   const transformExtensionSettings = (extensionSettings) => {
     let transformed = {};
@@ -71,7 +73,7 @@ export default function AgentConfigure({ data, drawerWidth }) {
           const displayName = `${extensionName} - ${settingName}`;
           displayNames[setting] = displayName;
         }
-        if (extensionName == "Dalle" && provider != "openai") {
+        if (extensionName == "Dalle" && data?.settings?.provider != "openai") {
           const displayName = `${extensionName} - ${settingName}`;
           displayNames[setting] = displayName;
         }
@@ -123,32 +125,35 @@ export default function AgentConfigure({ data, drawerWidth }) {
     });
     mutate(`agent/${agentName}`);
   };
-
   useEffect(() => {
-    if (provider !== null && providerSettings[provider] && extensionSettings) {
-      const { transformedSettings, displayNames } =
-        transformExtensionSettings(extensionSettings);
+    if (data) {
+      setProvider(data?.settings.provider);
+      if (
+        provider !== null &&
+        providerSettings[provider] &&
+        extensionSettings
+      ) {
+        const { transformedSettings, displayNames } =
+          transformExtensionSettings(extensionSettings);
 
-      const mergedSettings = {
-        ...providerSettings[provider],
-        ...transformedSettings,
-      };
-      setFields(mergedSettings);
-      setDisplayNames(displayNames);
-      setFieldValues((prev) => ({
-        ...prev,
-        ...mergedSettings,
-      }));
+        const mergedSettings = {
+          ...providerSettings[provider],
+          ...transformedSettings,
+        };
+
+        setFields(mergedSettings);
+        setDisplayNames(displayNames);
+        setFieldValues((prev) => ({
+          ...prev,
+          ...mergedSettings,
+        }));
+        setFieldValues((prev) => ({
+          ...prev,
+          ...data.settings,
+        }));
+      }
     }
-  }, [provider, providerSettings, extensionSettings]);
-
-  useEffect(() => {
-    setProvider(data?.settings.provider);
-    setFieldValues((prev) => ({
-      ...prev,
-      ...data.settings,
-    }));
-  }, [data]);
+  }, [agentName]);
   return (
     <Box
       sx={{
@@ -179,8 +184,8 @@ export default function AgentConfigure({ data, drawerWidth }) {
           value={provider}
           onChange={(e) => setProvider(e.target.value)}
         >
-          {providers?.data
-            ? providers.data.map((providerName) => (
+          {providers
+            ? providers.map((providerName) => (
                 <MenuItem key={providerName} value={providerName}>
                   {providerName}
                 </MenuItem>
