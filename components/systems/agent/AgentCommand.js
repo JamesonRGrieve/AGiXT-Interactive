@@ -3,17 +3,12 @@ import { useEffect, useState } from "react";
 import { sdk } from "../../../lib/apiClient";
 import { ListItem, ListItemButton, Typography, Switch } from "@mui/material";
 
-export default function AgentCommandsList({
-  name,
-  enabled,
-  setCommandToggled,
-}) {
+export default function AgentCommandsList({ name, enabled }) {
   const agentName = useRouter().query.agent;
   const [localEnabled, setLocalEnabled] = useState(enabled);
   const handleToggleCommand = async () => {
     setLocalEnabled((old) => !old);
-    await sdk.toggleCommand(agentName, name, enabled ? false : true);
-    setCommandToggled(name + enabled);
+    await sdk.toggleCommand(agentName, name, !localEnabled);
   };
   useEffect(() => {
     setLocalEnabled(enabled);
