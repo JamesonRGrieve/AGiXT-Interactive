@@ -40,6 +40,7 @@ import SensorOccupiedOutlinedIcon from "@mui/icons-material/SensorOccupiedOutlin
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { sdk } from "../../lib/apiClient";
+import { fontWeight } from "@mui/system";
 
 export default function MenuAgentList({
   data,
@@ -220,7 +221,7 @@ export default function MenuAgentList({
       : "https://josh-xt.github.io/AGiXT/2-Concepts/9-Agent%20Interactions.html";
   return (
     <>
-      <List sx={{ marginTop: "-8px" }}>
+      <List sx={{ marginTop: "-8px" }} dense>
         <Link href={`/`} passHref>
           <ListItemButton
             selected={router.pathname == "/"}
@@ -312,7 +313,7 @@ export default function MenuAgentList({
                 <ListItemIcon sx={{ minWidth: "30px" }}>
                   <ChatBubbleOutlineOutlinedIcon />
                 </ListItemIcon>
-                Chat
+                <ListItemText primary="Chat" />
               </ListItemButton>
             </Link>
             <Link href={`/agent?agent=${agentName}&tab=3`} passHref>
@@ -329,7 +330,7 @@ export default function MenuAgentList({
                 <ListItemIcon sx={{ minWidth: "30px" }}>
                   <ElectricBoltOutlinedIcon />
                 </ListItemIcon>
-                Instruct
+                <ListItemText primary="Instruct" />
               </ListItemButton>
             </Link>
             <Link href={`/agent?agent=${agentName}&tab=1`} passHref>
@@ -346,7 +347,7 @@ export default function MenuAgentList({
                 <ListItemIcon sx={{ minWidth: "30px" }}>
                   <QuickreplyOutlinedIcon />
                 </ListItemIcon>
-                Run Prompt
+                <ListItemText primary="Run Prompt" />
               </ListItemButton>
             </Link>
             <Link href={`/agent?agent=${agentName}&tab=2`} passHref>
@@ -363,7 +364,7 @@ export default function MenuAgentList({
                 <ListItemIcon sx={{ minWidth: "30px" }}>
                   <PlayCircleFilledWhiteOutlinedIcon />
                 </ListItemIcon>
-                Run Chain
+                <ListItemText primary="Run Chain" />
               </ListItemButton>
             </Link>
             <Link href={`/train?agent=${agentName}`} passHref>
@@ -380,7 +381,7 @@ export default function MenuAgentList({
                 <ListItemIcon sx={{ minWidth: "30px" }}>
                   <ModelTrainingOutlinedIcon />
                 </ListItemIcon>
-                Training
+                <ListItemText primary="Training" />
               </ListItemButton>
             </Link>
             <Link href={`/prompt?agent=${agentName}`} passHref>
@@ -431,7 +432,7 @@ export default function MenuAgentList({
                 <ListItemIcon sx={{ minWidth: "30px" }}>
                   <SettingsOutlinedIcon />
                 </ListItemIcon>
-                Settings
+                <ListItemText primary="Settings" />
               </ListItemButton>
             </Link>
             <Divider />
