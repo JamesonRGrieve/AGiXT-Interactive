@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import { setCookie, getCookie } from "cookies-next";
 import Link from "next/link";
@@ -114,6 +114,8 @@ export default function App({ Component, pageProps, dark }) {
   const [conversations, setConversations] = useState([]);
   const [conversationName, setConversationName] = useState("Test");
   const [conversation, setConversation] = useState([]);
+  const [agentSettings, setAgentSettings] = useState({});
+  const [agentCommands, setAgentCommands] = useState([]);
   const contentWidth =
     open && rightDrawerOpen
       ? `calc(100% - ${bothDrawersWidth}px)`
@@ -128,6 +130,7 @@ export default function App({ Component, pageProps, dark }) {
 
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
+  const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const tab = router.query.tab;
 
   const themeGenerator = (darkMode) =>
@@ -216,7 +219,7 @@ export default function App({ Component, pageProps, dark }) {
   useEffect(() => {
     const fetchConversation = async () => {
       const convo = await sdk.getConversation(
-        router.query.agent,
+        agentName,
         conversationName,
         100,
         1
@@ -226,6 +229,16 @@ export default function App({ Component, pageProps, dark }) {
     fetchConversation();
   }, [conversationName]);
 
+  useEffect(() => {
+    // TODO: AgentCommandList is not updating the toggles when agents are changed.
+    const fetchAgentConfig = async () => {
+      const agentConfig = await sdk.getAgentConfig(agentName);
+      setAgentSettings(agentConfig.settings);
+      setAgentCommands(agentConfig.commands);
+      setCommands(agentConfig.commands);
+    };
+    fetchAgentConfig();
+  }, [agentName]);
   return (
     <>
       <Head>
@@ -234,258 +247,256 @@ export default function App({ Component, pageProps, dark }) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <ThemeProvider theme={theme}>
-        <Box sx={{ display: "flex", marginTop: "-20px" }}>
-          <CssBaseline />
-          <AppBar
-            position="fixed"
-            open={open}
-            rightDrawerOpen={rightDrawerOpen}
-            sx={{
-              marginTop: "-20px",
-            }}
-          >
-            <Toolbar
+        <SettingsProvider
+          setCommands={setCommands}
+          commands={commands}
+          promptCategories={promptCategories}
+          setPromptCategories={setPromptCategories}
+          prompts={prompts}
+          setPrompts={setPrompts}
+          conversations={conversations}
+          setConversations={setConversations}
+          conversation={conversation}
+          setConversationName={setConversationName}
+          conversationName={conversationName}
+          setConversation={setConversation}
+        >
+          <Box sx={{ display: "flex", marginTop: "-20px" }}>
+            <CssBaseline />
+            <AppBar
+              position="fixed"
+              open={open}
+              rightDrawerOpen={rightDrawerOpen}
               sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                backgroundColor: theme.palette.primary.main,
+                marginTop: "-20px",
               }}
             >
-              <Box
+              <Toolbar
                 sx={{
                   display: "flex",
-                  alignItems: "center",
-                  justifyContent: "bottom",
-                  marginTop: "20px",
+                  justifyContent: "space-between",
+                  backgroundColor: theme.palette.primary.main,
                 }}
               >
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={handleDrawerOpen}
-                  edge="start"
-                  sx={{ mr: 2, ...(open && { display: "none" }) }}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "bottom",
+                    marginTop: "20px",
+                  }}
                 >
-                  <Menu />
-                </IconButton>
-                <Typography component="h1" noWrap>
-                  <Link href="/">
-                    <b>AGiXT</b>
-                  </Link>{" "}
-                  {pageName != "agent" ? <>- {pageTitle()}</> : null}
-                  &nbsp;
-                </Typography>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginTop: "15px",
-                  flexGrow: 1,
-                }}
-              >
-                {pageName == "agent" ? (
-                  <Box
-                    sx={{
-                      marginLeft: "10px",
-                      marginTop: "-14px",
-                      height: "10px",
-                      width: "100%",
-                    }}
+                  <IconButton
+                    color="inherit"
+                    aria-label="open drawer"
+                    onClick={handleDrawerOpen}
+                    edge="start"
+                    sx={{ mr: 2, ...(open && { display: "none" }) }}
                   >
-                    <ConversationSelector
-                      conversations={conversations}
-                      conversationName={conversationName}
-                      setConversationName={setConversationName}
-                      conversation={conversation}
-                      setConversations={setConversations}
-                    />
-                  </Box>
-                ) : null}
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginTop: "22px",
-                }}
-              >
-                {rightDrawerOpen == false &&
-                pageName != "prompt" &&
-                pageName != "chain" &&
-                pageName != "" ? (
-                  <IconButton color="inherit" onClick={handleRightDrawerOpen}>
-                    <TuneIcon />
+                    <Menu />
                   </IconButton>
-                ) : null}
-              </Box>
-            </Toolbar>
-            <Divider />
-          </AppBar>
-          <Drawer
-            sx={{
-              width: drawerWidth,
-              flexShrink: 0,
-              "& .MuiDrawer-paper": {
-                width: drawerWidth,
-                boxSizing: "border-box",
-              },
-            }}
-            variant="persistent"
-            anchor="left"
-            open={open}
-          >
-            <DrawerHeader
-              sx={{
-                marginTop: "-27px",
-              }}
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginTop: "22px",
-                }}
-              >
-                <MenuDarkSwitch
-                  checked={darkMode}
-                  onChange={handleToggleDarkMode}
-                />
-              </Box>
-              <IconButton onClick={handleDrawerClose}>
-                <ChevronLeft
-                  fontSize="large"
-                  sx={{ color: "white", marginTop: "20px" }}
-                />
-              </IconButton>
-            </DrawerHeader>
-            <Divider />
-            <MenuAgentList
-              data={agents.data ? agents.data : []}
-              theme={theme}
-              dark={darkMode}
-              setPrompts={setPrompts}
-              promptCategories={promptCategories}
-              setPromptCategories={setPromptCategories}
-              conversations={conversations}
-              setConversations={setConversations}
-              setConversationName={setConversationName}
-              conversationName={conversationName}
-            />
-          </Drawer>
-          {pageName != "prompt" && pageName != "chain" && pageName != "" ? (
+                  <Typography component="h1" noWrap>
+                    <Link href="/">
+                      <b>AGiXT</b>
+                    </Link>{" "}
+                    {pageName != "agent" ? <>- {pageTitle()}</> : null}
+                    &nbsp;
+                  </Typography>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginTop: "15px",
+                    flexGrow: 1,
+                  }}
+                >
+                  {pageName == "agent" ? (
+                    <Box
+                      sx={{
+                        marginLeft: "10px",
+                        marginTop: "-14px",
+                        height: "10px",
+                        width: "100%",
+                      }}
+                    >
+                      <ConversationSelector
+                        conversations={conversations}
+                        conversationName={conversationName}
+                        setConversationName={setConversationName}
+                        conversation={conversation}
+                        setConversations={setConversations}
+                      />
+                    </Box>
+                  ) : null}
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginTop: "22px",
+                  }}
+                >
+                  {rightDrawerOpen == false &&
+                  pageName != "prompt" &&
+                  pageName != "chain" &&
+                  pageName != "" ? (
+                    <IconButton color="inherit" onClick={handleRightDrawerOpen}>
+                      <TuneIcon />
+                    </IconButton>
+                  ) : null}
+                </Box>
+              </Toolbar>
+              <Divider />
+            </AppBar>
             <Drawer
               sx={{
-                width: 0,
+                width: drawerWidth,
                 flexShrink: 0,
                 "& .MuiDrawer-paper": {
-                  width: rightDrawerWidth,
+                  width: drawerWidth,
                   boxSizing: "border-box",
                 },
               }}
               variant="persistent"
-              anchor="right"
-              open={rightDrawerOpen}
+              anchor="left"
+              open={open}
             >
               <DrawerHeader
                 sx={{
-                  marginTop: "-20px",
+                  marginTop: "-27px",
                 }}
               >
-                <IconButton onClick={handleRightDrawerClose}>
-                  <ChevronRight
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    marginTop: "22px",
+                  }}
+                >
+                  <MenuDarkSwitch
+                    checked={darkMode}
+                    onChange={handleToggleDarkMode}
+                  />
+                </Box>
+                <IconButton onClick={handleDrawerClose}>
+                  <ChevronLeft
                     fontSize="large"
                     sx={{ color: "white", marginTop: "20px" }}
                   />
                 </IconButton>
               </DrawerHeader>
               <Divider />
-              {pageName === "agent" && tab != 2 ? (
-                <Container>
-                  <br />
-                  <AdvancedOptions
-                    contextResults={contextResults}
-                    setContextResults={setContextResults}
-                    shots={shots}
-                    setShots={setShots}
-                    websearchDepth={websearchDepth}
-                    setWebsearchDepth={setWebsearchDepth}
-                    injectMemoriesFromCollectionNumber={
-                      injectMemoriesFromCollectionNumber
-                    }
-                    setInjectMemoriesFromCollectionNumber={
-                      setInjectMemoriesFromCollectionNumber
-                    }
-                    conversationResults={conversationResults}
-                    setConversationResults={setConversationResults}
-                    browseLinks={browseLinks}
-                    setBrowseLinks={setBrowseLinks}
-                    websearch={websearch}
-                    setWebsearch={setWebsearch}
-                    enableMemory={enableMemory}
-                    setEnableMemory={setEnableMemory}
-                  />
-                  <Divider />
-                </Container>
-              ) : null}
-
-              {pageName === "agent" && tab == 2 ? (
-                <>
-                  <ChainArgsEditor
-                    selectedChain={selectedChain}
-                    sdk={sdk}
-                    chainArgs={chainArgs}
-                    setChainArgs={setChainArgs}
-                    onChange={handleArgsChange}
-                    singleStep={singleStep}
-                    setSingleStep={setSingleStep}
-                    fromStep={fromStep}
-                    setFromStep={setFromStep}
-                    allResponses={allResponses}
-                    setAllResponses={setAllResponses}
-                    useSelectedAgent={useSelectedAgent}
-                    setUseSelectedAgent={setUseSelectedAgent}
-                  />
-                </>
-              ) : null}
-              {pageName === "train" ? (
-                <TrainOptions
-                  collectionNumber={collectionNumber}
-                  limit={limit}
-                  minRelevanceScore={minRelevanceScore}
-                  setCollectionNumber={setCollectionNumber}
-                  setLimit={setLimit}
-                  setMinRelevanceScore={setMinRelevanceScore}
-                />
-              ) : null}
-              {pageName === "settings" || pageName === "agent" ? (
-                <AgentCommandList
-                  commands={commands}
-                  setCommands={setCommands}
-                />
-              ) : null}
+              <MenuAgentList
+                data={agents.data ? agents.data : []}
+                theme={theme}
+                dark={darkMode}
+                setPrompts={setPrompts}
+                promptCategories={promptCategories}
+                setPromptCategories={setPromptCategories}
+                conversations={conversations}
+                setConversations={setConversations}
+                setConversationName={setConversationName}
+                conversationName={conversationName}
+              />
             </Drawer>
-          ) : null}
-          <Main
-            open={open}
-            rightDrawerOpen={rightDrawerOpen}
-            sx={{ padding: "0", maxWidth: contentWidth }}
-          >
-            <DrawerHeader />
-            <SettingsProvider
-              setCommands={setCommands}
-              commands={commands}
-              promptCategories={promptCategories}
-              setPromptCategories={setPromptCategories}
-              prompts={prompts}
-              setPrompts={setPrompts}
-              conversations={conversations}
-              setConversations={setConversations}
-              conversation={conversation}
-              setConversationName={setConversationName}
-              conversationName={conversationName}
-              setConversation={setConversation}
+            {pageName != "prompt" && pageName != "chain" && pageName != "" ? (
+              <Drawer
+                sx={{
+                  width: 0,
+                  flexShrink: 0,
+                  "& .MuiDrawer-paper": {
+                    width: rightDrawerWidth,
+                    boxSizing: "border-box",
+                  },
+                }}
+                variant="persistent"
+                anchor="right"
+                open={rightDrawerOpen}
+              >
+                <DrawerHeader
+                  sx={{
+                    marginTop: "-20px",
+                  }}
+                >
+                  <IconButton onClick={handleRightDrawerClose}>
+                    <ChevronRight
+                      fontSize="large"
+                      sx={{ color: "white", marginTop: "20px" }}
+                    />
+                  </IconButton>
+                </DrawerHeader>
+                <Divider />
+                {pageName === "agent" && tab != 2 ? (
+                  <Container>
+                    <br />
+                    <AdvancedOptions
+                      contextResults={contextResults}
+                      setContextResults={setContextResults}
+                      shots={shots}
+                      setShots={setShots}
+                      websearchDepth={websearchDepth}
+                      setWebsearchDepth={setWebsearchDepth}
+                      injectMemoriesFromCollectionNumber={
+                        injectMemoriesFromCollectionNumber
+                      }
+                      setInjectMemoriesFromCollectionNumber={
+                        setInjectMemoriesFromCollectionNumber
+                      }
+                      conversationResults={conversationResults}
+                      setConversationResults={setConversationResults}
+                      browseLinks={browseLinks}
+                      setBrowseLinks={setBrowseLinks}
+                      websearch={websearch}
+                      setWebsearch={setWebsearch}
+                      enableMemory={enableMemory}
+                      setEnableMemory={setEnableMemory}
+                    />
+                    <Divider />
+                  </Container>
+                ) : null}
+
+                {pageName === "agent" && tab == 2 ? (
+                  <>
+                    <ChainArgsEditor
+                      selectedChain={selectedChain}
+                      sdk={sdk}
+                      chainArgs={chainArgs}
+                      setChainArgs={setChainArgs}
+                      onChange={handleArgsChange}
+                      singleStep={singleStep}
+                      setSingleStep={setSingleStep}
+                      fromStep={fromStep}
+                      setFromStep={setFromStep}
+                      allResponses={allResponses}
+                      setAllResponses={setAllResponses}
+                      useSelectedAgent={useSelectedAgent}
+                      setUseSelectedAgent={setUseSelectedAgent}
+                    />
+                  </>
+                ) : null}
+                {pageName === "train" ? (
+                  <TrainOptions
+                    collectionNumber={collectionNumber}
+                    limit={limit}
+                    minRelevanceScore={minRelevanceScore}
+                    setCollectionNumber={setCollectionNumber}
+                    setLimit={setLimit}
+                    setMinRelevanceScore={setMinRelevanceScore}
+                  />
+                ) : null}
+                {pageName === "settings" || pageName === "agent" ? (
+                  <AgentCommandList commands={commands} />
+                ) : null}
+              </Drawer>
+            ) : null}
+            <Main
+              open={open}
+              rightDrawerOpen={rightDrawerOpen}
+              sx={{ padding: "0", maxWidth: contentWidth }}
             >
+              <DrawerHeader />
+
               {commands.isLoading ? (
                 "Loading..."
               ) : commands.error ? (
@@ -533,9 +544,9 @@ export default function App({ Component, pageProps, dark }) {
                   setConversation={setConversation}
                 />
               )}
-            </SettingsProvider>
-          </Main>
-        </Box>
+            </Main>
+          </Box>
+        </SettingsProvider>
       </ThemeProvider>
     </>
   );
