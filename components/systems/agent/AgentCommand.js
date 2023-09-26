@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { sdk } from "../../../lib/apiClient";
 import { ListItem, ListItemButton, Typography, Switch } from "@mui/material";
 
@@ -15,6 +15,9 @@ export default function AgentCommandsList({
     await sdk.toggleCommand(agentName, name, enabled ? false : true);
     setCommandToggled(name + enabled);
   };
+  useEffect(() => {
+    setLocalEnabled(enabled);
+  }, [enabled]);
 
   return (
     <>

@@ -19,8 +19,9 @@ import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
 import { ChevronLeft, ChevronRight, Menu } from "@mui/icons-material";
 import MenuAgentList from "../components/menu/MainMenu";
 import AdvancedOptions from "../components/systems/agent/AdvancedOptions";
+import AgentCommand from "../components/systems/agent/AgentCommand";
 import TrainOptions from "../components/systems/train/TrainOptions";
-import AgentCommandList from "../components/systems/agent/AgentCommandList";
+import { List, ListItem, ListItemButton, Switch } from "@mui/material";
 import ChainArgsEditor from "../components/systems/chain/ChainArgsEditor";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
 import ConversationSelector from "../components/systems/conversation/ConversationSelector";
@@ -157,7 +158,13 @@ export default function App({ Component, pageProps, dark }) {
   const handleRightDrawerClose = () => {
     setRightDrawerOpen(false);
   };
-
+  const handleToggleAllCommands = async () => {
+    await sdk.toggleCommand(
+      agentName,
+      "*",
+      Object.values(commands).every((command) => command) ? false : true
+    );
+  };
   const handleToggleDarkMode = useCallback(() => {
     setDarkMode((oldVal) => {
       const newVal = !oldVal;
@@ -230,12 +237,14 @@ export default function App({ Component, pageProps, dark }) {
   }, [conversationName]);
 
   useEffect(() => {
-    // TODO: AgentCommandList is not updating the toggles when agents are changed.
+    // TODO: Agent Command List is not updating the toggles when agents are changed.
     const fetchAgentConfig = async () => {
       const agentConfig = await sdk.getAgentConfig(agentName);
       setAgentSettings(agentConfig.settings);
       setAgentCommands(agentConfig.commands);
       setCommands(agentConfig.commands);
+      console.log("Agent Name:", agentName);
+      console.log("Agent Commands: ", agentConfig.commands);
     };
     fetchAgentConfig();
   }, [agentName]);
@@ -486,7 +495,36 @@ export default function App({ Component, pageProps, dark }) {
                   />
                 ) : null}
                 {pageName === "settings" || pageName === "agent" ? (
-                  <AgentCommandList commands={commands} />
+                  <List dense>
+                    <ListItem disablePadding>
+                      <ListItemButton>
+                        <Typography variant="body2">All Commands</Typography>
+                      </ListItemButton>
+                      <Switch
+                        checked={
+                          Object.values(agentCommands).every(
+                            (command) => command
+                          ) || false
+                        }
+                        onChange={handleToggleAllCommands}
+                        inputProps={{
+                          "aria-label": "Enable/Disable All Commands",
+                        }}
+                      />
+                    </ListItem>
+                    <Divider />
+                    {agentCommands
+                      ? Object.keys(agentCommands)
+                          .sort()
+                          .map((command) => (
+                            <AgentCommand
+                              key={command}
+                              name={command}
+                              enabled={agentCommands[command]}
+                            />
+                          ))
+                      : null}
+                  </List>
                 ) : null}
               </Drawer>
             ) : null}
