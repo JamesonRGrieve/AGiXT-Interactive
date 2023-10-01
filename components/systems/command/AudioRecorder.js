@@ -57,6 +57,9 @@ export default function AudioRecorder({
           setUserInput(userInput.data);
           handleSendMessage();
         });
+        const base64TTS = response.replace("#GENERATED_AUDIO:", "");
+        const audio = new Audio(base64TTS);
+        audio.play();
         setAudioData(null); // Clear the audio data after sending
       };
     }
