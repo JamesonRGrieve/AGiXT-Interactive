@@ -9,8 +9,6 @@ import {
 import { sdk } from "../../../lib/apiClient";
 
 export default function AudioRecorder({
-  setUserInput,
-  handleSendMessage,
   conversationName,
   contextResults,
   conversationResults,
@@ -53,10 +51,6 @@ export default function AudioRecorder({
           },
           conversationName
         );
-        response.then((userInput) => {
-          setUserInput(userInput.data);
-          handleSendMessage();
-        });
         const base64TTS = response.replace("#GENERATED_AUDIO:", "");
         const audio = new Audio(base64TTS);
         audio.play();
