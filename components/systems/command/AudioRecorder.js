@@ -8,7 +8,13 @@ import {
 } from "@mui/icons-material";
 import { sdk } from "../../../lib/apiClient";
 
-export default function AudioRecorder({ setUserInput, handleSendMessage }) {
+export default function AudioRecorder({
+  setUserInput,
+  handleSendMessage,
+  conversationName,
+  contextResults,
+  conversationResults,
+}) {
   const [recording, setRecording] = useState(false);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
@@ -39,10 +45,13 @@ export default function AudioRecorder({ setUserInput, handleSendMessage }) {
         const base64Audio = reader.result.split(",")[1];
         const response = sdk.executeCommand(
           agentName,
-          "Transcribe Base64 Audio",
+          "Chat with Voice",
           {
             base64_audio: base64Audio,
-          }
+            conversation_results: conversationResults,
+            context_results: contextResults,
+          },
+          conversationName
         );
         response.then((userInput) => {
           setUserInput(userInput.data);

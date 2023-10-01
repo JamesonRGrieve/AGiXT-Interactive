@@ -395,6 +395,9 @@ export default function AgentPrompt({
                   <AudioRecorder
                     setUserInput={setMessage}
                     handleSendMessage={handleSendMessage}
+                    conversationName={conversationName}
+                    contextResults={contextResults}
+                    conversationResults={conversationResults}
                   />
                 </InputAdornment>
               ),
