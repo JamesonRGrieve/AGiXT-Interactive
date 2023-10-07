@@ -7,7 +7,7 @@ import AgentConfigure from "./tabs/AgentConfigure";
 import AgentAdmin from "./tabs/AgentAdmin";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 
-export default function SettingsPanel({ agent }) {
+export default function SettingsPanel({ agent, llms }) {
   const router = useRouter();
   const [tab, setTab] = useState(router.query.tab || "0");
   const agentName = router.query.agent;
@@ -51,7 +51,7 @@ export default function SettingsPanel({ agent }) {
   const theme = useTheme();
 
   const tabs = [
-    <ContentSWR swr={agent} content={AgentConfigure} />,
+    <ContentSWR swr={agent} content={AgentConfigure} llms={llms} />,
     <AgentAdmin />,
   ];
 

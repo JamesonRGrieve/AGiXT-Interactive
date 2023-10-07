@@ -19,7 +19,7 @@ import {
   InputLabel,
 } from "@mui/material";
 
-export default function AgentConfigure({ data, drawerWidth }) {
+export default function AgentConfigure({ data, llms }) {
   const { providerSettings, extensionSettings } = useSettings();
   const [provider, setProvider] = useState(
     data?.settings?.provider || "gpt4free"
@@ -30,11 +30,6 @@ export default function AgentConfigure({ data, drawerWidth }) {
   const router = useRouter();
   const agentName = router.query.agent;
   const agents = useSWR("agent", async () => await sdk.getAgents());
-  const embedders = useSWR(
-    "embedder",
-    async () => await sdk.getEmbedProviders()
-  );
-  const providers = Object.keys(providerSettings);
 
   const transformExtensionSettings = () => {
     let transformed = {};
@@ -154,13 +149,11 @@ export default function AgentConfigure({ data, drawerWidth }) {
       }
     }
   }, [agentName]);
+  if (!llms || llms == []) {
+    return "Loading...";
+  }
   return (
-    <Box
-      sx={{
-        width: `calc(100% - ${drawerWidth}px)`,
-        padding: "1rem",
-      }}
-    >
+    <Box>
       <TextField
         label="Agent Persona"
         sx={{ my: "1rem", mx: "0.5rem", width: "100%" }}
@@ -175,24 +168,37 @@ export default function AgentConfigure({ data, drawerWidth }) {
         rows={4}
       />
       <Divider />
-      <FormControl fullWidth sx={{ my: "1rem", mx: "0.5rem" }}>
-        <InputLabel id="provider-label">Select a Provider</InputLabel>
-        <Select
-          fullWidth
-          label="Select a Provider"
-          value={provider}
-          onChange={(e) => setProvider(e.target.value)}
-        >
-          {providers
-            ? providers.map((providerName) => (
-                <MenuItem key={providerName} value={providerName}>
-                  {providerName}
-                </MenuItem>
-              ))
-            : null}
-        </Select>
-      </FormControl>
-
+      <Typography variant="h6" sx={{ my: "1rem" }}>
+        Provider Settings [{providerSettings[provider]?.name || provider}]
+      </Typography>
+      {provider == "local" && fieldValues["AI_MODEL"] && (
+        <>
+          <FormControl fullWidth sx={{ my: "1rem", mx: "0.5rem" }}>
+            <InputLabel id="ai-model-label">Select a Model</InputLabel>
+            <Select
+              fullWidth
+              labelId="ai-model-label"
+              id="ai-model-select"
+              value={fieldValues["AI_MODEL"]}
+              label="Select a Model"
+              onChange={(e) =>
+                setFieldValues({
+                  ...fieldValues,
+                  ["AI_MODEL"]: e.target.value,
+                })
+              }
+            >
+              {llms && llms.length > 0
+                ? llms.map((model) => (
+                    <MenuItem key={model} value={model}>
+                      {model}
+                    </MenuItem>
+                  ))
+                : null}
+            </Select>
+          </FormControl>
+        </>
+      )}
       {Object.keys(fields).map((field) => {
         if (field !== "provider") {
           if (
@@ -240,6 +246,7 @@ export default function AgentConfigure({ data, drawerWidth }) {
                   sx={{ mr: "1rem" }}
                   value={fieldValues[field]}
                   onChange={(_, value) => handleSliderChange(field, value)}
+                  color="info"
                 />
                 <TextField
                   label={displayNames[field] || field}
@@ -252,37 +259,6 @@ export default function AgentConfigure({ data, drawerWidth }) {
                   }
                 />
               </Box>
-            );
-          } else if (field == "embedder") {
-            return (
-              <FormControl
-                key={field}
-                fullWidth
-                sx={{ my: "1rem", mx: "0.5rem" }}
-              >
-                <InputLabel id="embedder-label">Embedder</InputLabel>
-                <Select
-                  fullWidth
-                  labelId="embedder-label"
-                  id="embedder-select"
-                  value={fieldValues[field]}
-                  label="Embedder"
-                  onChange={(e) =>
-                    setFieldValues({
-                      ...fieldValues,
-                      [field]: e.target.value,
-                    })
-                  }
-                >
-                  {embedders?.data
-                    ? embedders.data.map((embedderName) => (
-                        <MenuItem key={embedderName} value={embedderName}>
-                          {embedderName}
-                        </MenuItem>
-                      ))
-                    : null}
-                </Select>
-              </FormControl>
             );
           } else if (field == "helper_agent_name") {
             // Make a list of agents
@@ -320,6 +296,8 @@ export default function AgentConfigure({ data, drawerWidth }) {
               </FormControl>
             );
           } else if (field == "persona") {
+            <></>;
+          } else if (field == "AI_MODEL" && provider == "local") {
             <></>;
           } else {
             // Render a TextField for other fields

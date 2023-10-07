@@ -36,11 +36,9 @@ import AddLink from "@mui/icons-material/AddLink";
 import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 import QuickreplyOutlinedIcon from "@mui/icons-material/QuickreplyOutlined";
 import ElectricBoltOutlinedIcon from "@mui/icons-material/ElectricBoltOutlined";
-import SensorOccupiedOutlinedIcon from "@mui/icons-material/SensorOccupiedOutlined";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { sdk } from "../../lib/apiClient";
-import { fontWeight } from "@mui/system";
 
 export default function MenuAgentList({
   data,
@@ -51,6 +49,7 @@ export default function MenuAgentList({
   setPromptCategories,
   setConversationName,
   setConversations,
+  providers,
 }) {
   const agents = data;
   agents.sort((a, b) => {
@@ -78,6 +77,7 @@ export default function MenuAgentList({
   const [promptBody, setPromptBody] = useState("");
   const [name, setName] = useState("");
   const [newChainName, setNewChainName] = useState("");
+  const [provider, setProvider] = useState("local");
   const handleNewChain = async () => {
     await sdk.addChain(newChainName);
     mutate("chain");
@@ -101,8 +101,7 @@ export default function MenuAgentList({
     setNewChainOpenDialog(false);
   };
   const handleNewAgent = async () => {
-    sdk.addAgent(name, {});
-    mutate("agent");
+    sdk.addAgent(name, { provider: provider });
     router.push(`/settings?agent=${name}`);
     setNewAgentOpenDialog(false);
   };
@@ -117,7 +116,6 @@ export default function MenuAgentList({
       }
       const settings = JSON.parse(fileContent);
       sdk.addAgent(name, settings);
-      mutate("agent");
       router.push(`/settings?agent=${name}`);
     }
     setNewAgentOpenDialog(false);
@@ -586,6 +584,25 @@ export default function MenuAgentList({
             variant="outlined"
             color="info"
           />
+          {/* List providers */}
+          <FormControl fullWidth>
+            <InputLabel id="provider-label">Select a Provider</InputLabel>
+            <Select
+              labelId="provider"
+              id="provider"
+              label="Select a Provider"
+              value={provider}
+              onChange={(e) => setProvider(e.target.value)}
+              help="Select a provider"
+            >
+              {providers &&
+                Object.values(providers).map((provider) => (
+                  <MenuItem key={provider} value={provider}>
+                    {provider}
+                  </MenuItem>
+                ))}
+            </Select>
+          </FormControl>
           <Typography variant="h6" component="h2" marginY={"1rem"}>
             Import an Agent
           </Typography>

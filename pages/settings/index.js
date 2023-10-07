@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import SettingsPanel from "../../components/systems/settings/SettingsPanel";
 import { sdk } from "../../lib/apiClient";
 import useSWR from "swr";
-export default function AgentSettings() {
+export default function AgentSettings({ llms }) {
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const agent = useSWR(
@@ -11,5 +11,5 @@ export default function AgentSettings() {
     async () => await sdk.getAgentConfig(agentName)
   );
 
-  return <SettingsPanel agent={agent} />;
+  return <SettingsPanel agent={agent} llms={llms} />;
 }

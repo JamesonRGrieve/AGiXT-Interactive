@@ -117,6 +117,31 @@ export default function App({ Component, pageProps, dark }) {
   const [conversation, setConversation] = useState([]);
   const [agentSettings, setAgentSettings] = useState({});
   const [agentCommands, setAgentCommands] = useState([]);
+  const [providers, setProviders] = useState([]);
+  const [llms, setLlms] = useState([]);
+  const fetchProviderSettings = async () => {
+    const allProviders = await sdk.getAllProviders();
+    const settingsForAllProviders = Object.values(allProviders).reduce(
+      (acc, cur) => ({ ...acc, ...cur }),
+      {}
+    );
+    setProviders(Object.keys(settingsForAllProviders));
+  };
+  const fetchLlms = async () => {
+    const llmList = await sdk.executeCommand(
+      "gpt4free",
+      "Get Local Model List",
+      {},
+      "AGiXT Terminal"
+    );
+    console.log(llmList);
+    setLlms(llmList);
+  };
+  useEffect(() => {
+    fetchProviderSettings();
+    fetchLlms();
+  }, []);
+
   const contentWidth =
     open && rightDrawerOpen
       ? `calc(100% - ${bothDrawersWidth}px)`
@@ -406,6 +431,7 @@ export default function App({ Component, pageProps, dark }) {
                 setConversations={setConversations}
                 setConversationName={setConversationName}
                 conversationName={conversationName}
+                providers={providers}
               />
             </Drawer>
             {pageName != "prompt" && pageName != "chain" && pageName != "" ? (
@@ -533,54 +559,48 @@ export default function App({ Component, pageProps, dark }) {
               sx={{ padding: "0", maxWidth: contentWidth }}
             >
               <DrawerHeader />
-
-              {commands.isLoading ? (
-                "Loading..."
-              ) : commands.error ? (
-                commands.error.message
-              ) : (
-                <Component
-                  {...pageProps}
-                  contextResults={contextResults}
-                  shots={shots}
-                  browseLinks={browseLinks}
-                  websearch={websearch}
-                  websearchDepth={websearchDepth}
-                  enableMemory={enableMemory}
-                  injectMemoriesFromCollectionNumber={
-                    injectMemoriesFromCollectionNumber
-                  }
-                  collectionNumber={collectionNumber}
-                  limit={limit}
-                  minRelevanceScore={minRelevanceScore}
-                  conversationResults={conversationResults}
-                  selectedChain={selectedChain}
-                  setSelectedChain={setSelectedChain}
-                  chainArgs={chainArgs}
-                  setChainArgs={setChainArgs}
-                  handleChainChange={handleChainChange}
-                  singleStep={singleStep}
-                  setSingleStep={setSingleStep}
-                  fromStep={fromStep}
-                  setFromStep={setFromStep}
-                  allResponses={allResponses}
-                  setAllResponses={setAllResponses}
-                  useSelectedAgent={useSelectedAgent}
-                  setUseSelectedAgent={setUseSelectedAgent}
-                  drawerWidth={drawerWidth}
-                  rightDrawerWidth={rightDrawerWidth}
-                  commands={commands.data}
-                  theme={theme}
-                  prompts={prompts}
-                  setPrompts={setPrompts}
-                  conversations={conversations}
-                  setConversationName={setConversationName}
-                  conversationName={conversationName}
-                  setConversations={setConversations}
-                  conversation={conversation}
-                  setConversation={setConversation}
-                />
-              )}
+              <Component
+                {...pageProps}
+                contextResults={contextResults}
+                shots={shots}
+                browseLinks={browseLinks}
+                websearch={websearch}
+                websearchDepth={websearchDepth}
+                enableMemory={enableMemory}
+                injectMemoriesFromCollectionNumber={
+                  injectMemoriesFromCollectionNumber
+                }
+                collectionNumber={collectionNumber}
+                limit={limit}
+                minRelevanceScore={minRelevanceScore}
+                conversationResults={conversationResults}
+                selectedChain={selectedChain}
+                setSelectedChain={setSelectedChain}
+                chainArgs={chainArgs}
+                setChainArgs={setChainArgs}
+                handleChainChange={handleChainChange}
+                singleStep={singleStep}
+                setSingleStep={setSingleStep}
+                fromStep={fromStep}
+                setFromStep={setFromStep}
+                allResponses={allResponses}
+                setAllResponses={setAllResponses}
+                useSelectedAgent={useSelectedAgent}
+                setUseSelectedAgent={setUseSelectedAgent}
+                drawerWidth={drawerWidth}
+                rightDrawerWidth={rightDrawerWidth}
+                commands={commands.data}
+                theme={theme}
+                prompts={prompts}
+                setPrompts={setPrompts}
+                conversations={conversations}
+                setConversationName={setConversationName}
+                conversationName={conversationName}
+                setConversations={setConversations}
+                conversation={conversation}
+                setConversation={setConversation}
+                llms={llms}
+              />
             </Main>
           </Box>
         </SettingsProvider>
