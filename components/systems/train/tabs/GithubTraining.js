@@ -4,6 +4,7 @@ import {
   FormControlLabel,
   TextField,
   Typography,
+  Divider,
 } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -115,11 +116,15 @@ export default function GithubTraining({ collectionNumber = 0 }) {
         </>
       )}
       <br /> <br />
-      <Button variant="contained" color="primary" onClick={onTrain}>
+      <Button variant="contained" color="info" onClick={onTrain}>
         Train from GitHub Repository
       </Button>
-      <br /> <br />
-      <Typography>{learnStatus}</Typography>
+      {learnStatus && (
+        <>
+          <Divider />
+          <Typography>{learnStatus}</Typography>
+        </>
+      )}
     </>
   );
 }

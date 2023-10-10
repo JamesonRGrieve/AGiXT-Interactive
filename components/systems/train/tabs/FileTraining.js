@@ -1,4 +1,4 @@
-import { Typography, Input } from "@mui/material";
+import { Typography, Input, Divider } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
@@ -41,8 +41,12 @@ export default function FileTraining({ collectionNumber = 0 }) {
         inputProps={{ multiple: true }}
         onChange={handleFileUpload}
       />
-      <br /> <br />
-      <Typography>{learnStatus}</Typography>
+      {learnStatus && (
+        <>
+          <Divider />
+          <Typography>{learnStatus}</Typography>
+        </>
+      )}
     </>
   );
 }

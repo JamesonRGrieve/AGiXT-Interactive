@@ -1,4 +1,4 @@
-import { Button, TextField, Typography } from "@mui/material";
+import { Button, TextField, Typography, Divider } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { sdk } from "../../../../lib/apiClient";
@@ -39,10 +39,15 @@ export default function TextTraining({ collectionNumber = 0 }) {
         value={text}
         onChange={(e) => setText(e.target.value)}
       />
-      <Button variant="contained" color="primary" onClick={() => onTrain(text)}>
+      <Button variant="contained" color="info" onClick={() => onTrain(text)}>
         Train from Text
       </Button>
-      <Typography>{learnStatus}</Typography>
+      {learnStatus && (
+        <>
+          <Divider />
+          <Typography>{learnStatus}</Typography>
+        </>
+      )}
     </>
   );
 }

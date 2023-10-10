@@ -132,7 +132,7 @@ export default function MemoryManagement({
         />
         <Button
           variant="contained"
-          color="primary"
+          color="info"
           onClick={queryMemory}
           style={{ marginTop: "10px" }}
         >
@@ -170,7 +170,7 @@ export default function MemoryManagement({
           </Typography>
           <Button
             variant="contained"
-            color="secondary"
+            color="error"
             onClick={() => deleteMemory(memory.id)}
           >
             Delete Memory

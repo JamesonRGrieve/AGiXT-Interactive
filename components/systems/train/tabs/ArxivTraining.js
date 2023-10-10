@@ -4,7 +4,7 @@ import {
   Typography,
   Checkbox,
   FormControlLabel,
-  Container,
+  Divider,
 } from "@mui/material";
 import { useState } from "react";
 import { useRouter } from "next/router";
@@ -90,10 +90,15 @@ export default function ArxivTraining({ collectionNumber = 0 }) {
       )}
       <br />
       <br />
-      <Button variant="contained" color="primary" onClick={() => onTrain(text)}>
+      <Button variant="contained" color="info" onClick={() => onTrain(text)}>
         Train from arXiv Articles
       </Button>
-      <Typography>{learnStatus}</Typography>
+      {learnStatus && (
+        <>
+          <Divider />
+          <Typography>{learnStatus}</Typography>
+        </>
+      )}
     </>
   );
 }
