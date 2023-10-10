@@ -49,7 +49,7 @@ export default function ChainAdmin({ steps }) {
       &nbsp;&nbsp;
       <Button
         variant="contained"
-        color="primary"
+        color="info"
         onClick={handleRename}
         sx={{ height: "56px" }}
       >

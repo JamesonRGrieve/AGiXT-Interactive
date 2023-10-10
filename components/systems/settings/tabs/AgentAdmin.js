@@ -30,7 +30,7 @@ export default function AgentAdmin({}) {
       />
       <Button
         variant="contained"
-        color="primary"
+        color="info"
         onClick={handleRename}
         sx={{ marginY: "1rem" }}
       >

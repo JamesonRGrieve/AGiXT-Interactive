@@ -272,7 +272,7 @@ export default function AgentPrompt({
           />
           <Button
             variant="contained"
-            color="primary"
+            color="info"
             onClick={handleSendMessage}
             disabled={isLoading}
             sx={{ height: "56px" }}
@@ -304,7 +304,7 @@ export default function AgentPrompt({
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
-                    color="primary"
+                    color="info"
                     variant="contained"
                     onClick={runChain}
                     disabled={isLoading}

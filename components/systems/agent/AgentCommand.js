@@ -24,6 +24,7 @@ export default function AgentCommandsList({ name, enabled }) {
           checked={localEnabled}
           onChange={() => handleToggleCommand(name)}
           inputProps={{ "aria-label": "Enable/Disable Command" }}
+          color="info"
         />
       </ListItem>
     </>

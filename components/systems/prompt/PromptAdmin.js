@@ -124,7 +124,7 @@ export default function PromptAdmin() {
       </Box>
       <Button
         variant="contained"
-        color="primary"
+        color="info"
         onClick={handleSave}
         sx={{ marginY: "1rem" }}
       >

@@ -99,7 +99,7 @@ export default function MemoryManagement({
             type="file"
             variant="contained"
             label="Import Agent Memories"
-            color="primary"
+            color="info"
             onClick={handleImportMemories}
           >
             Import Agent Memories
