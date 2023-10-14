@@ -2,36 +2,19 @@ import "../styles/globals.css";
 import { useState, useCallback, useEffect, useMemo } from "react";
 import { useRouter } from "next/router";
 import { setCookie, getCookie } from "cookies-next";
-import Link from "next/link";
 import { SettingsProvider } from "../lib/SettingsContext";
-import {
-  Box,
-  Drawer,
-  CssBaseline,
-  Toolbar,
-  Typography,
-  Divider,
-} from "@mui/material";
+import { Box, CssBaseline, Toolbar, Divider } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
 import IconButton from "@mui/material/IconButton";
-import TuneIcon from "@mui/icons-material/Tune";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
-import { ChevronLeft, ChevronRight, Menu } from "@mui/icons-material";
-import MenuAgentList from "../components/menu/MainMenu";
-import AdvancedOptions from "../components/systems/agent/AdvancedOptions";
-import AgentCommand from "../components/systems/agent/AgentCommand";
-import TrainOptions from "../components/systems/train/TrainOptions";
-import { List, ListItem, ListItemButton, Switch } from "@mui/material";
-import ChainArgsEditor from "../components/systems/chain/ChainArgsEditor";
+import { Menu } from "@mui/icons-material";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
-import ConversationSelector from "../components/systems/conversation/ConversationSelector";
-import Container from "@mui/material/Container";
 import useSWR from "swr";
 import { sdk } from "../lib/apiClient";
 import PropTypes from "prop-types";
 import Head from "next/head";
-const drawerWidth = 200;
-const rightDrawerWidth = 310;
+const drawerWidth = 4;
+const rightDrawerWidth = 0;
 const bothDrawersWidth = drawerWidth + rightDrawerWidth;
 
 const Main = styled("main", {
@@ -118,29 +101,6 @@ export default function App({ Component, pageProps, dark }) {
   const [agentSettings, setAgentSettings] = useState({});
   const [agentCommands, setAgentCommands] = useState([]);
   const [providers, setProviders] = useState([]);
-  const [llms, setLlms] = useState([]);
-  const fetchProviderSettings = async () => {
-    const allProviders = await sdk.getAllProviders();
-    const settingsForAllProviders = Object.values(allProviders).reduce(
-      (acc, cur) => ({ ...acc, ...cur }),
-      {}
-    );
-    setProviders(Object.keys(settingsForAllProviders));
-  };
-  const fetchLlms = async () => {
-    const llmList = await sdk.executeCommand(
-      "gpt4free",
-      "Get Local Model List",
-      {},
-      "AGiXT Terminal"
-    );
-    console.log(llmList);
-    setLlms(llmList);
-  };
-  useEffect(() => {
-    fetchProviderSettings();
-    fetchLlms();
-  }, []);
 
   const contentWidth =
     open && rightDrawerOpen
@@ -328,13 +288,10 @@ export default function App({ Component, pageProps, dark }) {
                   >
                     <Menu />
                   </IconButton>
-                  <Typography component="h1" noWrap>
-                    <Link href="/">
-                      <b>AGiXT</b>
-                    </Link>{" "}
-                    {pageName != "agent" ? <>- {pageTitle()}</> : null}
-                    &nbsp;
-                  </Typography>
+                  <MenuDarkSwitch
+                    checked={darkMode}
+                    onChange={handleToggleDarkMode}
+                  />
                 </Box>
                 <Box
                   sx={{
@@ -352,15 +309,7 @@ export default function App({ Component, pageProps, dark }) {
                         height: "10px",
                         width: "100%",
                       }}
-                    >
-                      <ConversationSelector
-                        conversations={conversations}
-                        conversationName={conversationName}
-                        setConversationName={setConversationName}
-                        conversation={conversation}
-                        setConversations={setConversations}
-                      />
-                    </Box>
+                    ></Box>
                   ) : null}
                 </Box>
                 <Box
@@ -369,190 +318,10 @@ export default function App({ Component, pageProps, dark }) {
                     alignItems: "center",
                     marginTop: "22px",
                   }}
-                >
-                  {rightDrawerOpen == false &&
-                  pageName != "prompt" &&
-                  pageName != "chain" &&
-                  pageName != "" ? (
-                    <IconButton color="inherit" onClick={handleRightDrawerOpen}>
-                      <TuneIcon />
-                    </IconButton>
-                  ) : null}
-                </Box>
+                ></Box>
               </Toolbar>
               <Divider />
             </AppBar>
-            <Drawer
-              sx={{
-                width: drawerWidth,
-                flexShrink: 0,
-                "& .MuiDrawer-paper": {
-                  width: drawerWidth,
-                  boxSizing: "border-box",
-                },
-              }}
-              variant="persistent"
-              anchor="left"
-              open={open}
-            >
-              <DrawerHeader
-                sx={{
-                  marginTop: "-27px",
-                }}
-              >
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginTop: "22px",
-                  }}
-                >
-                  <MenuDarkSwitch
-                    checked={darkMode}
-                    onChange={handleToggleDarkMode}
-                  />
-                </Box>
-                <IconButton onClick={handleDrawerClose}>
-                  <ChevronLeft
-                    fontSize="large"
-                    sx={{ color: "white", marginTop: "20px" }}
-                  />
-                </IconButton>
-              </DrawerHeader>
-              <Divider />
-              <MenuAgentList
-                data={agents.data ? agents.data : []}
-                theme={theme}
-                dark={darkMode}
-                setPrompts={setPrompts}
-                promptCategories={promptCategories}
-                setPromptCategories={setPromptCategories}
-                conversations={conversations}
-                setConversations={setConversations}
-                setConversationName={setConversationName}
-                conversationName={conversationName}
-                providers={providers}
-              />
-            </Drawer>
-            {pageName != "prompt" && pageName != "chain" && pageName != "" ? (
-              <Drawer
-                sx={{
-                  width: 0,
-                  flexShrink: 0,
-                  "& .MuiDrawer-paper": {
-                    width: rightDrawerWidth,
-                    boxSizing: "border-box",
-                  },
-                }}
-                variant="persistent"
-                anchor="right"
-                open={rightDrawerOpen}
-              >
-                <DrawerHeader
-                  sx={{
-                    marginTop: "-20px",
-                  }}
-                >
-                  <IconButton onClick={handleRightDrawerClose}>
-                    <ChevronRight
-                      fontSize="large"
-                      sx={{ color: "white", marginTop: "20px" }}
-                    />
-                  </IconButton>
-                </DrawerHeader>
-                <Divider />
-                {pageName === "agent" && tab != 2 ? (
-                  <Container>
-                    <br />
-                    <AdvancedOptions
-                      contextResults={contextResults}
-                      setContextResults={setContextResults}
-                      shots={shots}
-                      setShots={setShots}
-                      websearchDepth={websearchDepth}
-                      setWebsearchDepth={setWebsearchDepth}
-                      injectMemoriesFromCollectionNumber={
-                        injectMemoriesFromCollectionNumber
-                      }
-                      setInjectMemoriesFromCollectionNumber={
-                        setInjectMemoriesFromCollectionNumber
-                      }
-                      conversationResults={conversationResults}
-                      setConversationResults={setConversationResults}
-                      browseLinks={browseLinks}
-                      setBrowseLinks={setBrowseLinks}
-                      websearch={websearch}
-                      setWebsearch={setWebsearch}
-                      enableMemory={enableMemory}
-                      setEnableMemory={setEnableMemory}
-                    />
-                    <Divider />
-                  </Container>
-                ) : null}
-
-                {pageName === "agent" && tab == 2 ? (
-                  <>
-                    <ChainArgsEditor
-                      selectedChain={selectedChain}
-                      sdk={sdk}
-                      chainArgs={chainArgs}
-                      setChainArgs={setChainArgs}
-                      onChange={handleArgsChange}
-                      singleStep={singleStep}
-                      setSingleStep={setSingleStep}
-                      fromStep={fromStep}
-                      setFromStep={setFromStep}
-                      allResponses={allResponses}
-                      setAllResponses={setAllResponses}
-                      useSelectedAgent={useSelectedAgent}
-                      setUseSelectedAgent={setUseSelectedAgent}
-                    />
-                  </>
-                ) : null}
-                {pageName === "train" ? (
-                  <TrainOptions
-                    collectionNumber={collectionNumber}
-                    limit={limit}
-                    minRelevanceScore={minRelevanceScore}
-                    setCollectionNumber={setCollectionNumber}
-                    setLimit={setLimit}
-                    setMinRelevanceScore={setMinRelevanceScore}
-                  />
-                ) : null}
-                {pageName === "settings" || pageName === "agent" ? (
-                  <List dense>
-                    <ListItem disablePadding>
-                      <ListItemButton>
-                        <Typography variant="body2">All Commands</Typography>
-                      </ListItemButton>
-                      <Switch
-                        checked={
-                          Object.values(agentCommands).every(
-                            (command) => command
-                          ) || false
-                        }
-                        onChange={handleToggleAllCommands}
-                        inputProps={{
-                          "aria-label": "Enable/Disable All Commands",
-                        }}
-                      />
-                    </ListItem>
-                    <Divider />
-                    {agentCommands
-                      ? Object.keys(agentCommands)
-                          .sort()
-                          .map((command) => (
-                            <AgentCommand
-                              key={command}
-                              name={command}
-                              enabled={agentCommands[command]}
-                            />
-                          ))
-                      : null}
-                  </List>
-                ) : null}
-              </Drawer>
-            ) : null}
             <Main
               open={open}
               rightDrawerOpen={rightDrawerOpen}
@@ -599,7 +368,6 @@ export default function App({ Component, pageProps, dark }) {
                 setConversations={setConversations}
                 conversation={conversation}
                 setConversation={setConversation}
-                llms={llms}
               />
             </Main>
           </Box>

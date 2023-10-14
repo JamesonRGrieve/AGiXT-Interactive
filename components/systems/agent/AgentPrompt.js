@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
-import { sdk } from "../../../../lib/apiClient";
-import ConversationHistory from "../../conversation/ConversationHistory";
-import PromptSelector from "../../prompt/PromptSelector";
-import ChainSelector from "../../chain/ChainSelector";
-import AudioRecorder from "../../command/AudioRecorder";
+import { sdk } from "../../../lib/apiClient";
+import ConversationHistory from "../conversation/ConversationHistory";
+import PromptSelector from "../prompt/PromptSelector";
+import ChainSelector from "../chain/ChainSelector";
+import AudioRecorder from "../command/AudioRecorder";
 import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
 import {
   Button,
@@ -21,7 +21,7 @@ import {
 import SendIcon from "@mui/icons-material/Send";
 import useSWR from "swr";
 import { mutate } from "swr";
-import { useSettings } from "../../../../lib/SettingsContext";
+import { useSettings } from "../../../lib/SettingsContext";
 
 export default function AgentPrompt({
   chains,
