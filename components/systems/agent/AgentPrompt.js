@@ -24,10 +24,9 @@ import { mutate } from "swr";
 import { useSettings } from "../../../lib/SettingsContext";
 
 export default function AgentPrompt({
-  chains,
   selectedChain,
-  setSelectedChain,
   chainArgs,
+  enableFileUpload = false,
   contextResults = 5,
   shots = 1,
   browseLinks = false,
@@ -40,26 +39,20 @@ export default function AgentPrompt({
   fromStep = 0,
   allResponses = false,
   useSelectedAgent = true,
-  conversationName,
+  conversationName = "Test",
+  mode = "prompt",
+  promptName = "Chat",
+  promptCategory = "Default",
+  agentName = "gpt4free",
 }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [message, setMessage] = useState("");
   const [lastResponse, setLastResponse] = useState("");
-  const [promptCategory, setPromptCategory] = useState("Default");
-  const [promptName, setPromptName] = useState("Chat with Commands");
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [openFileUpload, setOpenFileUpload] = useState(false);
-  const { conversation, promptCategories, prompts, hasFiles } = useSettings();
-  const router = useRouter();
-  const tab = router.query.tab;
-  const agentName = useMemo(() => router.query.agent, [router.query.agent]);
+  const { conversation, hasFiles } = useSettings();
   const [promptArgs, setPromptArgs] = useState({});
-
-  const { data: prompt } = useSWR(
-    `prompt/${promptName}`,
-    async () => await sdk.getPrompt(promptName, promptCategory)
-  );
 
   const handleCloseFileUpload = () => {
     setOpenFileUpload(false);
@@ -85,19 +78,7 @@ export default function AgentPrompt({
       setChatHistory(conversation);
     }
   }, [conversationName, conversation, lastResponse]);
-  useEffect(() => {
-    mutate(`promptCategories`);
-    if (promptCategories) {
-      setPromptCategory(promptCategory);
-    }
-  }, [promptCategory]);
-  useEffect(() => {
-    mutate(`prompts/${promptCategory}`);
-    if (prompts) {
-      setPromptName(promptName);
-    }
-    mutate(`prompt/${promptName}`);
-  }, [promptName]);
+
   useEffect(() => {
     const getArgs = async (promptName, promptCategory) => {
       const promptArgData = await sdk.getPromptArgs(promptName, promptCategory);
@@ -205,13 +186,7 @@ export default function AgentPrompt({
       conversation_results: conversationResults,
       ...promptArgs,
     };
-    if (tab == 0) {
-      promptName = "Chat with Commands";
-    } else if (tab == 3) {
-      promptName = "Instruction";
-    } else if (tab == 1) {
-      promptName = promptName;
-    } else if (tab == 2) {
+    if (mode == "chain") {
       promptName = selectedChain;
     }
     const response = await sdk.promptAgent(
@@ -239,170 +214,109 @@ export default function AgentPrompt({
     }
   };
   const handleSendMessage = async () => {
-    await PromptAgent(
-      message,
-      promptName,
-      promptCategory,
-      contextResults,
-      shots,
-      browseLinks,
-      websearch,
-      websearchDepth,
-      enableMemory,
-      injectMemoriesFromCollectionNumber,
-      conversationResults
-    );
-    setMessage("");
+    if (mode == "chain") {
+      runChain();
+      setMessage("");
+      return;
+    } else {
+      await PromptAgent(
+        message,
+        promptName,
+        promptCategory,
+        contextResults,
+        shots,
+        browseLinks,
+        websearch,
+        websearchDepth,
+        enableMemory,
+        injectMemoriesFromCollectionNumber,
+        conversationResults
+      );
+      setMessage("");
+    }
   };
   return (
     <>
       <ConversationHistory chatHistory={chatHistory} isLoading={isLoading} />
-      {tab == 1 ? (
-        <>
-          <PromptSelector
-            promptCategories={promptCategories}
-            promptCategory={promptCategory}
-            setPromptCategory={setPromptCategory}
-            promptName={promptName}
-            setPromptName={setPromptName}
-            prompt={prompt}
-            promptArgs={promptArgs}
-            setPromptArgs={setPromptArgs}
-            disabled={isLoading}
-          />
-          <Button
-            variant="contained"
-            color="info"
-            onClick={handleSendMessage}
-            disabled={isLoading}
-            sx={{ height: "56px" }}
-          >
-            Send
-          </Button>
-        </>
-      ) : tab == 2 ? (
-        <>
-          <ChainSelector
-            chains={chains}
-            sdk={sdk}
-            selectedChain={selectedChain}
-            setSelectedChain={setSelectedChain}
-            disabled={isLoading}
-          />
-          <TextField
-            label="User Input"
-            placeholder="User input..."
-            multiline
-            rows={2}
-            fullWidth
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            sx={{ mb: 2 }}
-            disabled={isLoading}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
+      <TextField
+        label="User Input"
+        placeholder="User input..."
+        multiline
+        rows={2}
+        fullWidth
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyPress={handleKeyPress}
+        sx={{ mb: 2 }}
+        disabled={isLoading}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position="end">
+              {enableFileUpload && (
+                <>
                   <IconButton
-                    color="info"
                     variant="contained"
-                    onClick={runChain}
+                    color="info"
+                    onClick={() => {
+                      setUploadedFiles([]);
+                      setOpenFileUpload(true);
+                    }}
                     disabled={isLoading}
-                    sx={{ height: "56px", padding: "0px" }}
+                    sx={{ height: "56px" }}
                   >
-                    <SendIcon />
+                    <NoteAddOutlinedIcon />
                   </IconButton>
-                </InputAdornment>
-              ),
-            }}
-          />
-        </>
-      ) : (
-        <>
-          <TextField
-            label="User Input"
-            placeholder="User input..."
-            multiline
-            rows={2}
-            fullWidth
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            sx={{ mb: 2 }}
-            disabled={isLoading}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  {tab == 0 && (
-                    <>
-                      <IconButton
-                        variant="contained"
-                        color="info"
-                        onClick={() => {
-                          setUploadedFiles([]);
-                          setOpenFileUpload(true);
+                  <Dialog open={openFileUpload} onClose={handleCloseFileUpload}>
+                    <DialogTitle id="form-dialog-title">
+                      Upload Files
+                    </DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>
+                        Please upload the files you would like to send.
+                      </DialogContentText>
+                      <input
+                        accept="*"
+                        id="contained-button-file"
+                        multiple
+                        type="file"
+                        onChange={(e) => {
+                          setUploadedFiles(e.target.files);
                         }}
+                      />
+                    </DialogContent>
+                    <DialogActions>
+                      <Button onClick={handleCloseFileUpload} color="error">
+                        Cancel
+                      </Button>
+                      <Button
+                        onClick={handleUploadFiles}
+                        color="info"
                         disabled={isLoading}
-                        sx={{ height: "56px" }}
                       >
-                        <NoteAddOutlinedIcon />
-                      </IconButton>
-                      <Dialog
-                        open={openFileUpload}
-                        onClose={handleCloseFileUpload}
-                      >
-                        <DialogTitle id="form-dialog-title">
-                          Upload Files
-                        </DialogTitle>
-                        <DialogContent>
-                          <DialogContentText>
-                            Please upload the files you would like to send.
-                          </DialogContentText>
-                          <input
-                            accept="*"
-                            id="contained-button-file"
-                            multiple
-                            type="file"
-                            onChange={(e) => {
-                              setUploadedFiles(e.target.files);
-                            }}
-                          />
-                        </DialogContent>
-                        <DialogActions>
-                          <Button onClick={handleCloseFileUpload} color="error">
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={handleUploadFiles}
-                            color="info"
-                            disabled={isLoading}
-                          >
-                            Upload
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    </>
-                  )}
-                  <IconButton
-                    variant="contained"
-                    color="info"
-                    onClick={handleSendMessage}
-                    disabled={isLoading}
-                    sx={{ height: "56px", padding: "0px" }}
-                  >
-                    <SendIcon />
-                  </IconButton>
-                  <AudioRecorder
-                    conversationName={conversationName}
-                    contextResults={contextResults}
-                    conversationResults={conversationResults}
-                  />
-                </InputAdornment>
-              ),
-            }}
-          />
-        </>
-      )}
+                        Upload
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </>
+              )}
+              <IconButton
+                variant="contained"
+                color="info"
+                onClick={handleSendMessage}
+                disabled={isLoading}
+                sx={{ height: "56px", padding: "0px" }}
+              >
+                <SendIcon />
+              </IconButton>
+              <AudioRecorder
+                conversationName={conversationName}
+                contextResults={contextResults}
+                conversationResults={conversationResults}
+              />
+            </InputAdornment>
+          ),
+        }}
+      />
     </>
   );
 }
