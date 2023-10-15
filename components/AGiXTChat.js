@@ -45,6 +45,7 @@ export default function AGiXTChat({
   const [openFileUpload, setOpenFileUpload] = useState(false);
   const hasFiles = false;
   const [promptArgs, setPromptArgs] = useState({});
+  const [isRecording, setIsRecording] = useState(false);
 
   const handleCloseFileUpload = () => {
     setOpenFileUpload(false);
@@ -282,20 +283,25 @@ export default function AGiXTChat({
                   </Dialog>
                 </>
               )}
-              <IconButton
-                variant="contained"
-                color="info"
-                onClick={handleSendMessage}
-                disabled={isLoading}
-                sx={{ height: "56px", padding: "0px" }}
-              >
-                <SendIcon />
-              </IconButton>
-              <AudioRecorder
-                conversationName={conversationName}
-                contextResults={contextResults}
-                conversationResults={conversationResults}
-              />
+              {!isRecording && (
+                <>
+                  <IconButton
+                    variant="contained"
+                    color="info"
+                    onClick={handleSendMessage}
+                    disabled={isLoading}
+                    sx={{ height: "56px", padding: "0px" }}
+                  >
+                    <SendIcon />
+                  </IconButton>
+                  <AudioRecorder
+                    conversationName={conversationName}
+                    contextResults={contextResults}
+                    conversationResults={conversationResults}
+                    setIsRecording={setIsRecording}
+                  />
+                </>
+              )}
             </InputAdornment>
           ),
         }}
