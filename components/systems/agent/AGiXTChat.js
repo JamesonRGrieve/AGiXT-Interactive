@@ -15,10 +15,8 @@ import {
   IconButton,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
-import { mutate } from "swr";
-import { useSettings } from "../../../lib/SettingsContext";
 
-export default function AgentPrompt({
+export default function AGiXTChat({
   selectedChain,
   chainArgs,
   enableFileUpload = false,
@@ -30,7 +28,6 @@ export default function AgentPrompt({
   enableMemory = false,
   injectMemoriesFromCollectionNumber = 0,
   conversationResults = 5,
-  singleStep = false,
   fromStep = 0,
   allResponses = false,
   useSelectedAgent = true,
@@ -46,7 +43,7 @@ export default function AgentPrompt({
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [openFileUpload, setOpenFileUpload] = useState(false);
-  const { conversation, hasFiles } = useSettings();
+  const hasFiles = false;
   const [promptArgs, setPromptArgs] = useState({});
 
   const handleCloseFileUpload = () => {
@@ -65,14 +62,17 @@ export default function AgentPrompt({
   };
 
   useEffect(() => {
-    mutate(`conversation/${agentName}/${conversationName}`);
-    if (
-      conversation != "Unable to retrieve data." &&
-      conversation != undefined
-    ) {
-      setChatHistory(conversation);
-    }
-  }, [conversationName, conversation, lastResponse]);
+    const fetchConversation = async () => {
+      const convo = await sdk.getConversation(
+        agentName,
+        conversationName,
+        100,
+        1
+      );
+      setChatHistory(convo);
+    };
+    fetchConversation();
+  }, [conversationName, lastResponse]);
 
   useEffect(() => {
     const getArgs = async (promptName, promptCategory) => {
@@ -95,28 +95,16 @@ export default function AgentPrompt({
     setIsLoading(true);
     const agentOverride = useSelectedAgent ? agentName : "";
     chainArgs["conversation_name"] = conversationName;
-    if (singleStep) {
-      const response = await sdk.runChainStep(
-        selectedChain,
-        fromStep,
-        message,
-        agentOverride,
-        chainArgs
-      );
-      setIsLoading(false);
-      setLastResponse(response);
-    } else {
-      const response = await sdk.runChain(
-        selectedChain,
-        message,
-        agentOverride,
-        allResponses,
-        fromStep,
-        chainArgs
-      );
-      setIsLoading(false);
-      setLastResponse(response);
-    }
+    const response = await sdk.runChain(
+      selectedChain,
+      message,
+      agentOverride,
+      allResponses,
+      fromStep,
+      chainArgs
+    );
+    setIsLoading(false);
+    setLastResponse(response);
   };
   const PromptAgent = async (
     message,
