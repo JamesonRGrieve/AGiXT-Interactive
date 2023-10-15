@@ -6,7 +6,7 @@ import {
   Cancel as CancelIcon,
   Send as SendIcon,
 } from "@mui/icons-material";
-import { sdk } from "../../../lib/apiClient";
+import { sdk } from "../../lib/apiClient";
 
 export default function AudioRecorder({
   conversationName,

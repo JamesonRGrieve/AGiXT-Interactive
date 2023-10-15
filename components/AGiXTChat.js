@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { sdk } from "../../../lib/apiClient";
-import ConversationHistory from "../conversation/ConversationHistory";
-import AudioRecorder from "../command/AudioRecorder";
+import { sdk } from "../lib/apiClient";
+import ConversationHistory from "./conversation/ConversationHistory";
+import AudioRecorder from "./conversation/AudioRecorder";
 import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
 import {
   Button,

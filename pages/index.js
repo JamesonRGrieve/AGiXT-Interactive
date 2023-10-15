@@ -1,4 +1,4 @@
-import AGiXTChat from "../components/systems/agent/AGiXTChat";
+import AGiXTChat from "../components/AGiXTChat";
 export default function Home() {
   return (
     <AGiXTChat
