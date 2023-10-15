@@ -1,7 +1,6 @@
 import React from "react";
 import { useTheme } from "@emotion/react";
 import { useState } from "react";
-import { useRouter } from "next/router";
 import { Paper, Box, Typography, IconButton } from "@mui/material";
 import {
   ContentCopy as ContentCopyIcon,
@@ -28,7 +27,6 @@ export default function ConversationHistory({
   chatHistory,
   isLoading,
 }) {
-  const router = useRouter();
   const marginTop = "94px";
 
   let lastUserMessage = ""; // track the last user message

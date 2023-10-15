@@ -1,6 +1,5 @@
 import AGiXTChat from "../components/AGiXTChat";
-export default function Postgres({ setPageTitle }) {
-  setPageTitle("Postgres Chat");
+export default function Postgres({}) {
   return (
     <AGiXTChat
       agentName={"SQLExpert"}

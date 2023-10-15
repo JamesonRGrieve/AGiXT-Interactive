@@ -1,6 +1,5 @@
 import AGiXTChat from "../components/AGiXTChat";
-export default function Home({ setPageTitle }) {
-  setPageTitle("Chat");
+export default function Home({}) {
   return (
     <AGiXTChat
       agentName={"gpt4free"} // Agent name
