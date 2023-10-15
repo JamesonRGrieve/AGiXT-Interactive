@@ -16,7 +16,7 @@
     "@mui/material": "latest",
     "@mui/system": "^5.14.13",
     "agixt": "^1.0.36",
-    "agixtchat": "^0.0.2",
+    "agixtchat": "latest",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "latest",
     "next": "latest",
