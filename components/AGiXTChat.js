@@ -98,7 +98,7 @@ export default function AGiXTChat({
   promptName = "Chat",
   promptCategory = "Default",
   agentName = "gpt4free",
-  dark = "true",
+  dark = true,
   baseUri = "http://localhost:7437",
   apiKey = "",
 }) {

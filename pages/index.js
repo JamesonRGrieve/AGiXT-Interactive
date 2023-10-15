@@ -1,7 +1,10 @@
 import AGiXTChat from "../components/AGiXTChat";
-export default function Home({}) {
+export default function Home() {
   return (
     <AGiXTChat
+      baseUri={"http://localhost:7437"} // Base URI
+      apiKey={""} // API Key
+      dark={true} // Set dark mode by default
       agentName={"gpt4free"} // Agent name
       mode={"prompt"} // Modes are prompt or chain
       conversationName={"Test"}
