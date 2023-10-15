@@ -1,20 +1,13 @@
 import "../styles/globals.css";
-import { useState, useCallback, useEffect, useMemo } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import { setCookie, getCookie } from "cookies-next";
 import { Box, CssBaseline, Toolbar, Divider } from "@mui/material";
 import MuiAppBar from "@mui/material/AppBar";
-import IconButton from "@mui/material/IconButton";
 import { styled, createTheme, ThemeProvider } from "@mui/material/styles";
-import { Menu } from "@mui/icons-material";
 import { MenuDarkSwitch } from "../components/menu/MenuDarkSwitch";
-import useSWR from "swr";
-import { sdk } from "../lib/apiClient";
 import PropTypes from "prop-types";
 import Head from "next/head";
-const drawerWidth = 4;
-const rightDrawerWidth = 0;
-const bothDrawersWidth = drawerWidth + rightDrawerWidth;
 
 const Main = styled("main", {
   shouldForwardProp: (prop) => prop !== "open" && prop !== "rightDrawerOpen",
@@ -25,31 +18,26 @@ const Main = styled("main", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
-  marginLeft: open ? 0 : `-${drawerWidth}px`, // Adjust based on left drawer
-  marginRight: rightDrawerOpen ? `${rightDrawerWidth}px` : 0, // Adjust based on right drawer
 }));
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open, rightDrawerOpen }) => ({
+})(({ theme, open }) => ({
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),
   ...(open && {
-    width: rightDrawerOpen
-      ? `calc(100% - ${bothDrawersWidth}px)`
-      : `calc(100% - ${drawerWidth}px)`, // Adjust based on left drawer
-    marginLeft: `${drawerWidth}px`, // Adjust based on left drawer
-    marginRight: rightDrawerOpen ? `${rightDrawerWidth}px` : 0,
+    width: `calc(100%)`, // Adjust based on left drawer
+    marginLeft: `4px`, // Adjust based on left drawer
+    marginRight: `4px`, // Adjust based on right drawer
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
     }),
   }),
   ...(!open && {
-    width: rightDrawerOpen ? `calc(100% - ${rightDrawerWidth}px)` : "100%",
-    marginLeft: `${drawerWidth}px`, // Adjust based on left drawer
-    marginRight: rightDrawerOpen ? `${rightDrawerWidth}px` : 0,
+    width: "100%",
+    marginLeft: `4px`, // Adjust based on left drawer
     transition: theme.transitions.create(["margin", "width"], {
       easing: theme.transitions.easing.easeOut,
       duration: theme.transitions.duration.enteringScreen,
@@ -68,54 +56,11 @@ const DrawerHeader = styled("div")(({ theme }) => ({
   color: "white",
 }));
 export default function App({ Component, pageProps, dark }) {
-  const [open, setOpen] = useState(true);
   const [darkMode, setDarkMode] = useState(dark);
-  const [rightDrawerOpen, setRightDrawerOpen] = useState(false);
-  const [collectionNumber, setCollectionNumber] = useState(0);
-  const [limit, setLimit] = useState(10);
-  const [minRelevanceScore, setMinRelevanceScore] = useState(0.0);
-  const [contextResults, setContextResults] = useState(5);
-  const [shots, setShots] = useState(1);
-  const [browseLinks, setBrowseLinks] = useState(false);
-  const [websearch, setWebsearch] = useState(false);
-  const [websearchDepth, setWebsearchDepth] = useState(0);
-  const [enableMemory, setEnableMemory] = useState(false);
-  const [selectedChain, setSelectedChain] = useState("Smart Chat");
-  const [
-    injectMemoriesFromCollectionNumber,
-    setInjectMemoriesFromCollectionNumber,
-  ] = useState(0);
-  const [conversationResults, setConversationResults] = useState(5);
-  const [chainArgs, setChainArgs] = useState({});
-  const [singleStep, setSingleStep] = useState(false);
-  const [fromStep, setFromStep] = useState(0);
-  const [allResponses, setAllResponses] = useState(false);
-  const [useSelectedAgent, setUseSelectedAgent] = useState(true);
-  const [commands, setCommands] = useState({});
-  const [promptCategories, setPromptCategories] = useState([]);
-  const [prompts, setPrompts] = useState([]);
-  const [conversations, setConversations] = useState([]);
-  const [conversationName, setConversationName] = useState("Test");
-  const [conversation, setConversation] = useState([]);
-  const [agentSettings, setAgentSettings] = useState({});
-  const [agentCommands, setAgentCommands] = useState([]);
   const [pageTitle, setPageTitle] = useState("Home");
-  const contentWidth =
-    open && rightDrawerOpen
-      ? `calc(100% - ${bothDrawersWidth}px)`
-      : open && !rightDrawerOpen
-      ? `calc(100% - ${drawerWidth}px)`
-      : rightDrawerOpen
-      ? `calc(100% - ${rightDrawerWidth}px)`
-      : "100%";
-  const handleArgsChange = (args) => {
-    setChainArgs(args);
-  };
-
+  const contentWidth = "100%";
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
-  const agentName = useMemo(() => router.query.agent, [router.query.agent]);
-  const tab = router.query.tab;
 
   const themeGenerator = (darkMode) =>
     createTheme({
@@ -128,26 +73,6 @@ export default function App({ Component, pageProps, dark }) {
     });
   const theme = themeGenerator(darkMode);
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
-  const handleRightDrawerOpen = () => {
-    setRightDrawerOpen(true);
-  };
-  const handleRightDrawerClose = () => {
-    setRightDrawerOpen(false);
-  };
-  const handleToggleAllCommands = async () => {
-    await sdk.toggleCommand(
-      agentName,
-      "*",
-      Object.values(commands).every((command) => command) ? false : true
-    );
-  };
   const handleToggleDarkMode = useCallback(() => {
     setDarkMode((oldVal) => {
       const newVal = !oldVal;
@@ -155,43 +80,7 @@ export default function App({ Component, pageProps, dark }) {
       return newVal;
     });
   }, []);
-  const agents = useSWR("agent", async () => sdk.getAgents());
-  const handleChainChange = (event) => {
-    setSelectedChain(event.target.value);
-  };
 
-  useEffect(() => {
-    if (["prompt", "chain", ""].includes(pageName)) {
-      setRightDrawerOpen(false);
-    }
-    if (pageName == "settings") {
-      setRightDrawerOpen(true);
-    }
-  }, [pageName]);
-  useEffect(() => {
-    const fetchConversation = async () => {
-      const convo = await sdk.getConversation(
-        agentName,
-        conversationName,
-        100,
-        1
-      );
-      setConversation(convo);
-    };
-    fetchConversation();
-  }, [conversationName]);
-
-  useEffect(() => {
-    const fetchAgentConfig = async () => {
-      const agentConfig = await sdk.getAgentConfig(agentName);
-      setAgentSettings(agentConfig.settings);
-      setAgentCommands(agentConfig.commands);
-      setCommands(agentConfig.commands);
-      console.log("Agent Name:", agentName);
-      console.log("Agent Commands: ", agentConfig.commands);
-    };
-    fetchAgentConfig();
-  }, [agentName]);
   return (
     <>
       <Head>
@@ -204,8 +93,6 @@ export default function App({ Component, pageProps, dark }) {
           <CssBaseline />
           <AppBar
             position="fixed"
-            open={open}
-            rightDrawerOpen={rightDrawerOpen}
             sx={{
               marginTop: "-20px",
             }}
@@ -225,15 +112,6 @@ export default function App({ Component, pageProps, dark }) {
                   marginTop: "20px",
                 }}
               >
-                <IconButton
-                  color="inherit"
-                  aria-label="open drawer"
-                  onClick={handleDrawerOpen}
-                  edge="start"
-                  sx={{ mr: 2, ...(open && { display: "none" }) }}
-                >
-                  <Menu />
-                </IconButton>
                 <MenuDarkSwitch
                   checked={darkMode}
                   onChange={handleToggleDarkMode}
@@ -268,52 +146,11 @@ export default function App({ Component, pageProps, dark }) {
             </Toolbar>
             <Divider />
           </AppBar>
-          <Main
-            open={open}
-            rightDrawerOpen={rightDrawerOpen}
-            sx={{ padding: "0", maxWidth: contentWidth }}
-          >
+          <Main sx={{ padding: "0", maxWidth: contentWidth }}>
             <DrawerHeader />
             <Component
               {...pageProps}
-              contextResults={contextResults}
-              shots={shots}
-              browseLinks={browseLinks}
-              websearch={websearch}
-              websearchDepth={websearchDepth}
-              enableMemory={enableMemory}
-              injectMemoriesFromCollectionNumber={
-                injectMemoriesFromCollectionNumber
-              }
-              collectionNumber={collectionNumber}
-              limit={limit}
-              minRelevanceScore={minRelevanceScore}
-              conversationResults={conversationResults}
-              selectedChain={selectedChain}
-              setSelectedChain={setSelectedChain}
-              chainArgs={chainArgs}
-              setChainArgs={setChainArgs}
-              handleChainChange={handleChainChange}
-              singleStep={singleStep}
-              setSingleStep={setSingleStep}
-              fromStep={fromStep}
-              setFromStep={setFromStep}
-              allResponses={allResponses}
-              setAllResponses={setAllResponses}
-              useSelectedAgent={useSelectedAgent}
-              setUseSelectedAgent={setUseSelectedAgent}
-              drawerWidth={drawerWidth}
-              rightDrawerWidth={rightDrawerWidth}
-              commands={commands.data}
               theme={theme}
-              prompts={prompts}
-              setPrompts={setPrompts}
-              conversations={conversations}
-              setConversationName={setConversationName}
-              conversationName={conversationName}
-              setConversations={setConversations}
-              conversation={conversation}
-              setConversation={setConversation}
               setPageTitle={setPageTitle}
             />
           </Main>
