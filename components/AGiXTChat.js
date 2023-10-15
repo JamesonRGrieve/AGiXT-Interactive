@@ -225,8 +225,8 @@ export default function AGiXTChat({
         isLoading={isLoading}
       />
       <TextField
-        label="User Input"
-        placeholder="User input..."
+        label="Ask your question here."
+        placeholder="Ask your question here."
         multiline
         rows={2}
         fullWidth
