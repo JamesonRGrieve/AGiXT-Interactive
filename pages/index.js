@@ -5,7 +5,7 @@ export default function Home({ setPageTitle }) {
     <AGiXTChat
       agentName={"gpt4free"} // Agent name
       mode={"prompt"} // Modes are prompt or chain
-      conversationName={"Convert Extensions to new ones"}
+      conversationName={"Test"}
       enableFileUpload={false} // Enable file upload button
       // If mode is prompt, set promptName and promptCategory
       promptName={"Chat"} // Only matters if mode is prompt
