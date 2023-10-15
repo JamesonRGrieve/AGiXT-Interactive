@@ -10,8 +10,8 @@ import PropTypes from "prop-types";
 import Head from "next/head";
 
 const Main = styled("main", {
-  shouldForwardProp: (prop) => prop !== "open" && prop !== "rightDrawerOpen",
-})(({ theme, open, rightDrawerOpen }) => ({
+  shouldForwardProp: (prop) => prop !== "open",
+})(({ theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {
@@ -21,27 +21,10 @@ const Main = styled("main", {
 }));
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
-})(({ theme, open }) => ({
+})(({ theme }) => ({
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
-  }),
-  ...(open && {
-    width: `calc(100%)`, // Adjust based on left drawer
-    marginLeft: `4px`, // Adjust based on left drawer
-    marginRight: `4px`, // Adjust based on right drawer
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  }),
-  ...(!open && {
-    width: "100%",
-    marginLeft: `4px`, // Adjust based on left drawer
-    transition: theme.transitions.create(["margin", "width"], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
   }),
 }));
 
@@ -58,7 +41,6 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 export default function App({ Component, pageProps, dark }) {
   const [darkMode, setDarkMode] = useState(dark);
   const [pageTitle, setPageTitle] = useState("Home");
-  const contentWidth = "100%";
   const router = useRouter();
   const pageName = router.pathname.split("/")[1];
 
@@ -124,18 +106,7 @@ export default function App({ Component, pageProps, dark }) {
                   marginTop: "15px",
                   flexGrow: 1,
                 }}
-              >
-                {pageName == "agent" ? (
-                  <Box
-                    sx={{
-                      marginLeft: "10px",
-                      marginTop: "-14px",
-                      height: "10px",
-                      width: "100%",
-                    }}
-                  ></Box>
-                ) : null}
-              </Box>
+              ></Box>
               <Box
                 sx={{
                   display: "flex",
@@ -146,7 +117,7 @@ export default function App({ Component, pageProps, dark }) {
             </Toolbar>
             <Divider />
           </AppBar>
-          <Main sx={{ padding: "0", maxWidth: contentWidth }}>
+          <Main sx={{ padding: "0", maxWidth: "100%" }}>
             <DrawerHeader />
             <Component
               {...pageProps}
