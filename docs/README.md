@@ -31,7 +31,7 @@ Access at http://localhost:3000
 
 ```javascript
 import AGiXTChat from "agixtchat";
-export default function Home() {
+export default function Chat() {
   return (
     <AGiXTChat
       baseUri={"http://localhost:7437"} // Base URI
