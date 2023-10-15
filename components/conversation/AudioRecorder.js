@@ -12,7 +12,7 @@ export default function AudioRecorder({
   conversationName,
   contextResults,
   conversationResults,
-  setIsRecording,
+  setIsLoading,
 }) {
   const [recording, setRecording] = useState(false);
   const [audioData, setAudioData] = useState(null);
@@ -28,7 +28,7 @@ export default function AudioRecorder({
       };
       mediaRecorder.current.start();
       setRecording(true);
-      setIsRecording(true);
+      setIsLoading(true);
     });
   };
 
@@ -36,7 +36,6 @@ export default function AudioRecorder({
     if (mediaRecorder.current) {
       mediaRecorder.current.stop(); // Stop the recording when sending
       setRecording(false);
-      setIsRecording(false);
     }
 
     if (audioData) {
@@ -66,7 +65,7 @@ export default function AudioRecorder({
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
       setRecording(false);
-      setIsRecording(false);
+      setIsLoading(false);
       setAudioData(null);
     }
   };
