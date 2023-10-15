@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { sdk } from "../lib/apiClient";
 import ConversationHistory from "./conversation/ConversationHistory";
 import AudioRecorder from "./conversation/AudioRecorder";
 import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
@@ -9,8 +8,9 @@ import { useCallback } from "react";
 import { ThemeProvider } from "@mui/system";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
-import styled from "@mui/material/styles/styled";
+import { styled } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
+import AGiXTSDK from "agixt";
 
 import {
   Button,
@@ -99,7 +99,13 @@ export default function AGiXTChat({
   promptCategory = "Default",
   agentName = "gpt4free",
   dark = "true",
+  baseUri = "http://localhost:7437",
+  apiKey = "",
 }) {
+  const sdk = new AGiXTSDK({
+    baseUri: baseUri,
+    apiKey: apiKey,
+  });
   let isDark = getCookie("dark");
   isDark === undefined
     ? setCookie("dark", dark)
@@ -333,6 +339,7 @@ export default function AGiXTChat({
               agentName={agentName}
               chatHistory={chatHistory}
               isLoading={isLoading}
+              sdk={sdk}
             />
             <TextField
               label="Ask your question here."
@@ -418,6 +425,8 @@ export default function AGiXTChat({
                       contextResults={contextResults}
                       conversationResults={conversationResults}
                       setIsLoading={setIsLoading}
+                      agentName={agentName}
+                      sdk={sdk}
                     />
                   </InputAdornment>
                 ),

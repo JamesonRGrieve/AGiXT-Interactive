@@ -18,7 +18,6 @@ import {
   TextField,
   Button,
 } from "@mui/material";
-import { sdk } from "../../lib/apiClient";
 import MarkdownBlock from "./MarkdownBlock";
 const WAIT_MESSAGE = "Let me think about that for a moment. Please wait..";
 
@@ -26,6 +25,7 @@ export default function ConversationHistory({
   agentName,
   chatHistory,
   isLoading,
+  sdk,
 }) {
   const marginTop = "94px";
 

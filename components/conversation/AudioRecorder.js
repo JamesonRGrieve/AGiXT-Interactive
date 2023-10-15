@@ -1,24 +1,22 @@
 import { useState, useRef } from "react";
-import { useRouter } from "next/router";
 import { IconButton } from "@mui/material";
 import {
   Mic as MicIcon,
   Cancel as CancelIcon,
   Send as SendIcon,
 } from "@mui/icons-material";
-import { sdk } from "../../lib/apiClient";
 
 export default function AudioRecorder({
   conversationName,
   contextResults,
   conversationResults,
   setIsLoading,
+  agentName,
+  sdk,
 }) {
   const [recording, setRecording] = useState(false);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
-  const router = useRouter();
-  const agentName = router.query.agent;
 
   const startRecording = () => {
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
