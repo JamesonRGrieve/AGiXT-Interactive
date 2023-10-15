@@ -23,11 +23,13 @@ import { sdk } from "../../lib/apiClient";
 import MarkdownBlock from "./MarkdownBlock";
 const WAIT_MESSAGE = "Let me think about that for a moment. Please wait..";
 
-export default function ConversationHistory({ chatHistory, isLoading }) {
+export default function ConversationHistory({
+  agentName,
+  chatHistory,
+  isLoading,
+}) {
   const router = useRouter();
-  const agentName = router.query.agent || "gpt4free";
-  const tab = router.query.tab;
-  const marginTop = tab == 1 ? "190px" : tab == 2 ? "195px" : "140px";
+  const marginTop = "94px";
 
   let lastUserMessage = ""; // track the last user message
 

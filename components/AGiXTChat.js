@@ -219,7 +219,11 @@ export default function AGiXTChat({
   };
   return (
     <>
-      <ConversationHistory chatHistory={chatHistory} isLoading={isLoading} />
+      <ConversationHistory
+        agentName={agentName}
+        chatHistory={chatHistory}
+        isLoading={isLoading}
+      />
       <TextField
         label="User Input"
         placeholder="User input..."
