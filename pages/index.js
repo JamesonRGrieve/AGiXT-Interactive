@@ -7,7 +7,7 @@ export default function Home() {
       dark={true} // Set dark mode by default
       agentName={"gpt4free"} // Agent name
       mode={"prompt"} // Modes are prompt or chain
-      conversationName={"Test"}
+      conversationName={"Convert Extensions to new ones"}
       enableFileUpload={false} // Enable file upload button
       // If mode is prompt, set promptName and promptCategory
       promptName={"Chat"} // Only matters if mode is prompt

@@ -317,7 +317,10 @@ export default function AGiXTChat({
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <MenuDarkSwitch checked={darkMode} onChange={handleToggleDarkMode} />
+        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+          <MenuDarkSwitch checked={darkMode} onChange={handleToggleDarkMode} />
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </Box>
         <Box
           sx={{
             display: "flex",
@@ -328,6 +331,7 @@ export default function AGiXTChat({
         >
           <main
             style={{
+              maxWidth: "100%",
               flexGrow: 1,
               transition: theme.transitions.create("margin", {
                 easing: theme.transitions.easing.sharp,
