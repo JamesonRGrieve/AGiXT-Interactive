@@ -26,8 +26,10 @@ export default function ConversationHistory({
   chatHistory,
   isLoading,
   sdk,
+  topMargin,
 }) {
-  const marginTop = "94px";
+  const topPx = Number(topMargin) + 129;
+  const marginTop = `${topPx}px`;
 
   let lastUserMessage = ""; // track the last user message
 
@@ -52,6 +54,7 @@ export default function ConversationHistory({
                 <ChatMessage
                   key={index}
                   chatItem={chatItem}
+                  sdk={sdk}
                   lastUserMessage={lastUserMessage} // Pass the last user message as a prop
                 />
               );
@@ -66,6 +69,7 @@ export default function ConversationHistory({
               timestamp: "Just Now...",
             }}
             isLoading={isLoading}
+            sdk={sdk}
           />
         )}
       </div>
@@ -73,7 +77,7 @@ export default function ConversationHistory({
   );
 }
 
-const ChatMessage = ({ chatItem, lastUserMessage, isLoading }) => {
+const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
   const formattedMessage =
     typeof chatItem.message === "string"
       ? chatItem.message.replace(/\\n/g, "  \n").replace(/\n/g, "  \n")

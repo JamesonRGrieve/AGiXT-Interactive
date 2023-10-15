@@ -101,6 +101,7 @@ export default function AGiXTChat({
   dark = true,
   baseUri = "http://localhost:7437",
   apiKey = "",
+  topMargin = "-35",
 }) {
   const sdk = new AGiXTSDK({
     baseUri: baseUri,
@@ -324,7 +325,7 @@ export default function AGiXTChat({
         <Box
           sx={{
             display: "flex",
-            marginTop: "-35px",
+            marginTop: `${topMargin}px`,
             marginRight: "1px",
             marginLeft: "1px",
           }}
@@ -344,6 +345,7 @@ export default function AGiXTChat({
               chatHistory={chatHistory}
               isLoading={isLoading}
               sdk={sdk}
+              topMargin={topMargin}
             />
             <TextField
               label="Ask your question here."
