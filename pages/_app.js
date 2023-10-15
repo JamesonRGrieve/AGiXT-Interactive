@@ -99,8 +99,7 @@ export default function App({ Component, pageProps, dark }) {
   const [conversation, setConversation] = useState([]);
   const [agentSettings, setAgentSettings] = useState({});
   const [agentCommands, setAgentCommands] = useState([]);
-  const [providers, setProviders] = useState([]);
-
+  const [pageTitle, setPageTitle] = useState("Home");
   const contentWidth =
     open && rightDrawerOpen
       ? `calc(100% - ${bothDrawersWidth}px)`
@@ -160,45 +159,7 @@ export default function App({ Component, pageProps, dark }) {
   const handleChainChange = (event) => {
     setSelectedChain(event.target.value);
   };
-  const pageTitle = () => {
-    if (pageName == "chain") {
-      return "Chain Management";
-    } else if (pageName == "agent") {
-      if (tab == 0) {
-        return "Chat Mode";
-      } else if (tab == 1) {
-        return "Prompt Mode";
-      } else if (tab == 3) {
-        return "Instruct Mode";
-      } else if (tab == 2) {
-        return "Chain Execution Mode";
-      } else {
-        return "Agent Interactions";
-      }
-    } else if (pageName == "prompt") {
-      return "Prompt Management";
-    } else if (pageName == "train") {
-      if (tab == 0) {
-        return "Website Training";
-      } else if (tab == 1) {
-        return "File Training";
-      } else if (tab == 2) {
-        return "Text Training";
-      } else if (tab == 3) {
-        return "GitHub Training";
-      } else if (tab == 5) {
-        return "arXiv Training";
-      } else if (tab == 4) {
-        return "Memory Management";
-      } else {
-        return "Agent Training";
-      }
-    } else if (pageName == "settings") {
-      return "Agent Settings";
-    } else {
-      return "Home";
-    }
-  };
+
   useEffect(() => {
     if (["prompt", "chain", ""].includes(pageName)) {
       setRightDrawerOpen(false);
@@ -234,7 +195,7 @@ export default function App({ Component, pageProps, dark }) {
   return (
     <>
       <Head>
-        <title>{pageName ? "AGiXT - " + pageTitle() : "AGiXT"}</title>
+        <title>{pageName ? "AGiXT - " + pageTitle : "AGiXT"}</title>
         <meta name="description" content="AGiXT" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
@@ -353,6 +314,7 @@ export default function App({ Component, pageProps, dark }) {
               setConversations={setConversations}
               conversation={conversation}
               setConversation={setConversation}
+              setPageTitle={setPageTitle}
             />
           </Main>
         </Box>

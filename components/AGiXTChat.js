@@ -18,7 +18,7 @@ import SendIcon from "@mui/icons-material/Send";
 
 export default function AGiXTChat({
   selectedChain,
-  chainArgs,
+  chainArgs = {},
   enableFileUpload = false,
   contextResults = 5,
   shots = 1,
