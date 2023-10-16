@@ -4,7 +4,7 @@ export default function Postgres({}) {
     <AGiXTChat
       baseUri={"http://localhost:7437"}
       apiKey={""}
-      agentName={"SQLTester"}
+      agentName={"VeryHelpful.AI"}
       mode={"chain"}
       conversationName={"Postgres"}
       selectedChain={"Postgres Chat"}
