@@ -2,9 +2,10 @@ import * as React from "react";
 import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
 import { alpha, styled } from "@mui/material/styles";
 const ODD_OPACITY = 1;
+
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   [`& .${gridClasses.row}.even`]: {
-    backgroundColor: "#000",
+    backgroundColor: theme.palette.mode === "dark" ? "#333" : "#696a6b",
     "&:hover, &.Mui-hovered": {
       backgroundColor: theme.palette.action.hover,
       "@media (hover: none)": {
@@ -35,7 +36,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-export const DataGridFromCSV = ({ csvData }) => {
+export const DataGridFromCSV = ({ csvData, theme }) => {
   const parseCSV = (csvData) => {
     const lines = csvData.split("\n");
     if (lines.length === 2) {

@@ -10,7 +10,7 @@ import {
   Download as DownloadIcon,
 } from "@mui/icons-material";
 
-export default function MarkdownBlock({ content, chatItem }) {
+export default function MarkdownBlock({ content, chatItem, theme }) {
   const langMap = {
     "": "txt",
     python: "py",
@@ -95,7 +95,7 @@ export default function MarkdownBlock({ content, chatItem }) {
         .split("```csv")[1]
         .split("```")[0]
         .replace(/\n/g, "\r\n");
-      return DataGridFromCSV({ csvData });
+      return DataGridFromCSV({ csvData, theme });
     }
     return content;
   };

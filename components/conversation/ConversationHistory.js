@@ -55,7 +55,7 @@ export default function ConversationHistory({
                   key={index}
                   chatItem={chatItem}
                   sdk={sdk}
-                  lastUserMessage={lastUserMessage} // Pass the last user message as a prop
+                  lastUserMessage={lastUserMessage}
                 />
               );
             })
