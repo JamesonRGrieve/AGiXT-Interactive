@@ -47,15 +47,7 @@ export const DataGridFromCSV = ({ csvData }) => {
       field: header,
       width: "20%",
       headerName: header,
-      renderHeader: () => (
-        <div
-          style={{
-            fontWeight: "bold",
-          }}
-        >
-          {header}
-        </div>
-      ),
+      resizeable: true,
     }));
 
   return (
@@ -63,7 +55,7 @@ export const DataGridFromCSV = ({ csvData }) => {
       {rows.length > 1 ? (
         <DataGrid
           sx={{
-            padding: 1,
+            m: 2,
           }}
           rows={rows}
           columns={columns}
