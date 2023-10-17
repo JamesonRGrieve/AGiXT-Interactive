@@ -1,6 +1,14 @@
 import * as React from "react";
 import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
-import { Button, Box, Dialog } from "@mui/material";
+import {
+  Button,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+} from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 const ODD_OPACITY = 1;
 
@@ -110,6 +118,22 @@ export const DataGridFromCSV = ({
     setIsLoading(false);
     setLastResponse(response);
   };
+  // On button click, do a dialog to let them enter a message about what they want the analysis to be, default to "Suprise me!"
+  const [open, setOpen] = React.useState(false);
+  const [userMessage, setUserMessage] = React.useState("Surprise me!");
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const handleUserMessageChange = (event) => {
+    setUserMessage(event.target.value);
+  };
+  const handleGetInsights = () => {
+    getInsights(userMessage);
+    setOpen(false);
+  };
 
   return (
     <>
@@ -139,10 +163,34 @@ export const DataGridFromCSV = ({
               justifyContent: "flex-end",
             }}
           >
-            <Button onClick={() => {}} color="info" variant="outlined">
+            <Button color="info" variant="outlined" onClick={handleClickOpen}>
               Get Insights
             </Button>
           </Box>
+          <Dialog open={open} onClose={handleClose}>
+            <DialogTitle>Get Insights</DialogTitle>
+            <DialogContent>
+              <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="What would you like insights on?"
+                fullWidth
+                value={userMessage}
+                onChange={handleUserMessageChange}
+                variant="outlined"
+                color="info"
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button color="error" onClick={handleClose}>
+                Cancel
+              </Button>
+              <Button color="info" onClick={handleGetInsights}>
+                Get Insights
+              </Button>
+            </DialogActions>
+          </Dialog>
         </>
       ) : (
         csvData

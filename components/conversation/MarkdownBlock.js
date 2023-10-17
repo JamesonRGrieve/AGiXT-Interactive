@@ -17,6 +17,7 @@ export default function MarkdownBlock({
   setIsLoading,
   setLastResponse,
   conversationName,
+  agentName,
 }) {
   const langMap = {
     "": "txt",
@@ -98,7 +99,6 @@ export default function MarkdownBlock({
     // TODO: If it is a csv code block, convert it to an MUI data table
     if (message.includes("```csv")) {
       // Get the csv data between ```csv and ```
-      const agentName = chatItem.role;
       const csvData = message
         .split("```csv")[1]
         .split("```")[0]

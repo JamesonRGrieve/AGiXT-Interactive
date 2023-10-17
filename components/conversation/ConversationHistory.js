@@ -62,6 +62,7 @@ export default function ConversationHistory({
                   setIsLoading={setIsLoading}
                   setLastResponse={setLastResponse}
                   conversationName={conversationName}
+                  agentName={agentName}
                 />
               );
             })
@@ -79,6 +80,7 @@ export default function ConversationHistory({
             setIsLoading={setIsLoading}
             setLastResponse={setLastResponse}
             conversationName={conversationName}
+            agentName={agentName}
           />
         )}
       </div>
@@ -94,6 +96,7 @@ const ChatMessage = ({
   setIsLoading,
   setLastResponse,
   conversationName,
+  agentName,
 }) => {
   const formattedMessage =
     typeof chatItem.message === "string"
@@ -150,6 +153,7 @@ const ChatMessage = ({
           setIsLoading={setIsLoading}
           setLastResponse={setLastResponse}
           conversationName={conversationName}
+          agentName={agentName}
         />
         <Typography
           variant="caption"
