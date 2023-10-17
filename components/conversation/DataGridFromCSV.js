@@ -1,4 +1,3 @@
-import * as React from "react";
 import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
 import {
   Button,
@@ -10,6 +9,7 @@ import {
   TextField,
 } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
+import { useState } from "react";
 const ODD_OPACITY = 1;
 
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -53,16 +53,17 @@ export const DataGridFromCSV = ({
   setLastResponse,
   conversationName,
 }) => {
+  let headers = [];
+  const [open, setOpen] = useState(false);
+  const [userMessage, setUserMessage] = useState("Surprise me!");
   const parseCSV = (csvData) => {
     const lines = csvData.split("\n");
     if (lines.length === 2) {
       return csvData;
     }
     const rawHeaders = lines[1].split(",");
-
-    const headers = rawHeaders.map((header) => header.trim());
-
-    const rows = [];
+    headers = rawHeaders.map((header) => header.trim());
+    const newRows = [];
     for (let i = 1; i < lines.length; i++) {
       const values = lines[i].split(",");
       if (values.length === headers.length) {
@@ -77,32 +78,39 @@ export const DataGridFromCSV = ({
         if (!row.id) {
           row.id = i;
         }
-        rows.push(row);
+        newRows.push(row);
       }
-      if (i === 1 && rows.length > 0) {
-        rows.shift();
+      if (i === 1 && newRows.length > 0) {
+        newRows.shift();
       }
     }
-    return rows;
+    headers = headers
+      .filter((header) => header !== "id")
+      .map((header, index) => ({
+        field: header,
+        width: Math.max(
+          160,
+          (header.length + newRows[index][header].length) * 10
+        ),
+        headerName: header,
+        sx: {
+          "& .MuiDataGrid-cell": {
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+          },
+        },
+      }));
+    return newRows;
   };
-
   const rows = parseCSV(csvData);
-  const columns = Object.keys(rows[0])
-    .filter((header) => header !== "id")
-    .map((header, index) => ({
-      field: header,
-      width: Math.max(160, (header.length + rows[index][header].length) * 10),
-      headerName: header,
-      resizable: true,
-    }));
-  // Handle Get Insights, open a Dialog box
+  const columns = headers;
   const getInsights = async (userMessage) => {
     setIsLoading(true);
     const lines = csvData.split("\n");
     lines.shift();
     lines.pop();
     const newCSVData = lines.join("\n");
-    console.log(newCSVData);
     let chainArgs = {
       conversation_name: conversationName,
       text: newCSVData,
@@ -118,9 +126,6 @@ export const DataGridFromCSV = ({
     setIsLoading(false);
     setLastResponse(response);
   };
-  // On button click, do a dialog to let them enter a message about what they want the analysis to be, default to "Suprise me!"
-  const [open, setOpen] = React.useState(false);
-  const [userMessage, setUserMessage] = React.useState("Surprise me!");
   const handleClickOpen = () => {
     setOpen(true);
   };
