@@ -27,6 +27,9 @@ export default function ConversationHistory({
   isLoading,
   sdk,
   topMargin,
+  setIsLoading,
+  setLastResponse,
+  conversationName,
 }) {
   const topPx = Number(topMargin) + 129;
   const marginTop = `${topPx}px`;
@@ -56,6 +59,9 @@ export default function ConversationHistory({
                   chatItem={chatItem}
                   sdk={sdk}
                   lastUserMessage={lastUserMessage}
+                  setIsLoading={setIsLoading}
+                  setLastResponse={setLastResponse}
+                  conversationName={conversationName}
                 />
               );
             })
@@ -70,6 +76,9 @@ export default function ConversationHistory({
             }}
             isLoading={isLoading}
             sdk={sdk}
+            setIsLoading={setIsLoading}
+            setLastResponse={setLastResponse}
+            conversationName={conversationName}
           />
         )}
       </div>
@@ -77,7 +86,15 @@ export default function ConversationHistory({
   );
 }
 
-const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
+const ChatMessage = ({
+  chatItem,
+  lastUserMessage,
+  isLoading,
+  sdk,
+  setIsLoading,
+  setLastResponse,
+  conversationName,
+}) => {
   const formattedMessage =
     typeof chatItem.message === "string"
       ? chatItem.message.replace(/\\n/g, "  \n").replace(/\n/g, "  \n")
@@ -129,6 +146,10 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
           content={formattedMessage}
           chatItem={chatItem}
           theme={theme}
+          sdk={sdk}
+          setIsLoading={setIsLoading}
+          setLastResponse={setLastResponse}
+          conversationName={conversationName}
         />
         <Typography
           variant="caption"

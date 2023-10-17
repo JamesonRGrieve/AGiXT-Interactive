@@ -37,7 +37,14 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-export const DataGridFromCSV = ({ csvData, sdk }) => {
+export const DataGridFromCSV = ({
+  csvData,
+  sdk,
+  agentName,
+  setIsLoading,
+  setLastResponse,
+  conversationName,
+}) => {
   const parseCSV = (csvData) => {
     const lines = csvData.split("\n");
     if (lines.length === 2) {
@@ -81,14 +88,27 @@ export const DataGridFromCSV = ({ csvData, sdk }) => {
       resizable: true,
     }));
   // Handle Get Insights, open a Dialog box
-
-  const handleGetInsights = (csvData) => {
-    // Remove the first and last lines from csvData
+  const getInsights = async (userMessage) => {
+    setIsLoading(true);
     const lines = csvData.split("\n");
     lines.shift();
     lines.pop();
     const newCSVData = lines.join("\n");
     console.log(newCSVData);
+    let chainArgs = {
+      conversation_name: conversationName,
+      text: newCSVData,
+    };
+    const response = await sdk.runChain(
+      "Data Analysis",
+      userMessage,
+      agentName,
+      false,
+      1,
+      chainArgs
+    );
+    setIsLoading(false);
+    setLastResponse(response);
   };
 
   return (

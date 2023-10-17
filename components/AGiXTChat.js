@@ -346,6 +346,9 @@ export default function AGiXTChat({
               isLoading={isLoading}
               sdk={sdk}
               topMargin={topMargin}
+              setIsLoading={setIsLoading}
+              setLastResponse={setLastResponse}
+              conversationName={conversationName}
             />
             <TextField
               label="Ask your question here."

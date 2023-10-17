@@ -10,7 +10,14 @@ import {
   Download as DownloadIcon,
 } from "@mui/icons-material";
 
-export default function MarkdownBlock({ content, chatItem, theme }) {
+export default function MarkdownBlock({
+  content,
+  chatItem,
+  sdk,
+  setIsLoading,
+  setLastResponse,
+  conversationName,
+}) {
   const langMap = {
     "": "txt",
     python: "py",
@@ -91,11 +98,19 @@ export default function MarkdownBlock({ content, chatItem, theme }) {
     // TODO: If it is a csv code block, convert it to an MUI data table
     if (message.includes("```csv")) {
       // Get the csv data between ```csv and ```
+      const agentName = chatItem.role;
       const csvData = message
         .split("```csv")[1]
         .split("```")[0]
         .replace(/\n/g, "\r\n");
-      return DataGridFromCSV({ csvData, theme });
+      return DataGridFromCSV({
+        csvData,
+        sdk,
+        agentName,
+        setIsLoading,
+        setLastResponse,
+        conversationName,
+      });
     }
     return content;
   };
