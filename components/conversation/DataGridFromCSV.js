@@ -73,11 +73,11 @@ export const DataGridFromCSV = ({ csvData, theme }) => {
   const rows = parseCSV(csvData);
   const columns = Object.keys(rows[0])
     .filter((header) => header !== "id")
-    .map((header) => ({
+    .map((header, index) => ({
       field: header,
-      width: "20%",
+      width: Math.max(160, (header.length + rows[index][header].length) * 10),
       headerName: header,
-      resizeable: true,
+      resizable: true,
     }));
 
   return (
