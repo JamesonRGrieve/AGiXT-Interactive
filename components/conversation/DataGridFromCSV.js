@@ -178,6 +178,11 @@ export const DataGridFromCSV = ({
                 fullWidth
                 value={userMessage}
                 onChange={handleUserMessageChange}
+                onClick={(e) => {
+                  if (e.target.value === "Surprise me!") {
+                    setUserMessage("");
+                  }
+                }}
                 variant="outlined"
                 color="info"
               />
