@@ -1,10 +1,39 @@
 import * as React from "react";
-import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import { styled } from "@mui/system";
-
-const getRowClassName = (params) => {
-  return params.id % 2 === 0 ? "even-row" : "odd-row";
-};
+import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
+import { alpha, styled } from "@mui/material/styles";
+const ODD_OPACITY = 1;
+const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
+  [`& .${gridClasses.row}.even`]: {
+    backgroundColor: "#000",
+    "&:hover, &.Mui-hovered": {
+      backgroundColor: theme.palette.action.hover,
+      "@media (hover: none)": {
+        backgroundColor: "transparent",
+      },
+    },
+    "&.Mui-selected": {
+      backgroundColor: alpha(
+        theme.palette.primary.main,
+        ODD_OPACITY + theme.palette.action.selectedOpacity
+      ),
+      "&:hover, &.Mui-hovered": {
+        backgroundColor: alpha(
+          theme.palette.primary.main,
+          ODD_OPACITY +
+            theme.palette.action.selectedOpacity +
+            theme.palette.action.hoverOpacity
+        ),
+        // Reset on touch devices, it doesn't add specificity
+        "@media (hover: none)": {
+          backgroundColor: alpha(
+            theme.palette.primary.main,
+            ODD_OPACITY + theme.palette.action.selectedOpacity
+          ),
+        },
+      },
+    },
+  },
+}));
 
 export const DataGridFromCSV = ({ csvData }) => {
   const parseCSV = (csvData) => {
@@ -53,10 +82,8 @@ export const DataGridFromCSV = ({ csvData }) => {
   return (
     <>
       {rows.length > 1 ? (
-        <DataGrid
-          sx={{
-            m: 2,
-          }}
+        <StripedDataGrid
+          density="compact"
           rows={rows}
           columns={columns}
           pageSize={5}
@@ -68,7 +95,9 @@ export const DataGridFromCSV = ({ csvData }) => {
               },
             },
           }}
-          getRowClassName={getRowClassName}
+          getRowClassName={(params) =>
+            params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+          }
         />
       ) : (
         csvData
