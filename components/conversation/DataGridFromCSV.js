@@ -1,5 +1,6 @@
 import * as React from "react";
 import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
+import { Button, Box, Dialog } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
 const ODD_OPACITY = 1;
 
@@ -36,7 +37,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-export const DataGridFromCSV = ({ csvData, theme }) => {
+export const DataGridFromCSV = ({ csvData, sdk }) => {
   const parseCSV = (csvData) => {
     const lines = csvData.split("\n");
     if (lines.length === 2) {
@@ -79,27 +80,50 @@ export const DataGridFromCSV = ({ csvData, theme }) => {
       headerName: header,
       resizable: true,
     }));
+  // Handle Get Insights, open a Dialog box
+
+  const handleGetInsights = (csvData) => {
+    // Remove the first and last lines from csvData
+    const lines = csvData.split("\n");
+    lines.shift();
+    lines.pop();
+    const newCSVData = lines.join("\n");
+    console.log(newCSVData);
+  };
 
   return (
     <>
       {rows.length > 1 ? (
-        <StripedDataGrid
-          density="compact"
-          rows={rows}
-          columns={columns}
-          pageSize={5}
-          components={{ Toolbar: GridToolbar }}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 5,
+        <>
+          <StripedDataGrid
+            density="compact"
+            rows={rows}
+            columns={columns}
+            pageSize={5}
+            components={{ Toolbar: GridToolbar }}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
               },
-            },
-          }}
-          getRowClassName={(params) =>
-            params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
-          }
-        />
+            }}
+            getRowClassName={(params) =>
+              params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+            }
+          />
+          <br />
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <Button onClick={() => {}} color="info" variant="outlined">
+              Get Insights
+            </Button>
+          </Box>
+        </>
       ) : (
         csvData
       )}
