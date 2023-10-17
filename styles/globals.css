@@ -117,3 +117,13 @@ a {
   background-color: #f6f8fa;
   font-weight: bold;
 }
+
+.even-row {
+  background-color: #6a737d;
+  color: white;
+}
+
+.odd-row {
+  background-color: #000000;
+  color: white;
+}
