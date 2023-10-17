@@ -15,6 +15,7 @@
     "@mui/icons-material": "^5.14.9",
     "@mui/material": "latest",
     "@mui/system": "^5.14.13",
+    "@mui/x-data-grid": "^6.16.2",
     "agixt": "^1.0.36",
     "agixtchat": "^0.0.7",
     "clipboard-copy": "^4.0.1",
