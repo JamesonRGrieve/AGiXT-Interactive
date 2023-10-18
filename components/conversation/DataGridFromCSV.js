@@ -91,6 +91,8 @@ export const DataGridFromCSV = ({
       .map((header, index) => ({
         field: header,
         width: Math.max(160, header.length * 10),
+        flex: 1,
+        resizeable: true,
         headerName: header,
         sx: {
           "& .MuiDataGrid-cell": {
