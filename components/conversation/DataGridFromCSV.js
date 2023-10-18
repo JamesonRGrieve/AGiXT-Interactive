@@ -9,7 +9,7 @@ import {
   TextField,
 } from "@mui/material";
 import { alpha, styled } from "@mui/material/styles";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 const ODD_OPACITY = 1;
 
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -53,10 +53,12 @@ export const DataGridFromCSV = ({
   setLastResponse,
   conversationName,
 }) => {
-  let headers = [];
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState("Surprise me!");
+  const [rows, setRows] = useState([]);
+  const [columns, setColumns] = useState([]);
   const parseCSV = (csvData) => {
+    let headers = [];
     const lines = csvData.split("\n");
     if (lines.length === 2) {
       return csvData;
@@ -88,10 +90,7 @@ export const DataGridFromCSV = ({
       .filter((header) => header !== "id")
       .map((header, index) => ({
         field: header,
-        width: Math.max(
-          160,
-          (header.length + newRows[index][header].length) * 10
-        ),
+        width: Math.max(160, header.length * 10),
         headerName: header,
         sx: {
           "& .MuiDataGrid-cell": {
@@ -101,10 +100,13 @@ export const DataGridFromCSV = ({
           },
         },
       }));
-    return newRows;
+    setColumns(headers);
+    setRows(newRows);
   };
-  const rows = parseCSV(csvData);
-  const columns = headers;
+  useEffect(() => {
+    parseCSV(csvData);
+  }, [csvData]);
+
   const getInsights = async (userMessage) => {
     setIsLoading(true);
     const lines = csvData.split("\n");
