@@ -102,6 +102,15 @@ export const DataGridFromCSV = ({
           },
         },
       }));
+    // If none of the rows have a value, don't show the column
+    headers = headers.filter((header) => {
+      for (let i = 0; i < newRows.length; i++) {
+        if (newRows[i][header.field]) {
+          return true;
+        }
+      }
+      return false;
+    });
     setColumns(headers);
     setRows(newRows);
     console.log("newRows", newRows);
