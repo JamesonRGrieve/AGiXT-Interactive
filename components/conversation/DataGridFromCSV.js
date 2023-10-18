@@ -67,7 +67,7 @@ export const DataGridFromCSV = ({
     headers = rawHeaders.map((header) => header.trim());
     const newRows = [];
     for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split(",");
+      const values = lines[i].split('","');
       if (values.length === headers.length) {
         const row = {};
         for (let j = 0; j < headers.length; j++) {
@@ -102,6 +102,8 @@ export const DataGridFromCSV = ({
       }));
     setColumns(headers);
     setRows(newRows);
+    console.log("newRows", newRows);
+    console.log("headers", headers);
   };
   useEffect(() => {
     parseCSV(csvData);
