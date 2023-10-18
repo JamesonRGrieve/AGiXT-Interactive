@@ -75,6 +75,12 @@ export const DataGridFromCSV = ({
           if (values[j].startsWith('"') && values[j].endsWith('"')) {
             values[j] = values[j].slice(1, -1);
           }
+          if (values[j].startsWith('"')) {
+            values[j] = values[j].slice(1);
+          }
+          if (values[j].endsWith('"')) {
+            values[j] = values[j].slice(0, -1);
+          }
           row[headers[j]] = values[j];
         }
         if (!row.id) {
