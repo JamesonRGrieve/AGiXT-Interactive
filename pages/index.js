@@ -5,6 +5,7 @@ export default function Home() {
   const [conversationName, setConversationName] = useState(
     "Convert Extensions to new ones"
   );
+  // TODO: Make the API Key come from headers instead of injecting here.
   return (
     <AGiXTChat
       baseUri={"http://localhost:7437"} // Base URI

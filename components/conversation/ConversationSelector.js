@@ -10,6 +10,7 @@ import {
   DialogContent,
   TextField,
   DialogActions,
+  Tooltip,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
@@ -30,6 +31,9 @@ export default function ConversationSelector({
 }) {
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState("");
+  // Make a confirmation dialog for deleting conversations
+  const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
+
   const handleAddConversation = async () => {
     if (!newConversationName) return;
     await sdk.newConversation(agentName, newConversationName);
@@ -50,6 +54,7 @@ export default function ConversationSelector({
     );
     setConversations(updatedConversations);
     setConversationName(updatedConversations[0] || "");
+    setOpenDeleteConversation(false);
   };
 
   const handleExportConversation = async () => {
@@ -73,57 +78,69 @@ export default function ConversationSelector({
         justifyContent: "space-between",
       }}
     >
-      <FormControl
-        sx={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-        }}
-        fullWidth
-      >
-        <InputLabel id="conversation-label">Select a Conversation</InputLabel>
-        <Select
-          fullWidth
-          labelId="conversation-label"
-          label="Select a Conversation"
+      <Tooltip title="Select a Conversation">
+        <FormControl
           sx={{
-            height: "30px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
           }}
-          value={conversationName}
-          onChange={(e) => setConversationName(e.target.value)}
+          fullWidth
         >
-          {conversations
-            ? conversations.map((c) => (
-                <MenuItem key={c} value={c}>
-                  {c}
-                </MenuItem>
-              ))
-            : null}
-        </Select>
-        &nbsp;
+          <InputLabel id="conversation-label">Select a Conversation</InputLabel>
+          <Select
+            fullWidth
+            labelId="conversation-label"
+            label="Select a Conversation"
+            sx={{
+              height: "30px",
+            }}
+            value={conversationName}
+            onChange={(e) => setConversationName(e.target.value)}
+          >
+            {conversations
+              ? conversations.map((c) => (
+                  <MenuItem key={c} value={c}>
+                    {c}
+                  </MenuItem>
+                ))
+              : null}
+          </Select>
+        </FormControl>
+      </Tooltip>
+      &nbsp;
+      <Tooltip title="Add Conversation">
         <Button
           onClick={() => setOpenNewConversation(true)}
           color={"info"}
-          sx={{ minWidth: "30px" }}
+          sx={{ minWidth: "20px" }}
         >
-          <AddIcon sx={{ minWidth: "30px" }} color={"info"} />
+          <AddIcon sx={{ minWidth: "20px" }} color={"info"} />
         </Button>
+      </Tooltip>
+      <Tooltip title="Export Conversation">
         <Button
           onClick={handleExportConversation}
           color={"info"}
-          sx={{ minWidth: "30px" }}
+          sx={{ minWidth: "20px" }}
         >
-          <FileDownloadOutlinedIcon sx={{ minWidth: "30px" }} color={"info"} />
+          <FileDownloadOutlinedIcon sx={{ minWidth: "20px" }} color={"info"} />
         </Button>
+      </Tooltip>
+      <Tooltip title="Delete Conversation">
         <Button
-          onClick={handleDeleteConversation}
+          onClick={() => setOpenDeleteConversation(true)}
           color={"error"}
-          sx={{ minWidth: "30px" }}
+          sx={{ minWidth: "20px" }}
         >
-          <DeleteIcon sx={{ minWidth: "30px" }} color={"error"} />
+          <DeleteIcon sx={{ minWidth: "20px" }} color={"error"} />
         </Button>
-      </FormControl>
-      <MenuDarkSwitch checked={darkMode} onChange={handleToggleDarkMode} />
+      </Tooltip>
+      <Tooltip
+        title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      >
+        <MenuDarkSwitch checked={darkMode} onChange={handleToggleDarkMode} />
+      </Tooltip>
       <Dialog
         open={openNewConversation}
         onClose={() => setOpenNewConversation(false)}
@@ -149,6 +166,28 @@ export default function ConversationSelector({
           </Button>
           <Button onClick={handleAddConversation} color="info">
             Create
+          </Button>
+        </DialogActions>
+      </Dialog>
+      <Dialog
+        open={openDeleteConversation}
+        onClose={() => setOpenDeleteConversation(false)}
+      >
+        <DialogTitle>Delete Conversation</DialogTitle>
+        <DialogContent>
+          <DialogContent>
+            Are you sure you want to delete this conversation?
+          </DialogContent>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => setOpenDeleteConversation(false)}
+            color="error"
+          >
+            Cancel
+          </Button>
+          <Button onClick={handleDeleteConversation} color="info">
+            Delete
           </Button>
         </DialogActions>
       </Dialog>
