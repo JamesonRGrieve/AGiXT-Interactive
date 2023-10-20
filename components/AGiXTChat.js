@@ -351,7 +351,7 @@ export default function AGiXTChat({
   const handleLogout = async () => {
     setCookie("apiKey", "");
     setLoggedIn(false);
-    setCookie("loggedIn", loggedIn);
+    setCookie("loggedIn", false);
   };
 
   return (

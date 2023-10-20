@@ -1,10 +1,16 @@
 import AGiXTChat from "../components/AGiXTChat";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { setCookie, getCookie } from "cookies-next";
 
 export default function Home() {
+  const cookieConvo = getCookie("conversationName");
   const [conversationName, setConversationName] = useState(
-    "Convert Extensions to new ones"
+    cookieConvo || "Convert Extensions to new ones"
   );
+  // Add the conversation name to the cookie
+  useEffect(() => {
+    setCookie("conversationName", conversationName);
+  }, [conversationName]);
   return (
     <AGiXTChat
       baseUri={"http://localhost:7437"} // Base URI to the AGiXT server
