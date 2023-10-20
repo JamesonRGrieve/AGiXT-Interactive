@@ -103,11 +103,11 @@ export default function AGiXTChat({
   insightAgent = "",
   dark = true,
   baseUri = "http://localhost:7437",
-  apiKey = "",
   topMargin = "-35",
   setConversationName,
   showConversationBar = false,
 }) {
+  const apiKey = getCookie("apiKey") || "";
   const sdk = new AGiXTSDK({
     baseUri: baseUri,
     apiKey: apiKey,
