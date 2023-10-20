@@ -389,7 +389,15 @@ export default function AGiXTChat({
               }),
             }}
           >
-            {!loggedIn && <Auth userKey={userKey} handleLogin={handleLogin} />}
+            {!loggedIn && (
+              <Auth
+                userKey={userKey}
+                handleLogin={handleLogin}
+                darkMode={darkMode}
+                handleToggleDarkMode={handleToggleDarkMode}
+                MenuDarkSwitch={MenuDarkSwitch}
+              />
+            )}
             {loggedIn && (
               <>
                 {showConversationBar && (
