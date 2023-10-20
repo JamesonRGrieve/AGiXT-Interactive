@@ -107,6 +107,8 @@ export default function AGiXTChat({
   setConversationName,
   showConversationBar = false,
 }) {
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userKey, setUserKey] = useState("");
   const apiKey = getCookie("apiKey") || "";
   const sdk = new AGiXTSDK({
     baseUri: baseUri,
@@ -202,7 +204,17 @@ export default function AGiXTChat({
     getArgs(promptName, promptCategory);
   }, [promptName]);
   // Uploaded files will be formatted like [{"file_name": "file_content"}]
-
+  useEffect(() => {
+    // Login
+    const loggedInC = getCookie("loggedIn");
+    if (loggedInC) {
+      setLoggedIn(true);
+    }
+    const userApiKey = getCookie("apiKey");
+    if (userApiKey) {
+      setUserKey(userApiKey);
+    }
+  }, []);
   const runChain = async () => {
     setIsLoading(true);
     const agentOverride = useSelectedAgent ? agentName : "";
@@ -330,6 +342,12 @@ export default function AGiXTChat({
       setMessage("");
     }
   };
+  const handleLogin = async () => {
+    setCookie("apiKey", userKey);
+    setLoggedIn(true);
+    setCookie("loggedIn", loggedIn);
+  };
+
   return (
     <>
       <ThemeProvider theme={theme}>
@@ -365,122 +383,144 @@ export default function AGiXTChat({
               }),
             }}
           >
-            {showConversationBar && (
-              <ConversationSelector
-                agentName={agentName}
-                conversations={conversations}
-                conversationName={conversationName}
-                setConversationName={setConversationName}
-                setConversations={setConversations}
-                conversation={chatHistory}
-                darkMode={darkMode}
-                handleToggleDarkMode={handleToggleDarkMode}
-                MenuDarkSwitch={MenuDarkSwitch}
-                sdk={sdk}
-              />
+            {!loggedIn && (
+              <>
+                <TextField
+                  label="Enter your password"
+                  type="text"
+                  value={userKey}
+                />
+                <Button
+                  color="info"
+                  variant="contained"
+                  onClick={handleLogin}
+                  sx={{ ml: 1 }}
+                >
+                  Log in
+                </Button>
+              </>
             )}
-            <ConversationHistory
-              agentName={agentName}
-              insightAgent={insightAgent}
-              chatHistory={chatHistory}
-              isLoading={isLoading}
-              sdk={sdk}
-              topMargin={showConversationBar ? 7 : topMargin}
-              setIsLoading={setIsLoading}
-              setLastResponse={setLastResponse}
-              conversationName={conversationName}
-            />
-            <TextField
-              label="Ask your question here."
-              placeholder="Ask your question here."
-              multiline
-              rows={2}
-              fullWidth
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              onKeyPress={handleKeyPress}
-              sx={{ mb: 2 }}
-              disabled={isLoading}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {enableFileUpload && (
-                      <>
-                        <IconButton
-                          variant="contained"
-                          color="info"
-                          onClick={() => {
-                            setUploadedFiles([]);
-                            setOpenFileUpload(true);
-                          }}
-                          disabled={isLoading}
-                          sx={{ height: "56px" }}
-                        >
-                          <NoteAddOutlinedIcon />
-                        </IconButton>
-                        <Dialog
-                          open={openFileUpload}
-                          onClose={handleCloseFileUpload}
-                        >
-                          <DialogTitle id="form-dialog-title">
-                            Upload Files
-                          </DialogTitle>
-                          <DialogContent>
-                            <DialogContentText>
-                              Please upload the files you would like to send.
-                            </DialogContentText>
-                            <input
-                              accept="*"
-                              id="contained-button-file"
-                              multiple
-                              type="file"
-                              onChange={(e) => {
-                                setUploadedFiles(e.target.files);
-                              }}
-                            />
-                          </DialogContent>
-                          <DialogActions>
-                            <Button
-                              onClick={handleCloseFileUpload}
-                              color="error"
-                            >
-                              Cancel
-                            </Button>
-                            <Button
-                              onClick={handleUploadFiles}
+            {loggedIn && (
+              <>
+                {showConversationBar && (
+                  <ConversationSelector
+                    agentName={agentName}
+                    conversations={conversations}
+                    conversationName={conversationName}
+                    setConversationName={setConversationName}
+                    setConversations={setConversations}
+                    conversation={chatHistory}
+                    darkMode={darkMode}
+                    handleToggleDarkMode={handleToggleDarkMode}
+                    MenuDarkSwitch={MenuDarkSwitch}
+                    sdk={sdk}
+                  />
+                )}
+                <ConversationHistory
+                  agentName={agentName}
+                  insightAgent={insightAgent}
+                  chatHistory={chatHistory}
+                  isLoading={isLoading}
+                  sdk={sdk}
+                  topMargin={showConversationBar ? 7 : topMargin}
+                  setIsLoading={setIsLoading}
+                  setLastResponse={setLastResponse}
+                  conversationName={conversationName}
+                />
+                <TextField
+                  label="Ask your question here."
+                  placeholder="Ask your question here."
+                  multiline
+                  rows={2}
+                  fullWidth
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  sx={{ mb: 2 }}
+                  disabled={isLoading}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        {enableFileUpload && (
+                          <>
+                            <IconButton
+                              variant="contained"
                               color="info"
+                              onClick={() => {
+                                setUploadedFiles([]);
+                                setOpenFileUpload(true);
+                              }}
                               disabled={isLoading}
+                              sx={{ height: "56px" }}
                             >
-                              Upload
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                      </>
-                    )}
-                    {!isLoading && (
-                      <Tooltip title="Send Message">
-                        <IconButton
-                          variant="contained"
-                          color="info"
-                          onClick={handleSendMessage}
-                          sx={{ height: "56px", padding: "0px" }}
-                        >
-                          <SendIcon />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                    <AudioRecorder
-                      conversationName={conversationName}
-                      contextResults={contextResults}
-                      conversationResults={conversationResults}
-                      setIsLoading={setIsLoading}
-                      agentName={agentName}
-                      sdk={sdk}
-                    />
-                  </InputAdornment>
-                ),
-              }}
-            />
+                              <NoteAddOutlinedIcon />
+                            </IconButton>
+                            <Dialog
+                              open={openFileUpload}
+                              onClose={handleCloseFileUpload}
+                            >
+                              <DialogTitle id="form-dialog-title">
+                                Upload Files
+                              </DialogTitle>
+                              <DialogContent>
+                                <DialogContentText>
+                                  Please upload the files you would like to
+                                  send.
+                                </DialogContentText>
+                                <input
+                                  accept="*"
+                                  id="contained-button-file"
+                                  multiple
+                                  type="file"
+                                  onChange={(e) => {
+                                    setUploadedFiles(e.target.files);
+                                  }}
+                                />
+                              </DialogContent>
+                              <DialogActions>
+                                <Button
+                                  onClick={handleCloseFileUpload}
+                                  color="error"
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  onClick={handleUploadFiles}
+                                  color="info"
+                                  disabled={isLoading}
+                                >
+                                  Upload
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
+                          </>
+                        )}
+                        {!isLoading && (
+                          <Tooltip title="Send Message">
+                            <IconButton
+                              variant="contained"
+                              color="info"
+                              onClick={handleSendMessage}
+                              sx={{ height: "56px", padding: "0px" }}
+                            >
+                              <SendIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+                        <AudioRecorder
+                          conversationName={conversationName}
+                          contextResults={contextResults}
+                          conversationResults={conversationResults}
+                          setIsLoading={setIsLoading}
+                          agentName={agentName}
+                          sdk={sdk}
+                        />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </>
+            )}
           </main>
         </Box>
       </ThemeProvider>
