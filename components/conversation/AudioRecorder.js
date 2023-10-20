@@ -20,7 +20,9 @@ export default function AudioRecorder({
 
   const startRecording = () => {
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      mediaRecorder.current = new MediaRecorder(stream);
+      mediaRecorder.current = new MediaRecorder(stream, {
+        mimeType: "audio/mp4",
+      });
       mediaRecorder.current.ondataavailable = (event) => {
         setAudioData(event.data);
       };
@@ -32,15 +34,18 @@ export default function AudioRecorder({
 
   const sendAudio = () => {
     if (mediaRecorder.current) {
-      mediaRecorder.current.stop(); // Stop the recording when sending
+      mediaRecorder.current.stop();
       setRecording(false);
     }
 
     if (audioData) {
       const reader = new FileReader();
-      reader.readAsDataURL(audioData);
+      reader.readAsArrayBuffer(audioData); // Use ArrayBuffer for raw binary data
       reader.onloadend = () => {
-        const base64Audio = reader.result.split(",")[1];
+        const audioDataArray = new Uint8Array(reader.result);
+        const base64Audio = btoa(
+          String.fromCharCode.apply(null, audioDataArray)
+        ); // Convert to base64
         const response = sdk.executeCommand(
           agentName,
           "Chat with Voice",
@@ -51,10 +56,7 @@ export default function AudioRecorder({
           },
           conversationName
         );
-        const base64TTS = response.replace("#GENERATED_AUDIO:", "");
-        const audio = new Audio(base64TTS);
-        audio.play();
-        setAudioData(null); // Clear the audio data after sending
+        setAudioData(null);
       };
     }
   };
