@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import ConversationHistory from "./conversation/ConversationHistory";
 import ConversationSelector from "./conversation/ConversationSelector";
 import AudioRecorder from "./conversation/AudioRecorder";
+import Auth from "./Auth";
 import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
 import { setCookie, getCookie } from "cookies-next";
 import { createTheme } from "@mui/material/styles";
@@ -388,23 +389,7 @@ export default function AGiXTChat({
               }),
             }}
           >
-            {!loggedIn && (
-              <>
-                <TextField
-                  label="Enter your password"
-                  type="text"
-                  value={userKey}
-                />
-                <Button
-                  color="info"
-                  variant="contained"
-                  onClick={handleLogin}
-                  sx={{ ml: 1 }}
-                >
-                  Log in
-                </Button>
-              </>
-            )}
+            {!loggedIn && <Auth userKey={userKey} handleLogin={handleLogin} />}
             {loggedIn && (
               <>
                 {showConversationBar && (
