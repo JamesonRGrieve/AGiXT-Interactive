@@ -10,18 +10,14 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  Typography,
-  Input,
-  Divider,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { useMemo } from "react";
-import { useRouter } from "next/router";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import { useState } from "react";
 
 export default function ConversationSelector({
+  agentName,
   conversations,
   conversationName,
   setConversationName,
@@ -32,8 +28,6 @@ export default function ConversationSelector({
   MenuDarkSwitch,
   sdk,
 }) {
-  const router = useRouter();
-  const agentName = useMemo(() => router.query.agent, [router.query.agent]);
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState("");
   const handleAddConversation = async () => {

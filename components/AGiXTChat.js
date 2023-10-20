@@ -359,6 +359,7 @@ export default function AGiXTChat({
           >
             {showConversationBar && (
               <ConversationSelector
+                agentName={agentName}
                 conversations={conversations}
                 conversationName={conversationName}
                 setConversationName={setConversationName}
