@@ -12,6 +12,7 @@ export default function Home() {
       apiKey={""} // API Key (Need to replace this with the Authorization bearer token)
       dark={true} // Set dark mode by default
       agentName={"gpt4free"} // Agent name
+      insightAgent={""} // Insight agent name to use a different agent for insights, leave blank to use the same agent
       mode={"prompt"} // Modes are prompt or chain
       showConversationBar={true} // Show the conversation selection bar to create, delete, and export conversations
       conversationName={conversationName}

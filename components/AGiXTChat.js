@@ -100,6 +100,7 @@ export default function AGiXTChat({
   promptName = "Chat",
   promptCategory = "Default",
   agentName = "gpt4free",
+  insightAgent = "",
   dark = true,
   baseUri = "http://localhost:7437",
   apiKey = "",
@@ -119,7 +120,9 @@ export default function AGiXTChat({
     : isDark === "false"
     ? (dark = false)
     : (dark = false);
-
+  if (insightAgent === "") {
+    insightAgent = agentName;
+  }
   const [darkMode, setDarkMode] = useState(dark);
   const themeGenerator = (darkMode) =>
     createTheme({
@@ -378,6 +381,7 @@ export default function AGiXTChat({
             )}
             <ConversationHistory
               agentName={agentName}
+              insightAgent={insightAgent}
               chatHistory={chatHistory}
               isLoading={isLoading}
               sdk={sdk}

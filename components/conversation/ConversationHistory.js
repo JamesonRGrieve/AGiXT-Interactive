@@ -24,6 +24,7 @@ const WAIT_MESSAGE = "Let me think about that for a moment. Please wait..";
 
 export default function ConversationHistory({
   agentName,
+  insightAgent,
   chatHistory,
   isLoading,
   sdk,
@@ -63,7 +64,7 @@ export default function ConversationHistory({
                   setIsLoading={setIsLoading}
                   setLastResponse={setLastResponse}
                   conversationName={conversationName}
-                  agentName={agentName}
+                  agentName={insightAgent}
                 />
               );
             })
@@ -81,7 +82,7 @@ export default function ConversationHistory({
             setIsLoading={setIsLoading}
             setLastResponse={setLastResponse}
             conversationName={conversationName}
-            agentName={agentName}
+            agentName={insightAgent}
           />
         )}
       </div>
