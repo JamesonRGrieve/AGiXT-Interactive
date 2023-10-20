@@ -1,5 +1,10 @@
 import AGiXTChat from "../components/AGiXTChat";
+import { useState } from "react";
+
 export default function Home() {
+  const [conversationName, setConversationName] = useState(
+    "Convert Extensions to new ones"
+  );
   return (
     <AGiXTChat
       baseUri={"http://localhost:7437"} // Base URI
@@ -7,7 +12,8 @@ export default function Home() {
       dark={true} // Set dark mode by default
       agentName={"gpt4free"} // Agent name
       mode={"prompt"} // Modes are prompt or chain
-      conversationName={"Convert Extensions to new ones"}
+      conversationName={conversationName}
+      setConversationName={setConversationName}
       enableFileUpload={false} // Enable file upload button
       // If mode is prompt, set promptName and promptCategory
       promptName={"Chat"} // Only matters if mode is prompt

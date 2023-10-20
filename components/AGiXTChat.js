@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import ConversationHistory from "./conversation/ConversationHistory";
+import ConversationSelector from "./conversation/ConversationSelector";
 import AudioRecorder from "./conversation/AudioRecorder";
 import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
 import { setCookie, getCookie } from "cookies-next";
@@ -102,6 +103,8 @@ export default function AGiXTChat({
   baseUri = "http://localhost:7437",
   apiKey = "",
   topMargin = "-35",
+  setConversationName,
+  showConversationBar = false,
 }) {
   const sdk = new AGiXTSDK({
     baseUri: baseUri,
@@ -141,6 +144,7 @@ export default function AGiXTChat({
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [openFileUpload, setOpenFileUpload] = useState(false);
   const [promptArgs, setPromptArgs] = useState({});
+  const [conversations, setConversations] = useState([]);
   const [hasFiles, setHasFiles] = useState(false); // Will add logic later
   const handleCloseFileUpload = () => {
     setOpenFileUpload(false);
@@ -156,6 +160,14 @@ export default function AGiXTChat({
     setUploadedFiles(newUploadedFiles);
     setOpenFileUpload(false);
   };
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      const convos = await sdk.getConversations(agentName);
+      setConversations(convos);
+    };
+    fetchConversations();
+  }, [agentName]);
 
   useEffect(() => {
     const fetchConversation = async () => {
@@ -340,6 +352,16 @@ export default function AGiXTChat({
               }),
             }}
           >
+            {showConversationBar && (
+              <ConversationSelector
+                conversations={conversations}
+                conversationName={conversationName}
+                setConversationName={setConversationName}
+                setConversations={setConversations}
+                conversation={chatHistory}
+                sdk={sdk}
+              />
+            )}
             <ConversationHistory
               agentName={agentName}
               chatHistory={chatHistory}
