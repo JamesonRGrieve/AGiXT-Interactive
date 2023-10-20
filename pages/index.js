@@ -8,8 +8,8 @@ export default function Home() {
   // TODO: Make the API Key come from headers instead of injecting here.
   return (
     <AGiXTChat
-      baseUri={"http://localhost:7437"} // Base URI
-      apiKey={""} // API Key
+      baseUri={"http://localhost:7437"} // Base URI to the AGiXT server
+      apiKey={""} // API Key (Need to replace this with the Authorization bearer token)
       dark={true} // Set dark mode by default
       agentName={"gpt4free"} // Agent name
       mode={"prompt"} // Modes are prompt or chain

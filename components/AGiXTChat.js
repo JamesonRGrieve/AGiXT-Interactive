@@ -12,6 +12,7 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
 import AGiXTSDK from "agixt";
+import Tooltip from "@mui/material/Tooltip";
 
 import {
   Button,
@@ -332,10 +333,14 @@ export default function AGiXTChat({
         <CssBaseline />
         {!showConversationBar && (
           <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <MenuDarkSwitch
-              checked={darkMode}
-              onChange={handleToggleDarkMode}
-            />
+            <Tooltip
+              title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+            >
+              <MenuDarkSwitch
+                checked={darkMode}
+                onChange={handleToggleDarkMode}
+              />
+            </Tooltip>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           </Box>
         )}
@@ -449,7 +454,7 @@ export default function AGiXTChat({
                       </>
                     )}
                     {!isLoading && (
-                      <>
+                      <Tooltip title="Send Message">
                         <IconButton
                           variant="contained"
                           color="info"
@@ -458,7 +463,7 @@ export default function AGiXTChat({
                         >
                           <SendIcon />
                         </IconButton>
-                      </>
+                      </Tooltip>
                     )}
                     <AudioRecorder
                       conversationName={conversationName}

@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip } from "@mui/material";
 import {
   Mic as MicIcon,
   Cancel as CancelIcon,
@@ -71,17 +71,23 @@ export default function AudioRecorder({
   return (
     <div>
       {!recording ? (
-        <IconButton color="info" onClick={startRecording}>
-          <MicIcon />
-        </IconButton>
+        <Tooltip title="Record Audio">
+          <IconButton color="info" onClick={startRecording}>
+            <MicIcon />
+          </IconButton>
+        </Tooltip>
       ) : (
         <>
-          <IconButton color="error" onClick={cancelRecording}>
-            <CancelIcon />
-          </IconButton>
-          <IconButton color="info" onClick={sendAudio}>
-            <SendIcon />
-          </IconButton>
+          <Tooltip title="Cancel Recording">
+            <IconButton color="error" onClick={cancelRecording}>
+              <CancelIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Send Audio">
+            <IconButton color="info" onClick={sendAudio}>
+              <SendIcon />
+            </IconButton>
+          </Tooltip>
         </>
       )}
     </div>

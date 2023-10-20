@@ -17,6 +17,7 @@ import {
   DialogTitle,
   TextField,
   Button,
+  Tooltip,
 } from "@mui/material";
 import MarkdownBlock from "./MarkdownBlock";
 const WAIT_MESSAGE = "Let me think about that for a moment. Please wait..";
@@ -168,19 +169,26 @@ const ChatMessage = ({
         </Typography>
         {chatItem.role != "USER" && !isLoading && (
           <>
-            <IconButton onClick={() => handleClickOpen(1)}>
-              <ThumbUp color={vote === 1 ? "success" : "inherit"} />
-            </IconButton>
-            <IconButton onClick={() => handleClickOpen(-1)}>
-              <ThumbDown color={vote === -1 ? "error" : "inherit"} />
-            </IconButton>
-
-            <IconButton onClick={handleCopyClick}>
-              <ContentCopyIcon />
-            </IconButton>
-            <IconButton onClick={handleDownloadClick}>
-              <DownloadIcon />
-            </IconButton>
+            <Tooltip title="Provide Positive Feedback">
+              <IconButton onClick={() => handleClickOpen(1)}>
+                <ThumbUp color={vote === 1 ? "success" : "inherit"} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Provide Negative Feedback">
+              <IconButton onClick={() => handleClickOpen(-1)}>
+                <ThumbDown color={vote === -1 ? "error" : "inherit"} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Copy Message">
+              <IconButton onClick={handleCopyClick}>
+                <ContentCopyIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Download Message">
+              <IconButton onClick={handleDownloadClick}>
+                <DownloadIcon />
+              </IconButton>
+            </Tooltip>
           </>
         )}
         <Dialog
