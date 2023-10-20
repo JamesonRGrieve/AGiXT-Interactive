@@ -10,7 +10,7 @@ export default function Home() {
   const [loggedIn, setLoggedIn] = useState(getCookie("loggedIn") || false);
   const [apiKey, setApiKey] = useState(getCookie("apiKey") || "");
   // Wrap it in a login to have the user enter the api key if it isn't in the cookie as apiKey
-  if (loggedIn) {
+  if (!loggedIn) {
     return (
       <>
         <TextField type="text" value={apiKey} />
