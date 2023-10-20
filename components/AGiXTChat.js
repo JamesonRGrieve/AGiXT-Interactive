@@ -330,14 +330,19 @@ export default function AGiXTChat({
     <>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-          <MenuDarkSwitch checked={darkMode} onChange={handleToggleDarkMode} />
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </Box>
+        {!showConversationBar && (
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <MenuDarkSwitch
+              checked={darkMode}
+              onChange={handleToggleDarkMode}
+            />
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          </Box>
+        )}
         <Box
           sx={{
             display: "flex",
-            marginTop: `${topMargin}px`,
+            marginTop: `${showConversationBar ? 5 : topMargin}px`,
             marginRight: "1px",
             marginLeft: "1px",
           }}
@@ -359,6 +364,9 @@ export default function AGiXTChat({
                 setConversationName={setConversationName}
                 setConversations={setConversations}
                 conversation={chatHistory}
+                darkMode={darkMode}
+                handleToggleDarkMode={handleToggleDarkMode}
+                MenuDarkSwitch={MenuDarkSwitch}
                 sdk={sdk}
               />
             )}
@@ -367,7 +375,7 @@ export default function AGiXTChat({
               chatHistory={chatHistory}
               isLoading={isLoading}
               sdk={sdk}
-              topMargin={topMargin}
+              topMargin={showConversationBar ? 7 : topMargin}
               setIsLoading={setIsLoading}
               setLastResponse={setLastResponse}
               conversationName={conversationName}

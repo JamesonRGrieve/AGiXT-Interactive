@@ -12,6 +12,7 @@ export default function Home() {
       dark={true} // Set dark mode by default
       agentName={"gpt4free"} // Agent name
       mode={"prompt"} // Modes are prompt or chain
+      showConversationBar={true} // Show the conversation selection bar to create, delete, and export conversations
       conversationName={conversationName}
       setConversationName={setConversationName}
       enableFileUpload={false} // Enable file upload button

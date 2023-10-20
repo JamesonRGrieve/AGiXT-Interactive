@@ -4,11 +4,22 @@ import {
   InputLabel,
   FormControl,
   Button,
+  Box,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  TextField,
+  DialogActions,
+  Typography,
+  Input,
+  Divider,
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { useMemo } from "react";
 import { useRouter } from "next/router";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
+import AddIcon from "@mui/icons-material/Add";
+import { useState } from "react";
 
 export default function ConversationSelector({
   conversations,
@@ -16,11 +27,27 @@ export default function ConversationSelector({
   setConversationName,
   setConversations,
   conversation,
+  darkMode,
+  handleToggleDarkMode,
+  MenuDarkSwitch,
   sdk,
 }) {
   const router = useRouter();
   const agentName = useMemo(() => router.query.agent, [router.query.agent]);
-
+  const [openNewConversation, setOpenNewConversation] = useState(false);
+  const [newConversationName, setNewConversationName] = useState("");
+  const handleAddConversation = async () => {
+    if (!newConversationName) return;
+    await sdk.newConversation(agentName, newConversationName);
+    setNewConversationName("");
+    setOpenNewConversation(false);
+    const fetchConversations = async () => {
+      const updatedConversations = await sdk.getConversations();
+      setConversations(updatedConversations);
+    };
+    fetchConversations();
+    setConversationName(newConversationName);
+  };
   const handleDeleteConversation = async () => {
     if (!conversationName) return;
     await sdk.deleteConversation(agentName, conversationName);
@@ -44,55 +71,93 @@ export default function ConversationSelector({
   };
 
   return (
-    <FormControl
+    <Box
       sx={{
         display: "flex",
         flexDirection: "row",
-        alignItems: "center",
+        width: "100%",
+        justifyContent: "space-between",
       }}
     >
-      <InputLabel
-        id="conversation-label"
+      <FormControl
         sx={{
-          color: "white",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
         }}
-      >
-        Select a Conversation
-      </InputLabel>
-      <Select
         fullWidth
-        labelId="conversation-label"
-        label="Select a Conversation"
-        sx={{
-          height: "30px",
-          color: "white",
-        }}
-        value={conversationName}
-        onChange={(e) => setConversationName(e.target.value)}
       >
-        {conversations
-          ? conversations.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))
-          : null}
-      </Select>
-      &nbsp;
-      <Button
-        onClick={handleExportConversation}
-        color={"info"}
-        sx={{ minWidth: "30px" }}
+        <InputLabel id="conversation-label">Select a Conversation</InputLabel>
+        <Select
+          fullWidth
+          labelId="conversation-label"
+          label="Select a Conversation"
+          sx={{
+            height: "30px",
+          }}
+          value={conversationName}
+          onChange={(e) => setConversationName(e.target.value)}
+        >
+          {conversations
+            ? conversations.map((c) => (
+                <MenuItem key={c} value={c}>
+                  {c}
+                </MenuItem>
+              ))
+            : null}
+        </Select>
+        &nbsp;
+        <Button
+          onClick={() => setOpenNewConversation(true)}
+          color={"info"}
+          sx={{ minWidth: "30px" }}
+        >
+          <AddIcon sx={{ minWidth: "30px" }} color={"info"} />
+        </Button>
+        <Button
+          onClick={handleExportConversation}
+          color={"info"}
+          sx={{ minWidth: "30px" }}
+        >
+          <FileDownloadOutlinedIcon sx={{ minWidth: "30px" }} color={"info"} />
+        </Button>
+        <Button
+          onClick={handleDeleteConversation}
+          color={"error"}
+          sx={{ minWidth: "30px" }}
+        >
+          <DeleteIcon sx={{ minWidth: "30px" }} color={"error"} />
+        </Button>
+      </FormControl>
+      <MenuDarkSwitch checked={darkMode} onChange={handleToggleDarkMode} />
+      <Dialog
+        open={openNewConversation}
+        onClose={() => setOpenNewConversation(false)}
       >
-        <FileDownloadOutlinedIcon sx={{ minWidth: "30px" }} color={"info"} />
-      </Button>
-      <Button
-        onClick={handleDeleteConversation}
-        color={"error"}
-        sx={{ minWidth: "30px" }}
-      >
-        <DeleteIcon sx={{ minWidth: "30px" }} color={"error"} />
-      </Button>
-    </FormControl>
+        <DialogTitle>Create New Conversation</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            id="name"
+            label="New Conversation Name"
+            type="text"
+            fullWidth
+            value={newConversationName}
+            onChange={(e) => setNewConversationName(e.target.value)}
+            variant="outlined"
+            color="info"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenNewConversation(false)} color="error">
+            Cancel
+          </Button>
+          <Button onClick={handleAddConversation} color="info">
+            Create
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
   );
 }
