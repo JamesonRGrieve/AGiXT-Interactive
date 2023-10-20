@@ -347,6 +347,11 @@ export default function AGiXTChat({
     setLoggedIn(true);
     setCookie("loggedIn", loggedIn);
   };
+  const handleLogout = async () => {
+    setCookie("apiKey", "");
+    setLoggedIn(false);
+    setCookie("loggedIn", loggedIn);
+  };
 
   return (
     <>
@@ -413,6 +418,7 @@ export default function AGiXTChat({
                     darkMode={darkMode}
                     handleToggleDarkMode={handleToggleDarkMode}
                     MenuDarkSwitch={MenuDarkSwitch}
+                    handleLogout={handleLogout}
                     sdk={sdk}
                   />
                 )}

@@ -15,6 +15,7 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import AddIcon from "@mui/icons-material/Add";
+import LogoutIcon from "@mui/icons-material/Logout";
 import { useState } from "react";
 
 export default function ConversationSelector({
@@ -27,6 +28,7 @@ export default function ConversationSelector({
   darkMode,
   handleToggleDarkMode,
   MenuDarkSwitch,
+  handleLogout,
   sdk,
 }) {
   const [openNewConversation, setOpenNewConversation] = useState(false);
@@ -141,6 +143,15 @@ export default function ConversationSelector({
         title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
       >
         <MenuDarkSwitch checked={darkMode} onChange={handleToggleDarkMode} />
+      </Tooltip>
+      <Tooltip title="Logout">
+        <Button
+          onClick={handleLogout}
+          color={"error"}
+          sx={{ minWidth: "20px" }}
+        >
+          <LogoutIcon sx={{ minWidth: "20px" }} color={"error"} />
+        </Button>
       </Tooltip>
       <Dialog
         open={openNewConversation}
