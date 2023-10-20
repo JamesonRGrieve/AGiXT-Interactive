@@ -78,6 +78,7 @@ export default function ConversationSelector({
         justifyContent: "space-between",
       }}
     >
+      &nbsp;&nbsp;&nbsp;
       <Tooltip title="Select a Conversation">
         <FormControl
           sx={{
