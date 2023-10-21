@@ -168,7 +168,7 @@ export default function Auth({ username, userKey, setLoggedIn }) {
               color="info"
               variant="outlined"
               onClick={handleLogin}
-              sx={{ height: "54px", fontSize: "1.5rem" }}
+              sx={{ height: "54px", fontSize: "1.5rem", fontWeight: "bold" }}
               fullWidth
             >
               Log in
