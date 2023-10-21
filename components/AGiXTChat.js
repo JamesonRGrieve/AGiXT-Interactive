@@ -347,24 +347,6 @@ export default function AGiXTChat({
       setMessage("");
     }
   };
-  const handleLogin = async () => {
-    if (process.env.USING_JWT === "true") {
-      // Use the auth provider
-      const response = await sdk.loginWithJWT(userKey);
-      if (response) {
-        setUsername(response.username);
-        setCookie("username", response.username);
-        setCookie("apiKey", response.api_key);
-        setLoggedIn(true);
-        setCookie("loggedIn", true);
-      }
-      return;
-    } else {
-      setCookie("apiKey", userKey);
-      setLoggedIn(true);
-      setCookie("loggedIn", loggedIn);
-    }
-  };
   const handleLogout = async () => {
     setCookie("apiKey", "");
     setLoggedIn(false);

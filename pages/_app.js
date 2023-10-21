@@ -29,6 +29,26 @@ AGIXT_USE_SELECTED_AGENT=true
 */
 
 export default function App({ Component, pageProps }) {
+  const AGiXTServer = process.env.AGIXT_SERVER || "http://localhost:7437";
+  const agentName = process.env.AGIXT_AGENT || "gpt4free";
+  const insightAgent = process.env.AGIXT_INSIGHT_AGENT || "gpt4free";
+  const mode = process.env.AGIXT_MODE || "prompt";
+  // Prompt Mode Options
+  const promptName = process.env.AGIXT_PROMPT_NAME || "Chat";
+  const promptCategory = process.env.AGIXT_PROMPT_CATEGORY || "Default";
+  // Chain Mode Options
+  const selectedChain = process.env.AGIXT_CHAIN || "Postgres Chat";
+  const useSelectedAgent = process.env.AGIXT_USE_SELECTED_AGENT || true;
+  const envChainArgs = process.env.AGIXT_CHAIN_ARGS || "{}";
+  let chainArgs = {};
+  try {
+    chainArgs = JSON.parse(envChainArgs);
+  } catch (e) {
+    console.error(e);
+  }
+  // UI Options
+  const dark = process.env.AGIXT_DARKMODE || true;
+  const fileUploadEnabled = process.env.AGIXT_FILE_UPLOAD_ENABLED || false;
   const showConversationBar = process.env.AGIXT_SHOW_CONVERSATION_BAR || true;
   let convo = process.env.AGIXT_CONVERSATION_NAME;
   if (showConversationBar) {
@@ -40,23 +60,7 @@ export default function App({ Component, pageProps }) {
   const [conversationName, setConversationName] = useState(
     convo || "Convert Extensions to new ones"
   );
-  const AGiXTServer = process.env.AGIXT_SERVER || "http://localhost:7437";
-  const agentName = process.env.AGIXT_AGENT || "gpt4free";
-  const insightAgent = process.env.AGIXT_INSIGHT_AGENT || "gpt4free";
-  const mode = process.env.AGIXT_MODE || "prompt";
-  const selectedChain = process.env.AGIXT_CHAIN || "Postgres Chat";
-  const useSelectedAgent = process.env.AGIXT_USE_SELECTED_AGENT || true;
-  const promptName = process.env.AGIXT_PROMPT_NAME || "Chat";
-  const promptCategory = process.env.AGIXT_PROMPT_CATEGORY || "Default";
-  const envChainArgs = process.env.AGIXT_CHAIN_ARGS || "{}";
-  const dark = process.env.AGIXT_DARKMODE || true;
-  const fileUploadEnabled = process.env.AGIXT_FILE_UPLOAD_ENABLED || false;
-  let chainArgs = {};
-  try {
-    chainArgs = JSON.parse(envChainArgs);
-  } catch (e) {
-    console.error(e);
-  }
+
   return (
     <Component
       {...pageProps}
