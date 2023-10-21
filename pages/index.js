@@ -1,37 +1,21 @@
 import AGiXTChat from "../components/AGiXTChat";
-import { useState } from "react";
-import { getCookie } from "cookies-next";
 
-export default function Home() {
-  const showConversationBar = process.env.AGIXT_SHOW_CONVERSATION_BAR || true;
-  let convo = process.env.AGIXT_CONVERSATION_NAME;
-  if (showConversationBar) {
-    const cookieConvo = getCookie("conversationName");
-    if (cookieConvo) {
-      convo = cookieConvo;
-    }
-  }
-  const [conversationName, setConversationName] = useState(
-    convo || "Convert Extensions to new ones"
-  );
-  const AGiXTServer = process.env.AGIXT_SERVER || "http://localhost:7437";
-  const agentName = process.env.AGIXT_AGENT || "gpt4free";
-  const insightAgent = process.env.AGIXT_INSIGHT_AGENT || "gpt4free";
-  const mode = process.env.AGIXT_MODE || "prompt";
-  const selectedChain = process.env.AGIXT_CHAIN || "Postgres Chat";
-  const useSelectedAgent = process.env.AGIXT_USE_SELECTED_AGENT || true;
-  const promptName = process.env.AGIXT_PROMPT_NAME || "Chat";
-  const promptCategory = process.env.AGIXT_PROMPT_CATEGORY || "Default";
-  const envChainArgs = process.env.AGIXT_CHAIN_ARGS || "{}";
-  const dark = process.env.AGIXT_DARKMODE || true;
-  const fileUploadEnabled = process.env.AGIXT_FILE_UPLOAD_ENABLED || false;
-  let chainArgs = {};
-  try {
-    chainArgs = JSON.parse(envChainArgs);
-  } catch (e) {
-    console.error(e);
-  }
-
+export default function Home({
+  AGiXTServer = "http://localhost:7437",
+  agentName = "gpt4free",
+  insightAgent = "gpt4free",
+  conversationName = "Test",
+  setConversationName = () => {},
+  showConversationBar = true,
+  dark = true,
+  fileUploadEnabled = false,
+  mode = "prompt",
+  promptName = "Chat",
+  promptCategory = "Default",
+  selectedChain = "Postgres Chat",
+  chainArgs = {},
+  useSelectedAgent = true,
+}) {
   return (
     <AGiXTChat
       baseUri={AGiXTServer} // Base URI to the AGiXT server
@@ -55,29 +39,3 @@ export default function Home() {
     />
   );
 }
-/* 
-All of the following vars are optional and will default to the values below if not set. 
-Add desired variables that you want to configure to your .env.local file.
-
-Example of the default vars for the UI:
-AGIXT_SERVER=http://localhost:7437
-AGIXT_AGENT=gpt4free
-AGIXT_INSIGHT_AGENT=gpt4free
-AGIXT_CONVERSATION_NAME=Convert Extensions to new ones
-AGIXT_SHOW_CONVERSATION_BAR=true
-AGIXT_FILE_UPLOAD_ENABLED=false
-AGIXT_DARKMODE=true
-
-Prompt mode example (In addition to the default vars):
-
-AGIXT_MODE=prompt
-AGIXT_PROMPT_NAME=Chat
-AGIXT_PROMPT_CATEGORY=Default
-
-Chain mode example (In addition to the default vars):
-
-AGIXT_MODE=chain
-AGIXT_CHAIN=Postgres Chat
-AGIXT_CHAIN_ARGS={}
-AGIXT_USE_SELECTED_AGENT=true
-*/
