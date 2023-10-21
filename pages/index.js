@@ -55,7 +55,10 @@ export default function Home() {
     />
   );
 }
-/* Examples of env configurations:
+/* 
+All of the following vars are optional and will default to the values below if not set. 
+Add desired variables that you want to configure to your .env.local file.
+
 Example of the default vars for the UI:
 AGIXT_SERVER=http://localhost:7437
 AGIXT_AGENT=gpt4free
@@ -65,7 +68,7 @@ AGIXT_SHOW_CONVERSATION_BAR=true
 AGIXT_FILE_UPLOAD_ENABLED=false
 AGIXT_DARKMODE=true
 
-Prompt mode example (In addition to the default vars)
+Prompt mode example (In addition to the default vars):
 
 AGIXT_MODE=prompt
 AGIXT_PROMPT_NAME=Chat
