@@ -1,6 +1,6 @@
 import { Button, TextField, Container, Typography } from "@mui/material";
 import { getCookie, setCookie } from "cookies-next";
-import { Box, CssBaseline, ThemeProvider } from "@mui/material";
+import { Box, CssBaseline, ThemeProvider, Tooltip } from "@mui/material";
 import { createTheme } from "@mui/material/styles";
 import { useState } from "react";
 import { styled } from "@mui/material/styles";
@@ -67,6 +67,12 @@ export default function Auth({ username, userKey, setLoggedIn }) {
       setCookie("loggedIn", true);
     }
   };
+  const handleToggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    setCookie("dark", !darkMode);
+  };
+  const [user, setUser] = useState(username);
+  const [pass, setPass] = useState(userKey);
   const dark = getCookie("dark") || true;
   const [darkMode, setDarkMode] = useState(dark);
   const themeGenerator = (darkMode) =>
@@ -99,41 +105,75 @@ export default function Auth({ username, userKey, setLoggedIn }) {
             }),
           }}
         >
-          <Container>
-            <Typography variant="h5" component="h2" gutterBottom>
-              Login{" "}
-              <MenuDarkSwitch
-                checked={darkMode}
-                onChange={() => {
-                  setDarkMode(!darkMode);
-                  setCookie("dark", !darkMode);
-                }}
-              />
+          <Box
+            fullWidth
+            sx={{
+              mb: 2,
+              mt: 0,
+              mr: 2,
+              ml: 2,
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "flex-end",
+                mt: "5px",
+                mb: 1,
+              }}
+            >
+              <Tooltip
+                title={
+                  darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+                }
+              >
+                <MenuDarkSwitch
+                  checked={darkMode}
+                  onChange={handleToggleDarkMode}
+                />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              </Tooltip>
+            </Box>
+            <Typography
+              variant="h3"
+              component="h1"
+              gutterBottom
+              sx={{ textAlign: "center", mt: -5 }}
+            >
+              AGiXT User Login
             </Typography>
             <TextField
               label="Enter your username"
               type="text"
-              value={username}
+              value={user}
+              onChange={(e) => setUser(e.target.value)}
               fullWidth
+              color="info"
+              autoComplete="off"
             />
             <br />
             <TextField
               label="Enter your password"
-              type="text"
-              value={userKey}
+              type="password"
+              value={pass}
+              onChange={(e) => setPass(e.target.value)}
               fullWidth
+              color="info"
+              autoComplete="off"
             />
             <br />
             <Button
               color="info"
               variant="outlined"
               onClick={handleLogin}
-              sx={{ height: "54px" }}
+              sx={{ height: "54px", fontSize: "1.5rem" }}
               fullWidth
             >
               Log in
             </Button>
-          </Container>
+          </Box>
         </main>
       </Box>
     </ThemeProvider>
