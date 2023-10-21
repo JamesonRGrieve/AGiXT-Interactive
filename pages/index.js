@@ -1,6 +1,6 @@
 import AGiXTChat from "../components/AGiXTChat";
 
-export default function Home({
+export default function Chat({
   AGiXTServer = "http://localhost:7437",
   agentName = "gpt4free",
   insightAgent = "gpt4free",
@@ -30,8 +30,8 @@ export default function Home({
       // Modes are prompt or chain
       mode={mode}
       // prompt mode - Set promptName and promptCategory
-      promptName={promptName} // Only matters if mode is prompt
-      promptCategory={promptCategory} // Only matters if mode is prompt
+      promptName={promptName} // Name of the prompt to use
+      promptCategory={promptCategory} // Category of the prompt to use
       // chain mode - Set chain name and chain args
       selectedChain={selectedChain} // Chain name
       chainArgs={chainArgs} // Chain arg overrides, unnecessary if you don't need to override any args.
