@@ -30,13 +30,26 @@ export default function Auth({ username, userKey, setLoggedIn }) {
         <Typography variant="h5" component="h2" gutterBottom>
           Login
         </Typography>
-        <TextField label="Enter your username" type="text" value={username} />
-        <TextField label="Enter your password" type="text" value={userKey} />
+        <TextField
+          label="Enter your username"
+          type="text"
+          value={username}
+          fullWidth
+        />
+        <br />
+        <TextField
+          label="Enter your password"
+          type="text"
+          value={userKey}
+          fullWidth
+        />
+        <br />
         <Button
           color="info"
           variant="outlined"
           onClick={handleLogin}
-          sx={{ ml: 1, height: "54px" }}
+          sx={{ height: "54px" }}
+          fullWidth
         >
           Log in
         </Button>
@@ -46,19 +59,20 @@ export default function Auth({ username, userKey, setLoggedIn }) {
   return (
     <Container>
       <Typography variant="h5" component="h2" gutterBottom>
-        <Tooltip
-          title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-        >
-          <MenuDarkSwitch checked={darkMode} onChange={handleToggleDarkMode} />
-        </Tooltip>
         Login
       </Typography>
-      <TextField label="Enter your password" type="text" value={userKey} />
+      <TextField
+        label="Enter your password"
+        type="text"
+        value={userKey}
+        fullWidth
+      />
       <Button
         color="info"
         variant="outlined"
         onClick={handleLogin}
-        sx={{ ml: 1, height: "54px" }}
+        sx={{ height: "54px" }}
+        fullWidth
       >
         Log in
       </Button>
