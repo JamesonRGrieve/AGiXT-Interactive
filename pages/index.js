@@ -1,30 +1,7 @@
 import AGiXTChat from "../components/AGiXTChat";
 import { useState, useEffect } from "react";
 import { setCookie, getCookie } from "cookies-next";
-/* Examples of env configurations:
-Prompt example:
 
-AGIXT_SERVER=http://localhost:7437
-AGIXT_AGENT=gpt4free
-AGIXT_MODE=prompt
-AGIXT_PROMPT_NAME=Chat
-AGIXT_PROMPT_CATEGORY=Default
-AGIXT_CONVERSATION_NAME=Convert Extensions to new ones
-AGIXT_SHOW_CONVERSATION_BAR=true
-AGIXT_DARKMODE=true
-
-Chain example:
-
-AGIXT_SERVER=http://localhost:7437
-AGIXT_AGENT=SQLExpert
-AGIXT_MODE=chain
-AGIXT_CHAIN=Postgres Chat
-AGIXT_CHAIN_ARGS={}
-AGIXT_USE_SELECTED_AGENT=true
-AGIXT_CONVERSATION_NAME=Postgres
-AGIXT_SHOW_CONVERSATION_BAR=true
-AGIXT_DARKMODE=true
-*/
 export default function Home() {
   let convo = process.env.AGIXT_CONVERSATION_NAME;
   const showConversationBar = process.env.AGIXT_SHOW_CONVERSATION_BAR || true;
@@ -79,3 +56,27 @@ export default function Home() {
     />
   );
 }
+/* Examples of env configurations:
+Prompt example:
+
+AGIXT_SERVER=http://localhost:7437
+AGIXT_AGENT=gpt4free
+AGIXT_MODE=prompt
+AGIXT_PROMPT_NAME=Chat
+AGIXT_PROMPT_CATEGORY=Default
+AGIXT_CONVERSATION_NAME=Convert Extensions to new ones
+AGIXT_SHOW_CONVERSATION_BAR=true
+AGIXT_DARKMODE=true
+
+Chain example:
+
+AGIXT_SERVER=http://localhost:7437
+AGIXT_AGENT=SQLExpert
+AGIXT_MODE=chain
+AGIXT_CHAIN=Postgres Chat
+AGIXT_CHAIN_ARGS={}
+AGIXT_USE_SELECTED_AGENT=true
+AGIXT_CONVERSATION_NAME=Postgres
+AGIXT_SHOW_CONVERSATION_BAR=true
+AGIXT_DARKMODE=true
+*/
