@@ -8,6 +8,7 @@ import {
   DialogActions,
   TextField,
 } from "@mui/material";
+import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 import { alpha, styled } from "@mui/material/styles";
 import { useState, useEffect } from "react";
 const ODD_OPACITY = 1;
@@ -190,7 +191,8 @@ export const DataGridFromCSV = ({
             }}
           >
             <Button color="info" variant="outlined" onClick={handleClickOpen}>
-              Get Insights
+              <TipsAndUpdatesOutlinedIcon />
+              &nbsp;Get Insights
             </Button>
           </Box>
           <Dialog open={open} onClose={handleClose}>
