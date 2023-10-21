@@ -1,6 +1,7 @@
 import "../styles/globals.css";
 import { useState } from "react";
 import { getCookie } from "cookies-next";
+import Head from "next/head";
 /* 
 All of the following vars are optional and will default to the values below if not set. 
 Add desired variables that you want to configure to your .env.local file.
@@ -62,22 +63,27 @@ export default function App({ Component, pageProps }) {
   );
 
   return (
-    <Component
-      {...pageProps}
-      AGiXTServer={AGiXTServer}
-      agentName={agentName}
-      insightAgent={insightAgent}
-      conversationName={conversationName}
-      setConversationName={setConversationName}
-      showConversationBar={showConversationBar}
-      dark={dark}
-      enableFileUpload={fileUploadEnabled}
-      mode={mode}
-      promptName={promptName}
-      promptCategory={promptCategory}
-      selectedChain={selectedChain}
-      chainArgs={chainArgs}
-      useSelectedAgent={useSelectedAgent}
-    />
+    <>
+      <Head>
+        <title>{conversationName}</title>
+      </Head>
+      <Component
+        {...pageProps}
+        AGiXTServer={AGiXTServer}
+        agentName={agentName}
+        insightAgent={insightAgent}
+        conversationName={conversationName}
+        setConversationName={setConversationName}
+        showConversationBar={showConversationBar}
+        dark={dark}
+        enableFileUpload={fileUploadEnabled}
+        mode={mode}
+        promptName={promptName}
+        promptCategory={promptCategory}
+        selectedChain={selectedChain}
+        chainArgs={chainArgs}
+        useSelectedAgent={useSelectedAgent}
+      />
+    </>
   );
 }
