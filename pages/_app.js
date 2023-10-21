@@ -1,7 +1,8 @@
 import "../styles/globals.css";
-import { useState } from "react";
-import { getCookie } from "cookies-next";
+import { useState, useEffect } from "react";
+import { getCookie, setCookie } from "cookies-next";
 import Head from "next/head";
+import Auth from "../components/Auth";
 /* 
 All of the following vars are optional and will default to the values below if not set. 
 Add desired variables that you want to configure to your .env.local file.
@@ -30,6 +31,10 @@ AGIXT_USE_SELECTED_AGENT=true
 */
 
 export default function App({ Component, pageProps }) {
+  // Login
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [userKey, setUserKey] = useState("");
+  const [username, setUsername] = useState("");
   const AGiXTServer = process.env.AGIXT_SERVER || "http://localhost:7437";
   const agentName = process.env.AGIXT_AGENT || "gpt4free";
   const insightAgent = process.env.AGIXT_INSIGHT_AGENT || "gpt4free";
@@ -61,7 +66,24 @@ export default function App({ Component, pageProps }) {
   const [conversationName, setConversationName] = useState(
     convo || "Convert Extensions to new ones"
   );
-
+  useEffect(() => {
+    // Login
+    if (userKey) {
+      const loggedInC = getCookie("loggedIn");
+      if (loggedInC) {
+        setLoggedIn(true);
+      }
+      const userApiKey = getCookie("apiKey");
+      if (userApiKey) {
+        setUserKey(userApiKey);
+      }
+    }
+  }, [userKey]);
+  if (!loggedIn) {
+    return (
+      <Auth username={username} userKey={userKey} setLoggedIn={setLoggedIn} />
+    );
+  }
   return (
     <>
       <Head>
@@ -83,6 +105,7 @@ export default function App({ Component, pageProps }) {
         selectedChain={selectedChain}
         chainArgs={chainArgs}
         useSelectedAgent={useSelectedAgent}
+        setLoggedIn={setLoggedIn}
       />
     </>
   );

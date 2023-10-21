@@ -5,16 +5,9 @@ import {
   Typography,
   Tooltip,
 } from "@mui/material";
-import { setCookie, getCookie } from "cookies-next";
+import { setCookie } from "cookies-next";
 
-export default function Auth({
-  username,
-  userKey,
-  MenuDarkSwitch,
-  darkMode,
-  handleToggleDarkMode,
-  setLoggedIn,
-}) {
+export default function Auth({ username, userKey, setLoggedIn }) {
   const handleLogin = async () => {
     if (process.env.USING_JWT !== "true") {
       const authData = btoa(`${username}:${userKey}`);
@@ -27,7 +20,7 @@ export default function Auth({
     } else {
       setCookie("apiKey", userKey);
       setLoggedIn(true);
-      setCookie("loggedIn", loggedIn);
+      setCookie("loggedIn", true);
     }
   };
   // If USING_JWT env var is true, then we need a username and password screen to go to auth provider
@@ -35,14 +28,6 @@ export default function Auth({
     return (
       <Container>
         <Typography variant="h5" component="h2" gutterBottom>
-          <Tooltip
-            title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-          >
-            <MenuDarkSwitch
-              checked={darkMode}
-              onChange={handleToggleDarkMode}
-            />
-          </Tooltip>
           Login
         </Typography>
         <TextField label="Enter your username" type="text" value={username} />

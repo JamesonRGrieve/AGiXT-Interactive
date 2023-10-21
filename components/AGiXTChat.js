@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import ConversationHistory from "./conversation/ConversationHistory";
 import ConversationSelector from "./conversation/ConversationSelector";
 import AudioRecorder from "./conversation/AudioRecorder";
-import Auth from "./Auth";
 import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
 import { setCookie, getCookie } from "cookies-next";
 import { createTheme } from "@mui/material/styles";
@@ -14,6 +13,7 @@ import { styled } from "@mui/material/styles";
 import Switch from "@mui/material/Switch";
 import AGiXTSDK from "agixt";
 import Tooltip from "@mui/material/Tooltip";
+import Router from "next/router";
 
 import {
   Button,
@@ -27,6 +27,7 @@ import {
   IconButton,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import { get } from "http";
 
 const MenuDarkSwitch = styled(Switch)(({ theme }) => ({
   width: 62,
@@ -107,14 +108,14 @@ export default function AGiXTChat({
   topMargin = "-35",
   setConversationName,
   showConversationBar = false,
+  setLoggedIn = () => {},
 }) {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [userKey, setUserKey] = useState("");
   const apiKey = getCookie("apiKey") || "";
   const sdk = new AGiXTSDK({
     baseUri: baseUri,
     apiKey: apiKey,
   });
+  const loggedIn = getCookie("loggedIn") || false;
   let isDark = getCookie("dark");
   isDark === undefined
     ? setCookie("dark", dark)
@@ -152,7 +153,6 @@ export default function AGiXTChat({
   const [openFileUpload, setOpenFileUpload] = useState(false);
   const [promptArgs, setPromptArgs] = useState({});
   const [conversations, setConversations] = useState([]);
-  const [username, setUsername] = useState("");
   const [hasFiles, setHasFiles] = useState(false); // Will add logic later
   const handleCloseFileUpload = () => {
     setOpenFileUpload(false);
@@ -206,17 +206,6 @@ export default function AGiXTChat({
     getArgs(promptName, promptCategory);
   }, [promptName]);
   // Uploaded files will be formatted like [{"file_name": "file_content"}]
-  useEffect(() => {
-    // Login
-    const loggedInC = getCookie("loggedIn");
-    if (loggedInC) {
-      setLoggedIn(true);
-    }
-    const userApiKey = getCookie("apiKey");
-    if (userApiKey) {
-      setUserKey(userApiKey);
-    }
-  }, []);
   useEffect(() => {
     setCookie("conversationName", conversationName);
   }, [conversationName]);
@@ -348,57 +337,50 @@ export default function AGiXTChat({
     }
   };
   const handleLogout = async () => {
-    setCookie("apiKey", "");
-    setLoggedIn(false);
+    setCookie("apiKey", undefined);
     setCookie("loggedIn", false);
+    setLoggedIn(false);
+    console.log("Logging out");
+    Router.reload();
   };
-
   return (
     <>
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {!showConversationBar && (
-          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-            <Tooltip
-              title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-            >
-              <MenuDarkSwitch
-                checked={darkMode}
-                onChange={handleToggleDarkMode}
-              />
-            </Tooltip>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          </Box>
-        )}
-        <Box
-          sx={{
-            display: "flex",
-            marginTop: `${showConversationBar ? 5 : topMargin}px`,
-            marginRight: "1px",
-            marginLeft: "1px",
-          }}
-        >
-          <main
-            style={{
-              maxWidth: "100%",
-              flexGrow: 1,
-              transition: theme.transitions.create("margin", {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen,
-              }),
+      {loggedIn && (
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          {!showConversationBar && (
+            <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+              <Tooltip
+                title={
+                  darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
+                }
+              >
+                <MenuDarkSwitch
+                  checked={darkMode}
+                  onChange={handleToggleDarkMode}
+                />
+              </Tooltip>
+              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </Box>
+          )}
+          <Box
+            sx={{
+              display: "flex",
+              marginTop: `${showConversationBar ? 5 : topMargin}px`,
+              marginRight: "1px",
+              marginLeft: "1px",
             }}
           >
-            {!loggedIn && (
-              <Auth
-                username={username}
-                userKey={userKey}
-                setLoggedIn={setLoggedIn}
-                darkMode={darkMode}
-                handleToggleDarkMode={handleToggleDarkMode}
-                MenuDarkSwitch={MenuDarkSwitch}
-              />
-            )}
-            {loggedIn && (
+            <main
+              style={{
+                maxWidth: "100%",
+                flexGrow: 1,
+                transition: theme.transitions.create("margin", {
+                  easing: theme.transitions.easing.sharp,
+                  duration: theme.transitions.duration.leavingScreen,
+                }),
+              }}
+            >
               <>
                 {showConversationBar && (
                   <ConversationSelector
@@ -521,10 +503,10 @@ export default function AGiXTChat({
                   }}
                 />
               </>
-            )}
-          </main>
-        </Box>
-      </ThemeProvider>
+            </main>
+          </Box>
+        </ThemeProvider>
+      )}
     </>
   );
 }
