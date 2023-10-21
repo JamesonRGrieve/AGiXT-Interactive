@@ -152,6 +152,7 @@ export default function AGiXTChat({
   const [openFileUpload, setOpenFileUpload] = useState(false);
   const [promptArgs, setPromptArgs] = useState({});
   const [conversations, setConversations] = useState([]);
+  const [username, setUsername] = useState("");
   const [hasFiles, setHasFiles] = useState(false); // Will add logic later
   const handleCloseFileUpload = () => {
     setOpenFileUpload(false);
@@ -344,9 +345,22 @@ export default function AGiXTChat({
     }
   };
   const handleLogin = async () => {
-    setCookie("apiKey", userKey);
-    setLoggedIn(true);
-    setCookie("loggedIn", loggedIn);
+    if (process.env.USING_JWT === "true") {
+      // Use the auth provider
+      const response = await sdk.loginWithJWT(userKey);
+      if (response) {
+        setUsername(response.username);
+        setCookie("username", response.username);
+        setCookie("apiKey", response.api_key);
+        setLoggedIn(true);
+        setCookie("loggedIn", true);
+      }
+      return;
+    } else {
+      setCookie("apiKey", userKey);
+      setLoggedIn(true);
+      setCookie("loggedIn", loggedIn);
+    }
   };
   const handleLogout = async () => {
     setCookie("apiKey", "");
@@ -391,8 +405,9 @@ export default function AGiXTChat({
           >
             {!loggedIn && (
               <Auth
+                username={username}
                 userKey={userKey}
-                handleLogin={handleLogin}
+                setLoggedIn={setLoggedIn}
                 darkMode={darkMode}
                 handleToggleDarkMode={handleToggleDarkMode}
                 MenuDarkSwitch={MenuDarkSwitch}
@@ -506,14 +521,16 @@ export default function AGiXTChat({
                             </IconButton>
                           </Tooltip>
                         )}
-                        <AudioRecorder
-                          conversationName={conversationName}
-                          contextResults={contextResults}
-                          conversationResults={conversationResults}
-                          setIsLoading={setIsLoading}
-                          agentName={agentName}
-                          sdk={sdk}
-                        />
+                        {mode == "prompt" && (
+                          <AudioRecorder
+                            conversationName={conversationName}
+                            contextResults={contextResults}
+                            conversationResults={conversationResults}
+                            setIsLoading={setIsLoading}
+                            agentName={agentName}
+                            sdk={sdk}
+                          />
+                        )}
                       </InputAdornment>
                     ),
                   }}
