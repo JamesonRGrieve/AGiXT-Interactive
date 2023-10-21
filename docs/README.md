@@ -20,7 +20,7 @@ AGiXT Chat is a React component for a user facing chat interface for AGiXT.
 
 ```bash
 git clone https://github.com/Josh-XT/agixtchat
-cd chat
+cd agixtchat
 npm install
 npm run dev
 ```
