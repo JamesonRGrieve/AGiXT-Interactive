@@ -217,6 +217,9 @@ export default function AGiXTChat({
       setUserKey(userApiKey);
     }
   }, []);
+  useEffect(() => {
+    setCookie("conversationName", conversationName);
+  }, [conversationName]);
   const runChain = async () => {
     setIsLoading(true);
     const agentOverride = useSelectedAgent ? agentName : "";

@@ -1,10 +1,10 @@
 import AGiXTChat from "../components/AGiXTChat";
-import { useState, useEffect } from "react";
-import { setCookie, getCookie } from "cookies-next";
+import { useState } from "react";
+import { getCookie } from "cookies-next";
 
 export default function Home() {
-  let convo = process.env.AGIXT_CONVERSATION_NAME;
   const showConversationBar = process.env.AGIXT_SHOW_CONVERSATION_BAR || true;
+  let convo = process.env.AGIXT_CONVERSATION_NAME;
   if (showConversationBar) {
     const cookieConvo = getCookie("conversationName");
     if (cookieConvo) {
@@ -16,7 +16,7 @@ export default function Home() {
   );
   const AGiXTServer = process.env.AGIXT_SERVER || "http://localhost:7437";
   const agentName = process.env.AGIXT_AGENT || "gpt4free";
-  const insightAgent = process.env.AGIXT_INSIGHT_AGENT || "";
+  const insightAgent = process.env.AGIXT_INSIGHT_AGENT || "gpt4free";
   const mode = process.env.AGIXT_MODE || "prompt";
   const selectedChain = process.env.AGIXT_CHAIN || "Postgres Chat";
   const useSelectedAgent = process.env.AGIXT_USE_SELECTED_AGENT || true;
@@ -24,26 +24,25 @@ export default function Home() {
   const promptCategory = process.env.AGIXT_PROMPT_CATEGORY || "Default";
   const envChainArgs = process.env.AGIXT_CHAIN_ARGS || "{}";
   const dark = process.env.AGIXT_DARKMODE || true;
+  const fileUploadEnabled = process.env.AGIXT_FILE_UPLOAD_ENABLED || false;
   let chainArgs = {};
   try {
     chainArgs = JSON.parse(envChainArgs);
   } catch (e) {
     console.error(e);
   }
-  useEffect(() => {
-    setCookie("conversationName", conversationName);
-  }, [conversationName]);
+
   return (
     <AGiXTChat
       baseUri={AGiXTServer} // Base URI to the AGiXT server
       agentName={agentName} // Agent name
       insightAgent={insightAgent} // Insight agent name to use a different agent for insights, leave blank to use the same agent
-      // UI options
+      conversationName={conversationName} // Conversation name
+      setConversationName={setConversationName} // Function to set the conversation name
+      // UI Options
       showConversationBar={showConversationBar} // Show the conversation selection bar to create, delete, and export conversations
       dark={dark} // Set dark mode by default
-      conversationName={conversationName}
-      setConversationName={setConversationName}
-      enableFileUpload={false} // Enable file upload button
+      enableFileUpload={fileUploadEnabled} // Enable file upload button, disabled by default.
       // Modes are prompt or chain
       mode={mode}
       // prompt mode - Set promptName and promptCategory
@@ -57,26 +56,25 @@ export default function Home() {
   );
 }
 /* Examples of env configurations:
-Prompt example:
-
+Example of the default vars for the UI:
 AGIXT_SERVER=http://localhost:7437
 AGIXT_AGENT=gpt4free
+AGIXT_INSIGHT_AGENT=gpt4free
+AGIXT_CONVERSATION_NAME=Convert Extensions to new ones
+AGIXT_SHOW_CONVERSATION_BAR=true
+AGIXT_FILE_UPLOAD_ENABLED=false
+AGIXT_DARKMODE=true
+
+Prompt mode example (In addition to the default vars)
+
 AGIXT_MODE=prompt
 AGIXT_PROMPT_NAME=Chat
 AGIXT_PROMPT_CATEGORY=Default
-AGIXT_CONVERSATION_NAME=Convert Extensions to new ones
-AGIXT_SHOW_CONVERSATION_BAR=true
-AGIXT_DARKMODE=true
 
-Chain example:
+Chain mode example (In addition to the default vars):
 
-AGIXT_SERVER=http://localhost:7437
-AGIXT_AGENT=SQLExpert
 AGIXT_MODE=chain
 AGIXT_CHAIN=Postgres Chat
 AGIXT_CHAIN_ARGS={}
 AGIXT_USE_SELECTED_AGENT=true
-AGIXT_CONVERSATION_NAME=Postgres
-AGIXT_SHOW_CONVERSATION_BAR=true
-AGIXT_DARKMODE=true
 */
