@@ -1,69 +1,95 @@
-'use client';
-import { setCookie, getCookie } from 'cookies-next';
-import { useEffect, useState } from 'react';
-import AGiXTChat from '../components/AGiXTChat';
-import React from 'react';
+import Image from 'next/image'
+import styles from './page.module.css'
+
 export default function Home() {
-  const [apiKey, setApiKey] = useState(getCookie('apiKey'));
-  const [loggedIn, setLoggedIn] = useState(getCookie('apiKey') ? true : false);
-  const [conversationName, setConversationName] = useState(
-    getCookie('conversationName') ||
-      process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME
-  );
-  useEffect(() => {
-    setCookie('conversationName', conversationName);
-  }, [conversationName]);
-  const handleSetApiKey = () => {
-    setCookie('apiKey', apiKey);
-    setLoggedIn(true);
-  };
-
-  if (!loggedIn) {
-    return (
-      <div>
-        <h1>AGiXT Chat</h1>
+  return (
+    <main className={styles.main}>
+      <div className={styles.description}>
         <p>
-          Please enter your API key to continue. You can find your API key in
-          the AGiXT portal.
+          Get started by editing&nbsp;
+          <code className={styles.code}>app/page.tsx</code>
         </p>
-        <input
-          type='text'
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
-        />
-        <button onClick={() => handleSetApiKey()}>Set API Key</button>
+        <div>
+          <a
+            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            By{' '}
+            <Image
+              src="/vercel.svg"
+              alt="Vercel Logo"
+              className={styles.vercelLogo}
+              width={100}
+              height={24}
+              priority
+            />
+          </a>
+        </div>
       </div>
-    );
-  } else {
-    return (
-      <AGiXTChat
-        baseUri={process.env.NEXT_PUBLIC_AGIXT_SERVER} // Base URI to the AGiXT server
-        agentName={process.env.NEXT_PUBLIC_AGIXT_AGENT} // Agent name
-        insightAgent={process.env.NEXT_PUBLIC_AGIXT_INSIGHT_AGENT} // Insight agent name to use a different agent for insights, leave blank to use the same agent
-        conversationName={
-          conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME
-        } // Conversation name
-        setConversationName={setConversationName} // Function to set the conversation name
-        // UI Options
-        showConversationBar={
-          process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'
-        } // Show the conversation selection bar to create, delete, and export conversations
-        enableFileUpload={
-          process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true'
-        } // Enable file upload button, disabled by default.
-        // Modes are prompt or chain
-        mode={process.env.NEXT_PUBLIC_AGIXT_MODE}
-        // prompt mode - Set promptName and promptCategory
-        promptName={process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME} // Name of the prompt to use
-        promptCategory={process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY} // Category of the prompt to use
-        // chain mode - Set chain name and chain args
-        selectedChain={process.env.NEXT_PUBLIC_AGIXT_CHAIN} // Chain name
-        chainArgs={JSON.parse(process.env.NEXT_PUBLIC_AGIXT_CHAIN_ARGS ?? '{}')} // Chain arg overrides, unnecessary if you don't need to override any args.
-        useSelectedAgent={
-          process.env.NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT === 'true'
-        } // Will force the selected agent to run all chain steps rather than the agents defined in the chain
-      />
-    );
-  }
-}
 
+      <div className={styles.center}>
+        <Image
+          className={styles.logo}
+          src="/next.svg"
+          alt="Next.js Logo"
+          width={180}
+          height={37}
+          priority
+        />
+      </div>
+
+      <div className={styles.grid}>
+        <a
+          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          className={styles.card}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <h2>
+            Docs <span>-&gt;</span>
+          </h2>
+          <p>Find in-depth information about Next.js features and API.</p>
+        </a>
+
+        <a
+          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          className={styles.card}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <h2>
+            Learn <span>-&gt;</span>
+          </h2>
+          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
+        </a>
+
+        <a
+          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          className={styles.card}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <h2>
+            Templates <span>-&gt;</span>
+          </h2>
+          <p>Explore the Next.js 13 playground.</p>
+        </a>
+
+        <a
+          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
+          className={styles.card}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <h2>
+            Deploy <span>-&gt;</span>
+          </h2>
+          <p>
+            Instantly deploy your Next.js site to a shareable URL with Vercel.
+          </p>
+        </a>
+      </div>
+    </main>
+  )
+}
