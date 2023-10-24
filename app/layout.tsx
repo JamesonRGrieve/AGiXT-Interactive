@@ -21,7 +21,7 @@ export default function RootLayout({
     <html lang='en'>
     <body className={inter.className}>
         <ThemeRegistry options={{ key: 'mui' }}>
-            <AppBar position='static'>Test</AppBar>
+            <AppBar position='static' sx={{textAlign: 'center', height: '4rem', fontSize: '2rem', lineHeight: '4rem'}}>JRG NextJS Boilerplate</AppBar>
             {children}
         </ThemeRegistry>
     </body>
