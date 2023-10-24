@@ -9,9 +9,10 @@ interface ComparisonGridProps {
 }
 export default function ComparisonGrid({ of }: ComparisonGridProps) {
   const resolvedOf = useOf('story', ['story', 'meta']);
-  console.log(resolvedOf);
+  
   switch (resolvedOf.type) {
     case 'story': {
+      if (!(resolvedOf.story.parameters?.referenceImages.filter((image: any) => image.primary).length > 0)) return null;
       const primaryReference = resolvedOf.story.parameters.referenceImages.filter((image: any) => image.primary)[0].image as StaticImageData;
       const component = typeof resolvedOf.story.component == 'function' ? withTheme(resolvedOf.story.component({ ...resolvedOf.story.initialArgs }), { globals: { theme: 'light' } }) : <Box></Box>;
       console.log(component);

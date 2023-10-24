@@ -11,6 +11,7 @@ export default function ReferenceGrid({ of }: ReferenceGridProps) {
     switch (resolvedOf.type) {
         case 'story': {
             const referenceImages = resolvedOf.story.parameters.referenceImages;
+            if (!(resolvedOf.story.parameters?.referenceImages.length > 0)) return null;
             return <>
                 <h3>Reference Images</h3>
                 <div style={{ display: 'grid', gap: '1rem', gridTemplateColumns: '1fr '.repeat(Math.min(referenceImages.length, 4)).trim() }}>
