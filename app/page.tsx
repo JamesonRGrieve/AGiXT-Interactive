@@ -1,7 +1,7 @@
-import { Typography } from "@mui/material";
+import { Typography } from '@mui/material';
 
 export default function Home() {
   return (
-    <Typography variant='h1'>Home Page</Typography>
+    <Typography variant='h1' textAlign='center'>Home Page</Typography>
   )
 }
