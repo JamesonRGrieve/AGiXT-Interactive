@@ -1,12 +1,9 @@
 // Import Storybook.
 import type { Meta, StoryObj } from '@storybook/react';
 
-// Import Layout Components.
-import ComparisonGrid from '../../.storybook/blocks/ComparisonGrid';
-
 // Import Reference Images.
-import SampleReferenceImagePrimary from '../../.storybook/ref/Sample/Primary.png';
-import SampleReferenceImageSecondary from '../../.storybook/ref/Sample/Secondary.png';
+import SampleReferenceImagePrimary from '@/.storybook/ref/Sample/Primary.png';
+import SampleReferenceImageSecondary from '@/.storybook/ref/Sample/Secondary.png';
 
 // Import Component and related types.
 import SampleComponenet, { SampleProps } from './Sample';
