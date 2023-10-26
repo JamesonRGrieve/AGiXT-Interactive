@@ -25,14 +25,19 @@ const meta: Meta = {
         component: 'This component is meant to illustrate how to effectively document components.'
       }
     },
-    referenceImages : [
+    references: [
       {
-        image: SampleReferenceImagePrimary,
-        primary: true
-      },
-      {
-        image: SampleReferenceImageSecondary
-      },
+        variant: "Primary",
+        images: [
+          {
+            image: SampleReferenceImagePrimary,
+            primary: true
+          },
+          {
+            image: SampleReferenceImageSecondary
+          },
+        ]
+      }
     ]
   }
 };
