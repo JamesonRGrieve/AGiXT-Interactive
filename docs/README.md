@@ -20,7 +20,25 @@ AGiXT Interactive is a NextJS front end for AGiXT for interacting with agents.
 - Replace `<IP_OF_SERVER>` with your AGiXT back end IP address, this cannot be `localhost` or `127.0.0.1`.
 
 ```bash
-docker run -it --rm -p 3437:3437 -e NEXT_PUBLIC_API_URI=http://<IP_OF_SERVER>:7437 joshxt/agixtinteractive:main
+docker run -it --rm -p 3437:3437 -e NEXT_PUBLIC_AGIXT_SERVER=http://<IP_OF_SERVER>:7437 joshxt/agixtinteractive:main
+```
+
+Environment variables can be set to configure AGiXT Interactive, here are the defaults:
+
+```env
+NEXT_PUBLIC_AGIXT_SERVER=http://localhost:7437
+NEXT_PUBLIC_AGIXT_AGENT=gpt4free
+NEXT_PUBLIC_AGIXT_INSIGHT_AGENT=gpt4free
+NEXT_PUBLIC_AGIXT_MODE=prompt
+NEXT_PUBLIC_AGIXT_PROMPT_NAME=Chat
+NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY=Default
+NEXT_PUBLIC_AGIXT_CHAIN=Postgres Chat
+NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT=true
+NEXT_PUBLIC_AGIXT_CHAIN_ARGS={}
+NEXT_PUBLIC_AGIXT_DARKMODE=true
+NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED=false
+NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR=true
+NEXT_PUBLIC_AGIXT_CONVERSATION_NAME=Test
 ```
 
 Access at <http://localhost:3437>

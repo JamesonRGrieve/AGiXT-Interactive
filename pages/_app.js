@@ -35,17 +35,21 @@ export default function App({ Component, pageProps }) {
   const [loggedIn, setLoggedIn] = useState(false);
   const [userKey, setUserKey] = useState("");
   const [username, setUsername] = useState("");
-  const AGiXTServer = process.env.AGIXT_SERVER || "http://localhost:7437";
-  const agentName = process.env.AGIXT_AGENT || "gpt4free";
-  const insightAgent = process.env.AGIXT_INSIGHT_AGENT || "gpt4free";
-  const mode = process.env.AGIXT_MODE || "prompt";
+  const AGiXTServer =
+    process.env.NEXT_PUBLIC_AGIXT_SERVER || "http://localhost:7437";
+  const agentName = process.env.NEXT_PUBLIC_AGIXT_AGENT || "gpt4free";
+  const insightAgent =
+    process.env.NEXT_PUBLIC_AGIXT_INSIGHT_AGENT || "gpt4free";
+  const mode = process.env.NEXT_PUBLIC_AGIXT_MODE || "prompt";
   // Prompt Mode Options
-  const promptName = process.env.AGIXT_PROMPT_NAME || "Chat";
-  const promptCategory = process.env.AGIXT_PROMPT_CATEGORY || "Default";
+  const promptName = process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME || "Chat";
+  const promptCategory =
+    process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY || "Default";
   // Chain Mode Options
-  const selectedChain = process.env.AGIXT_CHAIN || "Postgres Chat";
-  const useSelectedAgent = process.env.AGIXT_USE_SELECTED_AGENT || true;
-  const envChainArgs = process.env.AGIXT_CHAIN_ARGS || "{}";
+  const selectedChain = process.env.NEXT_PUBLIC_AGIXT_CHAIN || "Postgres Chat";
+  const useSelectedAgent =
+    process.env.NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT || true;
+  const envChainArgs = process.env.NEXT_PUBLIC_AGIXT_CHAIN_ARGS || "{}";
   let chainArgs = {};
   try {
     chainArgs = JSON.parse(envChainArgs);
@@ -53,10 +57,12 @@ export default function App({ Component, pageProps }) {
     console.error(e);
   }
   // UI Options
-  const dark = process.env.AGIXT_DARKMODE || true;
-  const fileUploadEnabled = process.env.AGIXT_FILE_UPLOAD_ENABLED || false;
-  const showConversationBar = process.env.AGIXT_SHOW_CONVERSATION_BAR || true;
-  let convo = process.env.AGIXT_CONVERSATION_NAME;
+  const dark = process.env.NEXT_PUBLIC_AGIXT_DARKMODE || true;
+  const fileUploadEnabled =
+    process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED || false;
+  const showConversationBar =
+    process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR || true;
+  let convo = process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME;
   if (showConversationBar) {
     const cookieConvo = getCookie("conversationName");
     if (cookieConvo) {
