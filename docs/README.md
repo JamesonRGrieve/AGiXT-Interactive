@@ -18,52 +18,43 @@ AGiXT Interactive is a NextJS front end for AGiXT for interacting with agents.
 - If you don't already have AGiXT, [follow this link for instructions to set it up.](https://github.com/Josh-XT/AGiXT#quick-start-guide)
 - After you have run the AGiXT back end, follow these instructions below.
 
-Environment variables can be set to configure AGiXT Interactive in the `docker-compose.yml` file.
+Create and modify the `.env` file to your liking.
 
-```yml
-version: "3.7"
-services:
-  agixtinteractive:
-    image: joshxt/agixtinteractive:main
-    environment:
-      - NEXT_PUBLIC_AGIXT_SERVER=http://localhost:7437
-      - NEXT_PUBLIC_AGIXT_AGENT=gpt4free
-      - NEXT_PUBLIC_AGIXT_INSIGHT_AGENT=gpt4free
-      - NEXT_PUBLIC_AGIXT_MODE=prompt
-      - NEXT_PUBLIC_AGIXT_PROMPT_NAME=Chat
-      - NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY=Default
-      - NEXT_PUBLIC_AGIXT_CHAIN=Postgres Chat
-      - NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT=true
-      - NEXT_PUBLIC_AGIXT_CHAIN_ARGS={}
-      - NEXT_PUBLIC_AGIXT_DARKMODE=true
-      - NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED=false
-      - NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR=true
-      - NEXT_PUBLIC_AGIXT_CONVERSATION_NAME=Test
-      - TZ=${TZ-America/New_York}
-    ports:
-      - "3437:3437"
-    restart: unless-stopped
+```env
+AGIXT_SERVER=http://localhost:7437
+AGIXT_AGENT=gpt4free
+AGIXT_INSIGHT_AGENT=gpt4free
+AGIXT_MODE=prompt
+AGIXT_PROMPT_NAME=Chat
+AGIXT_PROMPT_CATEGORY=Default
+AGIXT_CHAIN=Postgres Chat
+AGIXT_USE_SELECTED_AGENT=true
+AGIXT_CHAIN_ARGS={}
+AGIXT_DARKMODE=true
+AGIXT_FILE_UPLOAD_ENABLED=false
+AGIXT_SHOW_CONVERSATION_BAR=true
+AGIXT_CONVERSATION_NAME=Test
 ```
 
-- `NEXT_PUBLIC_AGIXT_SERVER` is the URL of the AGiXT server to connect to.
-- `NEXT_PUBLIC_AGIXT_AGENT` is the name of the agent to use.
-- `NEXT_PUBLIC_AGIXT_INSIGHT_AGENT` is the name of the agent to use for insights.
-- `NEXT_PUBLIC_AGIXT_MODE` is the mode to use. `prompt` or `chain`.
-- `NEXT_PUBLIC_AGIXT_PROMPT_NAME` is the name of the prompt to use if `NEXT_PUBLIC_AGIXT_MODE` is `prompt`.
-- `NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY` is the category of the prompt to use if `NEXT_PUBLIC_AGIXT_MODE` is `prompt`.
-- `NEXT_PUBLIC_AGIXT_CHAIN` is the name of the chain to use if `NEXT_PUBLIC_AGIXT_MODE` is `chain`.
-- `NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT` is whether to use the selected agent or not for running all chain steps or allow the chain to use predefined agents. If set to `true`, the chain will use the selected agent for all steps.
-- `NEXT_PUBLIC_AGIXT_CHAIN_ARGS` is a JSON object of arguments to pass to the chain.
-- `NEXT_PUBLIC_AGIXT_DARKMODE` is whether to use dark mode or not, default is `true`.
-- `NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED` is whether to enable file uploads or not, default is `false`.
-- `NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR` is whether to show the conversation bar or not, default is `true`.
-- `NEXT_PUBLIC_AGIXT_CONVERSATION_NAME` is the name of the conversation to use, default is `Test`.
+- `AGIXT_SERVER` is the URL of the AGiXT server to connect to.
+- `AGIXT_AGENT` is the name of the agent to use.
+- `AGIXT_INSIGHT_AGENT` is the name of the agent to use for insights.
+- `AGIXT_MODE` is the mode to use. `prompt` or `chain`.
+- `AGIXT_PROMPT_NAME` is the name of the prompt to use if `AGIXT_MODE` is `prompt`.
+- `AGIXT_PROMPT_CATEGORY` is the category of the prompt to use if `AGIXT_MODE` is `prompt`.
+- `AGIXT_CHAIN` is the name of the chain to use if `AGIXT_MODE` is `chain`.
+- `AGIXT_USE_SELECTED_AGENT` is whether to use the selected agent or not for running all chain steps or allow the chain to use predefined agents. If set to `true`, the chain will use the selected agent for all steps.
+- `AGIXT_CHAIN_ARGS` is a JSON object of arguments to pass to the chain.
+- `AGIXT_DARKMODE` is whether to use dark mode or not, default is `true`.
+- `AGIXT_FILE_UPLOAD_ENABLED` is whether to enable file uploads or not, default is `false`.
+- `AGIXT_SHOW_CONVERSATION_BAR` is whether to show the conversation bar or not, default is `true`.
+- `AGIXT_CONVERSATION_NAME` is the name of the conversation to use, default is `Test`.
 - `TZ` is the timezone to use, default is `America/New_York`.
 
 ### Run with Docker Compose
 
 ```bash
-docker-compose up
+docker-compose pull && docker-compose up
 ```
 
 Access at <http://localhost:3437>
