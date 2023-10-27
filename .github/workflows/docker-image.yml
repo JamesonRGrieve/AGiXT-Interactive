@@ -16,7 +16,7 @@ jobs:
     uses: josh-xt/AGiXT/.github/workflows/operation-docker-build-publish.yml@main
     with:
       registry-dockerhub-enable: ${{ github.event_name != 'pull_request' }}
-      registry-repo-name: agixtchat
+      registry-repo-name: agixtinteractive
       registry-readme: ./docs/README.md
       tags: |
         type=schedule
