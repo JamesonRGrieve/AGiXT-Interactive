@@ -17,12 +17,13 @@ AGiXT Interactive is a NextJS front end for AGiXT for interacting with agents.
 
 - If you don't already have AGiXT, [follow this link for instructions to set it up.](https://github.com/Josh-XT/AGiXT#quick-start-guide)
 - After you have run the AGiXT back end, follow these instructions below:
+- Replace `<IP_OF_SERVER>` with your AGiXT back end IP address, this cannot be `localhost` or `127.0.0.1`.
 
 ```bash
-docker run -it --rm -p 3000:3000 -e NEXT_PUBLIC_API_URI=http://localhost:7437 joshxt/agixtinteractive
+docker run -it --rm -p 3437:3437 -e NEXT_PUBLIC_API_URI=http://<IP_OF_SERVER>:7437 joshxt/agixtinteractive:main
 ```
 
-Access at <http://localhost:3000>
+Access at <http://localhost:3437>
 
 ## History
 
