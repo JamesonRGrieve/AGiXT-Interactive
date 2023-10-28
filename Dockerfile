@@ -24,4 +24,4 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 USER nextjs
 EXPOSE 3437
 
-CMD ["npm", "start"]
+CMD ["sh", "start.sh"]
