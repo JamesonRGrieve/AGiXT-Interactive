@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "dev": "./env.sh && next dev",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "storybook": "./env.sh && storybook dev -p 3001",
+    "storybook": "storybook dev -p 3001",
     "build-storybook": "storybook build"
   },
   "dependencies": {
