@@ -22,6 +22,5 @@ COPY --from=builder /app/package-lock.json ./package-lock.json
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 USER nextjs
-EXPOSE 3437
-
+EXPOSE 24498
 CMD ["npm", "start"]

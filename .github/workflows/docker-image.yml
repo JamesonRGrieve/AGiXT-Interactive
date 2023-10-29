@@ -12,11 +12,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-agixt-chat:
+  build-agixt-nextjs:
     uses: josh-xt/AGiXT/.github/workflows/operation-docker-build-publish.yml@main
     with:
       registry-dockerhub-enable: ${{ github.event_name != 'pull_request' }}
-      registry-repo-name: agixtinteractive
+      registry-repo-name: agixt-nextjs
       registry-readme: ./docs/README.md
       tags: |
         type=schedule
