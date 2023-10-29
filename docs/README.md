@@ -18,7 +18,7 @@ AGiXT Interactive is a NextJS front end for AGiXT for interacting with agents.
 - If you don't already have AGiXT, [follow this link for instructions to set it up.](https://github.com/Josh-XT/AGiXT#quick-start-guide)
 - After you have run the AGiXT back end, follow these instructions below.
 
-Create and modify the `.env` file to your liking.
+Modify the `.env.local` file to your liking.
 
 ```env
 AGIXT_SERVER=http://localhost:7437
