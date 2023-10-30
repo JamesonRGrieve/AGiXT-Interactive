@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
+import Head from 'next/head';
 
 import { ThemeRegistry } from './theme';
 import './globals.css'
@@ -17,15 +18,19 @@ export default function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const {NEXT_PUBLIC_WEBSITE_NAME} = process.env;
+  const { NEXT_PUBLIC_WEBSITE_NAME } = process.env;
   return (
     <html lang='en'>
-    <body className={inter.className}>
+      <Head key={"env"}>
+        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
+        <script src="/__env.js" />
+      </Head>
+      <body className={inter.className}>
         <ThemeRegistry options={{ key: 'mui' }}>
-            <AppBar position='static' sx={{textAlign: 'center', height: '4rem', fontSize: '2rem', lineHeight: '4rem'}}>{NEXT_PUBLIC_WEBSITE_NAME}</AppBar>
-            {children}
+          <AppBar position='static' sx={{ textAlign: 'center', height: '4rem', fontSize: '2rem', lineHeight: '4rem' }}>{NEXT_PUBLIC_WEBSITE_NAME}</AppBar>
+          {children}
         </ThemeRegistry>
-    </body>
-  </html>
+      </body>
+    </html>
   );
 }
