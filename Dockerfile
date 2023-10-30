@@ -21,9 +21,6 @@ COPY --from=builder /app/package.json ./package.json
 COPY --from=builder /app/package-lock.json ./package-lock.json
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-COPY --from=builder --chown=nextjs:nodejs /app/entrypoint.sh ./entrypoint.sh
-COPY --from=builder --chown=nextjs:nodejs /app/env.sh ./env.sh
 USER nextjs
 EXPOSE 24498
-ENTRYPOINT ["./entrypoint.sh"]
 CMD ["npm", "start"]
