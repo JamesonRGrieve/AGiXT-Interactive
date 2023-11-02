@@ -7,6 +7,20 @@ import { useServerInsertedHTML } from 'next/navigation';
 import CssBaseline from '@mui/material/CssBaseline';
 import { deepmerge } from '@mui/utils';
 
+declare module '@mui/material/styles' {
+  interface Theme {
+    mutate: () => void;
+  }
+  interface ThemeOptions {
+    mutate?: () => void;
+  }
+  interface Palette {
+    colorblind: boolean;
+  }
+  interface PaletteOptions {
+    colorblind?: boolean;
+  }
+}
 const themeConfig = {
   //Components
   components: {
