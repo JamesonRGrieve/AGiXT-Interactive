@@ -12,7 +12,7 @@ declare module '@mui/material/styles' {
     colorblind?: boolean;
   }
 }
-const themeConfig = {
+const baseTheme = {
   //Components
   components: {
     MuiButton: {
@@ -65,6 +65,12 @@ const themeConfig = {
     }
   }
 };
+const darkOverrides = {
+  palette:
+  {
+    mode: 'dark'
+  }
+}
 const colorblindOverrides = {
   palette: {
     colorblind: true,
@@ -80,21 +86,11 @@ const colorblindOverrides = {
     },
   },
 }
-export const themeLight = createTheme(themeConfig);
-export const themeDark = createTheme(deepmerge(themeConfig, {
-  palette:
-  {
-    mode: 'dark'
-  }
-}));
-export const themeLightColorblind = createTheme(deepmerge(themeConfig, colorblindOverrides));
-export const themeDarkColorblind = createTheme(deepmerge(deepmerge(themeConfig, colorblindOverrides), {
-  palette:
-  {
-    mode: 'dark'
-  }
-}));
-export function ThemeRegistry({children, defaultDark=false, defaultColorblind=false} : {children: any, defaultDark?: boolean , defaultColorblind?: boolean}) {
+export const themeLight = createTheme(baseTheme);
+export const themeDark = createTheme(deepmerge(baseTheme, darkOverrides));
+export const themeLightColorblind = createTheme(deepmerge(baseTheme, colorblindOverrides));
+export const themeDarkColorblind = createTheme(deepmerge(deepmerge(baseTheme, colorblindOverrides), darkOverrides));
+export function ThemeWrapper({children, defaultDark=false, defaultColorblind=false} : {children: any, defaultDark?: boolean , defaultColorblind?: boolean}) {
   const [themeState, setThemeState] = useState<ThemeState>({
     dark: defaultDark,
     colorblind: defaultColorblind,
@@ -117,4 +113,4 @@ export function ThemeRegistry({children, defaultDark=false, defaultColorblind=fa
       </ThemeContext.Provider>
   );
 }
-export default ThemeRegistry;
+export default ThemeWrapper;
