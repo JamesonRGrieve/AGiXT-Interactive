@@ -52,7 +52,6 @@ const SwitchThemed = styled(Switch)(({ theme }) => ({
 }));
 export default function StyledSwitch() {
   const themeState = useContext(ThemeContext) as ThemeState;
-  console.log("themeState in SwitchDark", themeState);
   return <SwitchThemed checked={themeState.dark} onClick={() => {
     themeState.mutate({...themeState, dark: !themeState.dark});
     const expiryDate = new Date();
