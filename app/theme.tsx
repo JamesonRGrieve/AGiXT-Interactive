@@ -1,19 +1,10 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material';
-import createCache from '@emotion/cache';
-import { CacheProvider } from '@emotion/react';
-import { useServerInsertedHTML } from 'next/navigation';
 import CssBaseline from '@mui/material/CssBaseline';
 import { deepmerge } from '@mui/utils';
-
+import { ThemeState, ThemeContext } from '@/types/ThemeState';
 declare module '@mui/material/styles' {
-  interface Theme {
-    mutate: () => void;
-  }
-  interface ThemeOptions {
-    mutate?: () => void;
-  }
   interface Palette {
     colorblind: boolean;
   }
@@ -83,57 +74,26 @@ export const themeDark = createTheme(deepmerge(themeConfig, {
   }
 }));
 
-// This implementation is from emotion-js
-// https://github.com/emotion-js/emotion/issues/2928#issuecomment-1319747902
-export function ThemeRegistry(props: any) {
-  const { options, children } = props;
-
-  const [{ cache, flush }] = useState(() => {
-    const cache = createCache(options);
-    cache.compat = true;
-    const prevInsert = cache.insert;
-    let inserted: string[] = [];
-    cache.insert = (...args) => {
-      const serialized = args[1];
-      if (cache.inserted[serialized.name] === undefined) {
-        inserted.push(serialized.name);
-      }
-      return prevInsert(...args);
-    };
-    const flush = () => {
-      const prevInserted = inserted;
-      inserted = [];
-      return prevInserted;
-    };
-    return { cache, flush };
+export function ThemeRegistry({children} : {children: any}) {
+  const [themeState, setThemeState] = useState<ThemeState>({
+    dark: false,
+    colorblind: false,
+    mutate: null
   });
 
-  useServerInsertedHTML(() => {
-    const names = flush();
-    if (names.length === 0) {
-      return null;
-    }
-    let styles = '';
-    for (const name of names) {
-      styles += cache.inserted[name];
-    }
-    return (
-      <style
-        key={cache.key}
-        data-emotion={`${cache.key} ${names.join(' ')}`}
-        dangerouslySetInnerHTML={{
-          __html: styles,
-        }}
-      />
-    );
-  });
-
+  useEffect(() => {
+    console.log("Theme State Changed", themeState);
+  }, [themeState])
   return (
-    <CacheProvider value={cache}>
-      <ThemeProvider theme={themeLight}>
+    <ThemeContext.Provider value={{ ...themeState, mutate: setThemeState }}>
+      <ThemeProvider theme={ 
+        !themeState.dark?
+          (!themeState.colorblind?themeLight:themeLight):
+          (!themeState.colorblind?themeDark:themeDark)
+        }>
         <CssBaseline />
         {children}
       </ThemeProvider>
-    </CacheProvider>
+      </ThemeContext.Provider>
   );
 }
