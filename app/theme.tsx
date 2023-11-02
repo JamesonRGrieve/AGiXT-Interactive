@@ -28,6 +28,7 @@ const themeConfig = {
     }
   },
   palette: {
+    colorblind: false,
     primary: {
       light: '#F00',
       main: '#C00',
@@ -64,20 +65,39 @@ const themeConfig = {
     }
   }
 };
-
-const themeLight = createTheme(themeConfig);
-export default themeLight;
+const colorblindOverrides = {
+  palette: {
+    colorblind: true,
+    primary: {
+      light: '#CCC',
+      main: '#999',
+      dark: '#333'
+    },
+    secondary: {
+      light: '#CCC',
+      main: '#999',
+      dark: '#333'
+    },
+  },
+}
+export const themeLight = createTheme(themeConfig);
 export const themeDark = createTheme(deepmerge(themeConfig, {
   palette:
   {
     mode: 'dark'
   }
 }));
-
-export function ThemeRegistry({children} : {children: any}) {
+export const themeLightColorblind = createTheme(deepmerge(themeConfig, colorblindOverrides));
+export const themeDarkColorblind = createTheme(deepmerge(deepmerge(themeConfig, colorblindOverrides), {
+  palette:
+  {
+    mode: 'dark'
+  }
+}));
+export function ThemeRegistry({children, overrideDark, overrideColorblind} : {children: any, overrideDark?: boolean , overrideColorblind?: boolean}) {
   const [themeState, setThemeState] = useState<ThemeState>({
-    dark: false,
-    colorblind: false,
+    dark: overrideDark??false,
+    colorblind: overrideColorblind??false,
     mutate: null
   });
 
@@ -88,8 +108,8 @@ export function ThemeRegistry({children} : {children: any}) {
     <ThemeContext.Provider value={{ ...themeState, mutate: setThemeState }}>
       <ThemeProvider theme={ 
         !themeState.dark?
-          (!themeState.colorblind?themeLight:themeLight):
-          (!themeState.colorblind?themeDark:themeDark)
+          (!themeState.colorblind?themeLight:themeLightColorblind):
+          (!themeState.colorblind?themeDark:themeDarkColorblind)
         }>
         <CssBaseline />
         {children}
@@ -97,3 +117,4 @@ export function ThemeRegistry({children} : {children: any}) {
       </ThemeContext.Provider>
   );
 }
+export default ThemeRegistry;

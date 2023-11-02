@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Head from 'next/head';
 
-import { ThemeRegistry } from './theme';
+import ThemeRegistry from './theme';
 import './globals.css'
 import { AppBar } from '@mui/material';
 
@@ -26,7 +26,7 @@ export default function RootLayout({
         <script src="/__env.js" />
       </Head>
       <body className={inter.className}>
-        <ThemeRegistry options={{ key: 'mui' }}>
+        <ThemeRegistry>
           <AppBar position='static' sx={{ textAlign: 'center', height: '4rem', fontSize: '2rem', lineHeight: '4rem' }}>{NEXT_PUBLIC_WEBSITE_NAME}</AppBar>
           {children}
         </ThemeRegistry>

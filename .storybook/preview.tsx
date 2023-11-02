@@ -1,6 +1,6 @@
 import type { Preview } from '@storybook/react';
 import { useMemo } from 'react';
-import theme, {themeDark as appTheme} from '../app/theme';
+import {themeLight, themeDark, themeLightColorblind, themeDarkColorblind} from '../app/theme';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import React from 'react'
 import { Title, Subtitle, Description, Primary, Controls, Stories } from '@storybook/blocks';
@@ -8,8 +8,10 @@ import ReferenceGrid from './blocks/ReferenceGrid';
 import ComparisonGrid from './blocks/ComparisonGrid';
 
 const themes = {
-  light: theme,
-  dark: appTheme
+  light: themeLight,
+  light_cb: themeLightColorblind,
+  dark: themeDark,
+  dark_cb: themeDarkColorblind
 }
 
 export const globalTypes = {
@@ -22,8 +24,10 @@ export const globalTypes = {
       icon: 'paintbrush',
       dynamicTitle: true,
       items: [
-        { value: 'light', left: '☀️', title: 'Light Mode' },
-        { value: 'dark', left: '🌙', title: 'Dark Mode' },
+        { value: 'light', left: '☀️🌈', title: 'Light Mode' },
+        { value: 'light_cb', left: '☀️🩶', title: 'Light Colorblind Mode' },
+        { value: 'dark', left: '🌙🌈', title: 'Dark Mode' },
+        { value: 'dark_cb', left: '🌙🩶', title: 'Dark Colorblind Mode' },
       ],
     },
   },
