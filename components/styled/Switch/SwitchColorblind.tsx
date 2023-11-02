@@ -1,3 +1,4 @@
+'use client';
 import { ThemeState, ThemeContext } from '@/types/ThemeState';
 import { Switch } from '@mui/material';
 import { styled } from '@mui/material/styles';

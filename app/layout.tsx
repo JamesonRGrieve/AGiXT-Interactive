@@ -4,7 +4,9 @@ import Head from 'next/head';
 
 import ThemeWrapper from './theme';
 import './globals.css'
-import { AppBar } from '@mui/material';
+import { AppBar, Box, Typography } from '@mui/material';
+import SwitchColorblind from '@/components/styled/Switch/SwitchColorblind';
+import SwitchDark from '@/components/styled/Switch/SwitchDark';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,7 +29,7 @@ export default function RootLayout({
       </Head>
       <body className={inter.className}>
         <ThemeWrapper>
-          <AppBar position='static' sx={{ textAlign: 'center', height: '4rem', fontSize: '2rem', lineHeight: '4rem' }}>{NEXT_PUBLIC_WEBSITE_NAME}</AppBar>
+          <AppBar position='static' sx={{ textAlign: 'center', height: '4rem', fontSize: '2rem', lineHeight: '4rem', display: 'flex', flexDirection: "row", justifyContent: "space-evenly", alignItems: "center" }}><Typography variant="h1">{NEXT_PUBLIC_WEBSITE_NAME}</Typography><Box><SwitchDark /><SwitchColorblind /></Box></AppBar>
           {children}
         </ThemeWrapper>
       </body>

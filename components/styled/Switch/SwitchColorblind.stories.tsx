@@ -22,15 +22,7 @@ const meta: Meta = {
         component: 'This component is meant to illustrate how to effectively document components.'
       }
     },
-    referenceImages : [
-      {
-        image: SampleReferenceImagePrimary,
-        primary: true
-      },
-      {
-        image: SampleReferenceImageSecondary
-      },
-    ]
+    references: []
   }
 };
 export default meta;
