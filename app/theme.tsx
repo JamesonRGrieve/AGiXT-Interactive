@@ -94,10 +94,10 @@ export const themeDarkColorblind = createTheme(deepmerge(deepmerge(themeConfig, 
     mode: 'dark'
   }
 }));
-export function ThemeRegistry({children, overrideDark, overrideColorblind} : {children: any, overrideDark?: boolean , overrideColorblind?: boolean}) {
+export function ThemeRegistry({children, defaultDark=false, defaultColorblind=false} : {children: any, defaultDark?: boolean , defaultColorblind?: boolean}) {
   const [themeState, setThemeState] = useState<ThemeState>({
-    dark: overrideDark??false,
-    colorblind: overrideColorblind??false,
+    dark: defaultDark,
+    colorblind: defaultColorblind,
     mutate: null
   });
 
