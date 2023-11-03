@@ -54,6 +54,7 @@ export default function StyledSwitch() {
     themeState.mutate({...themeState, colorblind: !themeState.colorblind});
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 365);
-    setCookie("colorblind", themeState.colorblind?"true":"false", {expires: expiryDate} );
+    // TODO: Figure out how to move this into an effect hook in theme.tsx.
+    setCookie("colorblind", !themeState.colorblind?"true":"false", {expires: expiryDate} );
   }}/>;
 }
