@@ -1,10 +1,9 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material';
 import CssBaseline from '@mui/material/CssBaseline';
 import { deepmerge } from '@mui/utils';
 import { ThemeState, ThemeContext } from '@/types/ThemeState';
-import { getCookie, setCookie } from 'cookies-next';
 declare module '@mui/material/styles' {
   interface Palette {
     colorblind: boolean;
