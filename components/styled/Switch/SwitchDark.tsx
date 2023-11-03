@@ -57,6 +57,7 @@ export default function StyledSwitch() {
     themeState.mutate({...themeState, dark: !themeState.dark});
     const expiryDate = new Date();
     expiryDate.setDate(expiryDate.getDate() + 365);
-    setCookie("dark", themeState.dark?"true":"false", {expires: expiryDate});
+    // TODO: Figure out how to move this into an effect hook in theme.tsx.
+    setCookie("dark", !themeState.dark?"true":"false", {expires: expiryDate});
   }}/>;
 }
