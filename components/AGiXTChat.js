@@ -108,8 +108,9 @@ export default function AGiXTChat({
   setConversationName,
   showConversationBar = false,
   setLoggedIn = () => {},
+  apiKeyCookie = "apiKey",
 }) {
-  const apiKey = getCookie("apiKey") || "";
+  const apiKey = getCookie(apiKeyCookie) || "";
   const sdk = new AGiXTSDK({
     baseUri: baseUri,
     apiKey: apiKey,
@@ -336,7 +337,7 @@ export default function AGiXTChat({
     }
   };
   const handleLogout = async () => {
-    setCookie("apiKey", undefined);
+    setCookie(apiKeyCookie, undefined);
     setCookie("loggedIn", false);
     setLoggedIn(false);
     console.log("Logging out");
