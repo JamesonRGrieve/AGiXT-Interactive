@@ -25,6 +25,9 @@ export default function ConversationSelector({
   setConversationName,
   setConversations,
   conversation,
+  darkMode,
+  handleToggleDarkMode,
+  MenuDarkSwitch,
   handleLogout,
   sdk,
 }) {
@@ -135,6 +138,11 @@ export default function ConversationSelector({
         >
           <DeleteIcon sx={{ minWidth: "20px" }} color={"error"} />
         </Button>
+      </Tooltip>
+      <Tooltip
+        title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+      >
+        <MenuDarkSwitch checked={darkMode} onChange={handleToggleDarkMode} />
       </Tooltip>
       <Tooltip title="Logout">
         <Button
