@@ -1,17 +1,8 @@
 'use client';
-import React, { useState } from 'react';
-import { ThemeProvider, createTheme } from '@mui/material';
-import CssBaseline from '@mui/material/CssBaseline';
+import React from 'react';
+import { createTheme } from '@mui/material';
 import { deepmerge } from '@mui/utils';
-import { ThemeState, ThemeContext } from '@/types/ThemeState';
-declare module '@mui/material/styles' {
-  interface Palette {
-    colorblind: boolean;
-  }
-  interface PaletteOptions {
-    colorblind?: boolean;
-  }
-}
+import { Themes }from 'jrgcomponents/types/Theming';
 const baseTheme = {
   //Components
   components: {
@@ -90,25 +81,10 @@ export const themeLight = createTheme(baseTheme);
 export const themeDark = createTheme(deepmerge(baseTheme, darkOverrides));
 export const themeLightColorblind = createTheme(deepmerge(baseTheme, colorblindOverrides));
 export const themeDarkColorblind = createTheme(deepmerge(deepmerge(baseTheme, colorblindOverrides), darkOverrides));
-export function ThemeWrapper({ children, defaultDark = false, defaultColorblind = false }: { children: any, defaultDark?: boolean, defaultColorblind?: boolean }) {
-  const [themeState, setThemeState] = useState<ThemeState>({
-    dark: defaultDark,
-    colorblind: defaultColorblind,
-    mutate: null
-  });
-  return (
-    <ThemeContext.Provider value={{ ...themeState, mutate: setThemeState }}>
-      <ThemeProvider theme={
-        !themeState.dark ?
-          // Light Themes
-          (!themeState.colorblind ? themeLight : themeLightColorblind) :
-          // Dark Themes
-          (!themeState.colorblind ? themeDark : themeDarkColorblind)
-      }>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
-    </ThemeContext.Provider>
-  );
-}
-export default ThemeWrapper;
+const themes = {
+  light: themeLight,
+  dark: themeDark,
+  lightColorblind: themeLightColorblind,
+  darkColorblind: themeDarkColorblind
+} as Themes;
+export default themes;
