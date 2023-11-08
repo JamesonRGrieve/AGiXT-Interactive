@@ -1,5 +1,3 @@
-'use client';
-import React from 'react';
 import { createTheme } from '@mui/material';
 import { deepmerge } from '@mui/utils';
 import { Themes }from 'jrgcomponents/types/Theming';
