@@ -1,3 +1,26 @@
 {
-  "extends": ["next/babel", "next/core-web-vitals"]
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+      "ecmaVersion": 2015,
+      "sourceType": "module"
+  },
+  "plugins": [
+      "react-hooks"
+  ],
+  "extends": [
+    "plugin:react/recommended",
+    "next/core-web-vitals"
+  ],
+  "rules": {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+      "react/prop-types": "off",
+      "@typescript-eslint/no-explicit-any": "off"
+  },
+  "settings": {
+      "react": {
+          "pragma": "React",
+          "version": "detect"
+      }
+  }
 }
