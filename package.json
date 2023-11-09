@@ -1,12 +1,19 @@
 {
   "name": "agixtinteractive",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "compile": "tsc --jsx react-jsx",
     "start": "next start -p 3437",
     "lint": "next lint"
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./AGiXTChat.js"
   },
   "dependencies": {
     "@emotion/react": "latest",
@@ -16,7 +23,6 @@
     "@mui/material": "latest",
     "@mui/system": "^5.14.15",
     "@mui/x-data-grid": "^6.16.2",
-    "agixt": "^1.0.36",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "latest",
     "next": "latest",
