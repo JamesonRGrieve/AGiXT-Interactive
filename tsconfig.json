@@ -21,11 +21,13 @@
     },
     "include": [
       "next-env.d.ts",
-      "**/*.ts",
-      "**/*.tsx"
+      "components/*.ts",
+      "components/*.js",
+      "components/*.tsx",
+      "components/*.jsx",
     ],
     "exclude": [
-      "node_modules"
+      "node_modules", "dist"
     ]
   }
   
