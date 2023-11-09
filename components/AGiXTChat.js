@@ -111,10 +111,12 @@ export default function AGiXTChat({
   apiKeyCookie = "apiKey",
 }) {
   const apiKey = getCookie(apiKeyCookie) || "";
-  const sdk = new AGiXTSDK({
-    baseUri: baseUri,
-    apiKey: apiKey,
-  });
+  const sdk = useMemo(() => {
+    return new AGiXTSDK({
+      baseUri: baseUri,
+      apiKey: apiKey,
+    });
+  }, [baseUri, apiKey]);
   const loggedIn = getCookie("loggedIn") || false;
   let isDark = getCookie("dark");
   isDark === undefined
@@ -175,7 +177,7 @@ export default function AGiXTChat({
       setConversations(convos);
     };
     fetchConversations();
-  }, [agentName]);
+  }, [agentName, sdk]);
 
   useEffect(() => {
     const fetchConversation = async () => {
@@ -188,7 +190,7 @@ export default function AGiXTChat({
       setChatHistory(convo);
     };
     fetchConversation();
-  }, [conversationName, lastResponse]);
+  }, [conversationName, lastResponse, agentName, sdk]);
 
   useEffect(() => {
     const getArgs = async (promptName, promptCategory) => {
@@ -204,7 +206,7 @@ export default function AGiXTChat({
       }
     };
     getArgs(promptName, promptCategory);
-  }, [promptName]);
+  }, [promptName, promptCategory, sdk]);
   // Uploaded files will be formatted like [{"file_name": "file_content"}]
   useEffect(() => {
     setCookie("conversationName", conversationName);
