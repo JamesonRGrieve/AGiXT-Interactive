@@ -158,7 +158,6 @@ export default function MarkdownBlock({
         renderMessage(content)
       ) : (
         <ReactMarkdown
-          children={renderMessage(content)}
           className="react-markdown"
           components={{
             a: renderLink,
@@ -180,7 +179,9 @@ export default function MarkdownBlock({
             li({ children }) {
               return <li style={{ marginBottom: "0.5em" }}>{children}</li>;
             },
-            code({ node, inline, children, ...props }) {
+            Code({ node, inline, children, ...props }) {
+              const codeBlockRef = React.useRef(null);
+
               if (inline) {
                 return (
                   <span
@@ -195,7 +196,6 @@ export default function MarkdownBlock({
                   </span>
                 );
               }
-              const codeBlockRef = React.useRef(null);
               const language = props.className?.replace(/language-/, "");
               const fileExtension = langMap[language] || "txt";
               const ts = chatItem
@@ -250,11 +250,10 @@ export default function MarkdownBlock({
                       {language in langMap ? (
                         <SyntaxHighlighter
                           {...props}
-                          children={children}
                           language={language}
                           PreTag="div"
                           style={a11yDark}
-                        />
+                        >{children}</SyntaxHighlighter>
                       ) : (
                         <code className={"code-block"} {...props}>
                           {children}
@@ -267,7 +266,7 @@ export default function MarkdownBlock({
               );
             },
           }}
-        />
+        >{() => renderMessage(content)}</ReactMarkdown>
       )}
     </>
   );
