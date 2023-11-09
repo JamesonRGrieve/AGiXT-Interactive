@@ -1,3 +1,4 @@
+"use client";
 import { createTheme } from '@mui/material';
 import { deepmerge } from '@mui/utils';
 import { Themes }from 'jrgcomponents/types/Theming';
