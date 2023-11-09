@@ -13,7 +13,7 @@
     "dist"
   ],
   "exports": {
-    ".": "./AGiXTChat.js"
+    ".": "./dist/AGiXTChat.js"
   },
   "dependencies": {
     "@emotion/react": "latest",
@@ -25,6 +25,7 @@
     "@mui/x-data-grid": "^6.16.2",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "latest",
+    "agixt": "^1.0.37",
     "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
