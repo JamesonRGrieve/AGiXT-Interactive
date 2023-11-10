@@ -2,7 +2,10 @@
 import { createTheme } from '@mui/material';
 import { deepmerge } from '@mui/utils';
 import { Themes }from 'jrgcomponents/types/Theming';
+const defaultTheme = createTheme();
+// Ensure any partial overrides are spread into this if you intend to reference them in custom themes.
 const palette = {
+  ...defaultTheme.palette,
   colorblind: false,
   primary: {
     light: '#F00',
@@ -15,9 +18,11 @@ const palette = {
     dark: '#090'
   },
   text: {
+    ...defaultTheme.palette.text,
     primary: '#000'
   },
   background: {
+    ...defaultTheme.palette.background,
     default: '#FFF'
   }
 }
