@@ -2,6 +2,25 @@
 import { createTheme } from '@mui/material';
 import { deepmerge } from '@mui/utils';
 import { Themes }from 'jrgcomponents/types/Theming';
+const palette = {
+  colorblind: false,
+  primary: {
+    light: '#F00',
+    main: '#C00',
+    dark: '#900'
+  },
+  secondary: {
+    light: '#0F0',
+    main: '#0C0',
+    dark: '#090'
+  },
+  text: {
+    primary: '#000'
+  },
+  background: {
+    default: '#FFF'
+  }
+}
 const baseTheme = {
   //Components
   components: {
@@ -18,23 +37,7 @@ const baseTheme = {
     }
   },
   palette: {
-    colorblind: false,
-    primary: {
-      light: '#F00',
-      main: '#C00',
-      dark: '#900'
-    },
-    secondary: {
-      light: '#0F0',
-      main: '#0C0',
-      dark: '#090'
-    },
-    text: {
-      primary: '#000'
-    },
-    background: {
-      default: '#FFF'
-    }
+    ...palette
   },
   typography: {
     fontFamily: 'Arial, sans-serif',
