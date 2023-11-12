@@ -12,7 +12,7 @@ import Box from "@mui/material/Box";
 import Switch from "@mui/material/Switch";
 import AGiXTSDK from "agixt";
 import Tooltip from "@mui/material/Tooltip";
-import Router from "next/router";
+import { useMemo } from "react";
 
 import {
   Button,
@@ -82,33 +82,30 @@ const MenuDarkSwitch = styled(Switch)(({ theme }) => ({
 }));
 
 export default function AGiXTChat({
-  selectedChain,
-  chainArgs = {},
-  enableFileUpload = false,
-  contextResults = 5,
-  shots = 1,
-  browseLinks = false,
-  websearch = false,
-  websearchDepth = 0,
-  enableMemory = false,
-  injectMemoriesFromCollectionNumber = 0,
-  conversationResults = 5,
-  fromStep = 0,
-  allResponses = false,
-  useSelectedAgent = true,
-  conversationName = "Test",
-  mode = "prompt",
-  promptName = "Chat",
-  promptCategory = "Default",
-  agentName = "gpt4free",
-  insightAgent = "",
-  dark = true,
-  baseUri = "http://localhost:7437",
-  topMargin = "-35",
-  setConversationName,
-  showConversationBar = false,
-  setLoggedIn = () => {},
-  apiKeyCookie = "apiKey",
+  selectedChain, // Chain name of the selected chain if in chain mode
+  chainArgs = {}, // Arguments for the chain
+  enableFileUpload = false, // Enable file upload
+  contextResults = 5, // Number of context results to show
+  shots = 1, // Number of times to run the prompt
+  browseLinks = false, // Browse links in user input to memory
+  websearch = false, // Websearch user input to memory
+  websearchDepth = 0, // Websearch depth
+  enableMemory = false, // Enable memory training (not recommended)
+  injectMemoriesFromCollectionNumber = 0, // Inject memories from a specific collection number
+  conversationResults = 5, // Number of conversation results to show
+  useSelectedAgent = true, // Use the selected agent to run the chain instead of what is specified in the chain
+  conversationName = "Test", // Name of the conversation
+  mode = "prompt", // Mode of the chat (prompt or chain)
+  promptName = "Chat", // Name of the prompt to run
+  promptCategory = "Default", // Category of the prompt to run
+  agentName = "gpt4free", // Name of the agent to use
+  insightAgent = "", // Name of the agent to use for insight
+  dark = true, // Dark mode
+  baseUri = "http://localhost:7437", // Base URI of the AGiXT server
+  topMargin = "-35", // Top margin of the chat
+  setConversationName, // Function to set the conversation name
+  showConversationBar = false, // Show the conversation bar
+  apiKeyCookie = "apiKey", // Name of the cookie to store the API key in
 }) {
   const apiKey = getCookie(apiKeyCookie) || "";
   const sdk = useMemo(() => {
@@ -117,7 +114,7 @@ export default function AGiXTChat({
       apiKey: apiKey,
     });
   }, [baseUri, apiKey]);
-  const loggedIn = getCookie("loggedIn") || false;
+  const loggedIn = getCookie(apiKeyCookie) ? true : false;
   let isDark = getCookie("dark");
   isDark === undefined
     ? setCookie("dark", dark)
@@ -219,8 +216,8 @@ export default function AGiXTChat({
       selectedChain,
       message,
       agentOverride,
-      allResponses,
-      fromStep,
+      false,
+      0,
       chainArgs
     );
     setIsLoading(false);
@@ -340,10 +337,8 @@ export default function AGiXTChat({
   };
   const handleLogout = async () => {
     setCookie(apiKeyCookie, undefined);
-    setCookie("loggedIn", false);
-    setLoggedIn(false);
     console.log("Logging out");
-    Router.reload();
+    window.location.reload();
   };
   return (
     <>

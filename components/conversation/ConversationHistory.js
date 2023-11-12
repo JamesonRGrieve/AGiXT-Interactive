@@ -70,20 +70,22 @@ export default function ConversationHistory({
             })
           : null}
         {isLoading && (
-          <ChatMessage
-            key={"Please Wait"}
-            chatItem={{
-              role: agentName,
-              message: WAIT_MESSAGE,
-              timestamp: "Just Now...",
-            }}
-            isLoading={isLoading}
-            sdk={sdk}
-            setIsLoading={setIsLoading}
-            setLastResponse={setLastResponse}
-            conversationName={conversationName}
-            agentName={insightAgent}
-          />
+          <>
+            <ChatMessage
+              key={"Please Wait"}
+              chatItem={{
+                role: agentName,
+                message: WAIT_MESSAGE,
+                timestamp: "Just Now...",
+              }}
+              isLoading={isLoading}
+              sdk={sdk}
+              setIsLoading={setIsLoading}
+              setLastResponse={setLastResponse}
+              conversationName={conversationName}
+              agentName={insightAgent}
+            />
+          </>
         )}
       </div>
     </Paper>
