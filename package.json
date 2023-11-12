@@ -19,13 +19,13 @@
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
     "@fontsource/ubuntu-mono": "latest",
-    "@mui/icons-material": "^5.14.15",
+    "@mui/icons-material": "^5.14.16",
     "@mui/material": "latest",
-    "@mui/system": "^5.14.15",
+    "@mui/system": "^5.14.17",
     "@mui/x-data-grid": "^6.16.2",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "latest",
-    "agixt": "^1.0.37",
+    "agixt": "^1.0.39",
     "next": "latest",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -33,13 +33,12 @@
     "react-syntax-highlighter": "^15.5.0"
   },
   "devDependencies": {
-    "@types/node": "^20.8.9",
-    "@types/react": "^18.2.33",
-    "@types/react-dom": "18.2.14",
-    "@types/webpack-env": "^1.18.3",
-    "eslint": "8.52.0",
-    "eslint-config-next": "14.0.0",
-    "ts-loader": "^9.5.0",
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.2.37",
+    "@types/react-dom": "18.2.15",
+    "@types/webpack-env": "^1.18.4",
+    "eslint": "8.53.0",
+    "eslint-config-next": "14.0.2",
     "typescript": "^5.2.2"
   }
 }
