@@ -72,19 +72,6 @@ export default function ConversationHistory({
         {isLoading && (
           <>
             <ChatMessage
-              key={"UserInput"}
-              chatItem={{
-                role: "USER",
-                message: lastUserMessage,
-                timestamp: "Just Now...",
-              }}
-              sdk={sdk}
-              setIsLoading={setIsLoading}
-              setLastResponse={setLastResponse}
-              conversationName={conversationName}
-              agentName={insightAgent}
-            />
-            <ChatMessage
               key={"Please Wait"}
               chatItem={{
                 role: agentName,
