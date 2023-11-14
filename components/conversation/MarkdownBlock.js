@@ -158,6 +158,7 @@ export default function MarkdownBlock({
         renderMessage(content)
       ) : (
         <ReactMarkdown
+          // eslint-disable-next-line react/no-children-prop
           children={renderMessage(content)}
           className="react-markdown"
           components={{
@@ -195,6 +196,7 @@ export default function MarkdownBlock({
                   </span>
                 );
               }
+              // eslint-disable-next-line react-hooks/rules-of-hooks
               const codeBlockRef = React.useRef(null);
               const language = props.className?.replace(/language-/, "");
               const fileExtension = langMap[language] || "txt";
@@ -250,6 +252,7 @@ export default function MarkdownBlock({
                       {language in langMap ? (
                         <SyntaxHighlighter
                           {...props}
+                          // eslint-disable-next-line react/no-children-prop
                           children={children}
                           language={language}
                           PreTag="div"

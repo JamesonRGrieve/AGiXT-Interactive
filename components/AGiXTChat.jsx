@@ -12,7 +12,6 @@ import Box from "@mui/material/Box";
 import Switch from "@mui/material/Switch";
 import AGiXTSDK from "agixt";
 import Tooltip from "@mui/material/Tooltip";
-import Router from "next/router";
 import { useMemo } from "react";
 
 import {
@@ -344,7 +343,7 @@ export default function AGiXTChat({
     setCookie("loggedIn", false);
     setLoggedIn(false);
     console.log("Logging out");
-    Router.reload();
+    window.location.reload();
   };
   return (
     <>
