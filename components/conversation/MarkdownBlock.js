@@ -142,6 +142,7 @@ export default function MarkdownBlock({
   const renderLink = ({ node, children, ...props }) => {
     const isExternal = props.href && !props.href.startsWith('#');
     return (
+      // eslint-disable-next-line jsx-a11y/click-events-have-key-events
       <a
         {...props}
         target={isExternal ? '_blank' : undefined}
