@@ -1,5 +1,5 @@
 {
-  "name": "agixtinteractive",
+  "name": "agixtchat",
   "version": "0.0.9",
   "scripts": {
     "dev": "next dev",
