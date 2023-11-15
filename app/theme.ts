@@ -18,7 +18,7 @@ const baseTheme = {
     MuiTypography: {
       styleOverrides: {
         h1: ({ theme }: { theme: any }) => ({
-          color: theme.palette.primary.dark
+          color: theme.palette.text.primary
         })
       }
     }
@@ -36,12 +36,6 @@ const baseTheme = {
       main: '#0C0',
       dark: '#090'
     },
-    text: {
-      primary: '#000'
-    },
-    background: {
-      default: '#FFF'
-    }
   },
   typography: {
     fontFamily: 'Arial, sans-serif',
