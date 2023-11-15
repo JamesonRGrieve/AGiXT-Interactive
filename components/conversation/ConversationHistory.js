@@ -33,7 +33,7 @@ export default function ConversationHistory({
   setLastResponse,
   conversationName,
 }) {
-  const topPx = Number(topMargin) + 129;
+  const topPx = Number(topMargin) + 165;
   const marginTop = `${topPx}px`;
 
   let lastUserMessage = ""; // track the last user message

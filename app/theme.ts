@@ -25,17 +25,7 @@ const baseTheme = {
   },
   // Anything that you override from here https://mui.com/material-ui/customization/dark-mode/ needs to also be overridden in dark or it won't be applied.
   palette: {
-    colorblind: false,
-    primary: {
-      light: '#F00',
-      main: '#C00',
-      dark: '#900'
-    },
-    secondary: {
-      light: '#0F0',
-      main: '#0C0',
-      dark: '#090'
-    }
+    colorblind: false
   },
   typography: {
     fontFamily: 'Arial, sans-serif',
@@ -70,6 +60,21 @@ const colorblindOverrides = {
       dark: '#333'
     },
     secondary: {
+      light: '#CCC',
+      main: '#999',
+      dark: '#333'
+    },
+    error: {
+      light: '#CCC',
+      main: '#999',
+      dark: '#333'
+    },
+    success: {
+      light: '#CCC',
+      main: '#999',
+      dark: '#333'
+    },
+    info: {
       light: '#CCC',
       main: '#999',
       dark: '#333'

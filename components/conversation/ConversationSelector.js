@@ -15,9 +15,10 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import FileDownloadOutlinedIcon from "@mui/icons-material/FileDownloadOutlined";
 import AddIcon from "@mui/icons-material/Add";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { useState } from "react";
-
+import { useTheme } from "@emotion/react";
+import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
+import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 export default function ConversationSelector({
   agentName,
   conversations,
@@ -25,10 +26,6 @@ export default function ConversationSelector({
   setConversationName,
   setConversations,
   conversation,
-  darkMode,
-  handleToggleDarkMode,
-  MenuDarkSwitch,
-  handleLogout,
   sdk,
 }) {
   const [openNewConversation, setOpenNewConversation] = useState(false);
@@ -70,7 +67,7 @@ export default function ConversationSelector({
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
   };
-
+  const theme = useTheme();
   return (
     <Box
       sx={{
@@ -78,9 +75,9 @@ export default function ConversationSelector({
         flexDirection: "row",
         width: "100%",
         justifyContent: "space-between",
+        p:"1rem"
       }}
     >
-      &nbsp;&nbsp;&nbsp;
       <Tooltip title="Select a Conversation">
         <FormControl
           sx={{
@@ -140,19 +137,23 @@ export default function ConversationSelector({
         </Button>
       </Tooltip>
       <Tooltip
-        title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        title={
+          theme.palette.mode==="dark" ? "Switch to Light Mode" : "Switch to Dark Mode"
+        }
       >
-        <MenuDarkSwitch checked={darkMode} onChange={handleToggleDarkMode} />
+        <SwitchDark />
+       
       </Tooltip>
-      <Tooltip title="Logout">
-        <Button
-          onClick={handleLogout}
-          color={"error"}
-          sx={{ minWidth: "20px" }}
-        >
-          <LogoutIcon sx={{ minWidth: "20px" }} color={"error"} />
-        </Button>
+      <Tooltip
+        title={
+          theme.palette.colorblind ? "Switch to Normal Mode" : "Switch to Colorblind Mode"
+        }
+      >
+      <SwitchColorblind />
+
+       
       </Tooltip>
+     
       <Dialog
         open={openNewConversation}
         onClose={() => setOpenNewConversation(false)}
