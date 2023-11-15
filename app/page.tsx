@@ -3,7 +3,6 @@ import { getCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 import AGiXTChat from '../components/AGiXTChat';
 import React from 'react';
-import Auth from '../components/Auth';
 export default function Home() {
   const [userKey, setUserKey] = useState("");
   const [username, setUsername] = useState("");
@@ -22,9 +21,7 @@ export default function Home() {
   }, [userKey]);
   const [loggedIn, setLoggedIn] = useState(false);
   const [conversationName, setConversationName] = useState(getCookie("conversationName")|| process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME);
-  return (!loggedIn ? <Auth username={username} userKey={userKey} setLoggedIn={setLoggedIn} /> :
-    
-<AGiXTChat
+  return <AGiXTChat
       baseUri={process.env.NEXT_PUBLIC_AGIXT_SERVER} // Base URI to the AGiXT server
       agentName={process.env.NEXT_PUBLIC_AGIXT_AGENT} // Agent name
       insightAgent={process.env.NEXT_PUBLIC_AGIXT_INSIGHT_AGENT} // Insight agent name to use a different agent for insights, leave blank to use the same agent
@@ -42,6 +39,5 @@ export default function Home() {
       selectedChain={process.env.NEXT_PUBLIC_AGIXT_CHAIN} // Chain name
       chainArgs={JSON.parse(process.env.NEXT_PUBLIC_AGIXT_CHAIN_ARGS??"{}")} // Chain arg overrides, unnecessary if you don't need to override any args.
       useSelectedAgent={process.env.NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT==="true"} // Will force the selected agent to run all chain steps rather than the agents defined in the chain
-    />
-  );
+    />;
 }

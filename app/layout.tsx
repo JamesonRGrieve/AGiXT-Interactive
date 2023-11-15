@@ -6,8 +6,7 @@ import './globals.css';
 import { AppBar, Box, Typography } from '@mui/material';
 import ThemeWrapper from 'jrgcomponents/theming/ThemeWrapper';
 import themes from './theme';
-import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
-import SwitchDark from 'jrgcomponents/theming/SwitchDark';
+
 import React from "react";
 const inter = Inter({ subsets: ['latin'] });
 
@@ -34,27 +33,6 @@ export default function RootLayout({
           defaultDark={cookieStore.get('dark')?.value === 'true'}
           defaultColorblind={cookieStore.get('colorblind')?.value === 'true'}
         >
-          <AppBar
-            position='static'
-            sx={{
-              textAlign: 'center',
-              height: '4rem',
-              fontSize: '2rem',
-              lineHeight: '4rem',
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              alignItems: 'center'
-            }}
-          >
-            <Typography variant='h1'>
-              {process.env.NEXT_PUBLIC_WEBSITE_NAME}
-            </Typography>
-            <Box>
-              <SwitchDark />
-              <SwitchColorblind />
-            </Box>
-          </AppBar>
           {children}
         </ThemeWrapper>
       </body>
