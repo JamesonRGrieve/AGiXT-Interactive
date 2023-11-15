@@ -29,7 +29,9 @@ export default function Home() {
       baseUri={process.env.NEXT_PUBLIC_AGIXT_SERVER} // Base URI to the AGiXT server
       agentName={process.env.NEXT_PUBLIC_AGIXT_AGENT} // Agent name
       insightAgent={process.env.NEXT_PUBLIC_AGIXT_INSIGHT_AGENT} // Insight agent name to use a different agent for insights, leave blank to use the same agent
-      conversationName={process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME} // Conversation name
+      conversationName={
+        conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME
+      } // Conversation name
       setConversationName={setConversationName} // Function to set the conversation name
       // UI Options
       showConversationBar={
@@ -52,3 +54,4 @@ export default function Home() {
     />
   );
 }
+
