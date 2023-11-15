@@ -1,5 +1,5 @@
 {
-  "name": "agixtinteractive",
+  "name": "agixtchat",
   "version": "0.0.9",
   "scripts": {
     "dev": "next dev",
@@ -26,7 +26,7 @@
     "agixt": "^1.0.39",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.0.0",
-    "jrgcomponents": "^0.0.50",
+    "jrgcomponents": "^0.0.51",
     "next": "14.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
