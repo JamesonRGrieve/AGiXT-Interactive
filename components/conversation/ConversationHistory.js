@@ -205,7 +205,6 @@ const ChatMessage = ({
               Please provide some feedback regarding the message.
             </DialogContentText>
             <TextField
-              autoFocus
               margin='dense'
               id='name'
               label='Feedback'

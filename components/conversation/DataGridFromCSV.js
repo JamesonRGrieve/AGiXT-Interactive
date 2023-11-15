@@ -199,7 +199,7 @@ export const DataGridFromCSV = ({
             <DialogTitle>Get Insights</DialogTitle>
             <DialogContent>
               <TextField
-                autoFocus
+
                 margin='dense'
                 id='name'
                 label='What would you like insights on?'

@@ -161,7 +161,6 @@ export default function ConversationSelector({
         <DialogTitle>Create New Conversation</DialogTitle>
         <DialogContent>
           <TextField
-            autoFocus
             margin='dense'
             id='name'
             label='New Conversation Name'
