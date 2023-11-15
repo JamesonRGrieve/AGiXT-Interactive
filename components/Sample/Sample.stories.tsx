@@ -11,10 +11,13 @@ import SampleComponent, { SampleProps } from './Sample';
 type Story = StoryObj<typeof meta>;
 
 // Configure Component Stories.
-export const Sample: Story = (args: SampleProps) => <SampleComponent {...args} />;
+export const Sample: Story = (args: SampleProps) => (
+  <SampleComponent {...args} />
+);
 Sample.args = {
   heading: 'Sample Component',
-  bodyText: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+  bodyText:
+    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
   buttonText: 'Click Me!'
 };
 
@@ -32,12 +35,13 @@ const meta: Meta = {
     componentSubtitle: 'A Sample Component',
     docs: {
       description: {
-        component: 'This component is meant to illustrate how to effectively document components.'
+        component:
+          'This component is meant to illustrate how to effectively document components.'
       }
     },
     references: [
       {
-        variant: "Primary",
+        variant: 'Primary',
         story: Sample,
         images: [
           {
@@ -46,7 +50,7 @@ const meta: Meta = {
           },
           {
             image: SampleReferenceImageSecondary
-          },
+          }
         ]
       }
     ]
