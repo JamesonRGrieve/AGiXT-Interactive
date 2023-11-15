@@ -24,6 +24,7 @@ const baseTheme = {
       }
     }
   },
+  // Anything that you override from here https://mui.com/material-ui/customization/dark-mode/ needs to also be overridden in dark or it won't be applied.
   palette: {
     colorblind: false,
     primary: {
@@ -84,7 +85,9 @@ const colorblindOverrides = {
   },
 }
 export const themeLight = createTheme(baseTheme);
-export const themeDark = createTheme(deepmerge(baseTheme, darkOverrides));
+const predark = deepmerge(baseTheme, darkOverrides);
+console.log("Predark", predark);
+export const themeDark = createTheme(predark);
 export const themeLightColorblind = createTheme(deepmerge(baseTheme, colorblindOverrides));
 export const themeDarkColorblind = createTheme(deepmerge(deepmerge(baseTheme, colorblindOverrides), darkOverrides));
 const themes = {
