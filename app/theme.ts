@@ -35,7 +35,7 @@ const baseTheme = {
       light: '#0F0',
       main: '#0C0',
       dark: '#090'
-    },
+    }
   },
   typography: {
     fontFamily: 'Arial, sans-serif',
@@ -77,9 +77,7 @@ const colorblindOverrides = {
   }
 };
 export const themeLight = createTheme(baseTheme);
-const predark = deepmerge(baseTheme, darkOverrides);
-console.log('Predark', predark);
-export const themeDark = createTheme(predark);
+export const themeDark = createTheme(deepmerge(baseTheme, darkOverrides));
 export const themeLightColorblind = createTheme(
   deepmerge(baseTheme, colorblindOverrides)
 );
