@@ -1,4 +1,4 @@
-version: "3.7"
+version: '3.7'
 services:
   agixtinteractive:
     image: joshxt/agixtinteractive:main
@@ -20,5 +20,5 @@ services:
       - NEXT_PUBLIC_AGIXT_CONVERSATION_NAME=${AGIXT_CONVERSATION_NAME-Test}
       - TZ=${TZ-America/New_York}
     ports:
-      - "3437:3437"
+      - '3437:3437'
     restart: unless-stopped

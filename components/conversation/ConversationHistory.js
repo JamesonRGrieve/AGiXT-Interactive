@@ -1,14 +1,14 @@
-import React from "react";
-import { useTheme } from "@emotion/react";
-import { useState } from "react";
-import { Paper, Box, Typography, IconButton } from "@mui/material";
+import React from 'react';
+import { useTheme } from '@emotion/react';
+import { useState } from 'react';
+import { Paper, Box, Typography, IconButton } from '@mui/material';
 import {
   ContentCopy as ContentCopyIcon,
   Download as DownloadIcon,
   ThumbUp,
-  ThumbDown,
-} from "@mui/icons-material";
-import clipboardCopy from "clipboard-copy";
+  ThumbDown
+} from '@mui/icons-material';
+import clipboardCopy from 'clipboard-copy';
 import {
   Dialog,
   DialogActions,
@@ -17,10 +17,10 @@ import {
   DialogTitle,
   TextField,
   Button,
-  Tooltip,
-} from "@mui/material";
-import MarkdownBlock from "./MarkdownBlock";
-const WAIT_MESSAGE = "Let me think about that for a moment. Please wait..";
+  Tooltip
+} from '@mui/material';
+import MarkdownBlock from './MarkdownBlock';
+const WAIT_MESSAGE = 'Let me think about that for a moment. Please wait..';
 
 export default function ConversationHistory({
   agentName,
@@ -31,28 +31,28 @@ export default function ConversationHistory({
   topMargin,
   setIsLoading,
   setLastResponse,
-  conversationName,
+  conversationName
 }) {
   const topPx = Number(topMargin) + 165;
   const marginTop = `${topPx}px`;
 
-  let lastUserMessage = ""; // track the last user message
+  let lastUserMessage = ''; // track the last user message
 
   return (
     <Paper
       elevation={5}
       sx={{
-        overflowY: "auto",
-        display: "flex",
-        flexDirection: "column-reverse",
+        overflowY: 'auto',
+        display: 'flex',
+        flexDirection: 'column-reverse',
         height: `calc(100vh - ${marginTop})`,
-        marginTop: "0px",
+        marginTop: '0px'
       }}
     >
       <div>
         {chatHistory
           ? chatHistory.map((chatItem, index) => {
-              if (chatItem.role === "USER") {
+              if (chatItem.role === 'USER') {
                 lastUserMessage = chatItem.message;
               }
               return (
@@ -72,11 +72,11 @@ export default function ConversationHistory({
         {isLoading && (
           <>
             <ChatMessage
-              key={"Please Wait"}
+              key={'Please Wait'}
               chatItem={{
                 role: agentName,
                 message: WAIT_MESSAGE,
-                timestamp: "Just Now...",
+                timestamp: 'Just Now...'
               }}
               isLoading={isLoading}
               sdk={sdk}
@@ -100,16 +100,16 @@ const ChatMessage = ({
   setIsLoading,
   setLastResponse,
   conversationName,
-  agentName,
+  agentName
 }) => {
   const formattedMessage =
-    typeof chatItem.message === "string"
-      ? chatItem.message.replace(/\\n/g, "  \n").replace(/\n/g, "  \n")
+    typeof chatItem.message === 'string'
+      ? chatItem.message.replace(/\\n/g, '  \n').replace(/\n/g, '  \n')
       : chatItem.message;
   const theme = useTheme();
   const [vote, setVote] = useState(0);
   const [open, setOpen] = useState(false);
-  const [feedback, setFeedback] = useState("");
+  const [feedback, setFeedback] = useState('');
 
   const handleClickOpen = (newVote) => {
     setVote(newVote);
@@ -124,9 +124,9 @@ const ChatMessage = ({
     clipboardCopy(formattedMessage);
   };
   const handleDownloadClick = () => {
-    const element = document.createElement("a");
+    const element = document.createElement('a');
     const file = new Blob([formattedMessage], {
-      type: "text/plain;charset=utf-8",
+      type: 'text/plain;charset=utf-8'
     });
     element.href = URL.createObjectURL(file);
     element.download = `${chatItem.role}-${chatItem.timestamp}.txt`;
@@ -137,16 +137,16 @@ const ChatMessage = ({
     <Box
       sx={{
         backgroundColor:
-          chatItem.role === "USER"
+          chatItem.role === 'USER'
             ? theme.palette.background.default
-            : theme.palette.action.selected,
+            : theme.palette.action.selected
       }}
     >
       <Box
         sx={{
-          padding: "10px",
-          overflow: "hidden",
-          position: "center",
+          padding: '10px',
+          overflow: 'hidden',
+          position: 'center'
         }}
       >
         <MarkdownBlock
@@ -160,34 +160,34 @@ const ChatMessage = ({
           agentName={agentName}
         />
         <Typography
-          variant="caption"
+          variant='caption'
           style={{
             color: theme.palette.text.secondary,
-            width: "100%",
-            display: "inline-block",
+            width: '100%',
+            display: 'inline-block'
           }}
         >
-          {chatItem.role === "USER" ? "You" : chatItem.role} •{" "}
+          {chatItem.role === 'USER' ? 'You' : chatItem.role} •{' '}
           {chatItem.timestamp}
         </Typography>
-        {chatItem.role != "USER" && !isLoading && (
+        {chatItem.role != 'USER' && !isLoading && (
           <>
-            <Tooltip title="Provide Positive Feedback">
+            <Tooltip title='Provide Positive Feedback'>
               <IconButton onClick={() => handleClickOpen(1)}>
-                <ThumbUp color={vote === 1 ? "success" : "inherit"} />
+                <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Provide Negative Feedback">
+            <Tooltip title='Provide Negative Feedback'>
               <IconButton onClick={() => handleClickOpen(-1)}>
-                <ThumbDown color={vote === -1 ? "error" : "inherit"} />
+                <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Copy Message">
+            <Tooltip title='Copy Message'>
               <IconButton onClick={handleCopyClick}>
                 <ContentCopyIcon />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Download Message">
+            <Tooltip title='Download Message'>
               <IconButton onClick={handleDownloadClick}>
                 <DownloadIcon />
               </IconButton>
@@ -197,27 +197,27 @@ const ChatMessage = ({
         <Dialog
           open={open}
           onClose={handleClose}
-          aria-labelledby="form-dialog-title"
+          aria-labelledby='form-dialog-title'
         >
-          <DialogTitle id="form-dialog-title">Provide Feedback</DialogTitle>
+          <DialogTitle id='form-dialog-title'>Provide Feedback</DialogTitle>
           <DialogContent>
             <DialogContentText>
               Please provide some feedback regarding the message.
             </DialogContentText>
             <TextField
               autoFocus
-              margin="dense"
-              id="name"
-              label="Feedback"
-              type="text"
+              margin='dense'
+              id='name'
+              label='Feedback'
+              type='text'
               fullWidth
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
-              color="info"
+              color='info'
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={handleClose} color="error">
+            <Button onClick={handleClose} color='error'>
               Cancel
             </Button>
             <Button
@@ -230,7 +230,7 @@ const ChatMessage = ({
                   sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
                 }
               }}
-              color="info"
+              color='info'
             >
               Submit
             </Button>

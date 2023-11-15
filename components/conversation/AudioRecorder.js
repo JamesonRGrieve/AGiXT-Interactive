@@ -1,10 +1,10 @@
-import { useState, useRef } from "react";
-import { IconButton, Tooltip } from "@mui/material";
+import { useState, useRef } from 'react';
+import { IconButton, Tooltip } from '@mui/material';
 import {
   Mic as MicIcon,
   Cancel as CancelIcon,
-  Send as SendIcon,
-} from "@mui/icons-material";
+  Send as SendIcon
+} from '@mui/icons-material';
 
 export default function AudioRecorder({
   conversationName,
@@ -12,7 +12,7 @@ export default function AudioRecorder({
   conversationResults,
   setIsLoading,
   agentName,
-  sdk,
+  sdk
 }) {
   const [recording, setRecording] = useState(false);
   const [audioData, setAudioData] = useState(null);
@@ -21,7 +21,7 @@ export default function AudioRecorder({
   const startRecording = () => {
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       mediaRecorder.current = new MediaRecorder(stream, {
-        mimeType: "audio/mp4",
+        mimeType: 'audio/mp4'
       });
       mediaRecorder.current.ondataavailable = (event) => {
         setAudioData(event.data);
@@ -48,11 +48,11 @@ export default function AudioRecorder({
         ); // Convert to base64
         const response = sdk.executeCommand(
           agentName,
-          "Chat with Voice",
+          'Chat with Voice',
           {
             base64_audio: base64Audio,
             conversation_results: conversationResults,
-            context_results: contextResults,
+            context_results: contextResults
           },
           conversationName
         );
@@ -73,20 +73,20 @@ export default function AudioRecorder({
   return (
     <div>
       {!recording ? (
-        <Tooltip title="Record Audio">
-          <IconButton color="info" onClick={startRecording}>
+        <Tooltip title='Record Audio'>
+          <IconButton color='info' onClick={startRecording}>
             <MicIcon />
           </IconButton>
         </Tooltip>
       ) : (
         <>
-          <Tooltip title="Cancel Recording">
-            <IconButton color="error" onClick={cancelRecording}>
+          <Tooltip title='Cancel Recording'>
+            <IconButton color='error' onClick={cancelRecording}>
               <CancelIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Send Audio">
-            <IconButton color="info" onClick={sendAudio}>
+          <Tooltip title='Send Audio'>
+            <IconButton color='info' onClick={sendAudio}>
               <SendIcon />
             </IconButton>
           </Tooltip>

@@ -7,7 +7,7 @@ import { AppBar, Box, Typography } from '@mui/material';
 import ThemeWrapper from 'jrgcomponents/theming/ThemeWrapper';
 import themes from './theme';
 
-import React from "react";
+import React from 'react';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
