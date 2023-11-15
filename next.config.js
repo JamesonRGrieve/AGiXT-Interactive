@@ -1,5 +1,20 @@
 module.exports = {
-  experimental: {
-    forceSwcTransforms: true,
+  env: {
+    // Options
+    NEXT_PUBLIC_AGIXT_SERVER: process.env.NEXT_PUBLIC_AGIXT_SERVER || "http://localhost:7437",
+    NEXT_PUBLIC_AGIXT_AGENT: process.env.NEXT_PUBLIC_AGIXT_AGENT || "gpt4free",
+    NEXT_PUBLIC_AGIXT_INSIGHT_AGENT: process.env.NEXT_PUBLIC_AGIXT_INSIGHT_AGENT || "gpt4free",
+    NEXT_PUBLIC_AGIXT_MODE: process.env.NEXT_PUBLIC_AGIXT_MODE || "prompt",
+    // Prompt Mode Options
+    NEXT_PUBLIC_AGIXT_PROMPT_NAME: process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME || "Chat",
+    NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY: process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY || "Default",
+    // Chain Mode Options
+    NEXT_PUBLIC_AGIXT_CHAIN: process.env.NEXT_PUBLIC_AGIXT_CHAIN || "Postgres Chat",
+    NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT: process.env.NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT || "true",
+    NEXT_PUBLIC_AGIXT_CHAIN_ARGS: process.env.NEXT_PUBLIC_AGIXT_CHAIN_ARGS || "{}",
+    // UI Options
+    NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED: process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED || "false",
+    NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR: process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR || "true",
+    NEXT_PUBLIC_AGIXT_CONVERSATION_NAME: process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME || ""
   },
 };
