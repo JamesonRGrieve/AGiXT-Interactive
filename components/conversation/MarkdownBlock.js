@@ -1,14 +1,14 @@
-import React from "react";
-import ReactMarkdown from "react-markdown";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { a11yDark } from "react-syntax-highlighter/dist/cjs/styles/hljs";
-import clipboardCopy from "clipboard-copy";
-import { IconButton } from "@mui/material";
-import { DataGridFromCSV } from "./DataGridFromCSV";
+import React from 'react';
+import ReactMarkdown from 'react-markdown';
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+import clipboardCopy from 'clipboard-copy';
+import { IconButton } from '@mui/material';
+import { DataGridFromCSV } from './DataGridFromCSV';
 import {
   ContentCopy as ContentCopyIcon,
-  Download as DownloadIcon,
-} from "@mui/icons-material";
+  Download as DownloadIcon
+} from '@mui/icons-material';
 
 export default function MarkdownBlock({
   content,
@@ -17,122 +17,122 @@ export default function MarkdownBlock({
   setIsLoading,
   setLastResponse,
   conversationName,
-  agentName,
+  agentName
 }) {
   const langMap = {
-    "": "txt",
-    python: "py",
-    javascript: "js",
-    typescript: "ts",
-    html: "html",
-    css: "css",
-    json: "json",
-    yaml: "yaml",
-    markdown: "md",
-    shell: "sh",
-    bash: "sh",
-    sql: "sql",
-    java: "java",
-    c: "c",
-    cpp: "cpp",
-    csharp: "cs",
-    go: "go",
-    rust: "rs",
-    php: "php",
-    ruby: "rb",
-    perl: "pl",
-    lua: "lua",
-    r: "r",
-    swift: "swift",
-    kotlin: "kt",
-    scala: "scala",
-    clojure: "clj",
-    elixir: "ex",
-    erlang: "erl",
-    haskell: "hs",
-    ocaml: "ml",
-    pascal: "pas",
-    scheme: "scm",
-    coffeescript: "coffee",
-    fortran: "f",
-    julia: "jl",
-    lisp: "lisp",
-    prolog: "pro",
-    vbnet: "vb",
-    dart: "dart",
-    fsharp: "fs",
-    groovy: "groovy",
-    perl6: "pl",
-    powershell: "ps1",
-    puppet: "pp",
-    qml: "qml",
-    racket: "rkt",
-    sas: "sas",
-    verilog: "v",
-    vhdl: "vhd",
-    apex: "cls",
-    matlab: "m",
-    nim: "nim",
+    '': 'txt',
+    python: 'py',
+    javascript: 'js',
+    typescript: 'ts',
+    html: 'html',
+    css: 'css',
+    json: 'json',
+    yaml: 'yaml',
+    markdown: 'md',
+    shell: 'sh',
+    bash: 'sh',
+    sql: 'sql',
+    java: 'java',
+    c: 'c',
+    cpp: 'cpp',
+    csharp: 'cs',
+    go: 'go',
+    rust: 'rs',
+    php: 'php',
+    ruby: 'rb',
+    perl: 'pl',
+    lua: 'lua',
+    r: 'r',
+    swift: 'swift',
+    kotlin: 'kt',
+    scala: 'scala',
+    clojure: 'clj',
+    elixir: 'ex',
+    erlang: 'erl',
+    haskell: 'hs',
+    ocaml: 'ml',
+    pascal: 'pas',
+    scheme: 'scm',
+    coffeescript: 'coffee',
+    fortran: 'f',
+    julia: 'jl',
+    lisp: 'lisp',
+    prolog: 'pro',
+    vbnet: 'vb',
+    dart: 'dart',
+    fsharp: 'fs',
+    groovy: 'groovy',
+    perl6: 'pl',
+    powershell: 'ps1',
+    puppet: 'pp',
+    qml: 'qml',
+    racket: 'rkt',
+    sas: 'sas',
+    verilog: 'v',
+    vhdl: 'vhd',
+    apex: 'cls',
+    matlab: 'm',
+    nim: 'nim'
   };
 
   const renderMessage = () => {
     const message = content.toString();
     const match = message.match(/#(.*?)(?=\n|$)/);
     if (match) {
-      if (message.includes("GENERATED_IMAGE:")) {
-        const base64Image = match[1].replace("GENERATED_IMAGE:", "").trim();
-        const formattedImage = base64Image.toString("base64");
+      if (message.includes('GENERATED_IMAGE:')) {
+        const base64Image = match[1].replace('GENERATED_IMAGE:', '').trim();
+        const formattedImage = base64Image.toString('base64');
         return message.replace(
           match[0],
           `![Generated Image](data:image/png;base64,${formattedImage})`
         );
       }
-      if (message.includes("GENERATED_AUDIO:")) {
-        const base64Audio = match[1].replace("GENERATED_AUDIO:", "").trim();
-        const formattedAudio = base64Audio.toString("base64");
+      if (message.includes('GENERATED_AUDIO:')) {
+        const base64Audio = match[1].replace('GENERATED_AUDIO:', '').trim();
+        const formattedAudio = base64Audio.toString('base64');
         return message.replace(
           match[0],
           `![Generated Audio](data:audio/wav;base64,${formattedAudio})`
         );
       }
     }
-    if (message.includes("```csv")) {
+    if (message.includes('```csv')) {
       // Get the csv data between ```csv and ```
       const csvData = message
-        .split("```csv")[1]
-        .split("```")[0]
-        .replace(/\n/g, "\r\n");
+        .split('```csv')[1]
+        .split('```')[0]
+        .replace(/\n/g, '\r\n');
       return DataGridFromCSV({
         csvData,
         sdk,
         agentName,
         setIsLoading,
         setLastResponse,
-        conversationName,
+        conversationName
       });
     }
     return content;
   };
   const generateId = (text) => {
-    return text ? text.toLowerCase().replace(/[^\w]+/g, "-") : "";
+    return text ? text.toLowerCase().replace(/[^\w]+/g, '-') : '';
   };
   const handleAnchorClick = (e) => {
-    const href = e.target.getAttribute("href");
-    if (href.startsWith("#")) {
+    const href = e.target.getAttribute('href');
+    if (href.startsWith('#')) {
       e.preventDefault();
       const id = href.slice(1);
       const element = document.getElementById(id);
       if (element) {
-        element.scrollIntoView({ behavior: "smooth" });
+        element.scrollIntoView({ behavior: 'smooth' });
       }
     } else {
       e.preventDefault();
-      window.open(href, "_blank");
+      window.open(href, '_blank');
     }
   };
 
   const renderHeader = (Tag, children) => {
-    let text = "";
+    let text = '';
     if (children && children[0]) {
       text = children[0];
     }
@@ -140,12 +140,12 @@ export default function MarkdownBlock({
     return <Tag id={id}>{children}</Tag>;
   };
   const renderLink = ({ node, children, ...props }) => {
-    const isExternal = props.href && !props.href.startsWith("#");
+    const isExternal = props.href && !props.href.startsWith('#');
     return (
       <a
         {...props}
-        target={isExternal ? "_blank" : undefined}
-        rel={isExternal ? "noopener noreferrer" : undefined}
+        target={isExternal ? '_blank' : undefined}
+        rel={isExternal ? 'noopener noreferrer' : undefined}
         onClick={isExternal ? undefined : handleAnchorClick}
       >
         {children}
@@ -154,42 +154,42 @@ export default function MarkdownBlock({
   };
   return (
     <>
-      {content.includes("```csv") ? (
+      {content.includes('```csv') ? (
         renderMessage(content)
       ) : (
         <ReactMarkdown
           // eslint-disable-next-line react/no-children-prop
           children={renderMessage(content)}
-          className="react-markdown"
+          className='react-markdown'
           components={{
             a: renderLink,
             h1({ node, children }) {
-              return renderHeader("h1", children);
+              return renderHeader('h1', children);
             },
             h2({ node, children }) {
-              return renderHeader("h2", children);
+              return renderHeader('h2', children);
             },
             h3({ node, children }) {
-              return renderHeader("h3", children);
+              return renderHeader('h3', children);
             },
             h4({ node, children }) {
-              return renderHeader("h4", children);
+              return renderHeader('h4', children);
             },
             ol({ children }) {
-              return <ol style={{ paddingLeft: "2em" }}>{children}</ol>;
+              return <ol style={{ paddingLeft: '2em' }}>{children}</ol>;
             },
             li({ children }) {
-              return <li style={{ marginBottom: "0.5em" }}>{children}</li>;
+              return <li style={{ marginBottom: '0.5em' }}>{children}</li>;
             },
             code({ node, inline, children, ...props }) {
               if (inline) {
                 return (
                   <span
                     style={{
-                      backgroundColor: "darkgray",
-                      borderRadius: "3px",
-                      padding: "0.2em",
-                      fontFamily: "monospace",
+                      backgroundColor: 'darkgray',
+                      borderRadius: '3px',
+                      padding: '0.2em',
+                      fontFamily: 'monospace'
                     }}
                   >
                     {children}
@@ -198,14 +198,14 @@ export default function MarkdownBlock({
               }
               // eslint-disable-next-line react-hooks/rules-of-hooks
               const codeBlockRef = React.useRef(null);
-              const language = props.className?.replace(/language-/, "");
-              const fileExtension = langMap[language] || "txt";
+              const language = props.className?.replace(/language-/, '');
+              const fileExtension = langMap[language] || 'txt';
               const ts = chatItem
                 ? chatItem.timestamp
-                    .replace(/ /g, "-")
-                    .replace(/:/g, "-")
-                    .replace(/,/g, "")
-                : new Date().toLocaleString().replace(/[^0-9]/g, "");
+                    .replace(/ /g, '-')
+                    .replace(/:/g, '-')
+                    .replace(/,/g, '')
+                : new Date().toLocaleString().replace(/[^0-9]/g, '');
 
               const fileName = chatItem
                 ? `${chatItem.role}-${ts}.${fileExtension}`
@@ -213,13 +213,13 @@ export default function MarkdownBlock({
               return (
                 <>
                   <br />
-                  <div className="code-block" ref={codeBlockRef}>
-                    <div className="code-title">
+                  <div className='code-block' ref={codeBlockRef}>
+                    <div className='code-title'>
                       <IconButton
                         onClick={() => {
                           if (codeBlockRef.current) {
                             const actualCode =
-                              codeBlockRef.current.querySelector("code");
+                              codeBlockRef.current.querySelector('code');
                             clipboardCopy(actualCode.innerText);
                           }
                         }}
@@ -230,11 +230,11 @@ export default function MarkdownBlock({
                         onClick={() => {
                           if (codeBlockRef.current) {
                             const actualCode =
-                              codeBlockRef.current.querySelector("code");
+                              codeBlockRef.current.querySelector('code');
 
-                            const element = document.createElement("a");
+                            const element = document.createElement('a');
                             const file = new Blob([actualCode.innerText], {
-                              type: "text/plain;charset=utf-8",
+                              type: 'text/plain;charset=utf-8'
                             });
                             element.href = URL.createObjectURL(file);
 
@@ -248,18 +248,18 @@ export default function MarkdownBlock({
                       </IconButton>
                       {fileName} | {language}
                     </div>
-                    <div className="code-container">
+                    <div className='code-container'>
                       {language in langMap ? (
                         <SyntaxHighlighter
                           {...props}
                           // eslint-disable-next-line react/no-children-prop
                           children={children}
                           language={language}
-                          PreTag="div"
+                          PreTag='div'
                           style={a11yDark}
                         />
                       ) : (
-                        <code className={"code-block"} {...props}>
+                        <code className={'code-block'} {...props}>
                           {children}
                         </code>
                       )}
@@ -268,7 +268,7 @@ export default function MarkdownBlock({
                   <br />
                 </>
               );
-            },
+            }
           }}
         />
       )}

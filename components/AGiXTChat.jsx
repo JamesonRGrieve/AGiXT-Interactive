@@ -1,14 +1,14 @@
-import { useEffect, useState } from "react";
-import ConversationHistory from "./conversation/ConversationHistory";
-import ConversationSelector from "./conversation/ConversationSelector";
-import AudioRecorder from "./conversation/AudioRecorder";
-import NoteAddOutlinedIcon from "@mui/icons-material/NoteAddOutlined";
-import { setCookie, getCookie } from "cookies-next";
-import Box from "@mui/material/Box";
-import AGiXTSDK from "agixt";
-import Tooltip from "@mui/material/Tooltip";
-import { useMemo } from "react";
-import {useTheme} from "@mui/material/styles";
+import { useEffect, useState } from 'react';
+import ConversationHistory from './conversation/ConversationHistory';
+import ConversationSelector from './conversation/ConversationSelector';
+import AudioRecorder from './conversation/AudioRecorder';
+import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
+import { setCookie, getCookie } from 'cookies-next';
+import Box from '@mui/material/Box';
+import AGiXTSDK from 'agixt';
+import Tooltip from '@mui/material/Tooltip';
+import { useMemo } from 'react';
+import { useTheme } from '@mui/material/styles';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import {
@@ -20,11 +20,9 @@ import {
   DialogContent,
   DialogContentText,
   DialogActions,
-  IconButton,
-} from "@mui/material";
-import SendIcon from "@mui/icons-material/Send";
-
-
+  IconButton
+} from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 
 export default function AGiXTChat({
   selectedChain, // Chain name of the selected chain if in chain mode
@@ -39,33 +37,33 @@ export default function AGiXTChat({
   injectMemoriesFromCollectionNumber = 0, // Inject memories from a specific collection number
   conversationResults = 5, // Number of conversation results to show
   useSelectedAgent = true, // Use the selected agent to run the chain instead of what is specified in the chain
-  conversationName = "Test", // Name of the conversation
-  mode = "prompt", // Mode of the chat (prompt or chain)
-  promptName = "Chat", // Name of the prompt to run
-  promptCategory = "Default", // Category of the prompt to run
-  agentName = "gpt4free", // Name of the agent to use
-  insightAgent = "", // Name of the agent to use for insight
+  conversationName = 'Test', // Name of the conversation
+  mode = 'prompt', // Mode of the chat (prompt or chain)
+  promptName = 'Chat', // Name of the prompt to run
+  promptCategory = 'Default', // Category of the prompt to run
+  agentName = 'gpt4free', // Name of the agent to use
+  insightAgent = '', // Name of the agent to use for insight
   dark = true, // Dark mode
-  baseUri = "http://localhost:7437", // Base URI of the AGiXT server
-  topMargin = "-35", // Top margin of the chat
+  baseUri = 'http://localhost:7437', // Base URI of the AGiXT server
+  topMargin = '-35', // Top margin of the chat
   setConversationName, // Function to set the conversation name
   showConversationBar = false, // Show the conversation bar
-  apiKeyCookie = "apiKey", // Name of the cookie to store the API key in
+  apiKeyCookie = 'apiKey' // Name of the cookie to store the API key in
 }) {
-  const apiKey = getCookie(apiKeyCookie) || "";
+  const apiKey = getCookie(apiKeyCookie) || '';
   const sdk = useMemo(() => {
     return new AGiXTSDK({
       baseUri: baseUri,
-      apiKey: apiKey,
+      apiKey: apiKey
     });
   }, [baseUri, apiKey]);
-  if (insightAgent === "") {
+  if (insightAgent === '') {
     insightAgent = agentName;
   }
   //main: darkMode ? "#000000" : "#273043",
   const [chatHistory, setChatHistory] = useState([]);
-  const [message, setMessage] = useState("");
-  const [lastResponse, setLastResponse] = useState("");
+  const [message, setMessage] = useState('');
+  const [lastResponse, setLastResponse] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [openFileUpload, setOpenFileUpload] = useState(false);
@@ -114,8 +112,8 @@ export default function AGiXTChat({
       if (promptArgData) {
         let newArgs = {};
         for (const arg of promptArgData) {
-          if (arg !== "") {
-            newArgs[arg] = "";
+          if (arg !== '') {
+            newArgs[arg] = '';
           }
         }
         setPromptArgs(newArgs);
@@ -125,12 +123,12 @@ export default function AGiXTChat({
   }, [promptName, promptCategory, sdk]);
   // Uploaded files will be formatted like [{"file_name": "file_content"}]
   useEffect(() => {
-    setCookie("conversationName", conversationName);
+    setCookie('conversationName', conversationName);
   }, [conversationName]);
   const runChain = async () => {
     setIsLoading(true);
-    const agentOverride = useSelectedAgent ? agentName : "";
-    chainArgs["conversation_name"] = conversationName;
+    const agentOverride = useSelectedAgent ? agentName : '';
+    chainArgs['conversation_name'] = conversationName;
     const response = await sdk.runChain(
       selectedChain,
       message,
@@ -144,8 +142,8 @@ export default function AGiXTChat({
   };
   const PromptAgent = async (
     message,
-    promptName = "Chat with Commands",
-    promptCategory = "Default",
+    promptName = 'Chat with Commands',
+    promptCategory = 'Default',
     contextResults = 5,
     shots = 1,
     browseLinks = false,
@@ -157,36 +155,36 @@ export default function AGiXTChat({
   ) => {
     setIsLoading(true);
     if (message) {
-      promptArgs["user_input"] = message;
+      promptArgs['user_input'] = message;
     }
-    if (hasFiles && promptName == "Chat with Commands") {
-      promptName = "Chat with Commands and Files";
+    if (hasFiles && promptName == 'Chat with Commands') {
+      promptName = 'Chat with Commands and Files';
     }
     if (uploadedFiles != []) {
-      promptArgs["import_files"] = uploadedFiles;
+      promptArgs['import_files'] = uploadedFiles;
     }
     const disableMemory = !enableMemory;
     const skipArgs = [
-      "conversation_history",
-      "context",
-      "COMMANDS",
-      "command_list",
-      "date",
-      "agent_name",
-      "working_directory",
-      "helper_agent_name",
-      "prompt_name",
-      "context_results",
-      "conversation_results",
-      "conversation_name",
-      "prompt_category",
-      "websearch",
-      "websearch_depth",
-      "enable_memory",
-      "inject_memories_from_collection_number",
-      "context_results",
-      "persona",
-      "",
+      'conversation_history',
+      'context',
+      'COMMANDS',
+      'command_list',
+      'date',
+      'agent_name',
+      'working_directory',
+      'helper_agent_name',
+      'prompt_name',
+      'context_results',
+      'conversation_results',
+      'conversation_name',
+      'prompt_category',
+      'websearch',
+      'websearch_depth',
+      'enable_memory',
+      'inject_memories_from_collection_number',
+      'context_results',
+      'persona',
+      ''
     ];
     for (const arg of skipArgs) {
       delete promptArgs[arg];
@@ -203,9 +201,9 @@ export default function AGiXTChat({
       inject_memories_from_collection_number:
         injectMemoriesFromCollectionNumber,
       conversation_results: conversationResults,
-      ...promptArgs,
+      ...promptArgs
     };
-    if (mode == "chain") {
+    if (mode == 'chain') {
       promptName = selectedChain;
     }
     const response = await sdk.promptAgent(
@@ -227,15 +225,15 @@ export default function AGiXTChat({
   };
 
   const handleKeyPress = async (event) => {
-    if (event.key === "Enter" && !event.shiftKey && message) {
+    if (event.key === 'Enter' && !event.shiftKey && message) {
       event.preventDefault();
       handleSendMessage();
     }
   };
   const handleSendMessage = async () => {
-    if (mode == "chain") {
+    if (mode == 'chain') {
       runChain();
-      setMessage("");
+      setMessage('');
       return;
     } else {
       await PromptAgent(
@@ -251,171 +249,178 @@ export default function AGiXTChat({
         injectMemoriesFromCollectionNumber,
         conversationResults
       );
-      setMessage("");
+      setMessage('');
     }
   };
 
-  return <>{!showConversationBar && (
-    <Box sx={{ display: "flex", justifyContent: "flex-end", py: "0.25rem" }} component="header">
-      <Tooltip
-        title={
-          theme.palette.mode==="dark" ? "Switch to Light Mode" : "Switch to Dark Mode"
-        }
-      >
-        <SwitchDark />
-       
-      </Tooltip>
-      <Tooltip
-        title={
-          theme.palette.colorblind ? "Switch to Normal Mode" : "Switch to Colorblind Mode"
-        }
-      >
-      <SwitchColorblind />
-
-       
-      </Tooltip>
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-    </Box>
-  )}
-    <Box
-      sx={{
-        display: "flex",
-        marginTop: `${showConversationBar ? 5 : topMargin}px`,
-        marginRight: "1px",
-        marginLeft: "1px",
-      }}
-      component="main"
-    >
+  return (
+    <>
+      {!showConversationBar && (
+        <Box
+          sx={{ display: 'flex', justifyContent: 'flex-end', py: '0.25rem' }}
+          component='header'
+        >
+          <Tooltip
+            title={
+              theme.palette.mode === 'dark'
+                ? 'Switch to Light Mode'
+                : 'Switch to Dark Mode'
+            }
+          >
+            <SwitchDark />
+          </Tooltip>
+          <Tooltip
+            title={
+              theme.palette.colorblind
+                ? 'Switch to Normal Mode'
+                : 'Switch to Colorblind Mode'
+            }
+          >
+            <SwitchColorblind />
+          </Tooltip>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        </Box>
+      )}
       <Box
-        style={{
-          maxWidth: "100%",
-          flexGrow: 1,
-          transition: theme.transitions.create("margin", {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-          }),
+        sx={{
+          display: 'flex',
+          marginTop: `${showConversationBar ? 5 : topMargin}px`,
+          marginRight: '1px',
+          marginLeft: '1px'
         }}
+        component='main'
       >
-        <>
-          {showConversationBar && (
-            <ConversationSelector
+        <Box
+          style={{
+            maxWidth: '100%',
+            flexGrow: 1,
+            transition: theme.transitions.create('margin', {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.leavingScreen
+            })
+          }}
+        >
+          <>
+            {showConversationBar && (
+              <ConversationSelector
+                agentName={agentName}
+                conversations={conversations}
+                conversationName={conversationName}
+                setConversationName={setConversationName}
+                setConversations={setConversations}
+                conversation={chatHistory}
+                sdk={sdk}
+              />
+            )}
+            <ConversationHistory
               agentName={agentName}
-              conversations={conversations}
-              conversationName={conversationName}
-              setConversationName={setConversationName}
-              setConversations={setConversations}
-              conversation={chatHistory}
+              insightAgent={insightAgent}
+              chatHistory={chatHistory}
+              isLoading={isLoading}
               sdk={sdk}
+              topMargin={showConversationBar ? 7 : topMargin}
+              setIsLoading={setIsLoading}
+              setLastResponse={setLastResponse}
+              conversationName={conversationName}
             />
-          )}
-          <ConversationHistory
-            agentName={agentName}
-            insightAgent={insightAgent}
-            chatHistory={chatHistory}
-            isLoading={isLoading}
-            sdk={sdk}
-            topMargin={showConversationBar ? 7 : topMargin}
-            setIsLoading={setIsLoading}
-            setLastResponse={setLastResponse}
-            conversationName={conversationName}
-          />
-          <Box px="1rem">
-          <TextField
-            label="Ask your question here."
-            placeholder="Ask your question here."
-            multiline
-            rows={2}
-            fullWidth
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            onKeyPress={handleKeyPress}
-            sx={{ my: 2 }}
-            disabled={isLoading}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  {enableFileUpload && (
-                    <>
-                      <IconButton
-                        variant="contained"
-                        color="info"
-                        onClick={() => {
-                          setUploadedFiles([]);
-                          setOpenFileUpload(true);
-                        }}
-                        disabled={isLoading}
-                        sx={{ height: "56px" }}
-                      >
-                        <NoteAddOutlinedIcon />
-                      </IconButton>
-                      <Dialog
-                        open={openFileUpload}
-                        onClose={handleCloseFileUpload}
-                      >
-                        <DialogTitle id="form-dialog-title">
-                          Upload Files
-                        </DialogTitle>
-                        <DialogContent>
-                          <DialogContentText>
-                            Please upload the files you would like to
-                            send.
-                          </DialogContentText>
-                          <input
-                            accept="*"
-                            id="contained-button-file"
-                            multiple
-                            type="file"
-                            onChange={(e) => {
-                              setUploadedFiles(e.target.files);
+            <Box px='1rem'>
+              <TextField
+                label='Ask your question here.'
+                placeholder='Ask your question here.'
+                multiline
+                rows={2}
+                fullWidth
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                onKeyPress={handleKeyPress}
+                sx={{ my: 2 }}
+                disabled={isLoading}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      {enableFileUpload && (
+                        <>
+                          <IconButton
+                            variant='contained'
+                            color='info'
+                            onClick={() => {
+                              setUploadedFiles([]);
+                              setOpenFileUpload(true);
                             }}
-                          />
-                        </DialogContent>
-                        <DialogActions>
-                          <Button
-                            onClick={handleCloseFileUpload}
-                            color="error"
-                          >
-                            Cancel
-                          </Button>
-                          <Button
-                            onClick={handleUploadFiles}
-                            color="info"
                             disabled={isLoading}
+                            sx={{ height: '56px' }}
                           >
-                            Upload
-                          </Button>
-                        </DialogActions>
-                      </Dialog>
-                    </>
-                  )}
-                  {!isLoading && (
-                    <Tooltip title="Send Message">
-                      <IconButton
-                        variant="contained"
-                        color="info"
-                        onClick={handleSendMessage}
-                        sx={{ height: "56px", padding: "0px" }}
-                      >
-                        <SendIcon />
-                      </IconButton>
-                    </Tooltip>
-                  )}
-                  {mode == "prompt" && (
-                    <AudioRecorder
-                      conversationName={conversationName}
-                      contextResults={contextResults}
-                      conversationResults={conversationResults}
-                      setIsLoading={setIsLoading}
-                      agentName={agentName}
-                      sdk={sdk}
-                    />
-                  )}
-                </InputAdornment>
-              ),
-            }}
-          />
-          </Box>
-        </>
+                            <NoteAddOutlinedIcon />
+                          </IconButton>
+                          <Dialog
+                            open={openFileUpload}
+                            onClose={handleCloseFileUpload}
+                          >
+                            <DialogTitle id='form-dialog-title'>
+                              Upload Files
+                            </DialogTitle>
+                            <DialogContent>
+                              <DialogContentText>
+                                Please upload the files you would like to send.
+                              </DialogContentText>
+                              <input
+                                accept='*'
+                                id='contained-button-file'
+                                multiple
+                                type='file'
+                                onChange={(e) => {
+                                  setUploadedFiles(e.target.files);
+                                }}
+                              />
+                            </DialogContent>
+                            <DialogActions>
+                              <Button
+                                onClick={handleCloseFileUpload}
+                                color='error'
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                onClick={handleUploadFiles}
+                                color='info'
+                                disabled={isLoading}
+                              >
+                                Upload
+                              </Button>
+                            </DialogActions>
+                          </Dialog>
+                        </>
+                      )}
+                      {!isLoading && (
+                        <Tooltip title='Send Message'>
+                          <IconButton
+                            variant='contained'
+                            color='info'
+                            onClick={handleSendMessage}
+                            sx={{ height: '56px', padding: '0px' }}
+                          >
+                            <SendIcon />
+                          </IconButton>
+                        </Tooltip>
+                      )}
+                      {mode == 'prompt' && (
+                        <AudioRecorder
+                          conversationName={conversationName}
+                          contextResults={contextResults}
+                          conversationResults={conversationResults}
+                          setIsLoading={setIsLoading}
+                          agentName={agentName}
+                          sdk={sdk}
+                        />
+                      )}
+                    </InputAdornment>
+                  )
+                }}
+              />
+            </Box>
+          </>
+        </Box>
       </Box>
-    </Box></>;
+    </>
+  );
 }

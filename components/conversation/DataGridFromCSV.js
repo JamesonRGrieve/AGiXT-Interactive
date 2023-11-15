@@ -1,4 +1,4 @@
-import { DataGrid, GridToolbar, gridClasses } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar, gridClasses } from '@mui/x-data-grid';
 import {
   Button,
   Box,
@@ -6,28 +6,28 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField,
-} from "@mui/material";
-import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
-import { alpha, styled } from "@mui/material/styles";
-import { useState, useEffect } from "react";
+  TextField
+} from '@mui/material';
+import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import { alpha, styled } from '@mui/material/styles';
+import { useState, useEffect } from 'react';
 const ODD_OPACITY = 1;
 
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   [`& .${gridClasses.row}.even`]: {
-    backgroundColor: theme.palette.mode === "dark" ? "#333" : "#696a6b",
-    "&:hover, &.Mui-hovered": {
+    backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#696a6b',
+    '&:hover, &.Mui-hovered': {
       backgroundColor: theme.palette.action.hover,
-      "@media (hover: none)": {
-        backgroundColor: "transparent",
-      },
+      '@media (hover: none)': {
+        backgroundColor: 'transparent'
+      }
     },
-    "&.Mui-selected": {
+    '&.Mui-selected': {
       backgroundColor: alpha(
         theme.palette.primary.main,
         ODD_OPACITY + theme.palette.action.selectedOpacity
       ),
-      "&:hover, &.Mui-hovered": {
+      '&:hover, &.Mui-hovered': {
         backgroundColor: alpha(
           theme.palette.primary.main,
           ODD_OPACITY +
@@ -35,15 +35,15 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
             theme.palette.action.hoverOpacity
         ),
         // Reset on touch devices, it doesn't add specificity
-        "@media (hover: none)": {
+        '@media (hover: none)': {
           backgroundColor: alpha(
             theme.palette.primary.main,
             ODD_OPACITY + theme.palette.action.selectedOpacity
-          ),
-        },
-      },
-    },
-  },
+          )
+        }
+      }
+    }
+  }
 }));
 
 export const DataGridFromCSV = ({
@@ -52,19 +52,19 @@ export const DataGridFromCSV = ({
   agentName,
   setIsLoading,
   setLastResponse,
-  conversationName,
+  conversationName
 }) => {
   const [open, setOpen] = useState(false);
-  const [userMessage, setUserMessage] = useState("Surprise me!");
+  const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
   const parseCSV = (csvData) => {
     let headers = [];
-    const lines = csvData.split("\n");
+    const lines = csvData.split('\n');
     if (lines.length === 2) {
       return csvData;
     }
-    const rawHeaders = lines[1].split(",");
+    const rawHeaders = lines[1].split(',');
     headers = rawHeaders.map((header) => header.trim());
     const newRows = [];
     for (let i = 1; i < lines.length; i++) {
@@ -94,7 +94,7 @@ export const DataGridFromCSV = ({
       }
     }
     headers = headers
-      .filter((header) => header !== "id")
+      .filter((header) => header !== 'id')
       .map((header, index) => ({
         field: header,
         width: Math.max(160, header.length * 10),
@@ -102,12 +102,12 @@ export const DataGridFromCSV = ({
         resizeable: true,
         headerName: header,
         sx: {
-          "& .MuiDataGrid-cell": {
-            whiteSpace: "nowrap",
-            overflow: "hidden",
-            textOverflow: "ellipsis",
-          },
-        },
+          '& .MuiDataGrid-cell': {
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }
+        }
       }));
     // If none of the rows have a value, don't show the column
     headers = headers.filter((header) => {
@@ -120,8 +120,8 @@ export const DataGridFromCSV = ({
     });
     setColumns(headers);
     setRows(newRows);
-    console.log("newRows", newRows);
-    console.log("headers", headers);
+    console.log('newRows', newRows);
+    console.log('headers', headers);
   };
   useEffect(() => {
     parseCSV(csvData);
@@ -129,16 +129,16 @@ export const DataGridFromCSV = ({
 
   const getInsights = async (userMessage) => {
     setIsLoading(true);
-    const lines = csvData.split("\n");
+    const lines = csvData.split('\n');
     lines.shift();
     lines.pop();
-    const newCSVData = lines.join("\n");
+    const newCSVData = lines.join('\n');
     let chainArgs = {
       conversation_name: conversationName,
-      text: newCSVData,
+      text: newCSVData
     };
     const response = await sdk.runChain(
-      "Data Analysis",
+      'Data Analysis',
       userMessage,
       agentName,
       false,
@@ -167,7 +167,7 @@ export const DataGridFromCSV = ({
       {rows.length > 1 ? (
         <>
           <StripedDataGrid
-            density="compact"
+            density='compact'
             rows={rows}
             columns={columns}
             pageSize={5}
@@ -175,22 +175,22 @@ export const DataGridFromCSV = ({
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5,
-                },
-              },
+                  pageSize: 5
+                }
+              }
             }}
             getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+              params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
             }
           />
           <br />
           <Box
             sx={{
-              display: "flex",
-              justifyContent: "flex-end",
+              display: 'flex',
+              justifyContent: 'flex-end'
             }}
           >
-            <Button color="info" variant="outlined" onClick={handleClickOpen}>
+            <Button color='info' variant='outlined' onClick={handleClickOpen}>
               <TipsAndUpdatesOutlinedIcon />
               &nbsp;Get Insights
             </Button>
@@ -200,26 +200,26 @@ export const DataGridFromCSV = ({
             <DialogContent>
               <TextField
                 autoFocus
-                margin="dense"
-                id="name"
-                label="What would you like insights on?"
+                margin='dense'
+                id='name'
+                label='What would you like insights on?'
                 fullWidth
                 value={userMessage}
                 onChange={handleUserMessageChange}
                 onClick={(e) => {
-                  if (e.target.value === "Surprise me!") {
-                    setUserMessage("");
+                  if (e.target.value === 'Surprise me!') {
+                    setUserMessage('');
                   }
                 }}
-                variant="outlined"
-                color="info"
+                variant='outlined'
+                color='info'
               />
             </DialogContent>
             <DialogActions>
-              <Button color="error" onClick={handleClose}>
+              <Button color='error' onClick={handleClose}>
                 Cancel
               </Button>
-              <Button color="info" onClick={handleGetInsights}>
+              <Button color='info' onClick={handleGetInsights}>
                 Get Insights
               </Button>
             </DialogActions>

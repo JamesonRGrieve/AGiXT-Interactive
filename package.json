@@ -1,13 +1,13 @@
 {
   "name": "agixtinteractive",
-  "version": "0.0.3",
-  "private": true,
+  "version": "0.0.9",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "compile": "tsc --jsx react-jsx",
     "start": "next start -p 3437",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prettier": "prettier --write ."
   },
   "files": [
     "dist"
@@ -16,18 +16,18 @@
     ".": "./dist/AGiXTChat.js"
   },
   "dependencies": {
-    "@emotion/react": "latest",
-    "@emotion/styled": "latest",
-    "@fontsource/ubuntu-mono": "latest",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "@fontsource/ubuntu-mono": "^5.0.17",
     "@mui/icons-material": "^5.14.16",
-    "@mui/material": "latest",
+    "@mui/material": "^5.14.18",
     "@mui/system": "^5.14.17",
     "@mui/x-data-grid": "^6.16.2",
     "agixt": "^1.0.39",
     "clipboard-copy": "^4.0.1",
-    "cookies-next": "latest",
+    "cookies-next": "^4.0.0",
     "jrgcomponents": "^0.0.50",
-    "next": "latest",
+    "next": "14.0.2",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-markdown": "^8.0.7",
@@ -40,6 +40,7 @@
     "@types/webpack-env": "^1.18.4",
     "eslint": "8.53.0",
     "eslint-config-next": "14.0.2",
+    "prettier": "^3.1.0",
     "typescript": "^5.2.2"
   }
 }
