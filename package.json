@@ -12,9 +12,7 @@
     "dist"
   ],
   "exports": {
-    ".": "./dist/AGiXTChat.js",
-    "./AGiXTChat": "./dist/AGiXTChat.js",
-    "./dist/AGiXTChat": "./dist/AGiXTChat.js"
+    ".": "./dist/components/AGiXTChat.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
