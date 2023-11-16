@@ -24,7 +24,9 @@ export default function ConversationHistory() {
   useEffect(() => {
     const fetchConversation = async () => {
       const convo = await AGiXTState.sdk.getConversation(AGiXTState.agentName, AGiXTState.conversationName, 100, 1);
-      AGiXTState.mutate(oldState => {return { ...oldState, conversation: convo };});
+      AGiXTState.mutate((oldState) => {
+        return { ...oldState, conversation: convo };
+      });
     };
     fetchConversation();
   }, [AGiXTState.conversationName, AGiXTState.lastResponse, AGiXTState.agentName, AGiXTState.sdk]);

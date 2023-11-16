@@ -24,11 +24,13 @@ export default function ConversationSelector() {
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
   useEffect(() => {
-    console.log("Fetching Conversations!");
+    console.log('Fetching Conversations!');
     (async () => {
       const newConversations = await AGiXTState.sdk.getConversations(AGiXTState.agentName);
-      AGiXTState.mutate(oldState => {return { ...oldState, conversations: newConversations }});
-      console.log("Fetched Conversations!");
+      AGiXTState.mutate((oldState) => {
+        return { ...oldState, conversations: newConversations };
+      });
+      console.log('Fetched Conversations!');
     })();
   }, [AGiXTState.agentName, AGiXTState.sdk]);
   useEffect(() => {
