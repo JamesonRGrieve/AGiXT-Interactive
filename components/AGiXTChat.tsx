@@ -38,7 +38,7 @@ export default function AGiXTChat(props: AGiXTState) {
     isLoading: false,
     openFileUpload: false,
     promptArgs: {},
-    insightAgent: props.insightAgent||props.agentName||"",
+    insightAgent: props.insightAgent || props.agentName || '',
     hasFiles: false
   });
   const theme = useTheme();
@@ -63,8 +63,9 @@ export default function AGiXTChat(props: AGiXTState) {
     setAGiXTState({ ...AGiXTState, uploadedFiles: newuploadedFiles });
     setAGiXTState({ ...AGiXTState, openFileUpload: false });
   };
-  useEffect(() => {console.log("AGiXT State Changed", AGiXTState)}, [AGiXTState])
-
+  useEffect(() => {
+    console.log('AGiXT State Changed', AGiXTState);
+  }, [AGiXTState]);
 
   useEffect(() => {
     async function getArgs(promptName, promptCategory) {
@@ -76,7 +77,9 @@ export default function AGiXTChat(props: AGiXTState) {
             newArgs[arg] = '';
           }
         }
-        setAGiXTState(oldState => {return { ...oldState, promptArgs: newArgs };});
+        setAGiXTState((oldState) => {
+          return { ...oldState, promptArgs: newArgs };
+        });
       }
     }
     getArgs(AGiXTState.promptName, AGiXTState.promptCategory);
@@ -110,7 +113,7 @@ export default function AGiXTChat(props: AGiXTState) {
     conversationResults = 5
   ) => {
     setAGiXTState({ ...AGiXTState, isLoading: true });
-    
+
     if (message) {
       setAGiXTState({ ...AGiXTState, promptArgs: { ...AGiXTState.promptArgs, user_input: message } });
     }
@@ -197,103 +200,101 @@ export default function AGiXTChat(props: AGiXTState) {
     }
   };
   return (
-    <AGiXTContext.Provider value={{ ...AGiXTState,  mutate: setAGiXTState, sdk: sdk }}>
+    <AGiXTContext.Provider value={{ ...AGiXTState, mutate: setAGiXTState, sdk: sdk }}>
       <Box height='100%' display='flex' flexDirection='column'>
         {AGiXTState.showAppBar && <Header showConversationSelector={AGiXTState.showConversationSelector} />}
+
         <Box
-          sx={{
+          style={{
+            maxWidth: '100%',
             flexGrow: '1',
+            transition: theme.transitions.create('margin', {
+              easing: theme.transitions.easing.sharp,
+              duration: theme.transitions.duration.leavingScreen
+            }),
             display: 'flex',
-            marginTop: `${AGiXTState.showConversationSelector ? 5 : AGiXTState.topMargin}px`,
-            marginRight: '1px',
-            marginLeft: '1px'
+            flexDirection: 'column'
           }}
           component='main'
         >
-          <Box
-            style={{
-              maxWidth: '100%',
-              flexGrow: 1,
-              transition: theme.transitions.create('margin', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.leavingScreen
-              })
-            }}
-          >
-            <ConversationHistory />
-            <Box px='1rem'>
-              <TextField
-                label='Ask your question here.'
-                placeholder='Ask your question here.'
-                multiline
-                rows={2}
-                fullWidth
-                value={AGiXTState.message}
-                onChange={(e) => setAGiXTState({ ...AGiXTState, message: e.target.value })}
-                onKeyPress={handleKeyPress}
-                sx={{ my: 2 }}
-                disabled={AGiXTState.isLoading}
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position='end'>
-                      {AGiXTState.enableFileUpload && (
-                        <>
-                          <IconButton
-                            color='info'
-                            onClick={() => {
-                              setAGiXTState({ ...AGiXTState, uploadedFiles: [], openFileUpload: true });
-                            }}
-                            disabled={AGiXTState.isLoading}
-                            sx={{ height: '56px' }}
-                          >
-                            <NoteAddOutlinedIcon />
-                          </IconButton>
-                          <Dialog open={AGiXTState.openFileUpload} onClose={() => {setAGiXTState({ ...AGiXTState, openFileUpload: false });}}>
-                            <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
-                            <DialogContent>
-                              <DialogContentText>Please upload the files you would like to send.</DialogContentText>
-                              <input
-                                accept='*'
-                                id='contained-button-file'
-                                multiple
-                                type='file'
-                                onChange={(e) => {
-                                  setAGiXTState({ ...AGiXTState, uploadedFiles: Array(e.target.files) });
-                                }}
-                              />
-                            </DialogContent>
-                            <DialogActions>
-                              <Button onClick={handleCloseFileUpload} color='error'>
-                                Cancel
-                              </Button>
-                              <Button onClick={handleUploadFiles} color='info' disabled={AGiXTState.isLoading}>
-                                Upload
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
-                        </>
-                      )}
-                      {!AGiXTState.isLoading && (
-                        <Tooltip title='Send Message'>
-                          <IconButton color='info' onClick={handleSendMessage} sx={{ height: '56px', padding: '0px' }}>
-                            <SendIcon />
-                          </IconButton>
-                        </Tooltip>
-                      )}
-                      {AGiXTState.mode == 'prompt' && (
-                        <AudioRecorder
-                          conversationName={AGiXTState.conversationName}
-                          contextResults={AGiXTState.contextResults}
-                          conversationResults={AGiXTState.conversationResults}
-                          agentName={AGiXTState.agentName}
-                          sdk={sdk}
-                        />
-                      )}
-                    </InputAdornment>
-                  )
-                }}
-              />
-            </Box>
+          <ConversationHistory />
+          <Box px='1rem'>
+            <TextField
+              label='Ask your question here.'
+              placeholder='Ask your question here.'
+              multiline
+              rows={2}
+              fullWidth
+              value={AGiXTState.message}
+              onChange={(e) => setAGiXTState({ ...AGiXTState, message: e.target.value })}
+              onKeyPress={handleKeyPress}
+              sx={{ my: 2 }}
+              disabled={AGiXTState.isLoading}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position='end'>
+                    {AGiXTState.enableFileUpload && (
+                      <>
+                        <IconButton
+                          color='info'
+                          onClick={() => {
+                            setAGiXTState({ ...AGiXTState, uploadedFiles: [], openFileUpload: true });
+                          }}
+                          disabled={AGiXTState.isLoading}
+                          sx={{ height: '56px' }}
+                        >
+                          <NoteAddOutlinedIcon />
+                        </IconButton>
+                        <Dialog
+                          open={AGiXTState.openFileUpload}
+                          onClose={() => {
+                            setAGiXTState({ ...AGiXTState, openFileUpload: false });
+                          }}
+                        >
+                          <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
+                          <DialogContent>
+                            <DialogContentText>Please upload the files you would like to send.</DialogContentText>
+                            <input
+                              accept='*'
+                              id='contained-button-file'
+                              multiple
+                              type='file'
+                              onChange={(e) => {
+                                setAGiXTState({ ...AGiXTState, uploadedFiles: Array(e.target.files) });
+                              }}
+                            />
+                          </DialogContent>
+                          <DialogActions>
+                            <Button onClick={handleCloseFileUpload} color='error'>
+                              Cancel
+                            </Button>
+                            <Button onClick={handleUploadFiles} color='info' disabled={AGiXTState.isLoading}>
+                              Upload
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                      </>
+                    )}
+                    {!AGiXTState.isLoading && (
+                      <Tooltip title='Send Message'>
+                        <IconButton color='info' onClick={handleSendMessage} sx={{ height: '56px', padding: '0px' }}>
+                          <SendIcon />
+                        </IconButton>
+                      </Tooltip>
+                    )}
+                    {AGiXTState.mode == 'prompt' && (
+                      <AudioRecorder
+                        conversationName={AGiXTState.conversationName}
+                        contextResults={AGiXTState.contextResults}
+                        conversationResults={AGiXTState.conversationResults}
+                        agentName={AGiXTState.agentName}
+                        sdk={sdk}
+                      />
+                    )}
+                  </InputAdornment>
+                )
+              }}
+            />
           </Box>
         </Box>
       </Box>
