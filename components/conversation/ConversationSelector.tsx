@@ -14,15 +14,26 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AGiXTContext, AGiXTState } from '@/types/AGiXTContext';
+import { setCookie } from 'cookies-next';
 export default function ConversationSelector() {
   const AGiXTState = useContext(AGiXTContext) as AGiXTState;
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
-
+  useEffect(() => {
+    console.log("Fetching Conversations!");
+    (async () => {
+      const newConversations = await AGiXTState.sdk.getConversations(AGiXTState.agentName);
+      AGiXTState.mutate(oldState => {return { ...oldState, conversations: newConversations }});
+      console.log("Fetched Conversations!");
+    })();
+  }, [AGiXTState.agentName, AGiXTState.sdk]);
+  useEffect(() => {
+    setCookie('conversationName', AGiXTState.conversationName);
+  }, [AGiXTState.conversationName]);
   const handleAddConversation = async () => {
     if (!newConversationName) return;
     await AGiXTState.sdk.newConversation(AGiXTState.agentName, newConversationName);
@@ -71,9 +82,6 @@ export default function ConversationSelector() {
             fullWidth
             labelId='conversation-label'
             label='Select a Conversation'
-            sx={{
-              height: '30px'
-            }}
             value={AGiXTState.conversationName}
             onChange={(e) => AGiXTState.mutate({ ...AGiXTState, conversationName: e.target.value })}
           >

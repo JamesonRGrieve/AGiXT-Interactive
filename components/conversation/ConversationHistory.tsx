@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { Paper, Box, Typography, IconButton } from '@mui/material';
@@ -21,7 +21,13 @@ const WAIT_MESSAGE = 'Let me think about that for a moment. Please wait..';
 export default function ConversationHistory() {
   let lastUserMessage = ''; // track the last user message
   const AGiXTState = useContext(AGiXTContext) as AGiXTState;
-
+  useEffect(() => {
+    const fetchConversation = async () => {
+      const convo = await AGiXTState.sdk.getConversation(AGiXTState.agentName, AGiXTState.conversationName, 100, 1);
+      AGiXTState.mutate(oldState => {return { ...oldState, conversation: convo };});
+    };
+    fetchConversation();
+  }, [AGiXTState.conversationName, AGiXTState.lastResponse, AGiXTState.agentName, AGiXTState.sdk]);
   return (
     <Paper
       elevation={5}

@@ -33,13 +33,15 @@ export default function AGiXTChat(props: AGiXTState) {
     uploadedFiles: [],
     userData: {},
     conversation: [],
+    conversations: undefined,
     lastResponse: '',
     isLoading: false,
     openFileUpload: false,
     promptArgs: {},
+    insightAgent: props.insightAgent||props.agentName||"",
     hasFiles: false
   });
-
+  const theme = useTheme();
   const apiKey = getCookie(AGiXTState.apiKeyCookie) || '';
   const sdk = useMemo(() => {
     return new AGiXTSDK({
@@ -47,13 +49,9 @@ export default function AGiXTChat(props: AGiXTState) {
       apiKey: apiKey
     });
   }, [AGiXTState.baseUri, apiKey]);
-  if (AGiXTState.insightAgent === '') {
-    AGiXTState.insightAgent = AGiXTState.agentName;
-  }
+
   //main: darkAGiXTState.mode ? "#000000" : "#273043",
-  const handleCloseFileUpload = () => {
-    setAGiXTState({ ...AGiXTState, openFileUpload: false });
-  };
+
   const handleUploadFiles = async () => {
     const newuploadedFiles = [];
     // Format for AGiXTState.uploadedFiles should be [{"file_name": "file_content"}]
@@ -65,23 +63,9 @@ export default function AGiXTChat(props: AGiXTState) {
     setAGiXTState({ ...AGiXTState, uploadedFiles: newuploadedFiles });
     setAGiXTState({ ...AGiXTState, openFileUpload: false });
   };
+  useEffect(() => {console.log("AGiXT State Changed", AGiXTState)}, [AGiXTState])
 
-  useEffect(() => {
-    const fetchConversations = async () => {
-      const convos = await sdk.getConversations(AGiXTState.agentName);
-      setAGiXTState({ ...AGiXTState, conversations: convos });
-    };
-    fetchConversations();
-  }, [AGiXTState.agentName, sdk]);
 
-  useEffect(() => {
-    const fetchConversation = async () => {
-      const convo = await sdk.getConversation(AGiXTState.agentName, AGiXTState.conversationName, 100, 1);
-      setAGiXTState({ ...AGiXTState, conversation: convo });
-    };
-    fetchConversation();
-  }, [AGiXTState.conversationName, AGiXTState.lastResponse, AGiXTState.agentName, sdk]);
-  const theme = useTheme();
   useEffect(() => {
     async function getArgs(promptName, promptCategory) {
       const promptArgData = await sdk.getPromptArgs(promptName, promptCategory);
@@ -92,15 +76,13 @@ export default function AGiXTChat(props: AGiXTState) {
             newArgs[arg] = '';
           }
         }
-        setAGiXTState({ ...AGiXTState, promptArgs: newArgs });
+        setAGiXTState(oldState => {return { ...oldState, promptArgs: newArgs };});
       }
     }
     getArgs(AGiXTState.promptName, AGiXTState.promptCategory);
   }, [AGiXTState.promptName, AGiXTState.promptCategory, sdk]);
   // Uploaded files will be formatted like [{"file_name": "file_content"}]
-  useEffect(() => {
-    setCookie('conversationName', AGiXTState.conversationName);
-  }, [AGiXTState.conversationName]);
+
   const runChain = async () => {
     setAGiXTState({ ...AGiXTState, isLoading: true });
     const agentOverride = AGiXTState.useSelectedAgent ? AGiXTState.agentName : '';
@@ -118,8 +100,6 @@ export default function AGiXTChat(props: AGiXTState) {
   };
   const PromptAgent = async (
     message,
-    promptName = 'Chat with Commands',
-    promptCategory = 'Default',
     contextResults = 5,
     shots = 1,
     browseLinks = false,
@@ -130,7 +110,7 @@ export default function AGiXTChat(props: AGiXTState) {
     conversationResults = 5
   ) => {
     setAGiXTState({ ...AGiXTState, isLoading: true });
-
+    
     if (message) {
       setAGiXTState({ ...AGiXTState, promptArgs: { ...AGiXTState.promptArgs, user_input: message } });
     }
@@ -204,8 +184,6 @@ export default function AGiXTChat(props: AGiXTState) {
     } else {
       await PromptAgent(
         AGiXTState.message,
-        AGiXTState.promptName,
-        AGiXTState.promptCategory,
         AGiXTState.contextResults,
         AGiXTState.shots,
         AGiXTState.browseLinks,
@@ -218,9 +196,8 @@ export default function AGiXTChat(props: AGiXTState) {
       setAGiXTState({ ...AGiXTState, message: '' });
     }
   };
-  console.log('AGiXTState', AGiXTState);
   return (
-    <AGiXTContext.Provider value={{ ...AGiXTState, mutate: setAGiXTState, sdk: sdk }}>
+    <AGiXTContext.Provider value={{ ...AGiXTState,  mutate: setAGiXTState, sdk: sdk }}>
       <Box height='100%' display='flex' flexDirection='column'>
         {AGiXTState.showAppBar && <Header showConversationSelector={AGiXTState.showConversationSelector} />}
         <Box
@@ -271,7 +248,7 @@ export default function AGiXTChat(props: AGiXTState) {
                           >
                             <NoteAddOutlinedIcon />
                           </IconButton>
-                          <Dialog open={AGiXTState.openFileUpload} onClose={handleCloseFileUpload}>
+                          <Dialog open={AGiXTState.openFileUpload} onClose={() => {setAGiXTState({ ...AGiXTState, openFileUpload: false });}}>
                             <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
                             <DialogContent>
                               <DialogContentText>Please upload the files you would like to send.</DialogContentText>
