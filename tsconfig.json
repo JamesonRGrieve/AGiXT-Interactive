@@ -18,7 +18,10 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": ["components/*.ts", "components/*.js", "components/*.tsx", "components/*.jsx", ".next/types/**/*.ts"],
   "exclude": []
