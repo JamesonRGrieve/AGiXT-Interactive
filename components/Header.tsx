@@ -14,7 +14,8 @@ export default function Header({ showConversationSelector }: { showConversationS
         justifyContent: 'space-between',
         position: 'static',
         padding: '0.75rem'
-      }}>
+      }}
+    >
       <Box display='flex' flex='1' flexDirection='row'>
         <Box display='flex' flexDirection='row'>
           {showConversationSelector ? <ConversationSelector /> : <span>&nbsp;</span>}

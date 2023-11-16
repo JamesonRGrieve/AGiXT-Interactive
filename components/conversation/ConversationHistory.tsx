@@ -42,7 +42,8 @@ export default function ConversationHistory() {
         display: 'flex',
         flexDirection: 'column-reverse',
         flexGrow: '1'
-      }}>
+      }}
+    >
       <div>
         {AGiXTState.conversation
           ? AGiXTState.conversation.map((chatItem, index) => {
@@ -112,18 +113,20 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
     document.body.appendChild(element);
     element.click();
   };
-  console.log("Theme from AGiXT", theme);
+  console.log('Theme from AGiXT', theme);
   return (
     <Box
       sx={{
-        backgroundColor: chatItem.role === 'USER' ? theme.palette.background.default : theme.palette.action.selected
-      }}>
+        //backgroundColor: chatItem.role === 'USER' ? theme.palette.background.default : theme.palette.action.selected
+      }}
+    >
       <Box
         sx={{
           padding: '10px',
           overflow: 'hidden',
           position: 'center'
-        }}>
+        }}
+      >
         <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
         <Typography
           variant='caption'
@@ -131,7 +134,8 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
             color: theme.palette.text.secondary,
             width: '100%',
             display: 'inline-block'
-          }}>
+          }}
+        >
           {chatItem.role === 'USER' ? 'You' : chatItem.role} • {chatItem.timestamp}
         </Typography>
         {chatItem.role != 'USER' && !isLoading && (
@@ -187,7 +191,8 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
                   sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
                 }
               }}
-              color='info'>
+              color='info'
+            >
               Submit
             </Button>
           </DialogActions>

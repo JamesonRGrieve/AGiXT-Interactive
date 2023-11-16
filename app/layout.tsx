@@ -28,7 +28,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeWrapper
           themes={themes}
           defaultDark={cookieStore.get('dark')?.value === 'true'}
-          defaultColorblind={cookieStore.get('colorblind')?.value === 'true'}>
+          defaultColorblind={cookieStore.get('colorblind')?.value === 'true'}
+        >
           {children}
         </ThemeWrapper>
       </body>
