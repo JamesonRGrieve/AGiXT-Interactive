@@ -79,7 +79,7 @@ const colorblindOverrides = {
 export const themeLight = createTheme(baseTheme);
 export const themeDark = createTheme(deepmerge(baseTheme, darkOverrides));
 export const themeLightColorblind = createTheme(deepmerge(baseTheme, colorblindOverrides));
-export const themeDarkColorblind = createTheme(deepmerge(deepmerge(baseTheme, colorblindOverrides), darkOverrides));
+export const themeDarkColorblind = createTheme(deepmerge(deepmerge(baseTheme, darkOverrides), colorblindOverrides));
 const themes = {
   light: themeLight,
   dark: themeDark,
