@@ -1,7 +1,6 @@
 {
-  "name": "jrg_next_boilerplate",
-  "version": "1.0.0",
-  "private": true,
+  "name": "agixtchat",
+  "version": "0.0.10",
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "next build",
