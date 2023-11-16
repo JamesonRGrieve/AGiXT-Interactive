@@ -215,7 +215,8 @@ export default function AGiXTChat(props: AGiXTState) {
             display: 'flex',
             flexDirection: 'column'
           }}
-          component='main'>
+          component='main'
+        >
           <ConversationHistory />
           <Box px='1rem'>
             <TextField
@@ -240,14 +241,16 @@ export default function AGiXTChat(props: AGiXTState) {
                             setAGiXTState({ ...AGiXTState, uploadedFiles: [], openFileUpload: true });
                           }}
                           disabled={AGiXTState.isLoading}
-                          sx={{ height: '56px' }}>
+                          sx={{ height: '56px' }}
+                        >
                           <NoteAddOutlinedIcon />
                         </IconButton>
                         <Dialog
                           open={AGiXTState.openFileUpload}
                           onClose={() => {
                             setAGiXTState({ ...AGiXTState, openFileUpload: false });
-                          }}>
+                          }}
+                        >
                           <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
                           <DialogContent>
                             <DialogContentText>Please upload the files you would like to send.</DialogContentText>
@@ -266,7 +269,8 @@ export default function AGiXTChat(props: AGiXTState) {
                               onClick={() => {
                                 setAGiXTState({ ...AGiXTState, openFileUpload: false });
                               }}
-                              color='error'>
+                              color='error'
+                            >
                               Cancel
                             </Button>
                             <Button onClick={handleUploadFiles} color='info' disabled={AGiXTState.isLoading}>

@@ -121,7 +121,8 @@ export default function MarkdownBlock({ content, chatItem }) {
         {...props}
         target={isExternal ? '_blank' : undefined}
         rel={isExternal ? 'noopener noreferrer' : undefined}
-        onClick={isExternal ? undefined : handleAnchorClick}>
+        onClick={isExternal ? undefined : handleAnchorClick}
+      >
         {children}
       </a>
     );
@@ -164,7 +165,8 @@ export default function MarkdownBlock({ content, chatItem }) {
                       borderRadius: '3px',
                       padding: '0.2em',
                       fontFamily: 'monospace'
-                    }}>
+                    }}
+                  >
                     {children}
                   </span>
                 );
@@ -189,7 +191,8 @@ export default function MarkdownBlock({ content, chatItem }) {
                             const actualCode = codeBlockRef.current.querySelector('code');
                             clipboardCopy(actualCode.innerText);
                           }
-                        }}>
+                        }}
+                      >
                         <ContentCopyIcon />
                       </IconButton>
                       <IconButton
@@ -207,7 +210,8 @@ export default function MarkdownBlock({ content, chatItem }) {
                             document.body.appendChild(element);
                             element.click();
                           }
-                        }}>
+                        }}
+                      >
                         <DownloadIcon />
                       </IconButton>
                       {fileName} | {language}
