@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import ConversationHistory from './conversation/ConversationHistory';
 import ConversationSelector from './conversation/ConversationSelector';
 import AudioRecorder from './conversation/AudioRecorder';
@@ -7,7 +7,7 @@ import { setCookie, getCookie } from 'cookies-next';
 import Box from '@mui/material/Box';
 import AGiXTSDK from 'agixt';
 import Tooltip from '@mui/material/Tooltip';
-import { useMemo } from 'react';
+
 import { useTheme } from '@mui/material/styles';
 import Header from './Header';
 import {
@@ -215,8 +215,7 @@ export default function AGiXTChat(props: AGiXTState) {
             display: 'flex',
             flexDirection: 'column'
           }}
-          component='main'
-        >
+          component='main'>
           <ConversationHistory />
           <Box px='1rem'>
             <TextField
@@ -241,16 +240,14 @@ export default function AGiXTChat(props: AGiXTState) {
                             setAGiXTState({ ...AGiXTState, uploadedFiles: [], openFileUpload: true });
                           }}
                           disabled={AGiXTState.isLoading}
-                          sx={{ height: '56px' }}
-                        >
+                          sx={{ height: '56px' }}>
                           <NoteAddOutlinedIcon />
                         </IconButton>
                         <Dialog
                           open={AGiXTState.openFileUpload}
                           onClose={() => {
                             setAGiXTState({ ...AGiXTState, openFileUpload: false });
-                          }}
-                        >
+                          }}>
                           <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
                           <DialogContent>
                             <DialogContentText>Please upload the files you would like to send.</DialogContentText>
@@ -265,7 +262,11 @@ export default function AGiXTChat(props: AGiXTState) {
                             />
                           </DialogContent>
                           <DialogActions>
-                            <Button onClick={handleCloseFileUpload} color='error'>
+                            <Button
+                              onClick={() => {
+                                setAGiXTState({ ...AGiXTState, openFileUpload: false });
+                              }}
+                              color='error'>
                               Cancel
                             </Button>
                             <Button onClick={handleUploadFiles} color='info' disabled={AGiXTState.isLoading}>

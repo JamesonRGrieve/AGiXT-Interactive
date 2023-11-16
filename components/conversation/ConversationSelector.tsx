@@ -77,16 +77,14 @@ export default function ConversationSelector() {
             flexDirection: 'row',
             alignItems: 'center'
           }}
-          fullWidth
-        >
+          fullWidth>
           <InputLabel id='conversation-label'>Select a Conversation</InputLabel>
           <Select
             fullWidth
             labelId='conversation-label'
             label='Select a Conversation'
             value={AGiXTState.conversationName}
-            onChange={(e) => AGiXTState.mutate({ ...AGiXTState, conversationName: e.target.value })}
-          >
+            onChange={(e) => AGiXTState.mutate({ ...AGiXTState, conversationName: e.target.value })}>
             {AGiXTState.conversations
               ? AGiXTState.conversations.map((c) => (
                   <MenuItem key={c} value={c}>

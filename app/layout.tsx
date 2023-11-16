@@ -28,27 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ThemeWrapper
           themes={themes}
           defaultDark={cookieStore.get('dark')?.value === 'true'}
-          defaultColorblind={cookieStore.get('colorblind')?.value === 'true'}
-        >
-          <AppBar
-            position='static'
-            sx={{
-              textAlign: 'center',
-              height: '4rem',
-              fontSize: '2rem',
-              lineHeight: '4rem',
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              alignItems: 'center'
-            }}
-          >
-            <Typography variant='h1'>{process.env.NEXT_PUBLIC_WEBSITE_NAME}</Typography>
-            <Box>
-              <SwitchDark />
-              <SwitchColorblind />
-            </Box>
-          </AppBar>
+          defaultColorblind={cookieStore.get('colorblind')?.value === 'true'}>
           {children}
         </ThemeWrapper>
       </body>
