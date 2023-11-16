@@ -22,7 +22,7 @@ import {
   IconButton
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { AGiXTContext, AGiXTState } from '@/types/AGiXTContext';
+import { AGiXTContext, AGiXTState } from '../types/AGiXTContext';
 
 export default function AGiXTChat(props: AGiXTState) {
   const [AGiXTState, setAGiXTState] = useState<AGiXTState>({

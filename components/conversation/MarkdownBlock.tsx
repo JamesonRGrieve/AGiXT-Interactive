@@ -6,7 +6,7 @@ import clipboardCopy from 'clipboard-copy';
 import { IconButton } from '@mui/material';
 import { DataGridFromCSV } from './DataGridFromCSV';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
-import { AGiXTContext, AGiXTState } from '@/types/AGiXTContext';
+import { AGiXTContext, AGiXTState } from '../../types/AGiXTContext';
 
 export default function MarkdownBlock({ content, chatItem }) {
   const langMap = {

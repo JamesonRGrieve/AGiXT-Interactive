@@ -1,14 +1,20 @@
 {
   "name": "agixtchat",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --write .",
-    "storybook": "storybook dev -p 6009",
-    "storybook-build": "storybook build"
+    "prettier": "prettier --write ."
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./dist/AGiXTChat.js",
+    "./AGiXTChat": "./dist/AGiXTChat.js",
+    "./dist/AGiXTChat": "./dist/AGiXTChat.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
