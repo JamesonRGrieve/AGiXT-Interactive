@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useTheme } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 import {
   Paper,
@@ -113,15 +113,9 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
     document.body.appendChild(element);
     element.click();
   };
-  console.log('Theme from AGiXT', theme);
-  return (
-    <Box
-      sx={{
-        //backgroundColor: chatItem.role === 'USER' ? theme.palette.background.default : theme.palette.action.selected
-      }}
-    >
-      <Box
+  return  <Box
         sx={{
+          backgroundColor: chatItem.role === 'USER' ? theme.palette.background.default : theme.palette.action.selected,
           padding: '10px',
           overflow: 'hidden',
           position: 'center'
@@ -131,7 +125,6 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
         <Typography
           variant='caption'
           style={{
-            color: theme.palette.text.secondary,
             width: '100%',
             display: 'inline-block'
           }}
@@ -174,7 +167,6 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
               fullWidth
               value={feedback}
               onChange={(e) => setFeedback(e.target.value)}
-              color='info'
             />
           </DialogContent>
           <DialogActions>
@@ -198,6 +190,5 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
           </DialogActions>
         </Dialog>
       </Box>
-    </Box>
-  );
+
 };
