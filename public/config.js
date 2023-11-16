@@ -41,8 +41,7 @@ if (isBrowser()) {
       config.public[key.replace(publicPrefix, '')] = convertBoolean(value);
     }
     if (key.startsWith(serverOnlyPrefix)) {
-      config.serverOnly[key.replace(serverOnlyPrefix, '')] =
-        convertBoolean(value);
+      config.serverOnly[key.replace(serverOnlyPrefix, '')] = convertBoolean(value);
     }
   });
   // we need to make sure keys are always in the same order to prevent "Text content did not match" issue

@@ -16,11 +16,7 @@ export const metadata: Metadata = {
   description: 'Boilerplate for Next.JS Applications'
 };
 
-export default function RootLayout({
-  children
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = cookies();
   return (
     <html lang='en'>
@@ -47,9 +43,7 @@ export default function RootLayout({
               alignItems: 'center'
             }}
           >
-            <Typography variant='h1'>
-              {process.env.NEXT_PUBLIC_WEBSITE_NAME}
-            </Typography>
+            <Typography variant='h1'>{process.env.NEXT_PUBLIC_WEBSITE_NAME}</Typography>
             <Box>
               <SwitchDark />
               <SwitchColorblind />

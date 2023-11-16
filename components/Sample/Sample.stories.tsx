@@ -11,9 +11,7 @@ import SampleComponent, { SampleProps } from './Sample';
 type Story = StoryObj<typeof meta>;
 
 // Configure Component Stories.
-export const Sample: Story = (args: SampleProps) => (
-  <SampleComponent {...args} />
-);
+export const Sample: Story = (args: SampleProps) => <SampleComponent {...args} />;
 Sample.args = {
   heading: 'Sample Component',
   bodyText:
@@ -35,8 +33,7 @@ const meta: Meta = {
     componentSubtitle: 'A Sample Component',
     docs: {
       description: {
-        component:
-          'This component is meant to illustrate how to effectively document components.'
+        component: 'This component is meant to illustrate how to effectively document components.'
       }
     },
     references: [
