@@ -5,10 +5,7 @@ import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import clipboardCopy from 'clipboard-copy';
 import { IconButton } from '@mui/material';
 import { DataGridFromCSV } from './DataGridFromCSV';
-import {
-  ContentCopy as ContentCopyIcon,
-  Download as DownloadIcon
-} from '@mui/icons-material';
+import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
 
 export default function MarkdownBlock({
   content,
@@ -82,26 +79,17 @@ export default function MarkdownBlock({
       if (message.includes('GENERATED_IMAGE:')) {
         const base64Image = match[1].replace('GENERATED_IMAGE:', '').trim();
         const formattedImage = base64Image.toString('base64');
-        return message.replace(
-          match[0],
-          `![Generated Image](data:image/png;base64,${formattedImage})`
-        );
+        return message.replace(match[0], `![Generated Image](data:image/png;base64,${formattedImage})`);
       }
       if (message.includes('GENERATED_AUDIO:')) {
         const base64Audio = match[1].replace('GENERATED_AUDIO:', '').trim();
         const formattedAudio = base64Audio.toString('base64');
-        return message.replace(
-          match[0],
-          `![Generated Audio](data:audio/wav;base64,${formattedAudio})`
-        );
+        return message.replace(match[0], `![Generated Audio](data:audio/wav;base64,${formattedAudio})`);
       }
     }
     if (message.includes('```csv')) {
       // Get the csv data between ```csv and ```
-      const csvData = message
-        .split('```csv')[1]
-        .split('```')[0]
-        .replace(/\n/g, '\r\n');
+      const csvData = message.split('```csv')[1].split('```')[0].replace(/\n/g, '\r\n');
       return DataGridFromCSV({
         csvData,
         sdk,
@@ -202,15 +190,10 @@ export default function MarkdownBlock({
               const language = props.className?.replace(/language-/, '');
               const fileExtension = langMap[language] || 'txt';
               const ts = chatItem
-                ? chatItem.timestamp
-                    .replace(/ /g, '-')
-                    .replace(/:/g, '-')
-                    .replace(/,/g, '')
+                ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
                 : new Date().toLocaleString().replace(/[^0-9]/g, '');
 
-              const fileName = chatItem
-                ? `${chatItem.role}-${ts}.${fileExtension}`
-                : `${ts}.${fileExtension}`;
+              const fileName = chatItem ? `${chatItem.role}-${ts}.${fileExtension}` : `${ts}.${fileExtension}`;
               return (
                 <>
                   <br />
@@ -219,8 +202,7 @@ export default function MarkdownBlock({
                       <IconButton
                         onClick={() => {
                           if (codeBlockRef.current) {
-                            const actualCode =
-                              codeBlockRef.current.querySelector('code');
+                            const actualCode = codeBlockRef.current.querySelector('code');
                             clipboardCopy(actualCode.innerText);
                           }
                         }}
@@ -230,8 +212,7 @@ export default function MarkdownBlock({
                       <IconButton
                         onClick={() => {
                           if (codeBlockRef.current) {
-                            const actualCode =
-                              codeBlockRef.current.querySelector('code');
+                            const actualCode = codeBlockRef.current.querySelector('code');
 
                             const element = document.createElement('a');
                             const file = new Blob([actualCode.innerText], {

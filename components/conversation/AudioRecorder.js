@@ -1,10 +1,6 @@
 import { useState, useRef } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
-import {
-  Mic as MicIcon,
-  Cancel as CancelIcon,
-  Send as SendIcon
-} from '@mui/icons-material';
+import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
 
 export default function AudioRecorder({
   conversationName,
@@ -43,9 +39,7 @@ export default function AudioRecorder({
       reader.readAsArrayBuffer(audioData); // Use ArrayBuffer for raw binary data
       reader.onloadend = () => {
         const audioDataArray = new Uint8Array(reader.result);
-        const base64Audio = btoa(
-          String.fromCharCode.apply(null, audioDataArray)
-        ); // Convert to base64
+        const base64Audio = btoa(String.fromCharCode.apply(null, audioDataArray)); // Convert to base64
         const response = sdk.executeCommand(
           agentName,
           'Chat with Voice',

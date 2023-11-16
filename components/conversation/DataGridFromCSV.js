@@ -1,13 +1,5 @@
 import { DataGrid, GridToolbar, gridClasses } from '@mui/x-data-grid';
-import {
-  Button,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField
-} from '@mui/material';
+import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
@@ -23,37 +15,22 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
       }
     },
     '&.Mui-selected': {
-      backgroundColor: alpha(
-        theme.palette.primary.main,
-        ODD_OPACITY + theme.palette.action.selectedOpacity
-      ),
+      backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY + theme.palette.action.selectedOpacity),
       '&:hover, &.Mui-hovered': {
         backgroundColor: alpha(
           theme.palette.primary.main,
-          ODD_OPACITY +
-            theme.palette.action.selectedOpacity +
-            theme.palette.action.hoverOpacity
+          ODD_OPACITY + theme.palette.action.selectedOpacity + theme.palette.action.hoverOpacity
         ),
         // Reset on touch devices, it doesn't add specificity
         '@media (hover: none)': {
-          backgroundColor: alpha(
-            theme.palette.primary.main,
-            ODD_OPACITY + theme.palette.action.selectedOpacity
-          )
+          backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY + theme.palette.action.selectedOpacity)
         }
       }
     }
   }
 }));
 
-export const DataGridFromCSV = ({
-  csvData,
-  sdk,
-  agentName,
-  setIsLoading,
-  setLastResponse,
-  conversationName
-}) => {
+export const DataGridFromCSV = ({ csvData, sdk, agentName, setIsLoading, setLastResponse, conversationName }) => {
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
@@ -137,14 +114,7 @@ export const DataGridFromCSV = ({
       conversation_name: conversationName,
       text: newCSVData
     };
-    const response = await sdk.runChain(
-      'Data Analysis',
-      userMessage,
-      agentName,
-      false,
-      1,
-      chainArgs
-    );
+    const response = await sdk.runChain('Data Analysis', userMessage, agentName, false, 1, chainArgs);
     setIsLoading(false);
     setLastResponse(response);
   };
@@ -179,9 +149,7 @@ export const DataGridFromCSV = ({
                 }
               }
             }}
-            getRowClassName={(params) =>
-              params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd'
-            }
+            getRowClassName={(params) => (params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd')}
           />
           <br />
           <Box
@@ -199,7 +167,6 @@ export const DataGridFromCSV = ({
             <DialogTitle>Get Insights</DialogTitle>
             <DialogContent>
               <TextField
-
                 margin='dense'
                 id='name'
                 label='What would you like insights on?'
