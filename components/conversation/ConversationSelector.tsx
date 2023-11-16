@@ -4,7 +4,6 @@ import {
   InputLabel,
   FormControl,
   Button,
-  Box,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -15,19 +14,10 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
-import { useState } from 'react';
-import { useTheme } from '@emotion/react';
-import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
-import SwitchDark from 'jrgcomponents/theming/SwitchDark';
-export default function ConversationSelector({
-  agentName,
-  conversations,
-  conversationName,
-  setConversationName,
-  setConversations,
-  conversation,
-  sdk
-}) {
+import { useContext, useState } from 'react';
+import { AGiXTContext, AGiXTState } from '@/types/AGiXTContext';
+export default function ConversationSelector() {
+  const AGiXTState = useContext(AGiXTContext) as AGiXTState;
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
@@ -35,47 +25,38 @@ export default function ConversationSelector({
 
   const handleAddConversation = async () => {
     if (!newConversationName) return;
-    await sdk.newConversation(agentName, newConversationName);
+    await AGiXTState.sdk.newConversation(AGiXTState.agentName, newConversationName);
     setNewConversationName('');
     setOpenNewConversation(false);
     const fetchConversations = async () => {
-      const updatedConversations = await sdk.getConversations();
-      setConversations(updatedConversations);
+      const updatedConversations = await AGiXTState.sdk.getConversations();
+      AGiXTState.mutate({ ...AGiXTState, conversations: updatedConversations });
     };
     fetchConversations();
-    setConversationName(newConversationName);
+    AGiXTState.mutate({ ...AGiXTState, conversationName: newConversationName });
   };
   const handleDeleteConversation = async () => {
-    if (!conversationName) return;
-    await sdk.deleteConversation(agentName, conversationName);
-    const updatedConversations = conversations.filter((c) => c !== conversationName);
-    setConversations(updatedConversations);
-    setConversationName(updatedConversations[0] || '');
+    if (!AGiXTState.conversationName) return;
+    await AGiXTState.sdk.deleteConversation(AGiXTState.agentName, AGiXTState.conversationName);
+    const updatedConversations = AGiXTState.conversations.filter((c) => c !== AGiXTState.conversationName);
+    AGiXTState.mutate({ ...AGiXTState, conversations: updatedConversations });
+    AGiXTState.mutate({ ...AGiXTState, conversationName: updatedConversations[0] || '' });
     setOpenDeleteConversation(false);
   };
 
   const handleExportConversation = async () => {
-    if (!conversationName) return;
+    if (!AGiXTState.conversationName) return;
     const element = document.createElement('a');
-    const file = new Blob([JSON.stringify(conversation)], {
+    const file = new Blob([JSON.stringify(AGiXTState.conversation)], {
       type: 'application/json'
     });
     element.href = URL.createObjectURL(file);
-    element.download = `${conversationName}.json`;
+    element.download = `${AGiXTState.conversationName}.json`;
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
   };
-  const theme = useTheme();
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'row',
-        width: '100%',
-        justifyContent: 'space-between',
-        p: '1rem'
-      }}
-    >
+    <>
       <Tooltip title='Select a Conversation'>
         <FormControl
           sx={{
@@ -93,11 +74,11 @@ export default function ConversationSelector({
             sx={{
               height: '30px'
             }}
-            value={conversationName}
-            onChange={(e) => setConversationName(e.target.value)}
+            value={AGiXTState.conversationName}
+            onChange={(e) => AGiXTState.mutate({ ...AGiXTState, conversationName: e.target.value })}
           >
-            {conversations
-              ? conversations.map((c) => (
+            {AGiXTState.conversations
+              ? AGiXTState.conversations.map((c) => (
                   <MenuItem key={c} value={c}>
                     {c}
                   </MenuItem>
@@ -106,7 +87,6 @@ export default function ConversationSelector({
           </Select>
         </FormControl>
       </Tooltip>
-      &nbsp;
       <Tooltip title='Add Conversation'>
         <Button onClick={() => setOpenNewConversation(true)} color={'info'} sx={{ minWidth: '20px' }}>
           <AddIcon sx={{ minWidth: '20px' }} color={'info'} />
@@ -121,12 +101,6 @@ export default function ConversationSelector({
         <Button onClick={() => setOpenDeleteConversation(true)} color={'error'} sx={{ minWidth: '20px' }}>
           <DeleteIcon sx={{ minWidth: '20px' }} color={'error'} />
         </Button>
-      </Tooltip>
-      <Tooltip title={theme.palette.mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
-        <SwitchDark />
-      </Tooltip>
-      <Tooltip title={theme.palette.colorblind ? 'Switch to Normal Mode' : 'Switch to Colorblind Mode'}>
-        <SwitchColorblind />
       </Tooltip>
       <Dialog open={openNewConversation} onClose={() => setOpenNewConversation(false)}>
         <DialogTitle>Create New Conversation</DialogTitle>
@@ -166,6 +140,6 @@ export default function ConversationSelector({
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   );
 }

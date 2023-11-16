@@ -1,18 +1,13 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useContext } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
+import { AGiXTContext, AGiXTState } from '@/types/AGiXTContext';
 
-export default function AudioRecorder({
-  conversationName,
-  contextResults,
-  conversationResults,
-  setIsLoading,
-  agentName,
-  sdk
-}) {
+export default function AudioRecorder({ conversationName, contextResults, conversationResults, agentName, sdk }) {
   const [recording, setRecording] = useState(false);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
+  const AGiXTState = useContext(AGiXTContext) as AGiXTState;
 
   const startRecording = () => {
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
@@ -24,7 +19,7 @@ export default function AudioRecorder({
       };
       mediaRecorder.current.start();
       setRecording(true);
-      setIsLoading(true);
+      AGiXTState.mutate({ ...AGiXTState, isLoading: true });
     });
   };
 
@@ -38,7 +33,7 @@ export default function AudioRecorder({
       const reader = new FileReader();
       reader.readAsArrayBuffer(audioData); // Use ArrayBuffer for raw binary data
       reader.onloadend = () => {
-        const audioDataArray = new Uint8Array(reader.result);
+        const audioDataArray = new Uint8Array(reader.result as ArrayBufferLike);
         const base64Audio = btoa(String.fromCharCode.apply(null, audioDataArray)); // Convert to base64
         const response = sdk.executeCommand(
           agentName,
@@ -59,7 +54,7 @@ export default function AudioRecorder({
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
       setRecording(false);
-      setIsLoading(false);
+      AGiXTState.mutate({ ...AGiXTState, isLoading: false });
       setAudioData(null);
     }
   };

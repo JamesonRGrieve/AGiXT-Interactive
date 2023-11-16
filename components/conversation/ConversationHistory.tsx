@@ -1,5 +1,5 @@
-import React from 'react';
-import { useTheme } from '@emotion/react';
+import React, { useContext } from 'react';
+import { useTheme } from '@mui/material/styles';
 import { useState } from 'react';
 import { Paper, Box, Typography, IconButton } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, ThumbDown } from '@mui/icons-material';
@@ -15,23 +15,12 @@ import {
   Tooltip
 } from '@mui/material';
 import MarkdownBlock from './MarkdownBlock';
+import { AGiXTContext, AGiXTState } from '@/types/AGiXTContext';
 const WAIT_MESSAGE = 'Let me think about that for a moment. Please wait..';
 
-export default function ConversationHistory({
-  agentName,
-  insightAgent,
-  chatHistory,
-  isLoading,
-  sdk,
-  topMargin,
-  setIsLoading,
-  setLastResponse,
-  conversationName
-}) {
-  const topPx = Number(topMargin) + 165;
-  const marginTop = `${topPx}px`;
-
+export default function ConversationHistory() {
   let lastUserMessage = ''; // track the last user message
+  const AGiXTState = useContext(AGiXTContext) as AGiXTState;
 
   return (
     <Paper
@@ -40,13 +29,12 @@ export default function ConversationHistory({
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column-reverse',
-        height: `calc(100vh - ${marginTop})`,
-        marginTop: '0px'
+        flexGrow: '1'
       }}
     >
       <div>
-        {chatHistory
-          ? chatHistory.map((chatItem, index) => {
+        {AGiXTState.conversation
+          ? AGiXTState.conversation.map((chatItem, index) => {
               if (chatItem.role === 'USER') {
                 lastUserMessage = chatItem.message;
               }
@@ -54,31 +42,29 @@ export default function ConversationHistory({
                 <ChatMessage
                   key={index}
                   chatItem={chatItem}
-                  sdk={sdk}
+                  isLoading={AGiXTState.isLoading}
+                  sdk={AGiXTState.sdk}
                   lastUserMessage={lastUserMessage}
-                  setIsLoading={setIsLoading}
-                  setLastResponse={setLastResponse}
-                  conversationName={conversationName}
-                  agentName={insightAgent}
+                  conversationName={AGiXTState.conversationName}
+                  agentName={AGiXTState.insightAgent}
                 />
               );
             })
           : null}
-        {isLoading && (
+        {AGiXTState.isLoading && (
           <>
             <ChatMessage
               key={'Please Wait'}
               chatItem={{
-                role: agentName,
+                role: AGiXTState.agentName,
                 message: WAIT_MESSAGE,
                 timestamp: 'Just Now...'
               }}
-              isLoading={isLoading}
-              sdk={sdk}
-              setIsLoading={setIsLoading}
-              setLastResponse={setLastResponse}
-              conversationName={conversationName}
-              agentName={insightAgent}
+              isLoading={AGiXTState.isLoading}
+              lastUserMessage={lastUserMessage}
+              sdk={AGiXTState.sdk}
+              conversationName={AGiXTState.conversationName}
+              agentName={AGiXTState.insightAgent}
             />
           </>
         )}
@@ -87,16 +73,7 @@ export default function ConversationHistory({
   );
 }
 
-const ChatMessage = ({
-  chatItem,
-  lastUserMessage,
-  isLoading,
-  sdk,
-  setIsLoading,
-  setLastResponse,
-  conversationName,
-  agentName
-}) => {
+const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk, conversationName, agentName }) => {
   const formattedMessage =
     typeof chatItem.message === 'string'
       ? chatItem.message.replace(/\\n/g, '  \n').replace(/\n/g, '  \n')
@@ -141,16 +118,7 @@ const ChatMessage = ({
           position: 'center'
         }}
       >
-        <MarkdownBlock
-          content={formattedMessage}
-          chatItem={chatItem}
-          theme={theme}
-          sdk={sdk}
-          setIsLoading={setIsLoading}
-          setLastResponse={setLastResponse}
-          conversationName={conversationName}
-          agentName={agentName}
-        />
+        <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
         <Typography
           variant='caption'
           style={{

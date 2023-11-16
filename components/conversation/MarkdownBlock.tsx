@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
@@ -6,16 +6,9 @@ import clipboardCopy from 'clipboard-copy';
 import { IconButton } from '@mui/material';
 import { DataGridFromCSV } from './DataGridFromCSV';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
+import { AGiXTContext, AGiXTState } from '@/types/AGiXTContext';
 
-export default function MarkdownBlock({
-  content,
-  chatItem,
-  sdk,
-  setIsLoading,
-  setLastResponse,
-  conversationName,
-  agentName
-}) {
+export default function MarkdownBlock({ content, chatItem }) {
   const langMap = {
     '': 'txt',
     python: 'py',
@@ -90,14 +83,7 @@ export default function MarkdownBlock({
     if (message.includes('```csv')) {
       // Get the csv data between ```csv and ```
       const csvData = message.split('```csv')[1].split('```')[0].replace(/\n/g, '\r\n');
-      return DataGridFromCSV({
-        csvData,
-        sdk,
-        agentName,
-        setIsLoading,
-        setLastResponse,
-        conversationName
-      });
+      return <DataGridFromCSV csvData={csvData} />;
     }
     return content;
   };
@@ -144,11 +130,11 @@ export default function MarkdownBlock({
   return (
     <>
       {content.includes('```csv') ? (
-        renderMessage(content)
+        renderMessage()
       ) : (
         <ReactMarkdown
           // eslint-disable-next-line react/no-children-prop
-          children={renderMessage(content)}
+          children={renderMessage()}
           className='react-markdown'
           components={{
             a: renderLink,
