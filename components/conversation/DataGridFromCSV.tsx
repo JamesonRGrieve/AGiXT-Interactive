@@ -1,8 +1,10 @@
 import { DataGrid, GridToolbar, gridClasses } from '@mui/x-data-grid';
-import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@mui/material';
+import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField, TextFieldProps } from '@mui/material';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { AGiXTContext, AGiXTState } from '@/types/AGiXTContext';
+
 const ODD_OPACITY = 1;
 
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -30,7 +32,9 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   }
 }));
 
-export const DataGridFromCSV = ({ csvData, sdk, agentName, setIsLoading, setLastResponse, conversationName }) => {
+export const DataGridFromCSV = ({ csvData }) => {
+  const AGiXTState = useContext(AGiXTContext) as AGiXTState;
+
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
@@ -47,7 +51,7 @@ export const DataGridFromCSV = ({ csvData, sdk, agentName, setIsLoading, setLast
     for (let i = 1; i < lines.length; i++) {
       const values = lines[i].split('","');
       if (values.length === headers.length) {
-        const row = {};
+        const row = {} as any;
         for (let j = 0; j < headers.length; j++) {
           values[j] = values[j].trim();
           if (values[j].startsWith('"') && values[j].endsWith('"')) {
@@ -105,18 +109,17 @@ export const DataGridFromCSV = ({ csvData, sdk, agentName, setIsLoading, setLast
   }, [csvData]);
 
   const getInsights = async (userMessage) => {
-    setIsLoading(true);
+    AGiXTState.mutate({ ...AGiXTState, isLoading: true });
     const lines = csvData.split('\n');
     lines.shift();
     lines.pop();
     const newCSVData = lines.join('\n');
-    let chainArgs = {
-      conversation_name: conversationName,
+    const chainArgs = {
+      conversation_name: AGiXTState.conversationName,
       text: newCSVData
     };
-    const response = await sdk.runChain('Data Analysis', userMessage, agentName, false, 1, chainArgs);
-    setIsLoading(false);
-    setLastResponse(response);
+    const response = await AGiXTState.sdk.runChain('Data Analysis', userMessage, AGiXTState.agentName, false, 1, chainArgs);
+    AGiXTState.mutate({ ...AGiXTState, isLoading: false, lastResponse: response });
   };
   const handleClickOpen = () => {
     setOpen(true);
@@ -140,7 +143,6 @@ export const DataGridFromCSV = ({ csvData, sdk, agentName, setIsLoading, setLast
             density='compact'
             rows={rows}
             columns={columns}
-            pageSize={5}
             components={{ Toolbar: GridToolbar }}
             initialState={{
               pagination: {
@@ -174,7 +176,7 @@ export const DataGridFromCSV = ({ csvData, sdk, agentName, setIsLoading, setLast
                 value={userMessage}
                 onChange={handleUserMessageChange}
                 onClick={(e) => {
-                  if (e.target.value === 'Surprise me!') {
+                  if ((e.target as TextFieldProps).value === 'Surprise me!') {
                     setUserMessage('');
                   }
                 }}

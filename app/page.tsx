@@ -35,6 +35,7 @@ export default function Home() {
         conversationName={conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME} // Conversation name
         setConversationName={setConversationName} // Function to set the conversation name
         // UI Options
+        showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
         showConversationBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
         enableFileUpload={process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true'} // Enable file upload button, disabled by default.
         // Modes are prompt or chain
