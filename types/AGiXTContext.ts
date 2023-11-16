@@ -1,17 +1,17 @@
 import { Context, createContext } from 'react';
 
 export type AGiXTState = {
-  selectedChain: string;
-  chainArgs: object;
-  enableFileUpload: boolean;
-  contextResults: number;
-  shots: number;
-  browseLinks: boolean;
-  websearch: boolean;
-  websearchDepth: number;
-  enableMemory: boolean;
-  injectMemoriesFromCollectionNumber: number;
-  conversationResults: number;
+  selectedChain?: string;
+  chainArgs?: object;
+  enableFileUpload?: boolean;
+  contextResults?: number;
+  shots?: number;
+  browseLinks?: boolean;
+  websearch?: boolean;
+  websearchDepth?: number;
+  enableMemory?: boolean;
+  injectMemoriesFromCollectionNumber?: number;
+  conversationResults?: number;
   useSelectedAgent: boolean;
   conversationName: string;
   mode: string;
@@ -20,11 +20,9 @@ export type AGiXTState = {
   agentName: string;
   insightAgent: string;
   baseUri: string;
-  topMargin: string;
-  setConversationName: ((name: string) => void) | null;
   showAppBar: boolean;
   showConversationSelector: boolean;
-  apiKeyCookie: string;
+  apiKeyCookie?: string;
   message?: string;
   identified?: false;
   authenticated?: false;
@@ -60,8 +58,6 @@ export const AGiXTContext: Context<AGiXTState> = createContext<AGiXTState>({
   agentName: 'gpt4free', // Name of the agent to use
   insightAgent: '', // Name of the agent to use for insight
   baseUri: 'http://localhost:7437', // Base URI of the AGiXT server
-  topMargin: '-35', // Top margin of the chat
-  setConversationName: null, // Function to set the conversation name
   showAppBar: true, // Show the app bar
   showConversationSelector: false, // Show the conversation selector
   apiKeyCookie: 'apiKey' // Name of the cookie to store the API key in

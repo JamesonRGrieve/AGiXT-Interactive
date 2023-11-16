@@ -1,8 +1,8 @@
 'use client';
 import { setCookie, getCookie } from 'cookies-next';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AGiXTChat from '../components/AGiXTChat';
-import React from 'react';
+
 export default function Home() {
   const [apiKey, setApiKey] = useState(getCookie('apiKey'));
   const [loggedIn, setLoggedIn] = useState(getCookie('apiKey') ? true : false);
@@ -33,10 +33,9 @@ export default function Home() {
         agentName={process.env.NEXT_PUBLIC_AGIXT_AGENT} // Agent name
         insightAgent={process.env.NEXT_PUBLIC_AGIXT_INSIGHT_AGENT} // Insight agent name to use a different agent for insights, leave blank to use the same agent
         conversationName={conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME} // Conversation name
-        setConversationName={setConversationName} // Function to set the conversation name
         // UI Options
         showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
-        showConversationBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
+        showConversationSelector={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
         enableFileUpload={process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true'} // Enable file upload button, disabled by default.
         // Modes are prompt or chain
         mode={process.env.NEXT_PUBLIC_AGIXT_MODE}
