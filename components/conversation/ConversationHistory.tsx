@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useTheme } from '@mui/material/styles';
+import { useTheme } from '@mui/material';
 
 import {
   Paper,
@@ -56,8 +56,6 @@ export default function ConversationHistory() {
                   isLoading={AGiXTState.isLoading}
                   sdk={AGiXTState.sdk}
                   lastUserMessage={lastUserMessage}
-                  conversationName={AGiXTState.conversationName}
-                  agentName={AGiXTState.insightAgent}
                 />
               );
             })
@@ -74,8 +72,6 @@ export default function ConversationHistory() {
               isLoading={AGiXTState.isLoading}
               lastUserMessage={lastUserMessage}
               sdk={AGiXTState.sdk}
-              conversationName={AGiXTState.conversationName}
-              agentName={AGiXTState.insightAgent}
             />
           </>
         )}
@@ -84,7 +80,7 @@ export default function ConversationHistory() {
   );
 }
 
-const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk, conversationName, agentName }) => {
+const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
   const formattedMessage =
     typeof chatItem.message === 'string'
       ? chatItem.message.replace(/\\n/g, '  \n').replace(/\n/g, '  \n')
@@ -116,6 +112,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk, conversationNa
     document.body.appendChild(element);
     element.click();
   };
+  console.log("Theme from AGiXT", theme);
   return (
     <Box
       sx={{
