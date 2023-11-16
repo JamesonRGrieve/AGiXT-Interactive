@@ -15,11 +15,7 @@ export const metadata: Metadata = {
   description: 'Boilerplate for Next.JS Applications'
 };
 
-export default function RootLayout({
-  children
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = cookies();
   return (
     <html lang='en'>

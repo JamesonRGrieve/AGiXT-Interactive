@@ -1,21 +1,9 @@
 import type { Preview } from '@storybook/react';
 import { useMemo } from 'react';
-import {
-  themeLight,
-  themeDark,
-  themeLightColorblind,
-  themeDarkColorblind
-} from '../app/theme';
+import { themeLight, themeDark, themeLightColorblind, themeDarkColorblind } from '../app/theme';
 import { ThemeProvider, CssBaseline } from '@mui/material';
 import React from 'react';
-import {
-  Title,
-  Subtitle,
-  Description,
-  Primary,
-  Controls,
-  Stories
-} from '@storybook/blocks';
+import { Title, Subtitle, Description, Primary, Controls, Stories } from '@storybook/blocks';
 import ReferenceGrid from 'jrgcomponents/storybook/ReferenceGrid';
 import ComparisonGrid from 'jrgcomponents/storybook/ComparisonGrid';
 
@@ -75,10 +63,7 @@ export const withTheme = (Story: any, context: any) => {
   const { theme: themeKey } = context.globals;
 
   // Only recompute the theme if the themeKey changes.
-  const theme = useMemo(
-    () => themes[themeKey as keyof typeof themes] || themes['light'],
-    [themeKey]
-  );
+  const theme = useMemo(() => themes[themeKey as keyof typeof themes] || themes['light'], [themeKey]);
 
   return (
     <ThemeProvider theme={theme}>
