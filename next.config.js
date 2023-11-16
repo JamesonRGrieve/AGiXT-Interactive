@@ -1,4 +1,4 @@
-module.exports = {
+const nextConfig = {
   env: {
     // Options
     NEXT_PUBLIC_AGIXT_SERVER:
@@ -25,6 +25,20 @@ module.exports = {
     NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR:
       process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR || 'true',
     NEXT_PUBLIC_AGIXT_CONVERSATION_NAME:
-      process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME || 'AGiXT Conversation'
+      process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME || 'AGiXT Conversation',
+      NEXT_PUBLIC_COOKIE_DOMAIN: `.${(
+        (process.env.NEXT_PUBLIC_APP_URI ?? '').split('://')[1] ?? ''
+      )
+        .split(':')[0]
+        .split('.')
+        .reverse()
+        .slice(0, 2)
+        .reverse()
+        .join('.')}`
   }
 };
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: true
+});
+module.exports = process.env.NEXT_ANALYZE === 'true' ? withBundleAnalyzer(nextConfig) : nextConfig;
