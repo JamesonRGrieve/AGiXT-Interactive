@@ -2,12 +2,7 @@ import React from 'react';
 import { useTheme } from '@emotion/react';
 import { useState } from 'react';
 import { Paper, Box, Typography, IconButton } from '@mui/material';
-import {
-  ContentCopy as ContentCopyIcon,
-  Download as DownloadIcon,
-  ThumbUp,
-  ThumbDown
-} from '@mui/icons-material';
+import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, ThumbDown } from '@mui/icons-material';
 import clipboardCopy from 'clipboard-copy';
 import {
   Dialog,
@@ -136,10 +131,7 @@ const ChatMessage = ({
   return (
     <Box
       sx={{
-        backgroundColor:
-          chatItem.role === 'USER'
-            ? theme.palette.background.default
-            : theme.palette.action.selected
+        backgroundColor: chatItem.role === 'USER' ? theme.palette.background.default : theme.palette.action.selected
       }}
     >
       <Box
@@ -167,8 +159,7 @@ const ChatMessage = ({
             display: 'inline-block'
           }}
         >
-          {chatItem.role === 'USER' ? 'You' : chatItem.role} •{' '}
-          {chatItem.timestamp}
+          {chatItem.role === 'USER' ? 'You' : chatItem.role} • {chatItem.timestamp}
         </Typography>
         {chatItem.role != 'USER' && !isLoading && (
           <>
@@ -194,16 +185,10 @@ const ChatMessage = ({
             </Tooltip>
           </>
         )}
-        <Dialog
-          open={open}
-          onClose={handleClose}
-          aria-labelledby='form-dialog-title'
-        >
+        <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
           <DialogTitle id='form-dialog-title'>Provide Feedback</DialogTitle>
           <DialogContent>
-            <DialogContentText>
-              Please provide some feedback regarding the message.
-            </DialogContentText>
+            <DialogContentText>Please provide some feedback regarding the message.</DialogContentText>
             <TextField
               margin='dense'
               id='name'

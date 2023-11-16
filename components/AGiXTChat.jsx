@@ -95,12 +95,7 @@ export default function AGiXTChat({
 
   useEffect(() => {
     const fetchConversation = async () => {
-      const convo = await sdk.getConversation(
-        agentName,
-        conversationName,
-        100,
-        1
-      );
+      const convo = await sdk.getConversation(agentName, conversationName, 100, 1);
       setChatHistory(convo);
     };
     fetchConversation();
@@ -129,14 +124,7 @@ export default function AGiXTChat({
     setIsLoading(true);
     const agentOverride = useSelectedAgent ? agentName : '';
     chainArgs['conversation_name'] = conversationName;
-    const response = await sdk.runChain(
-      selectedChain,
-      message,
-      agentOverride,
-      false,
-      0,
-      chainArgs
-    );
+    const response = await sdk.runChain(selectedChain, message, agentOverride, false, 0, chainArgs);
     setIsLoading(false);
     setLastResponse(response);
   };
@@ -198,27 +186,19 @@ export default function AGiXTChat({
       websearch: websearch,
       websearch_depth: websearchDepth,
       disable_memory: disableMemory,
-      inject_memories_from_collection_number:
-        injectMemoriesFromCollectionNumber,
+      inject_memories_from_collection_number: injectMemoriesFromCollectionNumber,
       conversation_results: conversationResults,
       ...promptArgs
     };
     if (mode == 'chain') {
       promptName = selectedChain;
     }
-    const response = await sdk.promptAgent(
-      agentName,
-      promptName,
-      promptArguments
-    );
+    const response = await sdk.promptAgent(agentName, promptName, promptArguments);
     setIsLoading(false);
     setLastResponse(response);
     setUploadedFiles([]);
     const fetchConversation = async () => {
-      const conversation = await sdk.getConversation(
-        agentName,
-        conversationName
-      );
+      const conversation = await sdk.getConversation(agentName, conversationName);
       setChatHistory(conversation);
     };
     fetchConversation();
@@ -256,26 +236,11 @@ export default function AGiXTChat({
   return (
     <>
       {!showConversationBar && (
-        <Box
-          sx={{ display: 'flex', justifyContent: 'flex-end', py: '0.25rem' }}
-          component='header'
-        >
-          <Tooltip
-            title={
-              theme.palette.mode === 'dark'
-                ? 'Switch to Light Mode'
-                : 'Switch to Dark Mode'
-            }
-          >
+        <Box sx={{ display: 'flex', justifyContent: 'flex-end', py: '0.25rem' }} component='header'>
+          <Tooltip title={theme.palette.mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
             <SwitchDark />
           </Tooltip>
-          <Tooltip
-            title={
-              theme.palette.colorblind
-                ? 'Switch to Normal Mode'
-                : 'Switch to Colorblind Mode'
-            }
-          >
+          <Tooltip title={theme.palette.colorblind ? 'Switch to Normal Mode' : 'Switch to Colorblind Mode'}>
             <SwitchColorblind />
           </Tooltip>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -352,17 +317,10 @@ export default function AGiXTChat({
                           >
                             <NoteAddOutlinedIcon />
                           </IconButton>
-                          <Dialog
-                            open={openFileUpload}
-                            onClose={handleCloseFileUpload}
-                          >
-                            <DialogTitle id='form-dialog-title'>
-                              Upload Files
-                            </DialogTitle>
+                          <Dialog open={openFileUpload} onClose={handleCloseFileUpload}>
+                            <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
                             <DialogContent>
-                              <DialogContentText>
-                                Please upload the files you would like to send.
-                              </DialogContentText>
+                              <DialogContentText>Please upload the files you would like to send.</DialogContentText>
                               <input
                                 accept='*'
                                 id='contained-button-file'
@@ -374,17 +332,10 @@ export default function AGiXTChat({
                               />
                             </DialogContent>
                             <DialogActions>
-                              <Button
-                                onClick={handleCloseFileUpload}
-                                color='error'
-                              >
+                              <Button onClick={handleCloseFileUpload} color='error'>
                                 Cancel
                               </Button>
-                              <Button
-                                onClick={handleUploadFiles}
-                                color='info'
-                                disabled={isLoading}
-                              >
+                              <Button onClick={handleUploadFiles} color='info' disabled={isLoading}>
                                 Upload
                               </Button>
                             </DialogActions>

@@ -48,9 +48,7 @@ export default function ConversationSelector({
   const handleDeleteConversation = async () => {
     if (!conversationName) return;
     await sdk.deleteConversation(agentName, conversationName);
-    const updatedConversations = conversations.filter(
-      (c) => c !== conversationName
-    );
+    const updatedConversations = conversations.filter((c) => c !== conversationName);
     setConversations(updatedConversations);
     setConversationName(updatedConversations[0] || '');
     setOpenDeleteConversation(false);
@@ -110,54 +108,27 @@ export default function ConversationSelector({
       </Tooltip>
       &nbsp;
       <Tooltip title='Add Conversation'>
-        <Button
-          onClick={() => setOpenNewConversation(true)}
-          color={'info'}
-          sx={{ minWidth: '20px' }}
-        >
+        <Button onClick={() => setOpenNewConversation(true)} color={'info'} sx={{ minWidth: '20px' }}>
           <AddIcon sx={{ minWidth: '20px' }} color={'info'} />
         </Button>
       </Tooltip>
       <Tooltip title='Export Conversation'>
-        <Button
-          onClick={handleExportConversation}
-          color={'info'}
-          sx={{ minWidth: '20px' }}
-        >
+        <Button onClick={handleExportConversation} color={'info'} sx={{ minWidth: '20px' }}>
           <FileDownloadOutlinedIcon sx={{ minWidth: '20px' }} color={'info'} />
         </Button>
       </Tooltip>
       <Tooltip title='Delete Conversation'>
-        <Button
-          onClick={() => setOpenDeleteConversation(true)}
-          color={'error'}
-          sx={{ minWidth: '20px' }}
-        >
+        <Button onClick={() => setOpenDeleteConversation(true)} color={'error'} sx={{ minWidth: '20px' }}>
           <DeleteIcon sx={{ minWidth: '20px' }} color={'error'} />
         </Button>
       </Tooltip>
-      <Tooltip
-        title={
-          theme.palette.mode === 'dark'
-            ? 'Switch to Light Mode'
-            : 'Switch to Dark Mode'
-        }
-      >
+      <Tooltip title={theme.palette.mode === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}>
         <SwitchDark />
       </Tooltip>
-      <Tooltip
-        title={
-          theme.palette.colorblind
-            ? 'Switch to Normal Mode'
-            : 'Switch to Colorblind Mode'
-        }
-      >
+      <Tooltip title={theme.palette.colorblind ? 'Switch to Normal Mode' : 'Switch to Colorblind Mode'}>
         <SwitchColorblind />
       </Tooltip>
-      <Dialog
-        open={openNewConversation}
-        onClose={() => setOpenNewConversation(false)}
-      >
+      <Dialog open={openNewConversation} onClose={() => setOpenNewConversation(false)}>
         <DialogTitle>Create New Conversation</DialogTitle>
         <DialogContent>
           <TextField
@@ -181,21 +152,13 @@ export default function ConversationSelector({
           </Button>
         </DialogActions>
       </Dialog>
-      <Dialog
-        open={openDeleteConversation}
-        onClose={() => setOpenDeleteConversation(false)}
-      >
+      <Dialog open={openDeleteConversation} onClose={() => setOpenDeleteConversation(false)}>
         <DialogTitle>Delete Conversation</DialogTitle>
         <DialogContent>
-          <DialogContent>
-            Are you sure you want to delete this conversation?
-          </DialogContent>
+          <DialogContent>Are you sure you want to delete this conversation?</DialogContent>
         </DialogContent>
         <DialogActions>
-          <Button
-            onClick={() => setOpenDeleteConversation(false)}
-            color='error'
-          >
+          <Button onClick={() => setOpenDeleteConversation(false)} color='error'>
             Cancel
           </Button>
           <Button onClick={handleDeleteConversation} color='info'>

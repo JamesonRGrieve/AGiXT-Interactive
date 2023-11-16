@@ -20,12 +20,6 @@
       }
     ]
   },
-  "include": [
-    "components/*.ts",
-    "components/*.js",
-    "components/*.tsx",
-    "components/*.jsx",
-    ".next/types/**/*.ts"
-  ],
+  "include": ["components/*.ts", "components/*.js", "components/*.tsx", "components/*.jsx", ".next/types/**/*.ts"],
   "exclude": []
 }
