@@ -53,12 +53,7 @@ export const MUI: Story = (args: any) => (
     <Typography variant='body2' paragraph>
       Body 2
     </Typography>
-    <Box
-      display='flex'
-      flexDirection='row'
-      justifyContent='center'
-      gap='0.5rem'
-    >
+    <Box display='flex' flexDirection='row' justifyContent='center' gap='0.5rem'>
       <Button variant='text' color='primary'>
         Text Primary
       </Button>
@@ -69,12 +64,7 @@ export const MUI: Story = (args: any) => (
         Contained Primary
       </Button>
     </Box>
-    <Box
-      display='flex'
-      flexDirection='row'
-      justifyContent='center'
-      gap='0.5rem'
-    >
+    <Box display='flex' flexDirection='row' justifyContent='center' gap='0.5rem'>
       <Button variant='text' color='secondary'>
         Text Secondary
       </Button>
@@ -85,22 +75,12 @@ export const MUI: Story = (args: any) => (
         Contained Secondary
       </Button>
     </Box>
-    <Box
-      display='flex'
-      flexDirection='row'
-      justifyContent='center'
-      gap='0.5rem'
-    >
+    <Box display='flex' flexDirection='row' justifyContent='center' gap='0.5rem'>
       <TextField label='Standard' variant='standard' />
       <TextField label='Filled' variant='filled' />
       <TextField label='Outlined' variant='outlined' />
     </Box>
-    <Box
-      display='flex'
-      flexDirection='row'
-      justifyContent='center'
-      gap='0.5rem'
-    >
+    <Box display='flex' flexDirection='row' justifyContent='center' gap='0.5rem'>
       <Select variant='standard' value='10'>
         <MenuItem value='10'>Standard 10</MenuItem>
         <MenuItem value='20'>Standard 20</MenuItem>
