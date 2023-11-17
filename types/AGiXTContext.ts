@@ -37,6 +37,7 @@ export type AGiXTState = {
   openFileUpload?: boolean;
   promptArgs?: object;
   hasFiles?: boolean;
+  theme: any;
 };
 export const AGiXTContext: Context<AGiXTState> = createContext<AGiXTState>({
   selectedChain: '', // Chain name of the selected chain if in chain mode
@@ -60,5 +61,6 @@ export const AGiXTContext: Context<AGiXTState> = createContext<AGiXTState>({
   baseUri: 'http://localhost:7437', // Base URI of the AGiXT server
   showAppBar: true, // Show the app bar
   showConversationSelector: false, // Show the conversation selector
-  apiKeyCookie: 'apiKey' // Name of the cookie to store the API key in
+  apiKeyCookie: 'apiKey', // Name of the cookie to store the API key in
+  theme: {}
 });

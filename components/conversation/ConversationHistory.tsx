@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { useTheme } from '@mui/material/styles';
 
 import {
   Paper,
@@ -41,7 +40,8 @@ export default function ConversationHistory() {
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column-reverse',
-        flexGrow: '1'
+        flexGrow: '1',
+        backgroundColor: AGiXTState.theme.palette.background.paper,
       }}
     >
       <div>
@@ -82,11 +82,12 @@ export default function ConversationHistory() {
 }
 
 const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
+  const AGiXTState = useContext(AGiXTContext) as AGiXTState;
+
   const formattedMessage =
     typeof chatItem.message === 'string'
       ? chatItem.message.replace(/\\n/g, '  \n').replace(/\n/g, '  \n')
       : chatItem.message;
-  const theme = useTheme();
   const [vote, setVote] = useState(0);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
@@ -115,10 +116,11 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
   };
   return  <Box
         sx={{
-          backgroundColor: chatItem.role === 'USER' ? theme.palette.background.default : theme.palette.action.selected,
+          backgroundColor: chatItem.role === 'USER' ? AGiXTState.theme.palette.background.default : (AGiXTState.theme.palette.mode !== "dark" ? AGiXTState.theme.palette.primary.light : AGiXTState.theme.palette.primary.dark ),
           padding: '10px',
           overflow: 'hidden',
-          position: 'center'
+          position: 'center',
+          color:  AGiXTState.theme.palette.text.primary,
         }}
       >
         <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
