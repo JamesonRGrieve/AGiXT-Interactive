@@ -2,6 +2,7 @@
 import { setCookie, getCookie } from 'cookies-next';
 import React, { useEffect, useState } from 'react';
 import AGiXTChat from '../components/AGiXTChat';
+import { useTheme } from '@mui/material';
 
 export default function Home() {
   const [apiKey, setApiKey] = useState(getCookie('apiKey'));
@@ -16,7 +17,7 @@ export default function Home() {
     setCookie('apiKey', apiKey);
     setLoggedIn(true);
   };
-
+  const theme=useTheme();
   if (!loggedIn) {
     return (
       <div>
@@ -46,6 +47,7 @@ export default function Home() {
         selectedChain={process.env.NEXT_PUBLIC_AGIXT_CHAIN} // Chain name
         chainArgs={JSON.parse(process.env.NEXT_PUBLIC_AGIXT_CHAIN_ARGS ?? '{}')} // Chain arg overrides, unnecessary if you don't need to override any args.
         useSelectedAgent={process.env.NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT === 'true'} // Will force the selected agent to run all chain steps rather than the agents defined in the chain
+        theme={theme}
       />
     );
   }

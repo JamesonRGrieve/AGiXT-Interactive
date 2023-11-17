@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 import AGiXTSDK from 'agixt';
 import Tooltip from '@mui/material/Tooltip';
 
-import { useTheme } from '@mui/material/styles';
 import Header from './Header';
 import {
   Button,
@@ -41,7 +40,6 @@ export default function AGiXTChat(props: AGiXTState) {
     insightAgent: props.insightAgent || props.agentName || '',
     hasFiles: false
   });
-  const theme = useTheme();
   const apiKey = getCookie(AGiXTState.apiKeyCookie) || '';
   const sdk = useMemo(() => {
     return new AGiXTSDK({
@@ -51,7 +49,9 @@ export default function AGiXTChat(props: AGiXTState) {
   }, [AGiXTState.baseUri, apiKey]);
 
   //main: darkAGiXTState.mode ? "#000000" : "#273043",
-
+  useEffect(() => {
+    setAGiXTState({ ...AGiXTState, theme:props.theme });
+  }, [props.theme]);
   const handleUploadFiles = async () => {
     const newuploadedFiles = [];
     // Format for AGiXTState.uploadedFiles should be [{"file_name": "file_content"}]
@@ -208,9 +208,9 @@ export default function AGiXTChat(props: AGiXTState) {
           style={{
             maxWidth: '100%',
             flexGrow: '1',
-            transition: theme.transitions.create('margin', {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.leavingScreen
+            transition: AGiXTState.theme.transitions.create('margin', {
+              easing: AGiXTState.theme.transitions.easing.sharp,
+              duration: AGiXTState.theme.transitions.duration.leavingScreen
             }),
             display: 'flex',
             flexDirection: 'column'
