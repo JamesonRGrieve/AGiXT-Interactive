@@ -1,6 +1,6 @@
 {
   "name": "agixtchat",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "next build",
@@ -12,7 +12,8 @@
     "dist"
   ],
   "exports": {
-    ".": "./dist/components/AGiXTChat.js"
+    ".": "./dist/components/AGiXTChat.js",
+    "./MarkdownBlock": "./dist/components/conversation/MarkdownBlock.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
