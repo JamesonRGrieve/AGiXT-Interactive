@@ -6,14 +6,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "prettier": "prettier --write ."
-  },
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    ".": "./dist/components/AGiXTChat.js",
-    "./MarkdownBlock": "./dist/components/conversation/MarkdownBlock.js"
+    "lint-fix": "next lint --fix",
+    "prettier": "prettier",
+    "prettier-fix": "prettier --write .",
+    "storybook": "storybook dev -p 6009",
+    "storybook-build": "storybook build"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
