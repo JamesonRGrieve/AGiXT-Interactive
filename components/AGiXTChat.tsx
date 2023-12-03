@@ -5,10 +5,10 @@ import { useState } from 'react';
 import AGiXTSDK from 'agixt';
 import Chat from './Chat';
 export type ChatProps = {
-  mode: 'chat' | 'prompt' | 'instruct' | 'chain';
-  showAppBar: boolean;
-  showConversationSelector: boolean;
-  theme: Theme;
+  mode: 'prompt' | 'chain';
+  showAppBar?: boolean;
+  showConversationSelector?: boolean;
+  theme?: Theme;
 };
 const Stateful = (props: ChatProps) => {
   const [AGiXTState, setAGiXTState] = useState<AGiXTState>({

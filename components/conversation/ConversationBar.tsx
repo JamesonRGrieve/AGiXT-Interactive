@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AudioRecorder from '../conversation/AudioRecorder';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import Box from '@mui/material/Box';
@@ -17,7 +17,6 @@ import {
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { AGiXTState } from '../../types/AGiXTState';
-import React from 'react';
 
 export default function ConversationBar({
   mode,
@@ -204,16 +203,14 @@ export default function ConversationBar({
                       state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: [] } }));
                     }}
                     disabled={state.chatState.isLoading}
-                    sx={{ height: '56px' }}
-                  >
+                    sx={{ height: '56px' }}>
                     <NoteAddOutlinedIcon />
                   </IconButton>
                   <Dialog
                     open={fileUploadOpen}
                     onClose={() => {
                       setFileUploadOpen(false);
-                    }}
-                  >
+                    }}>
                     <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
                     <DialogContent>
                       <DialogContentText>Please upload the files you would like to send.</DialogContentText>
@@ -235,8 +232,7 @@ export default function ConversationBar({
                         onClick={() => {
                           setFileUploadOpen(false);
                         }}
-                        color='error'
-                      >
+                        color='error'>
                         Cancel
                       </Button>
                       <Button onClick={handleUploadFiles} color='info' disabled={state.chatState.isLoading}>
@@ -252,8 +248,7 @@ export default function ConversationBar({
                     color='info'
                     onClick={handleSendMessage}
                     disabled={state.chatState.isLoading}
-                    sx={{ height: '56px', padding: '0px' }}
-                  >
+                    sx={{ height: '56px', padding: '0px' }}>
                     <SendIcon />
                   </IconButton>
                 </Tooltip>

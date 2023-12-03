@@ -159,8 +159,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: AGiXTState; csvData
             sx={{
               display: 'flex',
               justifyContent: 'flex-end'
-            }}
-          >
+            }}>
             <Button color='info' variant='outlined' onClick={handleClickOpen}>
               <TipsAndUpdatesOutlinedIcon />
               &nbsp;Get Insights
