@@ -55,6 +55,7 @@ export type ChatConfig = {
 export type ChatItem = {
   role: string;
   message: string;
+  timestamp: string;
 };
 export type ChatState = {
   conversation: ChatItem[];

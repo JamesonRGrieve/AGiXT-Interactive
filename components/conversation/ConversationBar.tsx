@@ -64,23 +64,25 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
           runChain();
         } else {
         (async () => {
-            state.mutate({ ...state, chatState: { ...state.chatState, conversation: [...state.chatState.conversation, {role: "USER", message: message} ] } });
+            state.mutate({ ...state, chatState: { ...state.chatState, conversation: [...state.chatState.conversation, {role: "USER", message: message, timestamp: "Just now..."} ] } });
             })();
-          PromptAgent(
-            message,
-            state.chatConfig.contextResults,
-            state.chatConfig.shots,
-            state.chatConfig.browseLinks,
-            state.chatConfig.webSearch,
-            state.chatConfig.websearchDepth,
-            state.chatConfig.enableMemory,
-            state.chatConfig.injectMemoriesFromCollectionNumber,
-            state.chatConfig.conversationResults
-          );
+            /*
+            PromptAgent(
+                message,
+                state.chatConfig.contextResults,
+                state.chatConfig.shots,
+                state.chatConfig.browseLinks,
+                state.chatConfig.webSearch,
+                state.chatConfig.websearchDepth,
+                state.chatConfig.enableMemory,
+                state.chatConfig.injectMemoriesFromCollectionNumber,
+                state.chatConfig.conversationResults
+            );*/
           setMessage('');
         }
         
       };
+      
       const runChain = async () => {
         state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
         const agentOverride = state.chatConfig.promptConfig.useSelectedAgent ? state.agent.name : '';
@@ -95,6 +97,8 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
         );
         state.mutate({ ...state, chatState: { ...state.chatState, lastResponse: response, isLoading: false } });
       };
+      
+      
       const PromptAgent = async (
         message,
         contextResults = 5,
@@ -107,7 +111,6 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
         conversationResults = 5
       ) => {
         state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
-    
         if (message) {
           state.mutate({
             ...state,
@@ -204,7 +207,7 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
           state.mutate({ ...state, chatState: { ...state.chatState, conversation: conversation } });
         })();
       };
-    
+
     
     return <Box px='1rem'>
     <TextField
