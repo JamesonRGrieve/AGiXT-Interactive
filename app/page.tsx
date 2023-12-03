@@ -32,9 +32,9 @@ export default function Home() {
         showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
         showConversationSelector={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
         mode={
-          (['chat', 'instruct', 'chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
+          (['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
             ? process.env.NEXT_PUBLIC_AGIXT_MODE
-            : 'chat') as 'chat' | 'instruct' | 'chain' | 'prompt'
+            : 'prompt') as 'chain' | 'prompt'
         }
         theme={theme}
       />

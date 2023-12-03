@@ -24,8 +24,7 @@ export default function Header({
         position: 'static',
         padding: '0.75rem',
         backgroundColor: 'primary.dark'
-      }}
-    >
+      }}>
       <Box display='flex' flex='1' flexDirection='row'>
         <Box display='flex' flexDirection='row' width='100%' pr='4rem'>
           {showConversationSelector ? <ConversationSelector state={state} theme={theme} /> : <span>&nbsp;</span>}

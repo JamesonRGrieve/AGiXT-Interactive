@@ -48,8 +48,7 @@ export default function ConversationHistory({ state, theme }: { state: AGiXTStat
         flexDirection: 'column-reverse',
         flexGrow: '1',
         backgroundColor: theme.palette.background.paper
-      }}
-    >
+      }}>
       <div>
         {state.chatState.conversation
           ? state.chatState.conversation.map((chatItem, index) => {
@@ -127,16 +126,14 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
         overflow: 'hidden',
         position: 'center',
         color: theme.palette.text.primary
-      }}
-    >
+      }}>
       <MarkdownBlock state={state} content={formattedMessage} chatItem={chatItem} />
       <Typography
         variant='caption'
         style={{
           width: '100%',
           display: 'inline-block'
-        }}
-      >
+        }}>
         {chatItem.role === 'USER' ? 'You' : chatItem.role} • {chatItem.timestamp}
       </Typography>
       {chatItem.role != 'USER' && !state.chatState.isLoading && (
@@ -191,8 +188,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
                 state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
               }
             }}
-            color='info'
-          >
+            color='info'>
             Submit
           </Button>
         </DialogActions>
