@@ -30,8 +30,7 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
       for (const file of state.chatState.uploadedFiles) {
         const fileContent = await file.text();
         newuploadedFiles.push({ [file.name]: fileContent });
-      }
-      state.mutate({ ...state, chatState: { ...state.chatState, uploadedFiles: newuploadedFiles } });
+        state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: newuploadedFiles } }));
       setFileUploadOpen(false);
     };
     useEffect(() => {
@@ -64,9 +63,9 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
           runChain();
         } else {
         (async () => {
-            state.mutate({ ...state, chatState: { ...state.chatState, conversation: [...state.chatState.conversation, {role: "USER", message: message, timestamp: "Just now..."} ] } });
+            state.mutate((oldState) => {return { ...oldState, chatState: { ...oldState.chatState, conversation: [...oldState.chatState.conversation, {role: "USER", message: message, timestamp: "Just now..."} ] } }});
             })();
-            /*
+            
             PromptAgent(
                 message,
                 state.chatConfig.contextResults,
@@ -77,14 +76,19 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
                 state.chatConfig.enableMemory,
                 state.chatConfig.injectMemoriesFromCollectionNumber,
                 state.chatConfig.conversationResults
-            );*/
+            );
           setMessage('');
         }
         
       };
       
       const runChain = async () => {
-        state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
+        state.mutate((oldState) => {
+    return {
+      ...oldState,
+      chatState: { ...oldState.chatState, isLoading: true }
+    };
+  });
         const agentOverride = state.chatConfig.promptConfig.useSelectedAgent ? state.agent.name : '';
         state.chatConfig.chainRunConfig.chainArgs['conversation_name'] = state.chatConfig.conversationName;
         const response = await state.sdk.runChain(
@@ -95,7 +99,7 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
           0,
           state.chatConfig.chainRunConfig.chainArgs
         );
-        state.mutate({ ...state, chatState: { ...state.chatState, lastResponse: response, isLoading: false } });
+        state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, lastResponse: response, isLoading: false } }));
       };
       
       
@@ -110,38 +114,38 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
         injectMemoriesFromCollectionNumber = 0,
         conversationResults = 5
       ) => {
-        state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
+        state.mutate((oldState) => {return{ ...oldState, chatState: { ...oldState.chatState, isLoading: true } }});
         if (message) {
-          state.mutate({
-            ...state,
+          state.mutate((oldState) => {return {
+            ...oldState,
             chatConfig: {
-              ...state.chatConfig,
+              ...oldState.chatConfig,
               promptConfig: {
-                ...state.chatConfig.promptConfig,
-                promptArgs: { ...state.chatConfig.promptConfig.promptArgs, user_input: message }
+                ...oldState.chatConfig.promptConfig,
+                promptArgs: { ...oldState.chatConfig.promptConfig.promptArgs, user_input: message }
               }
             }
-          });
+          }});
         }
         if (state.chatState.hasFiles && state.chatConfig.promptConfig.promptName == 'Chat with Commands') {
-          state.mutate({
-            ...state,
+          state.mutate((oldState) => {return {
+            ...oldState,
             chatConfig: {
-              ...state.chatConfig,
-              promptConfig: { ...state.chatConfig.promptConfig, promptName: 'Chat with Commands and Files' }
+              ...oldState.chatConfig,
+              promptConfig: { ...oldState.chatConfig.promptConfig, promptName: 'Chat with Commands and Files' }
             }
-          });
+          }});
         }
         if (state.chatState.uploadedFiles.length > 0) {
-          state.mutate({
-            ...state,
+          state.mutate((oldState) => { return {
+            ...oldState,
             chatConfig: {
-              ...state.chatConfig,
+              ...oldState.chatConfig,
               promptConfig: {
-                ...state.chatConfig.promptConfig,
-                promptArgs: { ...state.chatConfig.promptConfig.promptArgs, import_files: state.chatState.uploadedFiles }
+                ...oldState.chatConfig.promptConfig,
+                promptArgs: { ...oldState.chatConfig.promptConfig.promptArgs, import_files: oldState.chatState.uploadedFiles }
               }
-            }
+            }}
           });
         }
         const disableMemory = !enableMemory;
@@ -185,26 +189,26 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
           ...refinedArgs
         };
         if (mode == 'chain')
-          state.mutate({
-            ...state,
+          state.mutate((oldState) => {return {
+            ...oldState,
             chatConfig: {
-              ...state.chatConfig,
-              promptConfig: { ...state.chatConfig.promptConfig, promptName: state.chatConfig.chainRunConfig.selectedChain }
+              ...oldState.chatConfig,
+              promptConfig: { ...oldState.chatConfig.promptConfig, promptName: oldState.chatConfig.chainRunConfig.selectedChain }
             }
-          });
+          }});
         const response = await state.sdk.promptAgent(
           state.agent.name,
           state.chatConfig.promptConfig.promptName,
           promptArguments
         );
-        state.mutate({
-          ...state,
-          chatState: { ...state.chatState, lastResponse: response, isLoading: false, uploadedFiles: [] }
-        });
+        state.mutate((oldState) => {return{
+          ...oldState,
+          chatState: { ...oldState.chatState, lastResponse: response, isLoading: false, uploadedFiles: [] }
+        }});
     
         (async () => {
           const conversation = await state.sdk.getConversation(state.agent.name, state.chatConfig.conversationName);
-          state.mutate({ ...state, chatState: { ...state.chatState, conversation: conversation } });
+          state.mutate((oldState) => {return{ ...oldState, chatState: { ...oldState.chatState, conversation: conversation } }});
         })();
       };
 
@@ -229,7 +233,7 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
                   color='info'
                   onClick={() => {
                     setFileUploadOpen(true);
-                    state.mutate({ ...state, chatState: { ...state.chatState, uploadedFiles: [] } });
+                    state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: [] } }));
                   }}
                   disabled={state.chatState.isLoading}
                   sx={{ height: '56px' }}
@@ -251,10 +255,10 @@ export default function ConversationBar({mode, state, theme} : {mode: 'chat' | '
                       multiple
                       type='file'
                       onChange={(e) => {
-                        state.mutate({
-                          ...state,
-                          chatState: { ...state.chatState, uploadedFiles: Array(e.target.files) }
-                        });
+                        state.mutate((oldState) => ({
+                          ...oldState,
+                          chatState: { ...oldState.chatState, uploadedFiles: Array(e.target.files) }
+                        }));
                       }}
                     />
                   </DialogContent>

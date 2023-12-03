@@ -44,19 +44,23 @@ export default function ConversationSelector({ state, theme }: { state: AGiXTSta
     setOpenNewConversation(false);
     const fetchConversations = async () => {
       const updatedConversations = await state.sdk.getConversations();
-      state.mutate({ ...state, conversations: updatedConversations });
+      state.mutate((oldState) => {
+        return { ...oldState, conversations: updatedConversations };
+      });
     };
     fetchConversations();
-    state.mutate({ ...state, chatConfig: { ...state.chatConfig, conversationName: newConversationName } });
+    state.mutate((oldState) => ({ ...oldState, chatConfig: { ...oldState.chatConfig, conversationName: newConversationName } }));
   };
   const handleDeleteConversation = async () => {
     if (!state.chatConfig.conversationName) return;
     await state.sdk.deleteConversation(state.agent.name, state.chatConfig.conversationName);
     const updatedConversations = state.conversations.filter((c) => c !== state.chatConfig.conversationName);
-    state.mutate({
-      ...state,
-      conversation: updatedConversations,
-      chatConfig: { ...state.chatConfig, conversationName: updatedConversations[0] || '' }
+    state.mutate((oldState) => {
+      return {
+        ...oldState,
+        conversation: updatedConversations,
+        chatConfig: { ...oldState.chatConfig, conversationName: updatedConversations[0] || '' }
+      }
     });
     setOpenDeleteConversation(false);
   };
@@ -103,7 +107,7 @@ export default function ConversationSelector({ state, theme }: { state: AGiXTSta
             label='Select a Conversation'
             value={state.chatConfig.conversationName}
             onChange={(e) =>
-              state.mutate({ ...state, chatConfig: { ...state.chatConfig, conversationName: e.target.value } })
+              state.mutate((oldState) => ({ ...oldState, chatConfig: { ...oldState.chatConfig, conversationName: e.target.value } }))
             }
           >
             {state.conversations
