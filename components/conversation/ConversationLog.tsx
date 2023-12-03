@@ -27,7 +27,7 @@ export default function ConversationHistory({ state, theme }: { state: AGiXTStat
   useEffect(() => {
     console.log('Getting conversation');
     state.mutate((oldState) => {
-      return { ...oldState, chatState: {...oldState.chatState, loading: true} };
+      return { ...oldState, chatState: { ...oldState.chatState, loading: true } };
     });
     (async () => {
       const conversation = await state.sdk.getConversation(state.agent.name, state.chatConfig.conversationName, 100, 1);
@@ -37,7 +37,7 @@ export default function ConversationHistory({ state, theme }: { state: AGiXTStat
     })();
   }, [state.agent.name, state.chatConfig.conversationName]);
   useEffect(() => {
-    console.log("Conversation mutated", state.chatState.conversation);
+    console.log('Conversation mutated', state.chatState.conversation);
   }, [state.chatState.conversation]);
   return (
     <Paper

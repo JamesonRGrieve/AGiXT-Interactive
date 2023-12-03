@@ -14,7 +14,7 @@ const baseTheme = {
           textTransform: 'capitalize' as const
         }
       }
-    },
+    }
   },
   // Anything that you override from here https://mui.com/material-ui/customization/dark-mode/ needs to also be overridden in dark or it won't be applied.
   palette: {
@@ -48,7 +48,7 @@ const baseTheme = {
       light: '#8CB87A',
       main: '#62924F',
       dark: '#436436'
-    },
+    }
   },
   typography: {
     fontFamily: 'Arial, sans-serif',

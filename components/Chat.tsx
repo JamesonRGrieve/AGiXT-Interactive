@@ -2,7 +2,6 @@ import ConversationHistory from './conversation/ConversationLog';
 import ConversationBar from './conversation/ConversationBar';
 import Box from '@mui/material/Box';
 
-
 import Header from './Header';
 
 import { AGiXTState } from '../types/AGiXTState';
@@ -15,9 +14,6 @@ export default function Chat({
   showConversationSelector,
   theme
 }: ChatProps & { state: AGiXTState }) {
-
-
-  
   return (
     <Box height='100%' display='flex' flexDirection='column'>
       {showAppBar && <Header state={state} theme={theme} showConversationSelector={showConversationSelector} />}
