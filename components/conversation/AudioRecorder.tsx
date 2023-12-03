@@ -9,6 +9,7 @@ export default function AudioRecorder({ state }: { state: AGiXTState }) {
   const mediaRecorder = useRef(null);
 
   const startRecording = () => {
+    state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       mediaRecorder.current = new MediaRecorder(stream, {
         mimeType: 'audio/mp4'
@@ -18,7 +19,6 @@ export default function AudioRecorder({ state }: { state: AGiXTState }) {
       };
       mediaRecorder.current.start();
       setRecording(true);
-      state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
     });
   };
 
@@ -53,8 +53,8 @@ export default function AudioRecorder({ state }: { state: AGiXTState }) {
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
       setRecording(false);
-      state.mutate({ ...state, chatState: { ...state.chatState, isLoading: false } });
       setAudioData(null);
+      state.mutate({ ...state, chatState: { ...state.chatState, isLoading: false } });
     }
   };
 
@@ -62,7 +62,7 @@ export default function AudioRecorder({ state }: { state: AGiXTState }) {
     <div>
       {!recording ? (
         <Tooltip title='Record Audio'>
-          <IconButton color='info' onClick={startRecording}>
+          <IconButton color='info' disabled={state.chatState.isLoading} onClick={startRecording}>
             <MicIcon />
           </IconButton>
         </Tooltip>

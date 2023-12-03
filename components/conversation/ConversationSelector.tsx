@@ -9,7 +9,8 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  Tooltip
+  Tooltip,
+  Theme
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -17,7 +18,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
 import { AGiXTContext, AGiXTState } from '../../types/AGiXTState';
 import { setCookie } from 'cookies-next';
-export default function ConversationSelector({ state }: { state: AGiXTState }) {
+export default function ConversationSelector({ state, theme }: { state: AGiXTState, theme: Theme }) {
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
@@ -33,6 +34,7 @@ export default function ConversationSelector({ state }: { state: AGiXTState }) {
     })();
   }, [state.agent.name, state.sdk]);
   useEffect(() => {
+    console.log('Setting conversation name cookie.', state.chatConfig.conversationName);
     setCookie('conversationName', state.chatConfig.conversationName);
   }, [state.chatConfig.conversationName]);
   const handleAddConversation = async () => {
@@ -81,8 +83,21 @@ export default function ConversationSelector({ state }: { state: AGiXTState }) {
           }}
           fullWidth
         >
-          <InputLabel id='conversation-label'>Select a Conversation</InputLabel>
           <Select
+            sx={{
+              color: 'white', 
+              '.MuiOutlinedInput-notchedOutline': {borderColor: '#CCC'}, 
+              '&:hover .MuiOutlinedInput-notchedOutline': {borderColor: 'white'}, 
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {borderColor: 'white'},
+              '.MuiSvgIcon-root ': {
+                fill: "white !important",
+              },
+              '.MuiOutlinedInput-notchedOutline legend span': {
+                // Targeting the floating label specifically
+                color: 'white',
+                opacity: '1',
+              },
+            }}
             fullWidth
             labelId='conversation-label'
             label='Select a Conversation'

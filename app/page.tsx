@@ -9,6 +9,7 @@ export default function Home() {
   const [loggedIn, setLoggedIn] = useState(getCookie('apiKey') ? true : false);
   const [conversationName, setConversationName] = useState();
   useEffect(() => {
+    console.log("Setting conversation name cookie.", conversationName);
     setCookie('conversationName', conversationName);
   }, [conversationName]);
   const handleSetApiKey = () => {
