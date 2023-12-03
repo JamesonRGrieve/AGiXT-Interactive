@@ -86,15 +86,6 @@ const colorblindOverrides = {
     },
     secondary: {
       ...colorblindPalette
-    },
-    error: {
-      ...colorblindPalette
-    },
-    success: {
-      ...colorblindPalette
-    },
-    info: {
-      ...colorblindPalette
     }
   }
 };
