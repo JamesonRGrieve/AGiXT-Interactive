@@ -108,7 +108,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: AGiXTState; csvData
   }, [csvData]);
 
   const getInsights = async (userMessage) => {
-    state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
+    state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, isLoading: true } }));
     const lines = csvData.split('\n');
     lines.shift();
     lines.pop();
@@ -118,8 +118,9 @@ export const DataGridFromCSV = ({ state, csvData }: { state: AGiXTState; csvData
       text: newCSVData
     };
     const response = await state.sdk.runChain('Data Analysis', userMessage, state.agent.name, false, 1, chainArgs);
-    state.mutate({ ...state, chatState: { ...state.chatState, isLoading: false, lastResponse: response } });
-  };
+    state.mutate((oldState) => {
+        return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
+    });  };
   const handleClickOpen = () => {
     setOpen(true);
   };

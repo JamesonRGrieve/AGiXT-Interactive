@@ -9,7 +9,15 @@ export default function AudioRecorder({ state }: { state: AGiXTState }) {
   const mediaRecorder = useRef(null);
 
   const startRecording = () => {
-    state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
+ state.mutate((oldState) => {
+    return {
+        ...oldState,
+        chatState: {
+            ...oldState.chatState,
+            isLoading: true
+        }
+    };
+});
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       mediaRecorder.current = new MediaRecorder(stream, {
         mimeType: 'audio/mp4'
@@ -54,8 +62,12 @@ export default function AudioRecorder({ state }: { state: AGiXTState }) {
       mediaRecorder.current.stop();
       setRecording(false);
       setAudioData(null);
-      state.mutate({ ...state, chatState: { ...state.chatState, isLoading: false } });
-    }
+      state.mutate((oldState) => {
+        return {
+          ...oldState,
+          chatState: { ...oldState.chatState, isLoading: false },
+        };
+      });    }
   };
 
   return (
