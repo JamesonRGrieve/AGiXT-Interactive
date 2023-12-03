@@ -7,7 +7,11 @@
     "compile": "tsc --jsx react-jsx",
     "start": "next start -p 3437",
     "lint": "next lint",
-    "prettier": "prettier --write ."
+    "lint-fix": "next lint --fix",
+    "prettier": "prettier",
+    "prettier-fix": "prettier --write .",
+    "storybook": "storybook dev -p 6009",
+    "storybook-build": "storybook build"
   },
   "files": [
     "dist"
@@ -58,9 +62,10 @@
     "eslint-plugin-react": "^7.33.2",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-storybook": "^0.6.15",
+    "eslint-plugin-unused-imports": "^3.0.0",
     "eslint-webpack-plugin": "^4.0.1",
     "prettier": "^3.1.0",
-    "storybook": "^7.3.2",
+    "storybook": "^7.5.1",
     "typescript": "^5.2.2"
   }
 }

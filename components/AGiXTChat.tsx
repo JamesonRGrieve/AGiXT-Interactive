@@ -1,14 +1,14 @@
 import { AGiXTState } from '@/types/AGiXTState';
-import { Theme } from '@mui/material';
+import { Theme, useTheme } from '@mui/material';
 import { getCookie } from 'cookies-next';
 import { useState } from 'react';
 import AGiXTSDK from 'agixt';
 import Chat from './Chat';
 export type ChatProps = {
   mode: 'chat' | 'prompt' | 'instruct' | 'chain';
-  showAppBar: boolean;
-  showConversationSelector: boolean;
-  theme: Theme;
+  showAppBar?: boolean;
+  showConversationSelector?: boolean;
+  theme?: Theme;
 };
 const Stateful = (props: ChatProps) => {
   const [AGiXTState, setAGiXTState] = useState<AGiXTState>({
@@ -85,7 +85,7 @@ const Stateless = ({ state, mode, showAppBar, showConversationSelector, theme }:
     />
   );
 };
-const AGiXTChat = ({ state, mode, showAppBar, showConversationSelector, theme }: ChatProps & { state?: AGiXTState }) =>
+const AGiXTChat = ({ state, mode, showAppBar=false, showConversationSelector=false, theme }: ChatProps & { state?: AGiXTState }) =>
   state ? (
     <Stateless
       state={state}
