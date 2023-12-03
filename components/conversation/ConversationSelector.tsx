@@ -18,7 +18,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
 import { AGiXTContext, AGiXTState } from '../../types/AGiXTState';
 import { setCookie } from 'cookies-next';
-export default function ConversationSelector({ state, theme }: { state: AGiXTState, theme: Theme }) {
+export default function ConversationSelector({ state, theme }: { state: AGiXTState; theme: Theme }) {
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
@@ -49,7 +49,10 @@ export default function ConversationSelector({ state, theme }: { state: AGiXTSta
       });
     };
     fetchConversations();
-    state.mutate((oldState) => ({ ...oldState, chatConfig: { ...oldState.chatConfig, conversationName: newConversationName } }));
+    state.mutate((oldState) => ({
+      ...oldState,
+      chatConfig: { ...oldState.chatConfig, conversationName: newConversationName }
+    }));
   };
   const handleDeleteConversation = async () => {
     if (!state.chatConfig.conversationName) return;
@@ -60,7 +63,7 @@ export default function ConversationSelector({ state, theme }: { state: AGiXTSta
         ...oldState,
         conversation: updatedConversations,
         chatConfig: { ...oldState.chatConfig, conversationName: updatedConversations[0] || '' }
-      }
+      };
     });
     setOpenDeleteConversation(false);
   };
@@ -89,25 +92,28 @@ export default function ConversationSelector({ state, theme }: { state: AGiXTSta
         >
           <Select
             sx={{
-              color: 'white', 
-              '.MuiOutlinedInput-notchedOutline': {borderColor: '#CCC'}, 
-              '&:hover .MuiOutlinedInput-notchedOutline': {borderColor: 'white'}, 
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {borderColor: 'white'},
+              color: 'white',
+              '.MuiOutlinedInput-notchedOutline': { borderColor: '#CCC' },
+              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
               '.MuiSvgIcon-root ': {
-                fill: "white !important",
+                fill: 'white !important'
               },
               '.MuiOutlinedInput-notchedOutline legend span': {
                 // Targeting the floating label specifically
                 color: 'white',
-                opacity: '1',
-              },
+                opacity: '1'
+              }
             }}
             fullWidth
             labelId='conversation-label'
             label='Select a Conversation'
             value={state.chatConfig.conversationName}
             onChange={(e) =>
-              state.mutate((oldState) => ({ ...oldState, chatConfig: { ...oldState.chatConfig, conversationName: e.target.value } }))
+              state.mutate((oldState) => ({
+                ...oldState,
+                chatConfig: { ...oldState.chatConfig, conversationName: e.target.value }
+              }))
             }
           >
             {state.conversations

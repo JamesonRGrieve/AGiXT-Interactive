@@ -103,7 +103,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: AGiXTState; csvData
     console.log('headers', headers);
   };
   useEffect(() => {
-    console.log("Parsing CSV");
+    console.log('Parsing CSV');
     parseCSV(csvData);
   }, [csvData]);
 
@@ -119,8 +119,9 @@ export const DataGridFromCSV = ({ state, csvData }: { state: AGiXTState; csvData
     };
     const response = await state.sdk.runChain('Data Analysis', userMessage, state.agent.name, false, 1, chainArgs);
     state.mutate((oldState) => {
-        return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
-    });  };
+      return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
+    });
+  };
   const handleClickOpen = () => {
     setOpen(true);
   };

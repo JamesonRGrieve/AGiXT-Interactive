@@ -9,15 +9,15 @@ export default function AudioRecorder({ state }: { state: AGiXTState }) {
   const mediaRecorder = useRef(null);
 
   const startRecording = () => {
- state.mutate((oldState) => {
-    return {
+    state.mutate((oldState) => {
+      return {
         ...oldState,
         chatState: {
-            ...oldState.chatState,
-            isLoading: true
+          ...oldState.chatState,
+          isLoading: true
         }
-    };
-});
+      };
+    });
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       mediaRecorder.current = new MediaRecorder(stream, {
         mimeType: 'audio/mp4'
@@ -65,9 +65,10 @@ export default function AudioRecorder({ state }: { state: AGiXTState }) {
       state.mutate((oldState) => {
         return {
           ...oldState,
-          chatState: { ...oldState.chatState, isLoading: false },
+          chatState: { ...oldState.chatState, isLoading: false }
         };
-      });    }
+      });
+    }
   };
 
   return (
