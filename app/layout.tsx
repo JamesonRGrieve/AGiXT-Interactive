@@ -20,10 +20,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   const cookieStore = cookies();
   return (
     <html lang='en'>
-      <Head key={'env'}>
-        {/* eslint-disable-next-line @next/next/no-sync-scripts */}
-        <script src='/__env.js' />
-      </Head>
       <body className={inter.className}>
         <ThemeWrapper
           themes={themes}
