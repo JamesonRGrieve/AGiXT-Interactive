@@ -61,18 +61,19 @@ const darkOverrides = {
     mode: 'dark'
   }
 };
+const colorblindPalette = {
+  light: '#CCC',
+  main: '#999',
+  dark: '#333'
+};
 const colorblindOverrides = {
   palette: {
     colorblind: true,
     primary: {
-      light: '#CCC',
-      main: '#999',
-      dark: '#333'
+      ...colorblindPalette
     },
     secondary: {
-      light: '#CCC',
-      main: '#999',
-      dark: '#333'
+      ...colorblindPalette
     }
   }
 };
