@@ -85,7 +85,13 @@ const Stateless = ({ state, mode, showAppBar, showConversationSelector, theme }:
     />
   );
 };
-const AGiXTChat = ({ state, mode, showAppBar, showConversationSelector, theme }: ChatProps & { state?: AGiXTState }) =>
+const AGiXTChat = ({
+  state,
+  mode,
+  showAppBar = false,
+  showConversationSelector = false,
+  theme
+}: ChatProps & { state?: AGiXTState }) =>
   state ? (
     <Stateless
       state={state}
