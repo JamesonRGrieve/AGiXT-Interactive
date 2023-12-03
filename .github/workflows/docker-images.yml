@@ -39,22 +39,22 @@ jobs:
         id: build-and-push
         uses: docker/build-push-action@v5.1.0
         env:
-            LOG_VERBOSITY_SERVER: ${{ vars.LOG_VERBOSITY_SERVER }}
-            APP_NAME: ${{ vars.APP_NAME }}
-            AGIXT_SERVER: ${{ vars.AGIXT_SERVER }}
-            AUTH_WEB: ${{ vars.AUTH_WEB }}
-            AGIXT_AGENT: ${{ vars.AGIXT_AGENT }}
-            AGIXT_INSIGHT_AGENT: ${{ vars.AGIXT_INSIGHT_AGENT }}
-            AGIXT_MODE: ${{ vars.AGIXT_MODE }}
-            AGIXT_PROMPT_NAME: ${{ vars.AGIXT_PROMPT_NAME }}
-            AGIXT_PROMPT_CATEGORY: ${{ vars.AGIXT_PROMPT_CATEGORY }}
-            AGIXT_CHAIN: ${{ vars.AGIXT_CHAIN }}
-            AGIXT_USE_SELECTED_AGENT: ${{ vars.AGIXT_USE_SELECTED_AGENT }}
-            AGIXT_CHAIN_ARGS: ${{ vars.AGIXT_CHAIN_ARGS }}
-            AGIXT_FILE_UPLOAD_ENABLED: ${{ vars.AGIXT_FILE_UPLOAD_ENABLED }}
-            AGIXT_SHOW_APP_BAR: ${{ vars.AGIXT_SHOW_APP_BAR }}
-            AGIXT_SHOW_CONVERSATION_BAR: ${{ vars.AGIXT_SHOW_CONVERSATION_BAR }}
-            AGIXT_CONVERSATION_NAME: ${{ vars.AGIXT_CONVERSATION_NAME }}
+          LOG_VERBOSITY_SERVER: ${{ vars.LOG_VERBOSITY_SERVER }}
+          APP_NAME: ${{ vars.APP_NAME }}
+          AGIXT_SERVER: ${{ vars.AGIXT_SERVER }}
+          AUTH_WEB: ${{ vars.AUTH_WEB }}
+          AGIXT_AGENT: ${{ vars.AGIXT_AGENT }}
+          AGIXT_INSIGHT_AGENT: ${{ vars.AGIXT_INSIGHT_AGENT }}
+          AGIXT_MODE: ${{ vars.AGIXT_MODE }}
+          AGIXT_PROMPT_NAME: ${{ vars.AGIXT_PROMPT_NAME }}
+          AGIXT_PROMPT_CATEGORY: ${{ vars.AGIXT_PROMPT_CATEGORY }}
+          AGIXT_CHAIN: ${{ vars.AGIXT_CHAIN }}
+          AGIXT_USE_SELECTED_AGENT: ${{ vars.AGIXT_USE_SELECTED_AGENT }}
+          AGIXT_CHAIN_ARGS: ${{ vars.AGIXT_CHAIN_ARGS }}
+          AGIXT_FILE_UPLOAD_ENABLED: ${{ vars.AGIXT_FILE_UPLOAD_ENABLED }}
+          AGIXT_SHOW_APP_BAR: ${{ vars.AGIXT_SHOW_APP_BAR }}
+          AGIXT_SHOW_CONVERSATION_BAR: ${{ vars.AGIXT_SHOW_CONVERSATION_BAR }}
+          AGIXT_CONVERSATION_NAME: ${{ vars.AGIXT_CONVERSATION_NAME }}
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}

@@ -7,9 +7,7 @@ import { useTheme } from '@mui/material';
 export default function Home() {
   const [apiKey, setApiKey] = useState(getCookie('apiKey'));
   const [loggedIn, setLoggedIn] = useState(getCookie('apiKey') ? true : false);
-  const [conversationName, setConversationName] = useState(
-    getCookie('conversationName') || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME
-  );
+  const [conversationName, setConversationName] = useState();
   useEffect(() => {
     setCookie('conversationName', conversationName);
   }, [conversationName]);
@@ -17,7 +15,7 @@ export default function Home() {
     setCookie('apiKey', apiKey);
     setLoggedIn(true);
   };
-  const theme=useTheme();
+  const theme = useTheme();
   if (!loggedIn) {
     return (
       <div>
@@ -30,23 +28,13 @@ export default function Home() {
   } else {
     return (
       <AGiXTChat
-        baseUri={process.env.NEXT_PUBLIC_AGIXT_SERVER} // Base URI to the AGiXT server
-        agentName={process.env.NEXT_PUBLIC_AGIXT_AGENT} // Agent name
-        insightAgent={process.env.NEXT_PUBLIC_AGIXT_INSIGHT_AGENT} // Insight agent name to use a different agent for insights, leave blank to use the same agent
-        conversationName={conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME} // Conversation name
-        // UI Options
         showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
         showConversationSelector={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
-        enableFileUpload={process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true'} // Enable file upload button, disabled by default.
-        // Modes are prompt or chain
-        mode={process.env.NEXT_PUBLIC_AGIXT_MODE}
-        // prompt mode - Set promptName and promptCategory
-        promptName={process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME} // Name of the prompt to use
-        promptCategory={process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY} // Category of the prompt to use
-        // chain mode - Set chain name and chain args
-        selectedChain={process.env.NEXT_PUBLIC_AGIXT_CHAIN} // Chain name
-        chainArgs={JSON.parse(process.env.NEXT_PUBLIC_AGIXT_CHAIN_ARGS ?? '{}')} // Chain arg overrides, unnecessary if you don't need to override any args.
-        useSelectedAgent={process.env.NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT === 'true'} // Will force the selected agent to run all chain steps rather than the agents defined in the chain
+        mode={
+          (['chat', 'instruct', 'chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
+            ? process.env.NEXT_PUBLIC_AGIXT_MODE
+            : 'chat') as 'chat' | 'instruct' | 'chain' | 'prompt'
+        }
         theme={theme}
       />
     );

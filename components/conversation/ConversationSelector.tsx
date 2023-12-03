@@ -17,8 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
 import { AGiXTContext, AGiXTState } from '../../types/AGiXTState';
 import { setCookie } from 'cookies-next';
-export default function ConversationSelector() {
-  const AGiXTState = useContext(AGiXTContext) as AGiXTState;
+export default function ConversationSelector({ state }: { state: AGiXTState }) {
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
@@ -26,45 +25,48 @@ export default function ConversationSelector() {
   useEffect(() => {
     console.log('Fetching Conversations!');
     (async () => {
-      const newConversations = await AGiXTState.sdk.getConversations(AGiXTState.agentName);
-      AGiXTState.mutate((oldState) => {
+      const newConversations = await state.sdk.getConversations(state.agent.name);
+      state.mutate((oldState) => {
         return { ...oldState, conversations: newConversations };
       });
       console.log('Fetched Conversations!');
     })();
-  }, [AGiXTState.agentName, AGiXTState.sdk]);
+  }, [state.agent.name, state.sdk]);
   useEffect(() => {
-    setCookie('conversationName', AGiXTState.conversationName);
-  }, [AGiXTState.conversationName]);
+    setCookie('conversationName', state.chatConfig.conversationName);
+  }, [state.chatConfig.conversationName]);
   const handleAddConversation = async () => {
     if (!newConversationName) return;
-    await AGiXTState.sdk.newConversation(AGiXTState.agentName, newConversationName);
+    await state.sdk.newConversation(state.agent.name, newConversationName);
     setNewConversationName('');
     setOpenNewConversation(false);
     const fetchConversations = async () => {
-      const updatedConversations = await AGiXTState.sdk.getConversations();
-      AGiXTState.mutate({ ...AGiXTState, conversations: updatedConversations });
+      const updatedConversations = await state.sdk.getConversations();
+      state.mutate({ ...state, conversations: updatedConversations });
     };
     fetchConversations();
-    AGiXTState.mutate({ ...AGiXTState, conversationName: newConversationName });
+    state.mutate({ ...state, chatConfig: { ...state.chatConfig, conversationName: newConversationName } });
   };
   const handleDeleteConversation = async () => {
-    if (!AGiXTState.conversationName) return;
-    await AGiXTState.sdk.deleteConversation(AGiXTState.agentName, AGiXTState.conversationName);
-    const updatedConversations = AGiXTState.conversations.filter((c) => c !== AGiXTState.conversationName);
-    AGiXTState.mutate({ ...AGiXTState, conversations: updatedConversations });
-    AGiXTState.mutate({ ...AGiXTState, conversationName: updatedConversations[0] || '' });
+    if (!state.chatConfig.conversationName) return;
+    await state.sdk.deleteConversation(state.agent.name, state.chatConfig.conversationName);
+    const updatedConversations = state.conversations.filter((c) => c !== state.chatConfig.conversationName);
+    state.mutate({
+      ...state,
+      conversation: updatedConversations,
+      chatConfig: { ...state.chatConfig, conversationName: updatedConversations[0] || '' }
+    });
     setOpenDeleteConversation(false);
   };
 
   const handleExportConversation = async () => {
-    if (!AGiXTState.conversationName) return;
+    if (!state.chatConfig.conversationName) return;
     const element = document.createElement('a');
-    const file = new Blob([JSON.stringify(AGiXTState.conversation)], {
+    const file = new Blob([JSON.stringify(state.chatState.conversation)], {
       type: 'application/json'
     });
     element.href = URL.createObjectURL(file);
-    element.download = `${AGiXTState.conversationName}.json`;
+    element.download = `${state.chatConfig.conversationName}.json`;
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
   };
@@ -84,11 +86,13 @@ export default function ConversationSelector() {
             fullWidth
             labelId='conversation-label'
             label='Select a Conversation'
-            value={AGiXTState.conversationName}
-            onChange={(e) => AGiXTState.mutate({ ...AGiXTState, conversationName: e.target.value })}
+            value={state.chatConfig.conversationName}
+            onChange={(e) =>
+              state.mutate({ ...state, chatConfig: { ...state.chatConfig, conversationName: e.target.value } })
+            }
           >
-            {AGiXTState.conversations
-              ? AGiXTState.conversations.map((c) => (
+            {state.conversations
+              ? state.conversations.map((c) => (
                   <MenuItem key={c} value={c}>
                     {c}
                   </MenuItem>

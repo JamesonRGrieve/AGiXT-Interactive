@@ -2,8 +2,15 @@ import { AppBar, Box, Typography } from '@mui/material';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import ConversationSelector from './conversation/ConversationSelector';
+import { AGiXTState } from '@/types/AGiXTState';
 
-export default function Header({ showConversationSelector }: { showConversationSelector: boolean }) {
+export default function Header({
+  state,
+  showConversationSelector
+}: {
+  state: AGiXTState;
+  showConversationSelector: boolean;
+}) {
   showConversationSelector = true;
   return (
     <AppBar
@@ -18,7 +25,7 @@ export default function Header({ showConversationSelector }: { showConversationS
     >
       <Box display='flex' flex='1' flexDirection='row'>
         <Box display='flex' flexDirection='row'>
-          {showConversationSelector ? <ConversationSelector /> : <span>&nbsp;</span>}
+          {showConversationSelector ? <ConversationSelector state={state} /> : <span>&nbsp;</span>}
         </Box>
       </Box>
       <Typography variant='h1' sx={{ justifySelf: 'center' }}>

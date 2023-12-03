@@ -1,13 +1,12 @@
-import { useState, useRef, useContext } from 'react';
+import { useState, useRef } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
-import { AGiXTContext, AGiXTState } from '../../types/AGiXTState';
+import { AGiXTState } from '../../types/AGiXTState';
 
-export default function AudioRecorder({ conversationName, contextResults, conversationResults, agentName, sdk }) {
+export default function AudioRecorder({ state }: { state: AGiXTState }) {
   const [recording, setRecording] = useState(false);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
-  const AGiXTState = useContext(AGiXTContext) as AGiXTState;
 
   const startRecording = () => {
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
@@ -19,7 +18,7 @@ export default function AudioRecorder({ conversationName, contextResults, conver
       };
       mediaRecorder.current.start();
       setRecording(true);
-      AGiXTState.mutate({ ...AGiXTState, isLoading: true });
+      state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
     });
   };
 
@@ -35,15 +34,15 @@ export default function AudioRecorder({ conversationName, contextResults, conver
       reader.onloadend = () => {
         const audioDataArray = new Uint8Array(reader.result as ArrayBufferLike);
         const base64Audio = btoa(String.fromCharCode.apply(null, audioDataArray)); // Convert to base64
-        const response = sdk.executeCommand(
-          agentName,
+        const response = state.sdk.executeCommand(
+          state.agent.name,
           'Chat with Voice',
           {
             base64_audio: base64Audio,
-            conversation_results: conversationResults,
-            context_results: contextResults
+            conversation_results: state.chatConfig.conversationResults,
+            context_results: state.chatConfig.contextResults
           },
-          conversationName
+          state.chatConfig.conversationName
         );
         setAudioData(null);
       };
@@ -54,7 +53,7 @@ export default function AudioRecorder({ conversationName, contextResults, conver
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
       setRecording(false);
-      AGiXTState.mutate({ ...AGiXTState, isLoading: false });
+      state.mutate({ ...state, chatState: { ...state.chatState, isLoading: false } });
       setAudioData(null);
     }
   };

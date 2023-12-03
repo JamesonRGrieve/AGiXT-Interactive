@@ -21,12 +21,16 @@ import {
   IconButton
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { AGiXTContext, AGiXTState } from '../types/AGiXTState';
+import { AGiXTState } from '../types/AGiXTState';
 import { ChatProps } from './AGiXTChat';
 
-export default function Chat({state, mode, showAppBar, showConversationSelector}: ChatProps & {state: AGiXTState) {
-
-
+export default function Chat({
+  state,
+  mode,
+  showAppBar,
+  showConversationSelector,
+  theme
+}: ChatProps & { state: AGiXTState }) {
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
   const handleUploadFiles = async () => {
@@ -37,7 +41,7 @@ export default function Chat({state, mode, showAppBar, showConversationSelector}
       const fileContent = await file.text();
       newuploadedFiles.push({ [file.name]: fileContent });
     }
-    state.mutate({ ...state, chatState: { ...state.chatState, uploadedFiles: newuploadedFiles }  });
+    state.mutate({ ...state, chatState: { ...state.chatState, uploadedFiles: newuploadedFiles } });
     setFileUploadOpen(false);
   };
 
@@ -52,15 +56,15 @@ export default function Chat({state, mode, showAppBar, showConversationSelector}
           }
         }
         state.mutate((oldState) => {
-          return { ...oldState, chatConfig: {...state.chatConfig, promptArgs: newArgs} };
+          return { ...oldState, chatConfig: { ...state.chatConfig, promptArgs: newArgs } };
         });
       }
     })(state.chatConfig.promptConfig.promptName, state.chatConfig.promptConfig.promptCategory);
-  }, [state.chatConfig.promptConfig.promptName, state,chatConfig.promptConfig.promptCategory, state.sdk]);
+  }, [state.chatConfig.promptConfig.promptName, state.chatConfig.promptConfig.promptCategory, state.sdk]);
   // Uploaded files will be formatted like [{"file_name": "file_content"}]
 
   const runChain = async () => {
-    state.mutate({ ...state, chatState: {...state.chatState, isLoading: true }});
+    state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
     const agentOverride = state.chatConfig.promptConfig.useSelectedAgent ? state.agent.name : '';
     state.chatConfig.chainRunConfig.chainArgs['conversation_name'] = state.chatConfig.conversationName;
     const response = await state.sdk.runChain(
@@ -71,7 +75,7 @@ export default function Chat({state, mode, showAppBar, showConversationSelector}
       0,
       state.chatConfig.chainRunConfig.chainArgs
     );
-    state.mutate({ ...state, chatState: {...state.chatState, lastResponse: response, isLoading: false}});
+    state.mutate({ ...state, chatState: { ...state.chatState, lastResponse: response, isLoading: false } });
   };
   const PromptAgent = async (
     message,
@@ -84,16 +88,40 @@ export default function Chat({state, mode, showAppBar, showConversationSelector}
     injectMemoriesFromCollectionNumber = 0,
     conversationResults = 5
   ) => {
-    state.mutate({ ...state, chatState: {...state.chatState, isLoading: true }});
+    state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
 
     if (message) {
-      state.mutate({ ...state, chatConfig: { ...state.chatConfig, promptConfig: {...state.chatConfig.promptConfig, promptArgs: {...state.chatConfig.promptConfig.promptArgs, user_input: message  }} } });
+      state.mutate({
+        ...state,
+        chatConfig: {
+          ...state.chatConfig,
+          promptConfig: {
+            ...state.chatConfig.promptConfig,
+            promptArgs: { ...state.chatConfig.promptConfig.promptArgs, user_input: message }
+          }
+        }
+      });
     }
     if (state.chatState.hasFiles && state.chatConfig.promptConfig.promptName == 'Chat with Commands') {
-      state.mutate({...state, chatConfig: {...state.chatConfig, promptConfig: {...state.chatConfig.promptConfig, promptName:'Chat with Commands and Files' }  }})
+      state.mutate({
+        ...state,
+        chatConfig: {
+          ...state.chatConfig,
+          promptConfig: { ...state.chatConfig.promptConfig, promptName: 'Chat with Commands and Files' }
+        }
+      });
     }
     if (state.chatState.uploadedFiles.length > 0) {
-      state.mutate({ ...state, chatConfig: { ...state.chatConfig, promptConfig: {...state.chatConfig.promptConfig, promptArgs: {...state.chatConfig.promptConfig.promptArgs, import_files: state.chatState.uploadedFiles  }} } });
+      state.mutate({
+        ...state,
+        chatConfig: {
+          ...state.chatConfig,
+          promptConfig: {
+            ...state.chatConfig.promptConfig,
+            promptArgs: { ...state.chatConfig.promptConfig.promptArgs, import_files: state.chatState.uploadedFiles }
+          }
+        }
+      });
     }
     const disableMemory = !enableMemory;
     const skipArgs = [
@@ -135,19 +163,32 @@ export default function Chat({state, mode, showAppBar, showConversationSelector}
       conversation_results: conversationResults,
       ...refinedArgs
     };
-    if (mode == 'chain')       state.mutate({...state, chatConfig: {...state.chatConfig, promptConfig: {...state.chatConfig.promptConfig, promptName: state.chatConfig.chainRunConfig.selectedChain }  }})
-    ;
-    const response = await state.sdk.promptAgent(state.agent.name, state.chatConfig.promptConfig.promptName, promptArguments);
-    state.mutate({ ...state, chatState: {...state.chatState, lastResponse: response, isLoading: false, uploadedFiles: [] }});
+    if (mode == 'chain')
+      state.mutate({
+        ...state,
+        chatConfig: {
+          ...state.chatConfig,
+          promptConfig: { ...state.chatConfig.promptConfig, promptName: state.chatConfig.chainRunConfig.selectedChain }
+        }
+      });
+    const response = await state.sdk.promptAgent(
+      state.agent.name,
+      state.chatConfig.promptConfig.promptName,
+      promptArguments
+    );
+    state.mutate({
+      ...state,
+      chatState: { ...state.chatState, lastResponse: response, isLoading: false, uploadedFiles: [] }
+    });
 
     (async () => {
       const conversation = await state.sdk.getConversation(state.agent.name, state.chatConfig.conversationName);
-      state.mutate({ ...state, chatState: {...state.chatState, conversation: conversation }});
+      state.mutate({ ...state, chatState: { ...state.chatState, conversation: conversation } });
     })();
   };
 
   const handleKeyPress = async (event) => {
-    if (event.key === 'Enter' && !event.shiftKey && AGiXTState.message) {
+    if (event.key === 'Enter' && !event.shiftKey && message) {
       event.preventDefault();
       handleSendMessage();
     }
@@ -171,107 +212,102 @@ export default function Chat({state, mode, showAppBar, showConversationSelector}
     setMessage('');
   };
   return (
-      <Box height='100%' display='flex' flexDirection='column'>
-        {AGiXTState.showAppBar && <Header showConversationSelector={AGiXTState.showConversationSelector} />}
+    <Box height='100%' display='flex' flexDirection='column'>
+      {showAppBar && <Header state={state} showConversationSelector={showConversationSelector} />}
 
-        <Box
-          style={{
-            maxWidth: '100%',
-            flexGrow: '1',
-            transition: AGiXTState.theme.transitions.create('margin', {
-              easing: AGiXTState.theme.transitions.easing.sharp,
-              duration: AGiXTState.theme.transitions.duration.leavingScreen
-            }),
-            display: 'flex',
-            flexDirection: 'column'
-          }}
-          component='main'
-        >
-          <ConversationHistory />
-          <Box px='1rem'>
-            <TextField
-              label='Ask your question here.'
-              placeholder='Ask your question here.'
-              multiline
-              rows={2}
-              fullWidth
-              value={AGiXTState.message}
-              onChange={(e) => setAGiXTState({ ...AGiXTState, message: e.target.value })}
-              onKeyPress={handleKeyPress}
-              sx={{ my: 2 }}
-              disabled={AGiXTState.isLoading}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    {AGiXTState.enableFileUpload && (
-                      <>
-                        <IconButton
-                          color='info'
-                          onClick={() => {
-                            setAGiXTState({ ...AGiXTState, uploadedFiles: [], openFileUpload: true });
-                          }}
-                          disabled={AGiXTState.isLoading}
-                          sx={{ height: '56px' }}
-                        >
-                          <NoteAddOutlinedIcon />
-                        </IconButton>
-                        <Dialog
-                          open={AGiXTState.openFileUpload}
-                          onClose={() => {
-                            setAGiXTState({ ...AGiXTState, openFileUpload: false });
-                          }}
-                        >
-                          <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
-                          <DialogContent>
-                            <DialogContentText>Please upload the files you would like to send.</DialogContentText>
-                            <input
-                              accept='*'
-                              id='contained-button-file'
-                              multiple
-                              type='file'
-                              onChange={(e) => {
-                                setAGiXTState({ ...AGiXTState, uploadedFiles: Array(e.target.files) });
-                              }}
-                            />
-                          </DialogContent>
-                          <DialogActions>
-                            <Button
-                              onClick={() => {
-                                setAGiXTState({ ...AGiXTState, openFileUpload: false });
-                              }}
-                              color='error'
-                            >
-                              Cancel
-                            </Button>
-                            <Button onClick={handleUploadFiles} color='info' disabled={AGiXTState.isLoading}>
-                              Upload
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                      </>
-                    )}
-                    {!AGiXTState.isLoading && (
-                      <Tooltip title='Send Message'>
-                        <IconButton color='info' onClick={handleSendMessage} sx={{ height: '56px', padding: '0px' }}>
-                          <SendIcon />
-                        </IconButton>
-                      </Tooltip>
-                    )}
-                    {AGiXTState.mode == 'prompt' && (
-                      <AudioRecorder
-                        conversationName={AGiXTState.conversationName}
-                        contextResults={AGiXTState.contextResults}
-                        conversationResults={AGiXTState.conversationResults}
-                        agentName={AGiXTState.agentName}
-                        sdk={sdk}
-                      />
-                    )}
-                  </InputAdornment>
-                )
-              }}
-            />
-          </Box>
+      <Box
+        style={{
+          maxWidth: '100%',
+          flexGrow: '1',
+          transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen
+          }),
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+        component='main'
+      >
+        <ConversationHistory state={state} theme={theme} />
+        <Box px='1rem'>
+          <TextField
+            label='Ask your question here.'
+            placeholder='Ask your question here.'
+            multiline
+            rows={2}
+            fullWidth
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            sx={{ my: 2 }}
+            disabled={state.chatState.isLoading}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position='end'>
+                  {state.chatConfig.enableFileUpload && (
+                    <>
+                      <IconButton
+                        color='info'
+                        onClick={() => {
+                          setFileUploadOpen(true);
+                          state.mutate({ ...state, chatState: { ...state.chatState, uploadedFiles: [] } });
+                        }}
+                        disabled={state.chatState.isLoading}
+                        sx={{ height: '56px' }}
+                      >
+                        <NoteAddOutlinedIcon />
+                      </IconButton>
+                      <Dialog
+                        open={fileUploadOpen}
+                        onClose={() => {
+                          setFileUploadOpen(false);
+                        }}
+                      >
+                        <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText>Please upload the files you would like to send.</DialogContentText>
+                          <input
+                            accept='*'
+                            id='contained-button-file'
+                            multiple
+                            type='file'
+                            onChange={(e) => {
+                              state.mutate({
+                                ...state,
+                                chatState: { ...state.chatState, uploadedFiles: Array(e.target.files) }
+                              });
+                            }}
+                          />
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={() => {
+                              setFileUploadOpen(false);
+                            }}
+                            color='error'
+                          >
+                            Cancel
+                          </Button>
+                          <Button onClick={handleUploadFiles} color='info' disabled={state.chatState.isLoading}>
+                            Upload
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </>
+                  )}
+                  {!state.chatState.isLoading && (
+                    <Tooltip title='Send Message'>
+                      <IconButton color='info' onClick={handleSendMessage} sx={{ height: '56px', padding: '0px' }}>
+                        <SendIcon />
+                      </IconButton>
+                    </Tooltip>
+                  )}
+                  {mode == 'prompt' && <AudioRecorder state={state} />}
+                </InputAdornment>
+              )
+            }}
+          />
         </Box>
       </Box>
+    </Box>
   );
 }
