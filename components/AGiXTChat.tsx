@@ -72,7 +72,7 @@ const Stateful = (props: ChatProps) => {
     //message: '',
     mutate: null
   } as AGiXTState);
-  return <Chat {...props} state={AGiXTState} />;
+  return <Chat {...props} state={{...AGiXTState, mutate: setAGiXTState}} />;
 };
 const Stateless = ({ state, mode, showAppBar, showConversationSelector, theme }: ChatProps & { state: AGiXTState }) => {
   return (

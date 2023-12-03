@@ -103,6 +103,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: AGiXTState; csvData
     console.log('headers', headers);
   };
   useEffect(() => {
+    console.log("Parsing CSV");
     parseCSV(csvData);
   }, [csvData]);
 
