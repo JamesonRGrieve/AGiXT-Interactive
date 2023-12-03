@@ -12,7 +12,8 @@ import {
   DialogTitle,
   TextField,
   Button,
-  Tooltip
+  Tooltip,
+  Theme
 } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, ThumbDown } from '@mui/icons-material';
 import clipboardCopy from 'clipboard-copy';
@@ -21,18 +22,16 @@ import MarkdownBlock from './MarkdownBlock';
 import { AGiXTContext, AGiXTState } from '../../types/AGiXTState';
 const WAIT_MESSAGE = 'Let me think about that for a moment. Please wait..';
 
-export default function ConversationHistory() {
+export default function ConversationHistory({ state, theme }: { state: AGiXTState; theme: Theme }) {
   let lastUserMessage = ''; // track the last user message
-  const AGiXTState = useContext(AGiXTContext) as AGiXTState;
   useEffect(() => {
-    const fetchConversation = async () => {
-      const convo = await AGiXTState.sdk.getConversation(AGiXTState.agentName, AGiXTState.conversationName, 100, 1);
-      AGiXTState.mutate((oldState) => {
-        return { ...oldState, conversation: convo };
+    (async () => {
+      const convo = await state.sdk.getConversation(state.agent.name, state.chatConfig.conversationName, 100, 1);
+      state.mutate((oldState) => {
+        return { ...oldState, chatState: { ...oldState.chatState, conversation: convo } };
       });
-    };
-    fetchConversation();
-  }, [AGiXTState.conversationName, AGiXTState.lastResponse, AGiXTState.agentName, AGiXTState.sdk]);
+    })();
+  }, [state]);
   return (
     <Paper
       elevation={5}
@@ -41,38 +40,32 @@ export default function ConversationHistory() {
         display: 'flex',
         flexDirection: 'column-reverse',
         flexGrow: '1',
-        backgroundColor: AGiXTState.theme.palette.background.paper,
+        backgroundColor: theme.palette.background.paper
       }}
     >
       <div>
-        {AGiXTState.conversation
-          ? AGiXTState.conversation.map((chatItem, index) => {
+        {state.chatState.conversation
+          ? state.chatState.conversation.map((chatItem, index) => {
               if (chatItem.role === 'USER') {
                 lastUserMessage = chatItem.message;
               }
               return (
-                <ChatMessage
-                  key={index}
-                  chatItem={chatItem}
-                  isLoading={AGiXTState.isLoading}
-                  sdk={AGiXTState.sdk}
-                  lastUserMessage={lastUserMessage}
-                />
+                <ChatMessage key={index} chatItem={chatItem} state={state} theme={theme} lastUserMessage={lastUserMessage} />
               );
             })
           : null}
-        {AGiXTState.isLoading && (
+        {state.chatState.isLoading && (
           <>
             <ChatMessage
               key={'Please Wait'}
               chatItem={{
-                role: AGiXTState.agentName,
+                role: state.agent.name,
                 message: WAIT_MESSAGE,
                 timestamp: 'Just Now...'
               }}
-              isLoading={AGiXTState.isLoading}
               lastUserMessage={lastUserMessage}
-              sdk={AGiXTState.sdk}
+              state={state}
+              theme={theme}
             />
           </>
         )}
@@ -81,7 +74,7 @@ export default function ConversationHistory() {
   );
 }
 
-const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
+const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
   const AGiXTState = useContext(AGiXTContext) as AGiXTState;
 
   const formattedMessage =
@@ -114,83 +107,89 @@ const ChatMessage = ({ chatItem, lastUserMessage, isLoading, sdk }) => {
     document.body.appendChild(element);
     element.click();
   };
-  return  <Box
-        sx={{
-          backgroundColor: chatItem.role === 'USER' ? AGiXTState.theme.palette.background.default : (AGiXTState.theme.palette.mode !== "dark" ? AGiXTState.theme.palette.primary.light : AGiXTState.theme.palette.primary.dark ),
-          padding: '10px',
-          overflow: 'hidden',
-          position: 'center',
-          color:  AGiXTState.theme.palette.text.primary,
+  return (
+    <Box
+      sx={{
+        backgroundColor:
+          chatItem.role === 'USER'
+            ? theme.palette.background.default
+            : theme.palette.mode !== 'dark'
+              ? theme.palette.primary.light
+              : theme.palette.primary.dark,
+        padding: '10px',
+        overflow: 'hidden',
+        position: 'center',
+        color: theme.palette.text.primary
+      }}
+    >
+      <MarkdownBlock state={state} content={formattedMessage} chatItem={chatItem} />
+      <Typography
+        variant='caption'
+        style={{
+          width: '100%',
+          display: 'inline-block'
         }}
       >
-        <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
-        <Typography
-          variant='caption'
-          style={{
-            width: '100%',
-            display: 'inline-block'
-          }}
-        >
-          {chatItem.role === 'USER' ? 'You' : chatItem.role} • {chatItem.timestamp}
-        </Typography>
-        {chatItem.role != 'USER' && !isLoading && (
-          <>
-            <Tooltip title='Provide Positive Feedback'>
-              <IconButton onClick={() => handleClickOpen(1)}>
-                <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title='Provide Negative Feedback'>
-              <IconButton onClick={() => handleClickOpen(-1)}>
-                <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title='Copy Message'>
-              <IconButton onClick={handleCopyClick}>
-                <ContentCopyIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title='Download Message'>
-              <IconButton onClick={handleDownloadClick}>
-                <DownloadIcon />
-              </IconButton>
-            </Tooltip>
-          </>
-        )}
-        <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
-          <DialogTitle id='form-dialog-title'>Provide Feedback</DialogTitle>
-          <DialogContent>
-            <DialogContentText>Please provide some feedback regarding the message.</DialogContentText>
-            <TextField
-              margin='dense'
-              id='name'
-              label='Feedback'
-              type='text'
-              fullWidth
-              value={feedback}
-              onChange={(e) => setFeedback(e.target.value)}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color='error'>
-              Cancel
-            </Button>
-            <Button
-              onClick={() => {
-                const messageText = `User Feedback: ${feedback} \n\n Message: ${chatItem.message} \n\n Last User Message: ${lastUserMessage}`;
-                handleClose();
-                if (vote === 1) {
-                  sdk.learnText(chatItem.role, lastUserMessage, messageText, 2);
-                } else {
-                  sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
-                }
-              }}
-              color='info'
-            >
-              Submit
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </Box>
-
+        {chatItem.role === 'USER' ? 'You' : chatItem.role} • {chatItem.timestamp}
+      </Typography>
+      {chatItem.role != 'USER' && !state.chatState.isLoading && (
+        <>
+          <Tooltip title='Provide Positive Feedback'>
+            <IconButton onClick={() => handleClickOpen(1)}>
+              <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Provide Negative Feedback'>
+            <IconButton onClick={() => handleClickOpen(-1)}>
+              <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Copy Message'>
+            <IconButton onClick={handleCopyClick}>
+              <ContentCopyIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Download Message'>
+            <IconButton onClick={handleDownloadClick}>
+              <DownloadIcon />
+            </IconButton>
+          </Tooltip>
+        </>
+      )}
+      <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
+        <DialogTitle id='form-dialog-title'>Provide Feedback</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Please provide some feedback regarding the message.</DialogContentText>
+          <TextField
+            margin='dense'
+            id='name'
+            label='Feedback'
+            type='text'
+            fullWidth
+            value={feedback}
+            onChange={(e) => setFeedback(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose} color='error'>
+            Cancel
+          </Button>
+          <Button
+            onClick={() => {
+              const messageText = `User Feedback: ${feedback} \n\n Message: ${chatItem.message} \n\n Last User Message: ${lastUserMessage}`;
+              handleClose();
+              if (vote === 1) {
+                state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 2);
+              } else {
+                state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
+              }
+            }}
+            color='info'
+          >
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Box>
+  );
 };

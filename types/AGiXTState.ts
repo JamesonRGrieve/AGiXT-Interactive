@@ -50,10 +50,14 @@ export type ChatConfig = {
   enableMemory: boolean;
   enableFileUpload: boolean;
   chainRunConfig: ChainRunConfig;
-  promptConfig: PromptConfig
+  promptConfig: PromptConfig;
+};
+export type ChatItem = {
+  role: string;
+  message: string;
 };
 export type ChatState = {
-  conversation: object;
+  conversation: ChatItem[];
   hasFiles: boolean;
   lastResponse: object;
   uploadedFiles: File[];
@@ -121,10 +125,10 @@ export const AGiXTContext: Context<AGiXTState> = createContext<AGiXTState>({
       promptCategory: '',
       promptArgs: {},
       useSelectedAgent: true
-    },
+    }
   },
   chatState: {
-    conversation: {},
+    conversation: [],
     hasFiles: false,
     lastResponse: {},
     uploadedFiles: [],

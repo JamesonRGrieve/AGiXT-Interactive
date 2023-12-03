@@ -32,9 +32,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   }
 }));
 
-export const DataGridFromCSV = ({ csvData }) => {
-  const AGiXTState = useContext(AGiXTContext) as AGiXTState;
-
+export const DataGridFromCSV = ({ state, csvData }: { state: AGiXTState; csvData: any }) => {
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
@@ -109,17 +107,17 @@ export const DataGridFromCSV = ({ csvData }) => {
   }, [csvData]);
 
   const getInsights = async (userMessage) => {
-    AGiXTState.mutate({ ...AGiXTState, isLoading: true });
+    state.mutate({ ...state, chatState: { ...state.chatState, isLoading: true } });
     const lines = csvData.split('\n');
     lines.shift();
     lines.pop();
     const newCSVData = lines.join('\n');
     const chainArgs = {
-      conversation_name: AGiXTState.conversationName,
+      conversation_name: state.chatConfig.conversationName,
       text: newCSVData
     };
-    const response = await AGiXTState.sdk.runChain('Data Analysis', userMessage, AGiXTState.agentName, false, 1, chainArgs);
-    AGiXTState.mutate({ ...AGiXTState, isLoading: false, lastResponse: response });
+    const response = await state.sdk.runChain('Data Analysis', userMessage, state.agent.name, false, 1, chainArgs);
+    state.mutate({ ...state, chatState: { ...state.chatState, isLoading: false, lastResponse: response } });
   };
   const handleClickOpen = () => {
     setOpen(true);

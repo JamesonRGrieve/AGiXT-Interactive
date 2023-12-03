@@ -8,7 +8,7 @@ import { DataGridFromCSV } from './DataGridFromCSV';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
 import { AGiXTContext, AGiXTState } from '../../types/AGiXTState';
 
-export default function MarkdownBlock({ content, chatItem }) {
+export default function MarkdownBlock({ state, content, chatItem }: { state: AGiXTState; content: string; chatItem: any }) {
   const langMap = {
     '': 'txt',
     python: 'py',
@@ -71,19 +71,19 @@ export default function MarkdownBlock({ content, chatItem }) {
     if (match) {
       if (message.includes('GENERATED_IMAGE:')) {
         const base64Image = match[1].replace('GENERATED_IMAGE:', '').trim();
-        const formattedImage = base64Image.toString('base64');
+        const formattedImage = base64Image.toString();
         return message.replace(match[0], `![Generated Image](data:image/png;base64,${formattedImage})`);
       }
       if (message.includes('GENERATED_AUDIO:')) {
         const base64Audio = match[1].replace('GENERATED_AUDIO:', '').trim();
-        const formattedAudio = base64Audio.toString('base64');
+        const formattedAudio = base64Audio.toString();
         return message.replace(match[0], `![Generated Audio](data:audio/wav;base64,${formattedAudio})`);
       }
     }
     if (message.includes('```csv')) {
       // Get the csv data between ```csv and ```
       const csvData = message.split('```csv')[1].split('```')[0].replace(/\n/g, '\r\n');
-      return <DataGridFromCSV csvData={csvData} />;
+      return <DataGridFromCSV state={state} csvData={csvData} />;
     }
     return content;
   };
@@ -134,7 +134,6 @@ export default function MarkdownBlock({ content, chatItem }) {
       ) : (
         <ReactMarkdown
           // eslint-disable-next-line react/no-children-prop
-          children={renderMessage()}
           className='react-markdown'
           components={{
             a: renderLink,
@@ -238,7 +237,9 @@ export default function MarkdownBlock({ content, chatItem }) {
               );
             }
           }}
-        />
+        >
+          {renderMessage().toString()}
+        </ReactMarkdown>
       )}
     </>
   );
