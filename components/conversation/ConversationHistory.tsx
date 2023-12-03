@@ -18,7 +18,7 @@ import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, Thum
 import clipboardCopy from 'clipboard-copy';
 
 import MarkdownBlock from './MarkdownBlock';
-import { AGiXTContext, AGiXTState } from '../../types/AGiXTContext';
+import { AGiXTContext, AGiXTState } from '../../types/AGiXTState';
 const WAIT_MESSAGE = 'Let me think about that for a moment. Please wait..';
 
 export default function ConversationHistory() {

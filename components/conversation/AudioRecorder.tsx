@@ -1,7 +1,7 @@
 import { useState, useRef, useContext } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
-import { AGiXTContext, AGiXTState } from '../../types/AGiXTContext';
+import { AGiXTContext, AGiXTState } from '../../types/AGiXTState';
 
 export default function AudioRecorder({ conversationName, contextResults, conversationResults, agentName, sdk }) {
   const [recording, setRecording] = useState(false);
