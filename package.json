@@ -18,7 +18,12 @@
   ],
   "exports": {
     ".": "./dist/components/AGiXTChat.js",
-    "./MarkdownBlock": "./dist/components/conversation/MarkdownBlock.js"
+    "./MarkdownBlock": "./dist/components/conversation/MarkdownBlock.js",
+    "./CSVDataGrid": "./dist/components/conversation/DataGridFromCSV.js",
+    "./AudioRecorder": "./dist/components/conversation/AudioRecorder.js",
+    "./ConversationBar": "./dist/components/conversation/Conversation.js",
+    "./ConversationLog": "./dist/components/conversation/ConversationLog.js",
+    "./ConversationSelector": "./dist/components/conversation/ConversationSelector.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
