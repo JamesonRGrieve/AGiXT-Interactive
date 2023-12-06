@@ -25,7 +25,7 @@ const WAIT_MESSAGE = 'Let me think about that for a moment. Please wait..';
 export default function ConversationHistory({ state, theme }: { state: AGiXTState; theme: Theme }) {
   let lastUserMessage = ''; // track the last user message
   useEffect(() => {
-    console.log('Getting conversation');
+    console.log('Getting conversation', state.agent.name);
     state.mutate((oldState) => {
       return { ...oldState, chatState: { ...oldState.chatState, loading: true } };
     });
@@ -50,7 +50,7 @@ export default function ConversationHistory({ state, theme }: { state: AGiXTStat
         backgroundColor: theme.palette.background.paper
       }}>
       <div>
-        {state.chatState.conversation
+        {state.chatState.conversation.length > 0 && state.chatState.conversation.map
           ? state.chatState.conversation.map((chatItem, index) => {
               if (chatItem.role === 'USER') {
                 lastUserMessage = chatItem.message;
