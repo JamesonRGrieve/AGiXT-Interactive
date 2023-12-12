@@ -23,16 +23,7 @@ export default function ConversationSelector({ state, theme }: { state: AGiXTSta
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
-  useEffect(() => {
-    console.log('Fetching Conversations!');
-    (async () => {
-      const newConversations = await state.sdk.getConversations(state.agent.name);
-      state.mutate((oldState) => {
-        return { ...oldState, conversations: newConversations };
-      });
-      console.log('Fetched Conversations!');
-    })();
-  }, [state.agent.name, state.sdk]);
+
   useEffect(() => {
     console.log('Setting conversation name cookie.', state.chatConfig.conversationName);
     setCookie('conversationName', state.chatConfig.conversationName);
