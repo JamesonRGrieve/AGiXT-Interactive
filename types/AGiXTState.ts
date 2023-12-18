@@ -24,18 +24,10 @@ export type TrainingConfig = {
   minRelevanceScore: number;
 };
 export type ChainRunConfig = {
-  selectedChain: string;
   chainArgs: object;
   singleStep: boolean;
   fromStep: number;
   allResponses: boolean;
-  useSelectedAgent: boolean;
-};
-export type PromptConfig = {
-  promptName: string;
-  promptCategory: string;
-  promptArgs: object;
-  useSelectedAgent: boolean;
 };
 export type ChatConfig = {
   contextResults: number;
@@ -49,8 +41,8 @@ export type ChatConfig = {
   insightAgentName: string;
   enableMemory: boolean;
   enableFileUpload: boolean;
+  useSelectedAgent: boolean;
   chainRunConfig: ChainRunConfig;
-  promptConfig: PromptConfig;
 };
 export type ChatItem = {
   role: string;
@@ -64,6 +56,22 @@ export type ChatState = {
   uploadedFiles: File[];
   isLoading: boolean;
 };
+export type ChainStep = {
+  step: number;
+  agentName: string;
+  promptType: string;
+  prompt: object;
+};
+export type Chain = {
+  name: string;
+  steps: ChainStep[];
+};
+export type Prompt = {
+  name: string;
+  category: string;
+  body: string;
+  args: object;
+};
 export type AGiXTState = {
   // Global State Here
   agent: Agent; // Active agent.
@@ -71,9 +79,12 @@ export type AGiXTState = {
   extensions: Extension[]; // List of extensions.
   llms: object[]; // List of LLMs.
   providers: string[]; // List of agent names.
+  chain: Chain; // Active chain.
   chains: string[]; // List of chain names.
-  prompts: string[]; // List of prompt names.
+  promptCategory: string; // Active prompt category.
   promptCategories: string[]; // List of prompt categories.
+  prompt: Prompt; // Active prompt.
+  prompts: string[]; // List of prompt names in active prompt category.
   conversations: string[]; // List of conversations.
   trainingConfig: TrainingConfig;
   chatConfig: ChatConfig;
@@ -82,7 +93,7 @@ export type AGiXTState = {
   //message: string;
   mutate: any;
 };
-export const AGiXTContext: Context<AGiXTState> = createContext<AGiXTState>({
+export const AGiXTDefaultState = {
   agent: {
     name: '',
     commands: {},
@@ -92,7 +103,18 @@ export const AGiXTContext: Context<AGiXTState> = createContext<AGiXTState>({
   extensions: [],
   llms: [],
   providers: [],
+  chain: {
+    name: '',
+    steps: []
+  },
   chains: [],
+  promptCategory: 'Default',
+  prompt: {
+    name: '',
+    category: '',
+    body: '',
+    args: {}
+  },
   prompts: [],
   promptCategories: [],
   conversations: [],
@@ -107,25 +129,18 @@ export const AGiXTContext: Context<AGiXTState> = createContext<AGiXTState>({
     websearchDepth: 0,
     injectMemoriesFromCollectionNumber: 0,
     conversationResults: 5,
-    conversationName: '',
+    conversationName: 'Default',
     browseLinks: false,
     webSearch: false,
     insightAgentName: '',
     enableMemory: false,
     enableFileUpload: false,
+    useSelectedAgent: true,
     chainRunConfig: {
-      selectedChain: '',
       chainArgs: {},
       singleStep: false,
       fromStep: 0,
-      allResponses: false,
-      useSelectedAgent: true
-    },
-    promptConfig: {
-      promptName: '',
-      promptCategory: '',
-      promptArgs: {},
-      useSelectedAgent: true
+      allResponses: false
     }
   },
   chatState: {
@@ -138,4 +153,5 @@ export const AGiXTContext: Context<AGiXTState> = createContext<AGiXTState>({
   sdk: null,
   //message: '',
   mutate: null
-});
+};
+export const AGiXTContext: Context<AGiXTState> = createContext<AGiXTState>(AGiXTDefaultState);

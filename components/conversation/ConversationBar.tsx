@@ -44,8 +44,8 @@ export default function ConversationBar({
   useEffect(() => {
     console.log(
       'Getting args for prompt.',
-      state.chatConfig.promptConfig.promptName,
-      state.chatConfig.promptConfig.promptCategory
+      state.prompt.name,
+      state.promptCategory
     );
     (async function getArgs(promptName, promptCategory) {
       const promptArgData = await state.sdk.getPromptArgs(promptName, promptCategory);
@@ -60,8 +60,8 @@ export default function ConversationBar({
           return { ...oldState, chatConfig: { ...state.chatConfig, promptArgs: newArgs } };
         });
       }
-    })(state.chatConfig.promptConfig.promptName, state.chatConfig.promptConfig.promptCategory);
-  }, [state.chatConfig.promptConfig.promptName, state.chatConfig.promptConfig.promptCategory, state.sdk]);
+    })(state.prompt.name, state.promptCategory);
+  }, [state.prompt.name, state.promptCategory, state.sdk]);
 
   const handleSendMessage = async () => {
     if (mode == 'chain') {
@@ -93,10 +93,10 @@ export default function ConversationBar({
         chatState: { ...oldState.chatState, isLoading: true }
       };
     });
-    const agentOverride = state.chatConfig.promptConfig.useSelectedAgent ? state.agent.name : '';
+    const agentOverride = state.chatConfig.useSelectedAgent ? state.agent.name : '';
     state.chatConfig.chainRunConfig.chainArgs['conversation_name'] = state.chatConfig.conversationName;
     const response = await state.sdk.runChain(
-      state.chatConfig.chainRunConfig.selectedChain,
+      state.chain.name,
       message,
       agentOverride,
       false,
@@ -113,12 +113,12 @@ export default function ConversationBar({
     state.mutate((oldState) => {
       return { ...oldState, chatState: { ...oldState.chatState, isLoading: true } };
     });
-    const args: any = { ...state.chatConfig.promptConfig.promptArgs };
+    const args: any = { ...state.prompt.args };
     if (message) args.user_input = message;
     if (state.chatState.uploadedFiles.length > 0) args.import_files = state.chatState.uploadedFiles;
     const promptName =
-      state.chatConfig.promptConfig.promptName +
-      (state.chatConfig.promptConfig.promptName == 'Chat with Commands' && state.chatState.hasFiles ? ' with Files' : '');
+      state.prompt.name +
+      (state.prompt.name == 'Chat with Commands' && state.chatState.hasFiles ? ' with Files' : '');
     const skipArgs = [
       'conversation_history',
       'context',
@@ -145,7 +145,7 @@ export default function ConversationBar({
       delete args[arg];
     }
     const stateArgs = {
-      prompt_category: state.chatConfig.promptConfig.promptCategory,
+      prompt_category: state.promptCategory,
       conversation_name: state.chatConfig.conversationName,
       context_results: state.chatConfig.contextResults,
       shots: state.chatConfig.shots,
