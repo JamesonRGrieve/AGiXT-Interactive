@@ -1,4 +1,4 @@
-import { AGiXTDefaultState, AGiXTState } from '@/types/AGiXTState';
+import { AGiXTDefaultState, AGiXTState } from '../types/AGiXTState';
 import { Theme, useTheme } from '@mui/material';
 import { getCookie } from 'cookies-next';
 import { useState } from 'react';
