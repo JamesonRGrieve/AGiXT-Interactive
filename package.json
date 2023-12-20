@@ -1,6 +1,6 @@
 {
   "name": "agixtchat",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "next build",
@@ -32,13 +32,13 @@
     "@mui/x-data-grid": "^6.16.3",
     "axios": "^1.6.0",
     "cookies-next": "^4.0.0",
-    "jrgcomponents": "^0.0.51",
-    "next": "14.0.2",
+    "jrgcomponents": "^0.0.77",
+    "next": "14.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0"
   },
   "devDependencies": {
-    "@next/bundle-analyzer": "^14.0.2",
+    "@next/bundle-analyzer": "^14.0.4",
     "@storybook/addon-essentials": "^7.3.2",
     "@storybook/addon-interactions": "^7.3.2",
     "@storybook/addon-links": "^7.3.2",
