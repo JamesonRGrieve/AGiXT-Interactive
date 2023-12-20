@@ -14,6 +14,10 @@ const Stateful = (props: ChatProps) => {
   const [AGiXTState, setAGiXTState] = useState<AGiXTState>({
     // Default state and initializes the SDK
     ...AGiXTDefaultState,
+    agent: {
+      ...AGiXTDefaultState.agent,
+      name: process.env.NEXT_PUBLIC_AGIXT_AGENT
+    },
     sdk: new AGiXTSDK({
       baseUri: process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437',
       apiKey: process.env.NEXT_PUBLIC_API_KEY || ''
