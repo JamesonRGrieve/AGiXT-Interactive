@@ -13,7 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-        environment: ['vhai', 'santa']
+        environment: ['vhai', 'santa', 'doomer']
     runs-on: ubuntu-latest
     environment: ${{ matrix.environment }}
     steps:
