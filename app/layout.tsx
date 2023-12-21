@@ -9,7 +9,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME,
-  description: 'An interactive ' + process.env.NEXT_PUBLIC_APP_NAME + '.'
+  description: process.env.NEXT_PUBLIC_APP_DESCRIPTION
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -20,10 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel='icon' href='/favicon.ico' sizes='any' />
         <meta name='google-adsense-account' content={process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT} />
-        <meta property='og:url' content='https://santa.claus.chat/' />
+        <meta property='og:url' content={process.env.NEXT_PUBLIC_APP_URI} />
         <meta property='og:type' content='website' />
-        <meta property='og:title' content='Chat with Santa Claus' />
-        <meta property='og:description' content='Chat with Santa Claus for free, powered by AGiXT.' />
+        <meta property='og:title' content={process.env.NEXT_PUBLIC_APP_NAME} />
+        <meta property='og:description' content={process.env.NEXT_PUBLIC_APP_DESCRIPTION} />
       </head>
       <body className={inter.className}>
         <ThemeWrapper
