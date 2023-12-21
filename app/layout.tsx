@@ -52,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               alignItems: 'center'
             }}
           >
-            <Typography variant='h1'>{process.env.NEXT_PUBLIC_WEBSITE_NAME}</Typography>
+            <Typography variant='h1'>{process.env.NEXT_PUBLIC_APP_NAME}</Typography>
             <Box>
               <SwitchDark />
               <SwitchColorblind />
