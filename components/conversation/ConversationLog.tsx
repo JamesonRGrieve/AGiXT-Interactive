@@ -141,16 +141,20 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
       </Typography>
       {chatItem.role != 'USER' && !state.chatState.isLoading && (
         <>
-          <Tooltip title='Provide Positive Feedback'>
-            <IconButton onClick={() => handleClickOpen(1)}>
-              <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title='Provide Negative Feedback'>
-            <IconButton onClick={() => handleClickOpen(-1)}>
-              <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
-            </IconButton>
-          </Tooltip>
+          {process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
+            <>
+              <Tooltip title='Provide Positive Feedback'>
+                <IconButton onClick={() => handleClickOpen(1)}>
+                  <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title='Provide Negative Feedback'>
+                <IconButton onClick={() => handleClickOpen(-1)}>
+                  <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
+                </IconButton>
+              </Tooltip>
+            </>
+          )}
           <Tooltip title='Copy Message'>
             <IconButton onClick={handleCopyClick}>
               <ContentCopyIcon />
