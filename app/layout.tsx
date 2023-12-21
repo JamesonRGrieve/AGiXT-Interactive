@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='en'>
       <head>
-        <meta name="google-adsense-account" content="ca-pub-7353611168636388" />
+        <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT} />
       </head>
       <body className={inter.className}>
         <ThemeWrapper
