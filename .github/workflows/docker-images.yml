@@ -13,7 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-        environment: ['vhai', 'santa']
+        environment: ['vhai', 'santa', 'doomer']
     runs-on: ubuntu-latest
     environment: ${{ matrix.environment }}
     steps:
@@ -58,6 +58,7 @@ jobs:
           AGIXT_CONVERSATION_NAME: ${{ vars.AGIXT_CONVERSATION_NAME }}
           AGIXT_REQUIRE_API_KEY: ${{ vars.AGIXT_REQUIRE_API_KEY }}
           AGIXT_RLHF: ${{ vars.AGIXT_RLHF }}
+          THEME_NAME: ${{ vars.THEME_NAME }}
           ADSENSE_ACCOUNT: ${{ vars.ADSENSE_ACCOUNT }}
         with:
           context: .
@@ -86,4 +87,6 @@ jobs:
             AGIXT_CONVERSATION_NAME=${{ env.AGIXT_CONVERSATION_NAME }}
             AGIXT_REQUIRE_API_KEY=${{ env.AGIXT_REQUIRE_API_KEY }}
             AGIXT_RLHF=${{ env.AGIXT_RLHF }}
+            THEME_NAME=${{ env.THEME_NAME }}
             ADSENSE_ACCOUNT=${{ env.ADSENSE_ACCOUNT }}
+
