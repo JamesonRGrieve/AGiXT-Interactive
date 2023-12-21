@@ -29,7 +29,8 @@ export default function Chat({
           display: 'flex',
           flexDirection: 'column'
         }}
-        component='main'>
+        component='main'
+      >
         <ConversationHistory state={state} theme={theme} />
         <ConversationBar state={state} theme={theme} mode={mode} />
       </Box>

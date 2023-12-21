@@ -42,11 +42,7 @@ export default function ConversationBar({
     }
   };
   useEffect(() => {
-    console.log(
-      'Getting args for prompt.',
-      state.prompt.name,
-      state.promptCategory
-    );
+    console.log('Getting args for prompt.', state.prompt.name, state.promptCategory);
     (async function getArgs(promptName, promptCategory) {
       const promptArgData = await state.sdk.getPromptArgs(promptName, promptCategory);
       if (promptArgData) {
@@ -117,8 +113,7 @@ export default function ConversationBar({
     if (message) args.user_input = message;
     if (state.chatState.uploadedFiles.length > 0) args.import_files = state.chatState.uploadedFiles;
     const promptName =
-      state.prompt.name +
-      (state.prompt.name == 'Chat with Commands' && state.chatState.hasFiles ? ' with Files' : '');
+      state.prompt.name + (state.prompt.name == 'Chat with Commands' && state.chatState.hasFiles ? ' with Files' : '');
     const skipArgs = [
       'conversation_history',
       'context',
@@ -203,14 +198,16 @@ export default function ConversationBar({
                       state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: [] } }));
                     }}
                     disabled={state.chatState.isLoading}
-                    sx={{ height: '56px' }}>
+                    sx={{ height: '56px' }}
+                  >
                     <NoteAddOutlinedIcon />
                   </IconButton>
                   <Dialog
                     open={fileUploadOpen}
                     onClose={() => {
                       setFileUploadOpen(false);
-                    }}>
+                    }}
+                  >
                     <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
                     <DialogContent>
                       <DialogContentText>Please upload the files you would like to send.</DialogContentText>
@@ -232,7 +229,8 @@ export default function ConversationBar({
                         onClick={() => {
                           setFileUploadOpen(false);
                         }}
-                        color='error'>
+                        color='error'
+                      >
                         Cancel
                       </Button>
                       <Button onClick={handleUploadFiles} color='info' disabled={state.chatState.isLoading}>
@@ -248,7 +246,8 @@ export default function ConversationBar({
                     color='info'
                     onClick={handleSendMessage}
                     disabled={state.chatState.isLoading}
-                    sx={{ height: '56px', padding: '0px' }}>
+                    sx={{ height: '56px', padding: '0px' }}
+                  >
                     <SendIcon />
                   </IconButton>
                 </Tooltip>
