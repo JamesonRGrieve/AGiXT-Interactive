@@ -53,7 +53,7 @@ ENV NODE_ENV=production \
     ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN git clone https://github.com/GT-Umbrella/themes /app/themes
+RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes
 COPY /app/themes/${THEME_NAME} /app/app
 RUN rm -rf /app/themes
 
