@@ -9,6 +9,7 @@ export type ChatProps = {
 const Stateful = (props: ChatProps) => {
   return (
     <AGiXTWrapper
+      requireKey={process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true'}
       apiKey={process.env.NEXT_PUBLIC_API_KEY || ''}
       agixtServer={process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437'}
       initialState={{
@@ -39,10 +40,12 @@ const AGiXTChat = ({
   mode,
   showAppBar = false,
   showConversationSelector = false
-}: ChatProps & { stateful?: boolean }) =>
-  stateful ? (
+}: ChatProps & { stateful?: boolean }) => {
+  console.log(`AGiXTChat initialized as ${stateful?"":"not "}stateful. ${stateful?"AGiXTChat will provide its own AGiXTWrapper and state.":"Assuming an AGiXTWrapper encloses this instance."}`);
+  return stateful ? (
     <Stateful mode={mode} showAppBar={showAppBar} showConversationSelector={showConversationSelector} />
   ) : (
     <Stateless mode={mode} showAppBar={showAppBar} showConversationSelector={showConversationSelector} />
   );
+}
 export default AGiXTChat;
