@@ -17,6 +17,10 @@ import {
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { AGiXTState } from '../../types/AGiXTState';
+import { setCookie } from 'cookies-next';
+import { DeleteForever } from '@mui/icons-material';
+import SwitchDark from 'jrgcomponents/theming/SwitchDark';
+import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 
 export default function ConversationBar({
   mode,
@@ -169,7 +173,7 @@ export default function ConversationBar({
   };
 
   return (
-    <Box px='1rem'>
+    <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
       <TextField
         label='Ask your question here.'
         placeholder='Ask your question here.'
@@ -253,10 +257,35 @@ export default function ConversationBar({
                 </Tooltip>
               )}
               {mode == 'prompt' && <AudioRecorder state={state} />}
+              {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' && (
+                <Tooltip title='Reset Conversation'>
+                  <IconButton
+                    color='info'
+                    onClick={() => {
+                      const uuid = crypto.randomUUID();
+                      setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+                      state.mutate((oldState) => ({
+                        ...oldState,
+                        chatConfig: { ...oldState.chatConfig, conversationName: uuid }
+                      }));
+                    }}
+                    disabled={state.chatState.isLoading}
+                    sx={{ height: '56px', padding: '0px' }}
+                  >
+                    <DeleteForever />
+                  </IconButton>
+                </Tooltip>
+              )}
             </InputAdornment>
           )
         }}
       />
+      {process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR !== 'true' && (
+        <Box display='flex' flexDirection='column' alignItems='center'>
+          <SwitchDark />
+          <SwitchColorblind />
+        </Box>
+      )}
     </Box>
   );
 }
