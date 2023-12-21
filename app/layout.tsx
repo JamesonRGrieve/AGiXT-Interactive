@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME,
-  description: 'An interactive '+process.env.NEXT_PUBLIC_APP_NAME+'.',
+  description: 'An interactive ' + process.env.NEXT_PUBLIC_APP_NAME + '.'
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -18,7 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='en'>
       <head>
-        <meta name="google-adsense-account" content={process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT} />
+        <meta name='google-adsense-account' content={process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT} />
       </head>
       <body className={inter.className}>
         <ThemeWrapper
