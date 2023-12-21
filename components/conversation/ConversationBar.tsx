@@ -13,11 +13,10 @@ import {
   DialogContentText,
   DialogActions,
   IconButton,
-  Theme,
   Typography
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { AGiXTContext, AGiXTState } from 'agixt-react';
+import { AGiXTContext } from 'agixt-react';
 import { setCookie } from 'cookies-next';
 import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
@@ -258,7 +257,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                     </IconButton>
                   </Tooltip>
                 )}
-                {mode == 'prompt' && <AudioRecorder state={state} />}
+                {/*mode == 'prompt' && <AudioRecorder />*/}
                 {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' && (
                   <Tooltip title='Reset Conversation'>
                     <IconButton
