@@ -251,36 +251,36 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                       color='info'
                       onClick={handleSendMessage}
                       disabled={state.chatState.isLoading}
-                      sx={{ height: '56px', padding: '0px' }}
+                      sx={{ height: '56px', padding: '0.5rem' }}
                     >
                       <SendIcon />
                     </IconButton>
                   </Tooltip>
                 )}
                 {/*mode == 'prompt' && <AudioRecorder />*/}
-                {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' && (
-                  <Tooltip title='Reset Conversation'>
-                    <IconButton
-                      color='info'
-                      onClick={() => {
-                        const uuid = crypto.randomUUID();
-                        setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
-                        state.mutate((oldState) => ({
-                          ...oldState,
-                          chatConfig: { ...oldState.chatConfig, conversationName: uuid }
-                        }));
-                      }}
-                      disabled={state.chatState.isLoading}
-                      sx={{ height: '56px', padding: '0px' }}
-                    >
-                      <DeleteForever />
-                    </IconButton>
-                  </Tooltip>
-                )}
               </InputAdornment>
             )
           }}
         />
+        {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' && (
+          <Tooltip title='Reset Conversation (Forever)'>
+            <IconButton
+              color='info'
+              onClick={() => {
+                const uuid = crypto.randomUUID();
+                setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+                state.mutate((oldState) => ({
+                  ...oldState,
+                  chatConfig: { ...oldState.chatConfig, conversationName: uuid }
+                }));
+              }}
+              disabled={state.chatState.isLoading}
+              sx={{ height: '56px', padding: '1rem' }}
+            >
+              <DeleteForever />
+            </IconButton>
+          </Tooltip>
+        )}
         {process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR !== 'true' && (
           <Box display='flex' flexDirection='column' alignItems='center'>
             <SwitchDark />
@@ -297,8 +297,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
           >
             <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT/AGiXT'>
               {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
-            </Link>
-            , Crafted by{' '}
+            </Link>{' '}
+            • Built by{' '}
             <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT'>
               JoshXT
             </Link>{' '}
