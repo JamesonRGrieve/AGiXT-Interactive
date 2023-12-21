@@ -13,7 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-        environment: ['vhai', 'santa', 'doomer']
+        environment: ['vhai', 'santa', 'doomer', 'oppenheimer']
     runs-on: ubuntu-latest
     environment: ${{ matrix.environment }}
     steps:
@@ -93,3 +93,4 @@ jobs:
             AGIXT_FOOTER_MESSAGE=${{ env.AGIXT_FOOTER_MESSAGE }}
             THEME_NAME=${{ env.THEME_NAME }}
             ADSENSE_ACCOUNT=${{ env.ADSENSE_ACCOUNT }}
+
