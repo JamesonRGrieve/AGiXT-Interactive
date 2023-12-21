@@ -33,7 +33,7 @@
     "@mui/system": "^5.14.17",
     "@mui/x-data-grid": "^6.16.2",
     "agixt": "^1.0.45",
-    "agixt-react": "^0.0.6",
+    "agixt-react": "^0.0.9",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.0.0",
     "jrgcomponents": "^0.0.77",
