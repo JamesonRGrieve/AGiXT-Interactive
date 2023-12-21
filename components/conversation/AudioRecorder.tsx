@@ -1,7 +1,7 @@
 import { useState, useRef, useContext } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
-import { AGiXTContext, AGiXTState } from 'agixt-react';
+import { AGiXTContext } from 'agixt-react';
 
 export default function AudioRecorder() {
   const state = useContext(AGiXTContext);

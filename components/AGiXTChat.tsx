@@ -41,11 +41,17 @@ const AGiXTChat = ({
   showAppBar = false,
   showConversationSelector = false
 }: ChatProps & { stateful?: boolean }) => {
-  console.log(`AGiXTChat initialized as ${stateful?"":"not "}stateful. ${stateful?"AGiXTChat will provide its own AGiXTWrapper and state.":"Assuming an AGiXTWrapper encloses this instance."}`);
+  console.log(
+    `AGiXTChat initialized as ${stateful ? '' : 'not '}stateful. ${
+      stateful
+        ? 'AGiXTChat will provide its own AGiXTWrapper and state.'
+        : 'Assuming an AGiXTWrapper encloses this instance.'
+    }`
+  );
   return stateful ? (
     <Stateful mode={mode} showAppBar={showAppBar} showConversationSelector={showConversationSelector} />
   ) : (
     <Stateless mode={mode} showAppBar={showAppBar} showConversationSelector={showConversationSelector} />
   );
-}
+};
 export default AGiXTChat;

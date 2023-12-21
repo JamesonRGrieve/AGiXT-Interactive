@@ -1,7 +1,6 @@
 import {
   Select,
   MenuItem,
-  InputLabel,
   FormControl,
   Button,
   Dialog,
@@ -9,21 +8,19 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  Tooltip,
-  Theme
+  Tooltip
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
-import { AGiXTContext, AGiXTState } from 'agixt-react';
+import { AGiXTContext } from 'agixt-react';
 import { setCookie } from 'cookies-next';
 export default function ConversationSelector() {
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
-  const theme = useTheme();
   const state = useContext(AGiXTContext);
   useEffect(() => {
     console.log('Setting conversation name cookie.', state.chatConfig.conversationName);
