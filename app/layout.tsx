@@ -18,6 +18,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang='en'>
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="any" />
         <meta name='google-adsense-account' content={process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT} />
         <meta property='og:url' content='https://santa.claus.chat/' />
         <meta property='og:type' content='website' />
