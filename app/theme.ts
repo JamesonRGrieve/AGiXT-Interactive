@@ -20,14 +20,14 @@ const baseTheme = {
   palette: {
     colorblind: false,
     primary: {
-      light: '#ff7878',
-      main: '#ff0000',
-      dark: '#8F0000'
+      light: '#CCCAE3',
+      main: '#544D93',
+      dark: '#453F78'
     },
     secondary: {
-      light: '#74d680',
-      main: '#378b29',
-      dark: '#204F17'
+      light: '#F07F9D',
+      main: '#E01A4F',
+      dark: '#B71540'
     },
     error: {
       light: '#F6998D',
@@ -35,9 +35,9 @@ const baseTheme = {
       dark: '#E42A11'
     },
     info: {
-      light: '#74d680',
-      main: '#378b29',
-      dark: '#204F17'
+      light: '#91CFDE',
+      main: '#53B3CB',
+      dark: '#1C515E'
     },
     warning: {
       light: '#FBD774',
