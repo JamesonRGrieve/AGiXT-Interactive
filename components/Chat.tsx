@@ -4,7 +4,7 @@ import Box from '@mui/material/Box';
 
 import Header from './Header';
 
-import { AGiXTState } from '../types/AGiXTState';
+import { AGiXTState } from 'agixt-react';
 import { ChatProps } from './AGiXTChat';
 
 export default function Chat({

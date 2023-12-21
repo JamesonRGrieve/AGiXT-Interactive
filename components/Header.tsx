@@ -2,7 +2,7 @@ import { AppBar, Box, Theme, Typography } from '@mui/material';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import ConversationSelector from './conversation/ConversationSelector';
-import { AGiXTState } from '@/types/AGiXTState';
+import { AGiXTState } from 'agixt-react';
 
 export default function Header({
   state,
