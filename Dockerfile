@@ -1,6 +1,7 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache libc6-compat git
+RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/var/cache/npm,sharing=locked \
     npm ci
@@ -53,7 +54,7 @@ ENV NODE_ENV=production \
     ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes && cp -r themes/${THEME_NAME} /app/themes/${THEME_NAME} && rm -rf themes
+COPY --from=deps /app/themes/${THEME_NAME} ./app
 
 # Hacky af
 RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
