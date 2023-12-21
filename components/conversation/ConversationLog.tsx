@@ -20,7 +20,7 @@ import clipboardCopy from 'clipboard-copy';
 
 import MarkdownBlock from './MarkdownBlock';
 import { AGiXTContext, AGiXTState } from 'agixt-react';
-const WAIT_MESSAGE = 'Let me think about that for a moment. Please wait..';
+
 
 export default function ConversationHistory() {
   let lastUserMessage = ''; // track the last user message
@@ -45,7 +45,7 @@ export default function ConversationHistory() {
     <Paper
       elevation={5}
       sx={{
-        overflowY: 'auto',
+        overflowY: 'scroll',
         display: 'flex',
         flexDirection: 'column-reverse',
         flexGrow: '1',
@@ -69,8 +69,8 @@ export default function ConversationHistory() {
               key={'Please Wait'}
               chatItem={{
                 role: state.agent.name,
-                message: WAIT_MESSAGE,
-                timestamp: 'Just Now...'
+                message: state.agent.name+" is typing...",
+                timestamp: '...'
               }}
               lastUserMessage={lastUserMessage}
               state={state}
