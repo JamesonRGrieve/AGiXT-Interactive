@@ -79,7 +79,8 @@ export default function ConversationSelector({ state, theme }: { state: AGiXTSta
             flexDirection: 'row',
             alignItems: 'center'
           }}
-          fullWidth>
+          fullWidth
+        >
           <Select
             sx={{
               color: 'white',
@@ -104,7 +105,8 @@ export default function ConversationSelector({ state, theme }: { state: AGiXTSta
                 ...oldState,
                 chatConfig: { ...oldState.chatConfig, conversationName: e.target.value }
               }))
-            }>
+            }
+          >
             {state.conversations
               ? state.conversations.map((c) => (
                   <MenuItem key={c} value={c}>

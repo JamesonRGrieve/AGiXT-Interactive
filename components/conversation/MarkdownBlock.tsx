@@ -121,7 +121,8 @@ export default function MarkdownBlock({ state, content, chatItem }: { state: AGi
         {...props}
         target={isExternal ? '_blank' : undefined}
         rel={isExternal ? 'noopener noreferrer' : undefined}
-        onClick={isExternal ? undefined : handleAnchorClick}>
+        onClick={isExternal ? undefined : handleAnchorClick}
+      >
         {children}
       </a>
     );
@@ -163,7 +164,8 @@ export default function MarkdownBlock({ state, content, chatItem }: { state: AGi
                       borderRadius: '3px',
                       padding: '0.2em',
                       fontFamily: 'monospace'
-                    }}>
+                    }}
+                  >
                     {children}
                   </span>
                 );
@@ -188,7 +190,8 @@ export default function MarkdownBlock({ state, content, chatItem }: { state: AGi
                             const actualCode = codeBlockRef.current.querySelector('code');
                             clipboardCopy(actualCode.innerText);
                           }
-                        }}>
+                        }}
+                      >
                         <ContentCopyIcon />
                       </IconButton>
                       <IconButton
@@ -206,7 +209,8 @@ export default function MarkdownBlock({ state, content, chatItem }: { state: AGi
                             document.body.appendChild(element);
                             element.click();
                           }
-                        }}>
+                        }}
+                      >
                         <DownloadIcon />
                       </IconButton>
                       {fileName} | {language}
@@ -232,7 +236,8 @@ export default function MarkdownBlock({ state, content, chatItem }: { state: AGi
                 </>
               );
             }
-          }}>
+          }}
+        >
           {renderMessage().toString()}
         </ReactMarkdown>
       )}

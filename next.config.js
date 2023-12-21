@@ -7,7 +7,7 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_INSIGHT_AGENT: process.env.AGIXT_INSIGHT_AGENT || 'gpt4free',
     NEXT_PUBLIC_AGIXT_MODE: process.env.AGIXT_MODE || 'prompt',
     // Prompt Mode Options
-    NEXT_PUBLIC_AGIXT_PROMPT_NAME:  process.env.AGIXT_PROMPT_NAME || 'Chat',
+    NEXT_PUBLIC_AGIXT_PROMPT_NAME: process.env.AGIXT_PROMPT_NAME || 'Chat',
     NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY: process.env.AGIXT_PROMPT_CATEGORY || 'Default',
     // Chain Mode Options
     NEXT_PUBLIC_AGIXT_CHAIN: process.env.AGIXT_CHAIN || 'Postgres Chat',
