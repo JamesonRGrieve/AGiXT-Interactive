@@ -19,6 +19,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='en'>
       <head>
         <meta name='google-adsense-account' content={process.env.NEXT_PUBLIC_ADSENSE_ACCOUNT} />
+        <meta property='og:url' content='https://santa.claus.chat/' />
+        <meta property='og:type' content='website' />
+        <meta property='og:title' content='Chat with Santa Claus' />
+        <meta property='og:description' content='Chat with Santa Claus for free, powered by AGiXT.' />
       </head>
       <body className={inter.className}>
         <ThemeWrapper
