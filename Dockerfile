@@ -8,6 +8,7 @@ RUN --mount=type=cache,target=/var/cache/npm,sharing=locked \
 FROM node:20-alpine AS builder
 WORKDIR /app
 ARG APP_NAME
+ARG APP_URI
 ARG AGIXT_SERVER
 ARG AUTH_WEB
 ARG AGIXT_AGENT
@@ -28,6 +29,7 @@ ARG LOG_VERBOSITY_SERVER
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     APP_NAME=${APP_NAME} \
+    APP_URI=${APP_URI} \
     AGIXT_SERVER=${AGIXT_SERVER} \
     AUTH_WEB=${AUTH_WEB} \
     AGIXT_AGENT=${AGIXT_AGENT} \
@@ -51,6 +53,7 @@ COPY . .
 # Hacky af
 RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "APP_NAME=${APP_NAME}" >> .env \
+    && echo "APP_URI=${APP_URI}" >> .env \
     && echo "AUTH_WEB=${AUTH_WEB}" >> .env \
     && echo "AGIXT_AGENT=${AGIXT_AGENT}" >> .env \
     && echo "AGIXT_INSIGHT_AGENT=${AGIXT_INSIGHT_AGENT}" >> .env \
