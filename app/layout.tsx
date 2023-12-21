@@ -24,6 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta property='og:type' content='website' />
         <meta property='og:title' content={process.env.NEXT_PUBLIC_APP_NAME} />
         <meta property='og:description' content={process.env.NEXT_PUBLIC_APP_DESCRIPTION} />
+        <meta property='og:image' content={process.env.NEXT_PUBLIC_APP_IMAGE} />
       </head>
       <body className={inter.className}>
         <ThemeWrapper

@@ -13,6 +13,7 @@ export default function Chat({ mode, showAppBar, showConversationSelector }: Cha
 
       <Box
         style={{
+          height: '100%',
           maxWidth: '100%',
           flexGrow: '1',
           transition: theme.transitions.create('margin', {
