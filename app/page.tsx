@@ -17,7 +17,7 @@ export default function Home() {
     setLoggedIn(true);
   };
   const theme = useTheme();
-  if (!loggedIn) {
+  if (!loggedIn && process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true') {
     return (
       <div>
         <h1>AGiXT Chat</h1>

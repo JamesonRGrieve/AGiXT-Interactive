@@ -21,7 +21,7 @@ const Stateful = (props: ChatProps) => {
     prompt: {
       ...AGiXTDefaultState.prompt,
       name: process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
-      category: process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
+      category: process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY
     },
     sdk: new AGiXTSDK({
       baseUri: process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437',
