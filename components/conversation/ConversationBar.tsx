@@ -288,27 +288,28 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
           </Box>
         )}
       </Box>
-
-      <Box>
-        <Typography
-          variant='caption'
-          align='center'
-          style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}
-        >
-          <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT/AGiXT'>
-            Powered with Christmas Spirit from AGiXT
-          </Link>
-          , Crafted by{' '}
-          <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT'>
-            JoshXT
-          </Link>{' '}
-          and{' '}
-          <Link style={{ textDecoration: 'none' }} href='https://github.com/jamesonrgrieve'>
-            James G.
-          </Link>{' '}
-          &copy; 2023
-        </Typography>
-      </Box>
+      {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE && (
+        <Box>
+          <Typography
+            variant='caption'
+            align='center'
+            style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}
+          >
+            <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT/AGiXT'>
+              {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
+            </Link>
+            , Crafted by{' '}
+            <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT'>
+              JoshXT
+            </Link>{' '}
+            and{' '}
+            <Link style={{ textDecoration: 'none' }} href='https://github.com/jamesonrgrieve'>
+              James G.
+            </Link>{' '}
+            &copy; 2023
+          </Typography>
+        </Box>
+      )}
     </>
   );
 }
