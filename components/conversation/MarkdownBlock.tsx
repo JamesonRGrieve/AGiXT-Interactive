@@ -8,7 +8,8 @@ import { DataGridFromCSV } from './DataGridFromCSV';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
 import { AGiXTContext, AGiXTState } from 'agixt-react';
 
-export default function MarkdownBlock({ state, content, chatItem }: { state: AGiXTState; content: string; chatItem: any }) {
+export default function MarkdownBlock({ content, chatItem }: { content: string; chatItem: any }) {
+  const state = useContext(AGiXTContext);
   const langMap = {
     '': 'txt',
     python: 'py',

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import AudioRecorder from '../conversation/AudioRecorder';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import Box from '@mui/material/Box';
@@ -17,22 +17,15 @@ import {
   Typography
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { AGiXTState } from 'agixt-react';
+import { AGiXTContext, AGiXTState } from 'agixt-react';
 import { setCookie } from 'cookies-next';
 import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import Link from 'next/link';
 
-export default function ConversationBar({
-  mode,
-  state,
-  theme
-}: {
-  mode: 'prompt' | 'chain';
-  state: AGiXTState;
-  theme: Theme;
-}) {
+export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) {
+  const state = useContext(AGiXTContext);
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
   const handleUploadFiles = async () => {

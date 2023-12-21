@@ -1,22 +1,20 @@
 import ConversationHistory from './conversation/ConversationLog';
 import ConversationBar from './conversation/ConversationBar';
 import Box from '@mui/material/Box';
-
+import { AGiXTContext } from 'agixt-react';
 import Header from './Header';
 
 import { AGiXTState } from 'agixt-react';
 import { ChatProps } from './AGiXTChat';
+import { useTheme } from '@mui/material';
+import { useContext } from 'react';
 
-export default function Chat({
-  state,
-  mode,
-  showAppBar,
-  showConversationSelector,
-  theme
-}: ChatProps & { state: AGiXTState }) {
+export default function Chat({ mode, showAppBar, showConversationSelector }: ChatProps & { state: AGiXTState }) {
+  const theme = useTheme();
+  const state = useContext(AGiXTContext);
   return (
     <Box height='100%' display='flex' flexDirection='column'>
-      {showAppBar && <Header state={state} theme={theme} showConversationSelector={showConversationSelector} />}
+      {showAppBar && <Header />}
 
       <Box
         style={{
@@ -31,8 +29,8 @@ export default function Chat({
         }}
         component='main'
       >
-        <ConversationHistory state={state} theme={theme} />
-        <ConversationBar state={state} theme={theme} mode={mode} />
+        <ConversationHistory />
+        <ConversationBar mode={mode} />
       </Box>
     </Box>
   );

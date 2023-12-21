@@ -13,7 +13,7 @@ import {
   TextField,
   Button,
   Tooltip,
-  Theme
+  useTheme
 } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, ThumbDown } from '@mui/icons-material';
 import clipboardCopy from 'clipboard-copy';
@@ -22,8 +22,10 @@ import MarkdownBlock from './MarkdownBlock';
 import { AGiXTContext, AGiXTState } from 'agixt-react';
 const WAIT_MESSAGE = 'Let me think about that for a moment. Please wait..';
 
-export default function ConversationHistory({ state, theme }: { state: AGiXTState; theme: Theme }) {
+export default function ConversationHistory() {
   let lastUserMessage = ''; // track the last user message
+  const theme = useTheme();
+  const state = useContext(AGiXTContext);
   useEffect(() => {
     console.log('Getting conversation', state.agent.name);
     state.mutate((oldState) => {
@@ -129,7 +131,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
         color: theme.palette.text.primary
       }}
     >
-      <MarkdownBlock state={state} content={formattedMessage} chatItem={chatItem} />
+      <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
       <Typography
         variant='caption'
         style={{

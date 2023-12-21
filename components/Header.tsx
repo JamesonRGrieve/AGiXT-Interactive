@@ -2,18 +2,13 @@ import { AppBar, Box, Theme, Typography } from '@mui/material';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import ConversationSelector from './conversation/ConversationSelector';
-import { AGiXTState } from 'agixt-react';
+import { AGiXTContext, AGiXTState } from 'agixt-react';
+import { useContext } from 'react';
 
-export default function Header({
-  state,
-  showConversationSelector,
-  theme
-}: {
-  state: AGiXTState;
-  showConversationSelector: boolean;
-  theme: Theme;
-}) {
+export default function Header({ showConversationSelector }: { showConversationSelector: boolean }) {
   showConversationSelector = true;
+
+  const state = useContext(AGiXTContext);
   return (
     <AppBar
       sx={{
@@ -28,7 +23,7 @@ export default function Header({
     >
       <Box display='flex' flex='1' flexDirection='row'>
         <Box display='flex' flexDirection='row' width='100%' pr='4rem'>
-          {showConversationSelector ? <ConversationSelector state={state} theme={theme} /> : <span>&nbsp;</span>}
+          {showConversationSelector ? <ConversationSelector /> : <span>&nbsp;</span>}
         </Box>
       </Box>
       <Typography variant='h1' sx={{ justifySelf: 'center', color: 'white' }}>
