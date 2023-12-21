@@ -156,6 +156,9 @@ export default function ConversationBar({
       conversation_results: state.chatConfig.conversationResults,
       ...args
     };
+    console.log("State args", stateArgs);
+    console.log("State", state);
+    console.log("Prompt name", promptName);
     const response = await state.sdk.promptAgent(state.agent.name, promptName, stateArgs);
     state.mutate((oldState) => {
       return {
