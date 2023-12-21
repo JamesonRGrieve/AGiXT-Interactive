@@ -51,17 +51,31 @@ export default function ConversationHistory() {
         backgroundColor: theme.palette.background.paper
       }}
     >
-      <div>
-        {state.chatState.conversation.length > 0 && state.chatState.conversation.map
-          ? state.chatState.conversation.map((chatItem, index) => {
-              if (chatItem.role === 'USER') {
-                lastUserMessage = chatItem.message;
-              }
-              return (
-                <ChatMessage key={index} chatItem={chatItem} state={state} theme={theme} lastUserMessage={lastUserMessage} />
-              );
-            })
-          : null}
+      <Box>
+        {state.chatState.conversation.length > 0 && state.chatState.conversation.map ? (
+          state.chatState.conversation.map((chatItem, index) => {
+            if (chatItem.role === 'USER') {
+              lastUserMessage = chatItem.message;
+            }
+            return (
+              <ChatMessage key={index} chatItem={chatItem} state={state} theme={theme} lastUserMessage={lastUserMessage} />
+            );
+          })
+        ) : (
+          <Box pb='3rem'>
+            <Typography variant='h1' align='center'>
+              Welcome to {process.env.NEXT_PUBLIC_APP_NAME}
+            </Typography>
+            <Typography variant='subtitle1' align='center' mb='2rem'>
+              {process.env.NEXT_PUBLIC_APP_DESCRIPTION}
+            </Typography>
+            <Typography variant='body1' align='center'>
+              {process.env.NEXT_PUBLIC_APP_NAME} may provide inaccurate or inappropriate responses, may break character and
+              comes with no warranty of any kind. By using this software you agree to hold harmless the developers of{' '}
+              {process.env.NEXT_PUBLIC_APP_NAME} for any damages caused by the use of this software.
+            </Typography>
+          </Box>
+        )}
         {state.chatState.isLoading && (
           <>
             <ChatMessage
@@ -69,7 +83,7 @@ export default function ConversationHistory() {
               chatItem={{
                 role: state.agent.name,
                 message: state.agent.name + ' is typing...',
-                timestamp: '...'
+                timestamp: ''
               }}
               lastUserMessage={lastUserMessage}
               state={state}
@@ -77,7 +91,7 @@ export default function ConversationHistory() {
             />
           </>
         )}
-      </div>
+      </Box>
     </Paper>
   );
 }
@@ -131,15 +145,17 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
       }}
     >
       <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
-      <Typography
-        variant='caption'
-        style={{
-          width: '100%',
-          display: 'inline-block'
-        }}
-      >
-        {chatItem.role === 'USER' ? 'You' : chatItem.role} • {chatItem.timestamp}
-      </Typography>
+      {chatItem.timestamp && (
+        <Typography
+          variant='caption'
+          style={{
+            width: '100%',
+            display: 'inline-block'
+          }}
+        >
+          {chatItem.role === 'USER' ? 'You' : chatItem.role} • {chatItem.timestamp}
+        </Typography>
+      )}
       {chatItem.role != 'USER' && !state.chatState.isLoading && (
         <>
           {process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
