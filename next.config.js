@@ -24,6 +24,7 @@ const nextConfig = {
     NEXT_PUBLIC_ADSENSE_ACCOUNT: process.env.ADSENSE_ACCOUNT || '',
     NEXT_PUBLIC_AGIXT_RLHF: process.env.AGIXT_RLHF || 'false',
     NEXT_PUBLIC_APP_NAME: process.env.APP_NAME || 'AGiXT',
+    NEXT_PUBLIC_APP_DESCRIPTION: process.env.APP_DESCRIPTION || 'An AGiXT application.',
     NEXT_PUBLIC_COOKIE_DOMAIN: `.${((process.env.APP_URI ?? 'http://localhost:3100').split('://')[1] ?? '')
       .split(':')[0]
       .split('.')
