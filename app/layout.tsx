@@ -4,9 +4,7 @@ import { cookies } from 'next/headers';
 import './globals.css';
 import ThemeWrapper from 'jrgcomponents/theming/ThemeWrapper';
 import themes from './theme';
-import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
-import SwitchDark from 'jrgcomponents/theming/SwitchDark';
-
+import React from 'react';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -16,6 +14,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = cookies();
+
   return (
     <html lang='en'>
       <head>
