@@ -1,6 +1,7 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat git
+RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/var/cache/npm,sharing=locked \
     npm ci
@@ -26,6 +27,7 @@ ARG AGIXT_CONVERSATION_NAME
 ARG AGIXT_REQUIRE_API_KEY
 ARG AGIXT_RLHF
 ARG ADSENSE_ACCOUNT
+ARG THEME_NAME
 ARG LOG_VERBOSITY_SERVER
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
@@ -47,10 +49,12 @@ ENV NODE_ENV=production \
     AGIXT_CONVERSATION_NAME=${AGIXT_CONVERSATION_NAME} \
     AGIXT_REQUIRE_API_KEY=${AGIXT_REQUIRE_API_KEY} \
     AGIXT_RLHF=${AGIXT_RLHF} \
+    THEME_NAME=${THEME_NAME} \
     LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER} \
     ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+COPY --from=deps /app/themes/${THEME_NAME} ./app
 
 # Hacky af
 RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
@@ -71,6 +75,7 @@ RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "AGIXT_CONVERSATION_NAME=${AGIXT_CONVERSATION_NAME}" >> .env \
     && echo "AGIXT_REQUIRE_API_KEY=${AGIXT_REQUIRE_API_KEY}" >> .env \
     && echo "AGIXT_RLHF=${AGIXT_RLHF}" >> .env \
+    && echo "THEME_NAME=${THEME_NAME}" >> .env \
     && echo "LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER}" >> .env \
     && echo "ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}" >> .env
 
