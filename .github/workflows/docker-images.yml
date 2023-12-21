@@ -57,6 +57,7 @@ jobs:
           AGIXT_SHOW_CONVERSATION_BAR: ${{ vars.AGIXT_SHOW_CONVERSATION_BAR }}
           AGIXT_CONVERSATION_NAME: ${{ vars.AGIXT_CONVERSATION_NAME }}
           AGIXT_REQUIRE_API_KEY: ${{ vars.AGIXT_REQUIRE_API_KEY }}
+          AGIXT_RLHF: ${{ vars.AGIXT_RLHF }}
           ADSENSE_ACCOUNT: ${{ vars.ADSENSE_ACCOUNT }}
         with:
           context: .
@@ -84,4 +85,6 @@ jobs:
             AGIXT_SHOW_CONVERSATION_BAR=${{ env.AGIXT_SHOW_CONVERSATION_BAR }}
             AGIXT_CONVERSATION_NAME=${{ env.AGIXT_CONVERSATION_NAME }}
             AGIXT_REQUIRE_API_KEY=${{ env.AGIXT_REQUIRE_API_KEY }}
+            AGIXT_RLHF=${{ env.AGIXT_RLHF }}
             ADSENSE_ACCOUNT=${{ env.ADSENSE_ACCOUNT }}
+
