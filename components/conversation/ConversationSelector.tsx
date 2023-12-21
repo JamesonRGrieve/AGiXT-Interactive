@@ -16,7 +16,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
-import { AGiXTContext, AGiXTState } from '../../types/AGiXTState';
+import { AGiXTContext, AGiXTState } from 'agixt-react';
 import { setCookie } from 'cookies-next';
 export default function ConversationSelector({ state, theme }: { state: AGiXTState; theme: Theme }) {
   const [openNewConversation, setOpenNewConversation] = useState(false);

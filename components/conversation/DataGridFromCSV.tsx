@@ -3,7 +3,7 @@ import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextFie
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
 import { useState, useEffect, useContext } from 'react';
-import { AGiXTContext, AGiXTState } from '../../types/AGiXTState';
+import { AGiXTContext, AGiXTState } from 'agixt-react';
 
 const ODD_OPACITY = 1;
 

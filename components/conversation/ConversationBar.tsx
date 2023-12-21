@@ -17,7 +17,7 @@ import {
   Typography
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { AGiXTState } from '../../types/AGiXTState';
+import { AGiXTState } from 'agixt-react';
 import { setCookie } from 'cookies-next';
 import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
