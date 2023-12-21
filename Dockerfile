@@ -6,6 +6,7 @@ RUN --mount=type=cache,target=/var/cache/npm,sharing=locked \
     npm ci
 
 FROM node:20-alpine AS builder
+RUN apk add --no-cache git
 WORKDIR /app
 ARG APP_NAME
 ARG APP_URI
