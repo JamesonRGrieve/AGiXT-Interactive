@@ -13,7 +13,8 @@ import {
   DialogContentText,
   DialogActions,
   IconButton,
-  Theme
+  Theme,
+  Typography
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { AGiXTState } from '../../types/AGiXTState';
@@ -21,6 +22,7 @@ import { setCookie } from 'cookies-next';
 import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
+import Link from 'next/link';
 
 export default function ConversationBar({
   mode,
@@ -176,6 +178,7 @@ export default function ConversationBar({
   };
 
   return (
+    <>
     <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
       <TextField
         label={`Ask your question to ${state.agent.name} here.`}
@@ -290,5 +293,12 @@ export default function ConversationBar({
         </Box>
       )}
     </Box>
+    
+    
+    <Box>
+        <Typography variant='caption' align="center" style={{ width: '100%', display: 'inline-block', fontWeight:"bold", fontSize:"0.8rem" }}><Link style={{textDecoration: "none"}} href="https://github.com/Josh-XT/AGiXT">Powered with Christmas Spirit from AGiXT</Link>, Crafted by <Link style={{textDecoration: "none"}} href="https://github.com/Josh-XT">JoshXT</Link> and <Link style={{textDecoration: "none"}} href="https://github.com/jamesonrgrieve">James G.</Link> &copy; 2023</Typography>
+    </Box>
+    
+    </>
   );
 }
