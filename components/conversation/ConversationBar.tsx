@@ -179,126 +179,144 @@ export default function ConversationBar({
 
   return (
     <>
-    <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
-      <TextField
-        label={`Ask your question to ${state.agent.name} here.`}
-        placeholder={`Ask your question to ${state.agent.name} here.`}
-        multiline
-        rows={2}
-        fullWidth
-        value={message}
-        onKeyDown={(event) => {
-          if (event.key === 'Enter' && !event.shiftKey && message) {
-            event.preventDefault();
-            handleSendMessage();
-          }
-        }}
-        onChange={(e) => setMessage(e.target.value)}
-        sx={{ my: 2 }}
-        disabled={state.chatState.isLoading}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position='end'>
-              {state.chatConfig.enableFileUpload && (
-                <>
-                  <IconButton
-                    color='info'
-                    onClick={() => {
-                      setFileUploadOpen(true);
-                      state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: [] } }));
-                    }}
-                    disabled={state.chatState.isLoading}
-                    sx={{ height: '56px' }}
-                  >
-                    <NoteAddOutlinedIcon />
-                  </IconButton>
-                  <Dialog
-                    open={fileUploadOpen}
-                    onClose={() => {
-                      setFileUploadOpen(false);
-                    }}
-                  >
-                    <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
-                    <DialogContent>
-                      <DialogContentText>Please upload the files you would like to send.</DialogContentText>
-                      <input
-                        accept='*'
-                        id='contained-button-file'
-                        multiple
-                        type='file'
-                        onChange={(e) => {
-                          state.mutate((oldState) => ({
-                            ...oldState,
-                            chatState: { ...oldState.chatState, uploadedFiles: Array(e.target.files) }
-                          }));
-                        }}
-                      />
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        onClick={() => {
-                          setFileUploadOpen(false);
-                        }}
-                        color='error'
-                      >
-                        Cancel
-                      </Button>
-                      <Button onClick={handleUploadFiles} color='info' disabled={state.chatState.isLoading}>
-                        Upload
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
-                </>
-              )}
-              {!state.chatState.isLoading && (
-                <Tooltip title='Send Message'>
-                  <IconButton
-                    color='info'
-                    onClick={handleSendMessage}
-                    disabled={state.chatState.isLoading}
-                    sx={{ height: '56px', padding: '0px' }}
-                  >
-                    <SendIcon />
-                  </IconButton>
-                </Tooltip>
-              )}
-              {mode == 'prompt' && <AudioRecorder state={state} />}
-              {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' && (
-                <Tooltip title='Reset Conversation'>
-                  <IconButton
-                    color='info'
-                    onClick={() => {
-                      const uuid = crypto.randomUUID();
-                      setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
-                      state.mutate((oldState) => ({
-                        ...oldState,
-                        chatConfig: { ...oldState.chatConfig, conversationName: uuid }
-                      }));
-                    }}
-                    disabled={state.chatState.isLoading}
-                    sx={{ height: '56px', padding: '0px' }}
-                  >
-                    <DeleteForever />
-                  </IconButton>
-                </Tooltip>
-              )}
-            </InputAdornment>
-          )
-        }}
-      />
-      {process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR !== 'true' && (
-        <Box display='flex' flexDirection='column' alignItems='center'>
-          <SwitchDark />
-          <SwitchColorblind />
-        </Box>
-      )}
-    </Box>
-    
-    
-    <Box>
-        <Typography variant='caption' align="center" style={{ width: '100%', display: 'inline-block', fontWeight:"bold", fontSize:"0.8rem" }}><Link style={{textDecoration: "none"}} href="https://github.com/Josh-XT/AGiXT">Powered with Christmas Spirit from AGiXT</Link>, Crafted by <Link style={{textDecoration: "none"}} href="https://github.com/Josh-XT">JoshXT</Link> and <Link style={{textDecoration: "none"}} href="https://github.com/jamesonrgrieve">James G.</Link> &copy; 2023</Typography>
-    </Box>
-    
+      <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
+        <TextField
+          label={`Ask your question to ${state.agent.name} here.`}
+          placeholder={`Ask your question to ${state.agent.name} here.`}
+          multiline
+          rows={2}
+          fullWidth
+          value={message}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' && !event.shiftKey && message) {
+              event.preventDefault();
+              handleSendMessage();
+            }
+          }}
+          onChange={(e) => setMessage(e.target.value)}
+          sx={{ my: 2 }}
+          disabled={state.chatState.isLoading}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                {state.chatConfig.enableFileUpload && (
+                  <>
+                    <IconButton
+                      color='info'
+                      onClick={() => {
+                        setFileUploadOpen(true);
+                        state.mutate((oldState) => ({
+                          ...oldState,
+                          chatState: { ...oldState.chatState, uploadedFiles: [] }
+                        }));
+                      }}
+                      disabled={state.chatState.isLoading}
+                      sx={{ height: '56px' }}
+                    >
+                      <NoteAddOutlinedIcon />
+                    </IconButton>
+                    <Dialog
+                      open={fileUploadOpen}
+                      onClose={() => {
+                        setFileUploadOpen(false);
+                      }}
+                    >
+                      <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>Please upload the files you would like to send.</DialogContentText>
+                        <input
+                          accept='*'
+                          id='contained-button-file'
+                          multiple
+                          type='file'
+                          onChange={(e) => {
+                            state.mutate((oldState) => ({
+                              ...oldState,
+                              chatState: { ...oldState.chatState, uploadedFiles: Array(e.target.files) }
+                            }));
+                          }}
+                        />
+                      </DialogContent>
+                      <DialogActions>
+                        <Button
+                          onClick={() => {
+                            setFileUploadOpen(false);
+                          }}
+                          color='error'
+                        >
+                          Cancel
+                        </Button>
+                        <Button onClick={handleUploadFiles} color='info' disabled={state.chatState.isLoading}>
+                          Upload
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
+                  </>
+                )}
+                {!state.chatState.isLoading && (
+                  <Tooltip title='Send Message'>
+                    <IconButton
+                      color='info'
+                      onClick={handleSendMessage}
+                      disabled={state.chatState.isLoading}
+                      sx={{ height: '56px', padding: '0px' }}
+                    >
+                      <SendIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                {mode == 'prompt' && <AudioRecorder state={state} />}
+                {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' && (
+                  <Tooltip title='Reset Conversation'>
+                    <IconButton
+                      color='info'
+                      onClick={() => {
+                        const uuid = crypto.randomUUID();
+                        setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+                        state.mutate((oldState) => ({
+                          ...oldState,
+                          chatConfig: { ...oldState.chatConfig, conversationName: uuid }
+                        }));
+                      }}
+                      disabled={state.chatState.isLoading}
+                      sx={{ height: '56px', padding: '0px' }}
+                    >
+                      <DeleteForever />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </InputAdornment>
+            )
+          }}
+        />
+        {process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR !== 'true' && (
+          <Box display='flex' flexDirection='column' alignItems='center'>
+            <SwitchDark />
+            <SwitchColorblind />
+          </Box>
+        )}
+      </Box>
+
+      <Box>
+        <Typography
+          variant='caption'
+          align='center'
+          style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}
+        >
+          <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT/AGiXT'>
+            Powered with Christmas Spirit from AGiXT
+          </Link>
+          , Crafted by{' '}
+          <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT'>
+            JoshXT
+          </Link>{' '}
+          and{' '}
+          <Link style={{ textDecoration: 'none' }} href='https://github.com/jamesonrgrieve'>
+            James G.
+          </Link>{' '}
+          &copy; 2023
+        </Typography>
+      </Box>
     </>
   );
 }
