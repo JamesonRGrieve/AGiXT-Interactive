@@ -1,12 +1,11 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
-RUN apk add --no-cache libc6-compat
+RUN apk add --no-cache libc6-compat git
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/var/cache/npm,sharing=locked \
     npm ci
 
 FROM node:20-alpine AS builder
-RUN apk add --no-cache git
 WORKDIR /app
 ARG APP_NAME
 ARG APP_URI
@@ -54,9 +53,9 @@ ENV NODE_ENV=production \
     ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-
-# Clone the repo, copy the THEME_NAME folder to the themes folder
-RUN git clone https://github.com/GT-Umbrella/themes && cp -rf themes/${THEME_NAME} ./app && rm -rf themes
+RUN git clone https://github.com/GT-Umbrella/themes /app/themes
+COPY /app/themes/${THEME_NAME} /app/app
+RUN rm -rf /app/themes
 
 # Hacky af
 RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
