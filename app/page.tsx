@@ -1,22 +1,22 @@
 'use client';
-import { setCookie, getCookie } from 'cookies-next';
 import React, { useEffect, useState } from 'react';
 import AGiXTChat from '../components/AGiXTChat';
 import { useTheme } from '@mui/material';
+import {setCookie, getCookie} from 'cookies-next';
 
 export default function Home() {
   const [apiKey, setApiKey] = useState(getCookie('apiKey'));
   const [loggedIn, setLoggedIn] = useState(getCookie('apiKey') ? true : false);
-  const [conversationName, setConversationName] = useState();
-  useEffect(() => {
-    console.log('Setting conversation name cookie.', conversationName);
-    setCookie('conversationName', conversationName);
-  }, [conversationName]);
+
   const handleSetApiKey = () => {
-    setCookie('apiKey', apiKey);
+    setCookie('apiKey',apiKey);
     setLoggedIn(true);
   };
   const theme = useTheme();
+  console.log("Cookie domain", process.env.NEXT_PUBLIC_COOKIE_DOMAIN);
+  if (!getCookie('uuid')) {
+    setCookie('uuid', crypto.randomUUID(), {domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+  }
   if (!loggedIn && process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true') {
     return (
       <div>
@@ -32,7 +32,7 @@ export default function Home() {
         showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
         showConversationSelector={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
         mode={
-          (['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
+          (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
             ? process.env.NEXT_PUBLIC_AGIXT_MODE
             : 'prompt') as 'chain' | 'prompt'
         }
