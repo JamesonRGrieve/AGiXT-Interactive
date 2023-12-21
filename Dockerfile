@@ -5,8 +5,9 @@ COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/var/cache/npm,sharing=locked \
     npm ci
 
-FROM node:20-alpine AS theme
+FROM node:20-alpine AS themes
 WORKDIR /app
+RUN apk add --no-cache git
 RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
 
 FROM node:20-alpine AS builder
@@ -57,7 +58,7 @@ ENV NODE_ENV=production \
     ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-COPY --from=theme /app/themes/${THEME_NAME} ./app
+COPY --from=themes /app/themes/${THEME_NAME} ./app
 
 # Hacky af
 RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
