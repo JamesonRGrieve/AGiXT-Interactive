@@ -175,8 +175,8 @@ export default function ConversationBar({
   return (
     <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
       <TextField
-        label='Ask your question here.'
-        placeholder='Ask your question here.'
+        label={`Ask your question to ${state.agent.name} here.`}
+        placeholder={`Ask your question to ${state.agent.name} here.`}
         multiline
         rows={2}
         fullWidth
