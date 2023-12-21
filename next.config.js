@@ -15,8 +15,8 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_CHAIN_ARGS: process.env.AGIXT_CHAIN_ARGS || '{}',
     // UI Options
     NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED: process.env.AGIXT_FILE_UPLOAD_ENABLED || 'false',
-    NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR: process.env.AGIXT_AGIXT_SHOW_CONVERSATION_BAR || 'true',
-    NEXT_PUBLIC_AGIXT_SHOW_APP_BAR: process.env.AGIXT_AGIXT_SHOW_APP_BAR || 'true',
+    NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR: process.env.AGIXT_SHOW_CONVERSATION_BAR || 'true',
+    NEXT_PUBLIC_AGIXT_SHOW_APP_BAR: process.env.AGIXT_SHOW_APP_BAR || 'true',
     NEXT_PUBLIC_AGIXT_CONVERSATION_NAME: process.env.AGIXT_CONVERSATION_NAME || 'AGiXT Conversation',
     NEXT_PUBLIC_APP_URI: process.env.APP_URI ?? 'http://localhost:3100',
     NEXT_PUBLIC_COOKIE_DOMAIN: `.${((process.env.APP_URI ?? 'http://localhost:3100').split('://')[1] ?? '')
