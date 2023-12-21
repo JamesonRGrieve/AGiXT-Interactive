@@ -1,7 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import AGiXTChat from '../components/AGiXTChat';
-import { useTheme } from '@mui/material';
 import { setCookie, getCookie } from 'cookies-next';
 
 export default function Home() {
@@ -12,7 +11,6 @@ export default function Home() {
     setCookie('apiKey', apiKey);
     setLoggedIn(true);
   };
-  const theme = useTheme();
   console.log('Cookie domain', process.env.NEXT_PUBLIC_COOKIE_DOMAIN);
   if (!getCookie('uuid')) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
@@ -36,7 +34,6 @@ export default function Home() {
             ? process.env.NEXT_PUBLIC_AGIXT_MODE
             : 'prompt') as 'chain' | 'prompt'
         }
-        theme={theme}
       />
     );
   }
