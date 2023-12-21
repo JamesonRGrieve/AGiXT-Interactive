@@ -26,6 +26,7 @@ ARG AGIXT_CONVERSATION_NAME
 ARG AGIXT_REQUIRE_API_KEY
 ARG AGIXT_RLHF
 ARG ADSENSE_ACCOUNT
+ARG THEME_NAME
 ARG LOG_VERBOSITY_SERVER
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
@@ -47,10 +48,14 @@ ENV NODE_ENV=production \
     AGIXT_CONVERSATION_NAME=${AGIXT_CONVERSATION_NAME} \
     AGIXT_REQUIRE_API_KEY=${AGIXT_REQUIRE_API_KEY} \
     AGIXT_RLHF=${AGIXT_RLHF} \
+    THEME_NAME=${THEME_NAME} \
     LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER} \
     ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+
+# Clone the repo, copy the THEME_NAME folder to the themes folder
+RUN git clone https://github.com/GT-Umbrella/themes && cp -rf themes/${THEME_NAME} ./app && rm -rf themes
 
 # Hacky af
 RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
@@ -71,6 +76,7 @@ RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "AGIXT_CONVERSATION_NAME=${AGIXT_CONVERSATION_NAME}" >> .env \
     && echo "AGIXT_REQUIRE_API_KEY=${AGIXT_REQUIRE_API_KEY}" >> .env \
     && echo "AGIXT_RLHF=${AGIXT_RLHF}" >> .env \
+    && echo "THEME_NAME=${THEME_NAME}" >> .env \
     && echo "LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER}" >> .env \
     && echo "ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}" >> .env
 
