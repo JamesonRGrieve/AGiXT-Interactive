@@ -55,6 +55,7 @@ jobs:
           AGIXT_SHOW_APP_BAR: ${{ vars.AGIXT_SHOW_APP_BAR }}
           AGIXT_SHOW_CONVERSATION_BAR: ${{ vars.AGIXT_SHOW_CONVERSATION_BAR }}
           AGIXT_CONVERSATION_NAME: ${{ vars.AGIXT_CONVERSATION_NAME }}
+          ADSENSE_ACCOUNT: ${{ vars.ADSENSE_ACCOUNT }}
         with:
           context: .
           push: ${{ github.event_name != 'pull_request' }}
@@ -79,3 +80,5 @@ jobs:
             AGIXT_SHOW_APP_BAR=${{ env.AGIXT_SHOW_APP_BAR }}
             AGIXT_SHOW_CONVERSATION_BAR=${{ env.AGIXT_SHOW_CONVERSATION_BAR }}
             AGIXT_CONVERSATION_NAME=${{ env.AGIXT_CONVERSATION_NAME }}
+            ADSENSE_ACCOUNT=${{ env.ADSENSE_ACCOUNT }}
+
