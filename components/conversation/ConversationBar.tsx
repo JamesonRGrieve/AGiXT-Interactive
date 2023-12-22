@@ -173,8 +173,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     <>
       <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
         <TextField
-          label={`Ask your question to ${state.agent.name} here.`}
-          placeholder={`Ask your question to ${state.agent.name} here.`}
+          label={`Type your message to ${state.agent.name} here.`}
+          placeholder={`Type your message to ${state.agent.name} here.`}
           multiline
           rows={2}
           fullWidth
@@ -203,16 +203,14 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                         }));
                       }}
                       disabled={state.chatState.isLoading}
-                      sx={{ height: '56px' }}
-                    >
+                      sx={{ height: '56px' }}>
                       <NoteAddOutlinedIcon />
                     </IconButton>
                     <Dialog
                       open={fileUploadOpen}
                       onClose={() => {
                         setFileUploadOpen(false);
-                      }}
-                    >
+                      }}>
                       <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
                       <DialogContent>
                         <DialogContentText>Please upload the files you would like to send.</DialogContentText>
@@ -234,8 +232,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                           onClick={() => {
                             setFileUploadOpen(false);
                           }}
-                          color='error'
-                        >
+                          color='error'>
                           Cancel
                         </Button>
                         <Button onClick={handleUploadFiles} color='info' disabled={state.chatState.isLoading}>
@@ -251,8 +248,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                       color='info'
                       onClick={handleSendMessage}
                       disabled={state.chatState.isLoading}
-                      sx={{ height: '56px', padding: '0.5rem' }}
-                    >
+                      sx={{ height: '56px', padding: '0.5rem' }}>
                       <SendIcon />
                     </IconButton>
                   </Tooltip>
@@ -275,8 +271,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                 }));
               }}
               disabled={state.chatState.isLoading}
-              sx={{ height: '56px', padding: '1rem' }}
-            >
+              sx={{ height: '56px', padding: '1rem' }}>
               <DeleteForever />
             </IconButton>
           </Tooltip>
@@ -293,8 +288,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
           <Typography
             variant='caption'
             align='center'
-            style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}
-          >
+            style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}>
             <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT/AGiXT'>
               {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
             </Link>{' '}
@@ -313,3 +307,4 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     </>
   );
 }
+
