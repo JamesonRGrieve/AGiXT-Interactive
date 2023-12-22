@@ -155,7 +155,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
             width: '100%',
             display: 'inline-block'
           }}>
-          {chatItem.role === 'USER' ? 'You' : chatItem.role} • {chatItem.timestamp}
+          <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> • {chatItem.timestamp}
         </Typography>
       )}
       {chatItem.role != 'USER' && !state.chatState.isLoading && (
