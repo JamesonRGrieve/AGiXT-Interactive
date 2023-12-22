@@ -25,6 +25,11 @@ export default function ConversationHistory() {
   let lastUserMessage = ''; // track the last user message
   const theme = useTheme();
   const state = useContext(AGiXTContext);
+  const messagesEndRef = useRef(null);
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   useEffect(() => {
     console.log('Getting conversation', state.agent.name);
     state.mutate((oldState) => {
@@ -39,17 +44,17 @@ export default function ConversationHistory() {
   }, [state.agent.name, state.chatConfig.conversationName]);
   useEffect(() => {
     console.log('Conversation mutated', state.chatState.conversation);
+    scrollToBottom();
   }, [state.chatState.conversation]);
   return (
     <Paper
       elevation={5}
       sx={{
-        overflowY: "scroll",
+        overflowY: 'scroll',
         flexGrow: '1',
-        backgroundColor: theme.palette.background.paper,
-      }}
-    >
-      <Box  display= 'flex' flexDirection='column' sx={{overflowY: "auto"}}>
+        backgroundColor: theme.palette.background.paper
+      }}>
+      <Box display='flex' flexDirection='column' sx={{ overflowY: 'auto' }}>
         {state.chatState.conversation.length > 0 && state.chatState.conversation.map ? (
           state.chatState.conversation.map((chatItem, index) => {
             if (chatItem.role === 'USER') {
@@ -89,6 +94,7 @@ export default function ConversationHistory() {
             />
           </>
         )}
+        <div ref={messagesEndRef} />
       </Box>
     </Paper>
   );
@@ -140,8 +146,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
         overflow: 'hidden',
         position: 'center',
         color: theme.palette.text.primary
-      }}
-    >
+      }}>
       <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
       {chatItem.timestamp && (
         <Typography
@@ -149,8 +154,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
           style={{
             width: '100%',
             display: 'inline-block'
-          }}
-        >
+          }}>
           {chatItem.role === 'USER' ? 'You' : chatItem.role} • {chatItem.timestamp}
         </Typography>
       )}
@@ -210,8 +214,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
                 state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
               }
             }}
-            color='info'
-          >
+            color='info'>
             Submit
           </Button>
         </DialogActions>
@@ -219,3 +222,4 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
     </Box>
   );
 };
+
