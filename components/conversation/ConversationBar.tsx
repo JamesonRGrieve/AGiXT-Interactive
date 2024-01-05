@@ -171,7 +171,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
 
   return (
     <>
-      <Box  px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
+      <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
         <TextField
           label={`Ask your question to ${state.agent.name} here.`}
           placeholder={`Ask your question to ${state.agent.name} here.`}

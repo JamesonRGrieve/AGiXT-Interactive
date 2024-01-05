@@ -44,12 +44,12 @@ export default function ConversationHistory() {
     <Paper
       elevation={5}
       sx={{
-        overflowY: "scroll",
+        overflowY: 'scroll',
         flexGrow: '1',
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette.background.paper
       }}
     >
-      <Box  display= 'flex' flexDirection='column' sx={{overflowY: "auto"}}>
+      <Box display='flex' flexDirection='column' sx={{ overflowY: 'auto' }}>
         {state.chatState.conversation.length > 0 && state.chatState.conversation.map ? (
           state.chatState.conversation.map((chatItem, index) => {
             if (chatItem.role === 'USER') {
