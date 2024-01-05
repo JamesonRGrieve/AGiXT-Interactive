@@ -93,4 +93,3 @@ jobs:
             AGIXT_FOOTER_MESSAGE=${{ env.AGIXT_FOOTER_MESSAGE }}
             THEME_NAME=${{ env.THEME_NAME }}
             ADSENSE_ACCOUNT=${{ env.ADSENSE_ACCOUNT }}
-
