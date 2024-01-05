@@ -15,7 +15,6 @@
   "files": [
     "dist"
   ],
-  "main": "dist/index.js",
   "exports": {
     ".": "./dist/components/AGiXTChat.js",
     "./MarkdownBlock": "./dist/components/conversation/MarkdownBlock.js",
