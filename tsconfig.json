@@ -29,7 +29,8 @@
     "components/*.js",
     "components/*.tsx",
     "components/*.jsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "index.ts"
   ],
   "exclude": []
 }
