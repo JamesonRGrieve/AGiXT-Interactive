@@ -27,12 +27,8 @@
   },
   "include": [
     "types/*.ts",
-    "components/*.ts",
-    "components/*.js",
-    "components/*.tsx",
-    "components/*.jsx",
+    "components/**/*",
     ".next/types/**/*.ts",
-    "index.ts"
   ],
   "exclude": []
 }
