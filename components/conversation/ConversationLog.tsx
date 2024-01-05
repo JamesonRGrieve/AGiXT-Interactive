@@ -53,12 +53,7 @@ export default function ConversationHistory() {
         overflowY: 'scroll',
         flexGrow: '1',
         backgroundColor: theme.palette.background.paper
-<<<<<<< HEAD
-      }}
-    >
-=======
       }}>
->>>>>>> 6d7d6b249c277f67b70ad4326ee699dfda9d4659
       <Box display='flex' flexDirection='column' sx={{ overflowY: 'auto' }}>
         {state.chatState.conversation.length > 0 && state.chatState.conversation.map ? (
           state.chatState.conversation.map((chatItem, index) => {

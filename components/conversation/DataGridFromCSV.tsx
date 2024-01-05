@@ -201,3 +201,4 @@ export const DataGridFromCSV = ({ state, csvData }: { state: AGiXTState; csvData
     </>
   );
 };
+export default DataGridFromCSV;
