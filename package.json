@@ -17,13 +17,13 @@
     "dist"
   ],
   "exports": {
-    ".": "./dist/components/AGiXTChat.js",
-    "./MarkdownBlock": "./dist/components/conversation/MarkdownBlock.js",
-    "./CSVDataGrid": "./dist/components/conversation/DataGridFromCSV.js",
-    "./AudioRecorder": "./dist/components/conversation/AudioRecorder.js",
-    "./ConversationBar": "./dist/components/conversation/ConversationBar.js",
-    "./ConversationLog": "./dist/components/conversation/ConversationLog.js",
-    "./ConversationSelector": "./dist/components/conversation/ConversationSelector.js"
+    ".": "./dist/AGiXTChat.js",
+    "./MarkdownBlock": "./dist/conversation/MarkdownBlock.js",
+    "./CSVDataGrid": "./dist/conversation/DataGridFromCSV.js",
+    "./AudioRecorder": "./dist/conversation/AudioRecorder.js",
+    "./ConversationBar": "./dist/conversation/ConversationBar.js",
+    "./ConversationLog": "./dist/conversation/ConversationLog.js",
+    "./ConversationSelector": "./dist/conversation/ConversationSelector.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
