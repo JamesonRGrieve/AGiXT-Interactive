@@ -21,7 +21,7 @@ import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import Link from 'next/link';
-import { ChatContext } from '@/types/ChatState';
+import { ChatContext } from '../../types/ChatState';
 
 export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) {
   const state = useContext(ChatContext);

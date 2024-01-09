@@ -6,7 +6,7 @@ import clipboardCopy from 'clipboard-copy';
 import { IconButton } from '@mui/material';
 import { DataGridFromCSV } from './DataGridFromCSV';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
-import { ChatContext } from '@/types/ChatState';
+import { ChatContext } from '../../types/ChatState';
 
 export default function MarkdownBlock({ content, chatItem }: { content: string; chatItem: any }) {
   const state = useContext(ChatContext);
