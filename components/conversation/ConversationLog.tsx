@@ -31,17 +31,22 @@ export default function ConversationHistory() {
   };
 
   useEffect(() => {
-    console.log('Getting conversation', state.agent.name);
+    console.log('Getting conversation', state.chatConfig.selectedAgent);
     state.mutate((oldState) => {
       return { ...oldState, chatState: { ...oldState.chatState, loading: true } };
     });
     (async () => {
-      const conversation = await state.sdk.getConversation(state.agent.name, state.chatConfig.conversationName, 100, 1);
+      const conversation = await state.sdk.getConversation(
+        state.chatConfig.selectedAgent,
+        state.chatConfig.conversationName,
+        100,
+        1
+      );
       state.mutate((oldState) => {
         return { ...oldState, chatState: { ...oldState.chatState, conversation: conversation, loading: false } };
       });
     })();
-  }, [state.agent.name, state.chatConfig.conversationName]);
+  }, [state.chatConfig.selectedAgent, state.chatConfig.conversationName]);
   useEffect(() => {
     console.log('Conversation mutated', state.chatState.conversation);
     scrollToBottom();
@@ -53,7 +58,8 @@ export default function ConversationHistory() {
         overflowY: 'scroll',
         flexGrow: '1',
         backgroundColor: theme.palette.background.paper
-      }}>
+      }}
+    >
       <Box display='flex' flexDirection='column' sx={{ overflowY: 'auto' }}>
         {state.chatState.conversation.length > 0 && state.chatState.conversation.map ? (
           state.chatState.conversation.map((chatItem, index) => {
@@ -84,8 +90,8 @@ export default function ConversationHistory() {
             <ChatMessage
               key={'Please Wait'}
               chatItem={{
-                role: state.agent.name,
-                message: state.agent.name + ' is typing...',
+                role: state.chatConfig.selectedAgent,
+                message: state.chatConfig.selectedAgent + ' is typing...',
                 timestamp: ''
               }}
               lastUserMessage={lastUserMessage}
@@ -146,7 +152,8 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
         overflow: 'hidden',
         position: 'center',
         color: theme.palette.text.primary
-      }}>
+      }}
+    >
       <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
       {chatItem.timestamp && (
         <Typography
@@ -154,7 +161,8 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
           style={{
             width: '100%',
             display: 'inline-block'
-          }}>
+          }}
+        >
           <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> • {chatItem.timestamp}
         </Typography>
       )}
@@ -214,7 +222,8 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
                 state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
               }
             }}
-            color='info'>
+            color='info'
+          >
             Submit
           </Button>
         </DialogActions>
@@ -222,4 +231,3 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
     </Box>
   );
 };
-

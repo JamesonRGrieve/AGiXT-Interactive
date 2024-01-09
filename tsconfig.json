@@ -25,10 +25,6 @@
       "@/*": ["./*"]
     }
   },
-  "include": [
-    "types/*.ts",
-    "components/**/*",
-    ".next/types/**/*.ts",
-  ],
+  "include": ["types/*.ts", "components/**/*", ".next/types/**/*.ts"],
   "exclude": []
 }

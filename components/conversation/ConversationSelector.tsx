@@ -28,7 +28,7 @@ export default function ConversationSelector() {
   }, [state.chatConfig.conversationName]);
   const handleAddConversation = async () => {
     if (!newConversationName) return;
-    await state.sdk.newConversation(state.agent.name, newConversationName);
+    await state.sdk.newConversation(state.chatConfig.selectedAgent, newConversationName);
     setNewConversationName('');
     setOpenNewConversation(false);
     const fetchConversations = async () => {
@@ -45,7 +45,7 @@ export default function ConversationSelector() {
   };
   const handleDeleteConversation = async () => {
     if (!state.chatConfig.conversationName) return;
-    await state.sdk.deleteConversation(state.agent.name, state.chatConfig.conversationName);
+    await state.sdk.deleteConversation(state.chatConfig.selectedAgent, state.chatConfig.conversationName);
     const updatedConversations = state.conversations.filter((c) => c !== state.chatConfig.conversationName);
     state.mutate((oldState) => {
       return {

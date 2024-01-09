@@ -7,10 +7,10 @@ on:
     branches: ['main']
 
 env:
-    REGISTRY: docker.io
-    DOCKER_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
-    DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
-    IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/agixtchat
+  REGISTRY: docker.io
+  DOCKER_USERNAME: ${{ vars.DOCKERHUB_USERNAME }}
+  DOCKER_PASSWORD: ${{ secrets.DOCKERHUB_TOKEN }}
+  IMAGE_NAME: ${{ vars.DOCKERHUB_USERNAME }}/agixtchat
 
 jobs:
   build:

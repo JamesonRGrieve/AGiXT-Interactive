@@ -87,7 +87,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
         chatState: { ...oldState.chatState, isLoading: true }
       };
     });
-    const agentOverride = state.chatConfig.useSelectedAgent ? state.agent.name : '';
+    const agentOverride = state.chatConfig.useSelectedAgent ? state.chatConfig.selectedAgent : '';
     state.chatConfig.chainRunConfig.chainArgs['conversation_name'] = state.chatConfig.conversationName;
     const response = await state.sdk.runChain(
       state.chain.name,
@@ -153,7 +153,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     console.log('State args', stateArgs);
     console.log('State', state);
     console.log('Prompt name', promptName);
-    const response = await state.sdk.promptAgent(state.agent.name, promptName, stateArgs);
+    const response = await state.sdk.promptAgent(state.chatConfig.selectedAgent, promptName, stateArgs);
     state.mutate((oldState) => {
       return {
         ...oldState,
@@ -162,7 +162,10 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     });
 
     (async () => {
-      const conversation = await state.sdk.getConversation(state.agent.name, state.chatConfig.conversationName);
+      const conversation = await state.sdk.getConversation(
+        state.chatConfig.selectedAgent,
+        state.chatConfig.conversationName
+      );
       state.mutate((oldState) => {
         return { ...oldState, chatState: { ...oldState.chatState, conversation: conversation } };
       });
@@ -173,8 +176,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     <>
       <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
         <TextField
-          label={`Type your message to ${state.agent.name} here.`}
-          placeholder={`Type your message to ${state.agent.name} here.`}
+          label={`Type your message to ${state.chatConfig.selectedAgent} here.`}
+          placeholder={`Type your message to ${state.chatConfig.selectedAgent} here.`}
           multiline
           rows={2}
           fullWidth
@@ -203,14 +206,16 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                         }));
                       }}
                       disabled={state.chatState.isLoading}
-                      sx={{ height: '56px' }}>
+                      sx={{ height: '56px' }}
+                    >
                       <NoteAddOutlinedIcon />
                     </IconButton>
                     <Dialog
                       open={fileUploadOpen}
                       onClose={() => {
                         setFileUploadOpen(false);
-                      }}>
+                      }}
+                    >
                       <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
                       <DialogContent>
                         <DialogContentText>Please upload the files you would like to send.</DialogContentText>
@@ -232,7 +237,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                           onClick={() => {
                             setFileUploadOpen(false);
                           }}
-                          color='error'>
+                          color='error'
+                        >
                           Cancel
                         </Button>
                         <Button onClick={handleUploadFiles} color='info' disabled={state.chatState.isLoading}>
@@ -248,7 +254,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                       color='info'
                       onClick={handleSendMessage}
                       disabled={state.chatState.isLoading}
-                      sx={{ height: '56px', padding: '0.5rem' }}>
+                      sx={{ height: '56px', padding: '0.5rem' }}
+                    >
                       <SendIcon />
                     </IconButton>
                   </Tooltip>
@@ -271,7 +278,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                 }));
               }}
               disabled={state.chatState.isLoading}
-              sx={{ height: '56px', padding: '1rem' }}>
+              sx={{ height: '56px', padding: '1rem' }}
+            >
               <DeleteForever />
             </IconButton>
           </Tooltip>
@@ -288,7 +296,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
           <Typography
             variant='caption'
             align='center'
-            style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}>
+            style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}
+          >
             <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT/AGiXT'>
               {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
             </Link>{' '}
@@ -307,4 +316,3 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     </>
   );
 }
-

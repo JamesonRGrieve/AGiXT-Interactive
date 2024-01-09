@@ -5,26 +5,31 @@ export type ChatProps = {
   mode: 'prompt' | 'chain';
   showAppBar?: boolean;
   showConversationSelector?: boolean;
+  opts?: {
+    agixtServer: string;
+    apiKey: string;
+    agentName?: string;
+    promptName?: string;
+    promptCategory?: string;
+    conversationName?: string;
+  };
 };
 const Stateful = (props: ChatProps) => {
   return (
     <AGiXTWrapper
       requireKey={process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true'}
-      apiKey={process.env.NEXT_PUBLIC_API_KEY || ''}
-      agixtServer={process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437'}
+      apiKey={props.opts.apiKey || process.env.NEXT_PUBLIC_API_KEY || ''}
+      agixtServer={props.opts.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437'}
       initialState={{
-        agent: {
-          ...AGiXTDefaultState.agent,
-          name: process.env.NEXT_PUBLIC_AGIXT_AGENT
-        },
         prompt: {
           ...AGiXTDefaultState.prompt,
-          name: process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
-          category: process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY
+          name: props.opts.promptName || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
+          category: props.opts.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY
         },
         chatConfig: {
           ...AGiXTDefaultState.chatConfig,
-          conversationName: getCookie('uuid')
+          selectedAgent: props.opts.agentName || process.env.NEXT_PUBLIC_AGIXT_AGENT,
+          conversationName: props.opts.conversationName || getCookie('uuid')
         }
       }}
     >
@@ -39,7 +44,8 @@ const AGiXTChat = ({
   stateful = true,
   mode,
   showAppBar = false,
-  showConversationSelector = false
+  showConversationSelector = false,
+  opts
 }: ChatProps & { stateful?: boolean }) => {
   console.log(
     `AGiXTChat initialized as ${stateful ? '' : 'not '}stateful. ${
@@ -49,7 +55,7 @@ const AGiXTChat = ({
     }`
   );
   return stateful ? (
-    <Stateful mode={mode} showAppBar={showAppBar} showConversationSelector={showConversationSelector} />
+    <Stateful mode={mode} showAppBar={showAppBar} showConversationSelector={showConversationSelector} opts={opts} />
   ) : (
     <Stateless mode={mode} showAppBar={showAppBar} showConversationSelector={showConversationSelector} />
   );
