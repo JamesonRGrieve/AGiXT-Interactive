@@ -17,13 +17,14 @@
     "dist"
   ],
   "exports": {
-    ".": "./dist/AGiXTChat.js",
-    "./MarkdownBlock": "./dist/conversation/MarkdownBlock.js",
-    "./CSVDataGrid": "./dist/conversation/DataGridFromCSV.js",
-    "./AudioRecorder": "./dist/conversation/AudioRecorder.js",
-    "./ConversationBar": "./dist/conversation/ConversationBar.js",
-    "./ConversationLog": "./dist/conversation/ConversationLog.js",
-    "./ConversationSelector": "./dist/conversation/ConversationSelector.js"
+    ".": "./dist/components/AGiXTChat.js",
+    "./MarkdownBlock": "./dist/components/conversation/MarkdownBlock.js",
+    "./CSVDataGrid": "./dist/components/conversation/DataGridFromCSV.js",
+    "./AudioRecorder": "./dist/components/conversation/AudioRecorder.js",
+    "./ConversationBar": "./dist/components/conversation/ConversationBar.js",
+    "./ConversationLog": "./dist/components/conversation/ConversationLog.js",
+    "./ConversationSelector": "./dist/components/conversation/ConversationSelector.js",
+    "./Context": "./dist/types/ChatState.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -34,7 +35,6 @@
     "@mui/system": "^5.14.17",
     "@mui/x-data-grid": "^6.16.2",
     "agixt": "^1.0.45",
-    "agixt-react": "^0.0.9",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.0.0",
     "jrgcomponents": "^0.0.77",

@@ -16,23 +16,21 @@ import {
   Typography
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { AGiXTContext } from 'agixt-react';
 import { setCookie } from 'cookies-next';
 import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import Link from 'next/link';
-import { AGiXTChatContext } from '@/types/AGiXTChatState';
+import { ChatContext } from '@/types/ChatState';
 
 export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) {
-  const state = useContext(AGiXTChatContext);
-  const agixtState = useContext(AGiXTContext);
+  const state = useContext(ChatContext);
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
   const handleUploadFiles = async () => {
     // Uploaded files will be formatted like [{"file_name": "file_content"}]
     const newuploadedFiles: { [x: string]: string }[] = [];
-    // Format for AGiXTState.uploadedFiles should be [{"file_name": "file_content"}]
+    // Format for state.uploadedFiles should be [{"file_name": "file_content"}]
     // Iterate through the files and add them to the form data
     for (const file of state.chatState.uploadedFiles) {
       const fileContent = await file.text();
@@ -42,9 +40,9 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     }
   };
   useEffect(() => {
-    console.log('Getting args for prompt.', agixtState.prompt.name, agixtState.promptCategory);
+    console.log('Getting args for prompt.', state.prompt, state.promptCategory);
     (async function getArgs(promptName, promptCategory) {
-      const promptArgData = await agixtState.sdk.getPromptArgs(promptName, promptCategory);
+      const promptArgData = await state.sdk.getPromptArgs(promptName, promptCategory);
       if (promptArgData) {
         const newArgs = {};
         for (const arg of promptArgData) {
@@ -56,8 +54,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
           return { ...oldState, chatConfig: { ...state.chatConfig, promptArgs: newArgs } };
         });
       }
-    })(agixtState.prompt.name, agixtState.promptCategory);
-  }, [agixtState.prompt.name, agixtState.promptCategory, agixtState.sdk, state]);
+    })(state.prompt, state.promptCategory);
+  }, [state.prompt, state.promptCategory, state.sdk, state]);
 
   const handleSendMessage = async () => {
     if (mode == 'chain') {
@@ -91,8 +89,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     });
     const agentOverride = state.chatConfig.useSelectedAgent ? state.chatConfig.selectedAgent : '';
     state.chatConfig.chainRunConfig.chainArgs['conversation_name'] = state.chatConfig.conversationName;
-    const response = await agixtState.sdk.runChain(
-      agixtState.chain.name,
+    const response = await state.sdk.runChain(
+      state.chain,
       message,
       agentOverride,
       false,
@@ -109,11 +107,11 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     state.mutate((oldState) => {
       return { ...oldState, chatState: { ...oldState.chatState, isLoading: true } };
     });
-    const args: any = { ...agixtState.prompt.args };
+    const args: any = state.sdk.getPromptArgs(state.prompt, state.promptCategory);
     if (message) args.user_input = message;
     if (state.chatState.uploadedFiles.length > 0) args.import_files = state.chatState.uploadedFiles;
     const promptName =
-    agixtState.prompt.name + (agixtState.prompt.name == 'Chat with Commands' && state.chatState.hasFiles ? ' with Files' : '');
+      state.prompt + (state.prompt == 'Chat with Commands' && state.chatState.hasFiles ? ' with Files' : '');
     const skipArgs = [
       'conversation_history',
       'context',
@@ -140,7 +138,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       delete args[arg];
     }
     const stateArgs = {
-      prompt_category: agixtState.promptCategory,
+      prompt_category: state.promptCategory,
       conversation_name: state.chatConfig.conversationName,
       context_results: state.chatConfig.contextResults,
       shots: state.chatConfig.shots,
@@ -155,7 +153,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     console.log('State args', stateArgs);
     console.log('State', state);
     console.log('Prompt name', promptName);
-    const response = await agixtState.sdk.promptAgent(state.chatConfig.selectedAgent, promptName, stateArgs);
+    const response = await state.sdk.promptAgent(state.chatConfig.selectedAgent, promptName, stateArgs);
     state.mutate((oldState) => {
       return {
         ...oldState,
@@ -164,7 +162,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     });
 
     (async () => {
-      const conversation = await agixtState.sdk.getConversation(
+      const conversation = await state.sdk.getConversation(
         state.chatConfig.selectedAgent,
         state.chatConfig.conversationName
       );
@@ -208,16 +206,14 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                         }));
                       }}
                       disabled={state.chatState.isLoading}
-                      sx={{ height: '56px' }}
-                    >
+                      sx={{ height: '56px' }}>
                       <NoteAddOutlinedIcon />
                     </IconButton>
                     <Dialog
                       open={fileUploadOpen}
                       onClose={() => {
                         setFileUploadOpen(false);
-                      }}
-                    >
+                      }}>
                       <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
                       <DialogContent>
                         <DialogContentText>Please upload the files you would like to send.</DialogContentText>
@@ -239,8 +235,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                           onClick={() => {
                             setFileUploadOpen(false);
                           }}
-                          color='error'
-                        >
+                          color='error'>
                           Cancel
                         </Button>
                         <Button onClick={handleUploadFiles} color='info' disabled={state.chatState.isLoading}>
@@ -256,8 +251,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                       color='info'
                       onClick={handleSendMessage}
                       disabled={state.chatState.isLoading}
-                      sx={{ height: '56px', padding: '0.5rem' }}
-                    >
+                      sx={{ height: '56px', padding: '0.5rem' }}>
                       <SendIcon />
                     </IconButton>
                   </Tooltip>
@@ -280,8 +274,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                 }));
               }}
               disabled={state.chatState.isLoading}
-              sx={{ height: '56px', padding: '1rem' }}
-            >
+              sx={{ height: '56px', padding: '1rem' }}>
               <DeleteForever />
             </IconButton>
           </Tooltip>
@@ -298,8 +291,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
           <Typography
             variant='caption'
             align='center'
-            style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}
-          >
+            style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}>
             <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT/AGiXT'>
               {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
             </Link>{' '}

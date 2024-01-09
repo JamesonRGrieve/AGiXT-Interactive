@@ -6,11 +6,10 @@ import clipboardCopy from 'clipboard-copy';
 import { IconButton } from '@mui/material';
 import { DataGridFromCSV } from './DataGridFromCSV';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
-import { AGiXTContext, AGiXTState } from 'agixt-react';
-import { AGiXTChatContext } from '@/types/AGiXTChatState';
+import { ChatContext } from '@/types/ChatState';
 
 export default function MarkdownBlock({ content, chatItem }: { content: string; chatItem: any }) {
-  const state = useContext(AGiXTChatContext);
+  const state = useContext(ChatContext);
   const langMap = {
     '': 'txt',
     python: 'py',
@@ -123,8 +122,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
         {...props}
         target={isExternal ? '_blank' : undefined}
         rel={isExternal ? 'noopener noreferrer' : undefined}
-        onClick={isExternal ? undefined : handleAnchorClick}
-      >
+        onClick={isExternal ? undefined : handleAnchorClick}>
         {children}
       </a>
     );
@@ -166,8 +164,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
                       borderRadius: '3px',
                       padding: '0.2em',
                       fontFamily: 'monospace'
-                    }}
-                  >
+                    }}>
                     {children}
                   </span>
                 );
@@ -192,8 +189,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
                             const actualCode = codeBlockRef.current.querySelector('code');
                             clipboardCopy(actualCode.innerText);
                           }
-                        }}
-                      >
+                        }}>
                         <ContentCopyIcon />
                       </IconButton>
                       <IconButton
@@ -211,8 +207,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
                             document.body.appendChild(element);
                             element.click();
                           }
-                        }}
-                      >
+                        }}>
                         <DownloadIcon />
                       </IconButton>
                       {fileName} | {language}
@@ -238,8 +233,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
                 </>
               );
             }
-          }}
-        >
+          }}>
           {renderMessage().toString()}
         </ReactMarkdown>
       )}

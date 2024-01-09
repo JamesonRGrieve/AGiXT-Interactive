@@ -1,12 +1,10 @@
 import { useState, useRef, useContext } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
-import { AGiXTContext } from 'agixt-react';
-import { AGiXTChatContext } from '@/types/AGiXTChatState';
+import { ChatContext } from '@/types/ChatState';
 
 export default function AudioRecorder() {
-  const state = useContext(AGiXTChatContext);
-  const agixtState = useContext(AGiXTContext);
+  const state = useContext(ChatContext);
   const [recording, setRecording] = useState(false);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
@@ -45,7 +43,7 @@ export default function AudioRecorder() {
       reader.onloadend = () => {
         const audioDataArray = new Uint8Array(reader.result as ArrayBufferLike);
         const base64Audio = btoa(String.fromCharCode.apply(null, audioDataArray)); // Convert to base64
-        const response = agixtState.sdk.executeCommand(
+        const response = state.sdk.executeCommand(
           state.chatConfig.selectedAgent,
           'Chat with Voice',
           {
