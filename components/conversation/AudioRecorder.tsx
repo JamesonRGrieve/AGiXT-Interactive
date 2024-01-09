@@ -44,7 +44,7 @@ export default function AudioRecorder() {
         const audioDataArray = new Uint8Array(reader.result as ArrayBufferLike);
         const base64Audio = btoa(String.fromCharCode.apply(null, audioDataArray)); // Convert to base64
         const response = state.sdk.executeCommand(
-          state.agent.name,
+          state.chatConfig.selectedAgent,
           'Chat with Voice',
           {
             base64_audio: base64Audio,
