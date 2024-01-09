@@ -22,9 +22,11 @@ import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import Link from 'next/link';
+import { AGiXTChatContext } from '@/types/AGiXTChatState';
 
 export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) {
-  const state = useContext(AGiXTContext);
+  const state = useContext(AGiXTChatContext);
+  const agixtState = useContext(AGiXTContext);
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
   const handleUploadFiles = async () => {
@@ -40,9 +42,9 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     }
   };
   useEffect(() => {
-    console.log('Getting args for prompt.', state.prompt.name, state.promptCategory);
+    console.log('Getting args for prompt.', agixtState.prompt.name, agixtState.promptCategory);
     (async function getArgs(promptName, promptCategory) {
-      const promptArgData = await state.sdk.getPromptArgs(promptName, promptCategory);
+      const promptArgData = await agixtState.sdk.getPromptArgs(promptName, promptCategory);
       if (promptArgData) {
         const newArgs = {};
         for (const arg of promptArgData) {
@@ -54,8 +56,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
           return { ...oldState, chatConfig: { ...state.chatConfig, promptArgs: newArgs } };
         });
       }
-    })(state.prompt.name, state.promptCategory);
-  }, [state.prompt.name, state.promptCategory, state.sdk]);
+    })(agixtState.prompt.name, agixtState.promptCategory);
+  }, [agixtState.prompt.name, agixtState.promptCategory, agixtState.sdk, state]);
 
   const handleSendMessage = async () => {
     if (mode == 'chain') {
@@ -89,8 +91,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     });
     const agentOverride = state.chatConfig.useSelectedAgent ? state.chatConfig.selectedAgent : '';
     state.chatConfig.chainRunConfig.chainArgs['conversation_name'] = state.chatConfig.conversationName;
-    const response = await state.sdk.runChain(
-      state.chain.name,
+    const response = await agixtState.sdk.runChain(
+      agixtState.chain.name,
       message,
       agentOverride,
       false,
@@ -107,11 +109,11 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     state.mutate((oldState) => {
       return { ...oldState, chatState: { ...oldState.chatState, isLoading: true } };
     });
-    const args: any = { ...state.prompt.args };
+    const args: any = { ...agixtState.prompt.args };
     if (message) args.user_input = message;
     if (state.chatState.uploadedFiles.length > 0) args.import_files = state.chatState.uploadedFiles;
     const promptName =
-      state.prompt.name + (state.prompt.name == 'Chat with Commands' && state.chatState.hasFiles ? ' with Files' : '');
+    agixtState.prompt.name + (agixtState.prompt.name == 'Chat with Commands' && state.chatState.hasFiles ? ' with Files' : '');
     const skipArgs = [
       'conversation_history',
       'context',
@@ -138,7 +140,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       delete args[arg];
     }
     const stateArgs = {
-      prompt_category: state.promptCategory,
+      prompt_category: agixtState.promptCategory,
       conversation_name: state.chatConfig.conversationName,
       context_results: state.chatConfig.contextResults,
       shots: state.chatConfig.shots,
@@ -153,7 +155,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     console.log('State args', stateArgs);
     console.log('State', state);
     console.log('Prompt name', promptName);
-    const response = await state.sdk.promptAgent(state.chatConfig.selectedAgent, promptName, stateArgs);
+    const response = await agixtState.sdk.promptAgent(state.chatConfig.selectedAgent, promptName, stateArgs);
     state.mutate((oldState) => {
       return {
         ...oldState,
@@ -162,7 +164,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     });
 
     (async () => {
-      const conversation = await state.sdk.getConversation(
+      const conversation = await agixtState.sdk.getConversation(
         state.chatConfig.selectedAgent,
         state.chatConfig.conversationName
       );

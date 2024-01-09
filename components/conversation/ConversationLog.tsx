@@ -20,11 +20,13 @@ import clipboardCopy from 'clipboard-copy';
 
 import MarkdownBlock from './MarkdownBlock';
 import { AGiXTContext, AGiXTState } from 'agixt-react';
+import { AGiXTChatContext } from '@/types/AGiXTChatState';
 
 export default function ConversationHistory() {
   let lastUserMessage = ''; // track the last user message
   const theme = useTheme();
-  const state = useContext(AGiXTContext);
+  const agixtState = useContext(AGiXTContext);
+  const state = useContext(AGiXTChatContext);
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -36,7 +38,7 @@ export default function ConversationHistory() {
       return { ...oldState, chatState: { ...oldState.chatState, loading: true } };
     });
     (async () => {
-      const conversation = await state.sdk.getConversation(
+      const conversation = await agixtState.sdk.getConversation(
         state.chatConfig.selectedAgent,
         state.chatConfig.conversationName,
         100,
@@ -107,8 +109,6 @@ export default function ConversationHistory() {
 }
 
 const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
-  const AGiXTState = useContext(AGiXTContext) as AGiXTState;
-
   const formattedMessage =
     typeof chatItem.message === 'string'
       ? chatItem.message.replace(/\\n/g, '  \n').replace(/\n/g, '  \n')
