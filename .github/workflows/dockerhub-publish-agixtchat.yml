@@ -1,4 +1,4 @@
-name: Interactive Front End Service Docker Builds
+name: Dockerhub Publish
 on:
   push:
     branches: ['main']

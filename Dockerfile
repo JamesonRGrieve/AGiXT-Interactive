@@ -66,7 +66,6 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 COPY --from=themes /app/themes/${THEME_NAME} ./app
 
-# Hacky af
 RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "APP_NAME=${APP_NAME}" >> .env \
     && echo "APP_DESCRIPTION=${APP_DESCRIPTION}" >> .env \
