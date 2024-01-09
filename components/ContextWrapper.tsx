@@ -8,7 +8,7 @@ export default function ChatContextWrapper({
   initialState = ChatDefaultState,
   requireKey = false,
   apiKey = null,
-  agixtServer = null,
+  agixtServer = '',
   children
 }: {
   requireKey?: boolean;
@@ -34,13 +34,10 @@ export default function ChatContextWrapper({
     // Overridden in context provider.
     mutate: null
   } as ChatState);
-  const sdk: AGiXTSDK =
-    (requireKey && apiKey && agixtServer) || (!requireKey && agixtServer)
-      ? new AGiXTSDK({
-          baseUri: agixtServer,
-          apiKey: apiKey
-        })
-      : null;
+  const sdk: AGiXTSDK = new AGiXTSDK({
+    baseUri: agixtServer,
+    apiKey: apiKey
+  });
   useEffect(() => {
     console.log('AGiXT Active Agent Changed', ChatState.chatConfig.selectedAgent);
     tryFetch(async () => {
@@ -53,7 +50,7 @@ export default function ChatContextWrapper({
         console.log('Fetched Conversations!');
       });
     });
-  }, [ChatState.chatConfig.selectedAgent, sdk]);
+  }, [ChatState.chatConfig.selectedAgent]);
   return errors.length > 0 ? (
     <>
       <h1>Error in AGiXT SDK</h1>

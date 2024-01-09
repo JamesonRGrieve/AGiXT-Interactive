@@ -55,7 +55,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
         });
       }
     })(state.prompt, state.promptCategory);
-  }, [state.prompt, state.promptCategory, state.sdk, state]);
+  }, [state.prompt, state.promptCategory]);
 
   const handleSendMessage = async () => {
     if (mode == 'chain') {
