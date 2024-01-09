@@ -14,27 +14,25 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
-import { AGiXTContext } from 'agixt-react';
 import { setCookie } from 'cookies-next';
-import { AGiXTChatContext } from '@/types/AGiXTChatState';
+import { ChatContext } from '@/types/ChatState';
 export default function ConversationSelector() {
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
-  const state = useContext(AGiXTChatContext);
-  const agixtState = useContext(AGiXTContext);
+  const state = useContext(ChatContext);
   useEffect(() => {
     console.log('Setting conversation name cookie.', state.chatConfig.conversationName);
     setCookie('conversationName', state.chatConfig.conversationName);
   }, [state.chatConfig.conversationName]);
   const handleAddConversation = async () => {
     if (!newConversationName) return;
-    await agixtState.sdk.newConversation(state.chatConfig.selectedAgent, newConversationName);
+    await state.sdk.newConversation(state.chatConfig.selectedAgent, newConversationName);
     setNewConversationName('');
     setOpenNewConversation(false);
     const fetchConversations = async () => {
-      const updatedConversations = await agixtState.sdk.getConversations();
+      const updatedConversations = await state.sdk.getConversations();
       state.mutate((oldState) => {
         return { ...oldState, conversations: updatedConversations };
       });
@@ -47,7 +45,7 @@ export default function ConversationSelector() {
   };
   const handleDeleteConversation = async () => {
     if (!state.chatConfig.conversationName) return;
-    await agixtState.sdk.deleteConversation(state.chatConfig.selectedAgent, state.chatConfig.conversationName);
+    await state.sdk.deleteConversation(state.chatConfig.selectedAgent, state.chatConfig.conversationName);
     const updatedConversations = state.conversations.filter((c) => c !== state.chatConfig.conversationName);
     state.mutate((oldState) => {
       return {
@@ -79,8 +77,7 @@ export default function ConversationSelector() {
             flexDirection: 'row',
             alignItems: 'center'
           }}
-          fullWidth
-        >
+          fullWidth>
           <Select
             sx={{
               color: 'white',
@@ -105,8 +102,7 @@ export default function ConversationSelector() {
                 ...oldState,
                 chatConfig: { ...oldState.chatConfig, conversationName: e.target.value }
               }))
-            }
-          >
+            }>
             {state.conversations
               ? state.conversations.map((c) => (
                   <MenuItem key={c} value={c}>

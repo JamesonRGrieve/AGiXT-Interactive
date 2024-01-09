@@ -19,14 +19,12 @@ import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, Thum
 import clipboardCopy from 'clipboard-copy';
 
 import MarkdownBlock from './MarkdownBlock';
-import { AGiXTContext, AGiXTState } from 'agixt-react';
-import { AGiXTChatContext } from '@/types/AGiXTChatState';
+import { ChatContext } from '@/types/ChatState';
 
 export default function ConversationHistory() {
   let lastUserMessage = ''; // track the last user message
   const theme = useTheme();
-  const agixtState = useContext(AGiXTContext);
-  const state = useContext(AGiXTChatContext);
+  const state = useContext(ChatContext);
   const messagesEndRef = useRef(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -38,7 +36,7 @@ export default function ConversationHistory() {
       return { ...oldState, chatState: { ...oldState.chatState, loading: true } };
     });
     (async () => {
-      const conversation = await agixtState.sdk.getConversation(
+      const conversation = await state.sdk.getConversation(
         state.chatConfig.selectedAgent,
         state.chatConfig.conversationName,
         100,
@@ -60,8 +58,7 @@ export default function ConversationHistory() {
         overflowY: 'scroll',
         flexGrow: '1',
         backgroundColor: theme.palette.background.paper
-      }}
-    >
+      }}>
       <Box display='flex' flexDirection='column' sx={{ overflowY: 'auto' }}>
         {state.chatState.conversation.length > 0 && state.chatState.conversation.map ? (
           state.chatState.conversation.map((chatItem, index) => {
@@ -152,8 +149,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
         overflow: 'hidden',
         position: 'center',
         color: theme.palette.text.primary
-      }}
-    >
+      }}>
       <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
       {chatItem.timestamp && (
         <Typography
@@ -161,8 +157,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
           style={{
             width: '100%',
             display: 'inline-block'
-          }}
-        >
+          }}>
           <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> • {chatItem.timestamp}
         </Typography>
       )}
@@ -222,8 +217,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
                 state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
               }
             }}
-            color='info'
-          >
+            color='info'>
             Submit
           </Button>
         </DialogActions>
