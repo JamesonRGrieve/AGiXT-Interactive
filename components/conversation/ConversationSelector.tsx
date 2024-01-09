@@ -15,7 +15,7 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
 import { setCookie } from 'cookies-next';
-import { ChatContext } from '@/types/ChatState';
+import { ChatContext } from '../../types/ChatState';
 export default function ConversationSelector() {
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
