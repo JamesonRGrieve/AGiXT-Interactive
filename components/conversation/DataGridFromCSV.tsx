@@ -3,8 +3,8 @@ import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextFie
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
 import { useState, useEffect, useContext } from 'react';
-import { AGiXTContext, AGiXTState } from 'agixt-react';
-
+import { AGiXTChatState } from '@/types/AGiXTChatState';
+import { AGiXTContext } from 'agixt-react';
 const ODD_OPACITY = 1;
 
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -32,8 +32,9 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   }
 }));
 
-export const DataGridFromCSV = ({ state, csvData }: { state: AGiXTState; csvData: any }) => {
+export const DataGridFromCSV = ({ state, csvData }: { state: AGiXTChatState; csvData: any }) => {
   const [open, setOpen] = useState(false);
+  const agixtState = useContext(AGiXTContext);
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
@@ -117,7 +118,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: AGiXTState; csvData
       conversation_name: state.chatConfig.conversationName,
       text: newCSVData
     };
-    const response = await state.sdk.runChain(
+    const response = await agixtState.sdk.runChain(
       'Data Analysis',
       userMessage,
       state.chatConfig.selectedAgent,

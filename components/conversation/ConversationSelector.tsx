@@ -16,23 +16,25 @@ import AddIcon from '@mui/icons-material/Add';
 import { useContext, useEffect, useState } from 'react';
 import { AGiXTContext } from 'agixt-react';
 import { setCookie } from 'cookies-next';
+import { AGiXTChatContext } from '@/types/AGiXTChatState';
 export default function ConversationSelector() {
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
-  const state = useContext(AGiXTContext);
+  const state = useContext(AGiXTChatContext);
+  const agixtState = useContext(AGiXTContext);
   useEffect(() => {
     console.log('Setting conversation name cookie.', state.chatConfig.conversationName);
     setCookie('conversationName', state.chatConfig.conversationName);
   }, [state.chatConfig.conversationName]);
   const handleAddConversation = async () => {
     if (!newConversationName) return;
-    await state.sdk.newConversation(state.chatConfig.selectedAgent, newConversationName);
+    await agixtState.sdk.newConversation(state.chatConfig.selectedAgent, newConversationName);
     setNewConversationName('');
     setOpenNewConversation(false);
     const fetchConversations = async () => {
-      const updatedConversations = await state.sdk.getConversations();
+      const updatedConversations = await agixtState.sdk.getConversations();
       state.mutate((oldState) => {
         return { ...oldState, conversations: updatedConversations };
       });
@@ -45,7 +47,7 @@ export default function ConversationSelector() {
   };
   const handleDeleteConversation = async () => {
     if (!state.chatConfig.conversationName) return;
-    await state.sdk.deleteConversation(state.chatConfig.selectedAgent, state.chatConfig.conversationName);
+    await agixtState.sdk.deleteConversation(state.chatConfig.selectedAgent, state.chatConfig.conversationName);
     const updatedConversations = state.conversations.filter((c) => c !== state.chatConfig.conversationName);
     state.mutate((oldState) => {
       return {

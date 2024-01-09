@@ -26,11 +26,6 @@ const Stateful = (props: ChatProps) => {
           name: props.opts.promptName || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
           category: props.opts.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY
         },
-        chatConfig: {
-          ...AGiXTDefaultState.chatConfig,
-          selectedAgent: props.opts.agentName || process.env.NEXT_PUBLIC_AGIXT_AGENT,
-          conversationName: props.opts.conversationName || getCookie('uuid')
-        }
       }}
     >
       <Chat {...props} />

@@ -7,9 +7,10 @@ import { IconButton } from '@mui/material';
 import { DataGridFromCSV } from './DataGridFromCSV';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
 import { AGiXTContext, AGiXTState } from 'agixt-react';
+import { AGiXTChatContext } from '@/types/AGiXTChatState';
 
 export default function MarkdownBlock({ content, chatItem }: { content: string; chatItem: any }) {
-  const state = useContext(AGiXTContext);
+  const state = useContext(AGiXTChatContext);
   const langMap = {
     '': 'txt',
     python: 'py',
