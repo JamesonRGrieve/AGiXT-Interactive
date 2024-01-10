@@ -17,15 +17,6 @@ export default function ChatContextWrapper({
   children: ReactNode;
 }) {
   // Used to determine whether to render the app or not (populates with any fetch errors from tryFetch calls).
-  const [errors, setErrors] = useState<any[]>([]);
-  const tryFetch = async (fetchFunction: any) => {
-    try {
-      await fetchFunction();
-    } catch (e: any) {
-      console.log(e);
-      setErrors((errors) => [...errors, e.message]);
-    }
-  };
   const [ChatState, setChatState] = useState<ChatState>({
     // Default state and initializes the SDK
     ...ChatDefaultState,
@@ -37,32 +28,5 @@ export default function ChatContextWrapper({
     baseUri: agixtServer,
     apiKey: apiKey
   });
-  useEffect(() => {
-    console.log('AGiXT Active Agent Changed', ChatState.chatConfig.selectedAgent);
-    tryFetch(async () => {
-      console.log('Fetching Conversations!');
-      await sdk.getConversations(ChatState.chatConfig.selectedAgent).then((conversations: any) => {
-        console.log('Retrieved new conversations.', conversations);
-        setChatState((oldState) => {
-          return { ...oldState, conversations: conversations };
-        });
-        console.log('Fetched Conversations!');
-      });
-    });
-  }, [ChatState.chatConfig.selectedAgent]);
-  return errors.length > 0 ? (
-    <>
-      <h1>Error in AGiXT SDK</h1>
-
-      <p>Please check your API Key and AGiXT Server URL</p>
-
-      <ul>
-        {errors.map((error) => {
-          return <li key={error.message}>{error.message}</li>;
-        })}
-      </ul>
-    </>
-  ) : (
-    <ChatContext.Provider value={{ ...ChatState, sdk: sdk, mutate: setChatState }}>{children}</ChatContext.Provider>
-  );
+  return <ChatContext.Provider value={{ ...ChatState, sdk: sdk, mutate: setChatState }}>{children}</ChatContext.Provider>
 }
