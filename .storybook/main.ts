@@ -7,25 +7,25 @@ const config: StorybookConfig = {
     '@storybook/addon-links',
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
-    '@storybook/addon-styling'
+    '@storybook/addon-styling',
   ],
   framework: {
     name: '@storybook/nextjs',
-    options: {}
+    options: {},
   },
   docs: {
     autodocs: 'tag',
-    defaultName: 'Documentation'
+    defaultName: 'Documentation',
   },
   staticDirs: [],
   webpackFinal: async (config, { configType }) => {
     if (config.resolve)
       config.resolve.alias = {
         ...config.resolve.alias,
-        '@': path.resolve(__dirname, '..')
+        '@': path.resolve(__dirname, '..'),
       };
 
     return config;
-  }
+  },
 };
 export default config;
