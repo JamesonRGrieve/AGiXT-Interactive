@@ -1,10 +1,10 @@
 import React, { useEffect, useState, ReactNode } from 'react';
-import { ChatContext, ChatDefaultState, ChatConfig } from '../types/ChatContext';
+import { ChatContext, ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 
 import AGiXTSDK from 'agixt';
 
 export default function ChatContextWrapper({
-  initialState = ChatDefaultState,
+  initialState = ChatDefaultConfig,
   requireKey = false,
   apiKey = null,
   agixtServer = '',
@@ -19,7 +19,7 @@ export default function ChatContextWrapper({
   // Used to determine whether to render the app or not (populates with any fetch errors from tryFetch calls).
   const [ChatState, setChatState] = useState<ChatConfig>({
     // Default state and initializes the SDK
-    ...ChatDefaultState,
+    ...ChatDefaultConfig,
     ...initialState,
     // Overridden in context provider.
     mutate: null
