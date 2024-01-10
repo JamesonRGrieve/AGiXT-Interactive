@@ -25,8 +25,13 @@ export default function ConversationHistory() {
   let lastUserMessage = ''; // track the last user message
   const theme = useTheme();
   const state = useContext(ChatContext);
+  const [lastConversation, setLastConversation] = useState(state.chatSettings.conversationName);
   const messagesEndRef = useRef(null);
   useEffect(() => {
+    if (state.chatSettings.conversationName === lastConversation) return;
+    else {
+      setLastConversation(state.chatSettings.conversationName);
+
     state.sdk.getConversation(
       '',
       state.chatSettings.conversationName,
@@ -34,9 +39,15 @@ export default function ConversationHistory() {
       1
     ).then(result => {
       state.mutate((oldState) => {
-        return { ...oldState, chatState: { ...oldState.chatState, conversation: result } };
+        // Check if the current conversationName is the same as the previous one
+        if (oldState.chatSettings.conversationName === state.chatSettings.conversationName) {
+          return { ...oldState, chatState: { ...oldState.chatState, conversation: result } };
+        }
+        // If they are different, return the old state without any changes
+        return oldState;
       });
     })
+  }
   }, [state.chatSettings.conversationName]);
   useEffect(() => {
     console.log('Conversation mutated, scrolling to bottom.', state.chatSettings.conversationName, state.chatState.conversation);
