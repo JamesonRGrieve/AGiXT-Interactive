@@ -24,12 +24,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta property='og:type' content='website' />
         <meta property='og:title' content={process.env.NEXT_PUBLIC_APP_NAME} />
         <meta property='og:description' content={process.env.NEXT_PUBLIC_APP_DESCRIPTION} />
-        <meta property='og:image' content={process.env.NEXT_PUBLIC_APP_IMAGE} />
+        <meta
+          property='og:image'
+          content={process.env.NEXT_PUBLIC_APP_LOGO_URI || `${process.env.NEXT_PUBLIC_APP_URI}/favicon.ico`}
+        />
       </head>
       <body className={inter.className}>
         <ThemeWrapper
           themes={themes}
-          defaultDark={cookieStore.get('dark')?.value === 'true'}
+          defaultDark={
+            cookieStore.get('dark')?.value
+              ? cookieStore.get('dark')?.value === 'true'
+              : process.env.NEXT_PUBLIC_DEFAULT_THEME_MODE === 'dark'
+          }
           defaultColorblind={cookieStore.get('colorblind')?.value === 'true'}>
           {children}
         </ThemeWrapper>
