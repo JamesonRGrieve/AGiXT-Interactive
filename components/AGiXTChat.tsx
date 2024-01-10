@@ -1,6 +1,6 @@
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat';
-import { ChatDefaultState } from '../types/ChatContext';
+import { ChatDefaultConfig } from '../types/ChatContext';
 export type ChatProps = {
   mode: 'prompt' | 'chain';
   showAppBar?: boolean;
@@ -21,7 +21,7 @@ const Stateful = (props: ChatProps) => {
       apiKey={props.opts?.apiKey || process.env.NEXT_PUBLIC_API_KEY || ''}
       agixtServer={props.opts?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437'}
       initialState={{
-        ...ChatDefaultState,
+        ...ChatDefaultConfig,
         prompt: props.opts?.promptName || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
         promptCategory: props.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY
       }}>
