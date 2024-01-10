@@ -7,6 +7,7 @@ import { useTheme } from '@mui/material';
 
 export default function Chat({ mode, showAppBar, showConversationSelector, opts }: ChatProps) {
   const theme = useTheme();
+
   return (
     <Box height='100%' display='flex' flexDirection='column'>
       {showAppBar && <Header showConversationSelector={showConversationSelector} />}
