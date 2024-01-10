@@ -38,7 +38,8 @@ export default function RootLayout({ children }: { children: ReactNode }): React
               ? cookieStore.get('dark')?.value === 'true'
               : process.env.NEXT_PUBLIC_DEFAULT_THEME_MODE === 'dark'
           }
-          defaultColorblind={cookieStore.get('colorblind')?.value === 'true'}>
+          defaultColorblind={cookieStore.get('colorblind')?.value === 'true'}
+        >
           {children}
         </ThemeWrapper>
       </body>

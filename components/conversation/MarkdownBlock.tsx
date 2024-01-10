@@ -4,9 +4,9 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import clipboardCopy from 'clipboard-copy';
 import { IconButton } from '@mui/material';
-import { DataGridFromCSV } from './DataGridFromCSV';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
 import { ChatContext } from '../../types/ChatContext';
+import { DataGridFromCSV } from './DataGridFromCSV';
 
 export default function MarkdownBlock({ content, chatItem }: { content: string; chatItem: any }) {
   const state = useContext(ChatContext);
@@ -63,7 +63,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
     vhdl: 'vhd',
     apex: 'cls',
     matlab: 'm',
-    nim: 'nim'
+    nim: 'nim',
   };
 
   const renderMessage = () => {
@@ -89,7 +89,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
     return content;
   };
   const generateId = (text) => {
-    return text ? text.toLowerCase().replace(/[^\w]+/g, '-') : '';
+    return text ? text.toLowerCase().replace(/\W+/g, '-') : '';
   };
   const handleAnchorClick = (e) => {
     const href = e.target.getAttribute('href');
@@ -122,7 +122,8 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
         {...props}
         target={isExternal ? '_blank' : undefined}
         rel={isExternal ? 'noopener noreferrer' : undefined}
-        onClick={isExternal ? undefined : handleAnchorClick}>
+        onClick={isExternal ? undefined : handleAnchorClick}
+      >
         {children}
       </a>
     );
@@ -133,7 +134,6 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
         renderMessage()
       ) : (
         <ReactMarkdown
-          // eslint-disable-next-line react/no-children-prop
           className='react-markdown'
           components={{
             a: renderLink,
@@ -163,8 +163,9 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
                       backgroundColor: 'darkgray',
                       borderRadius: '3px',
                       padding: '0.2em',
-                      fontFamily: 'monospace'
-                    }}>
+                      fontFamily: 'monospace',
+                    }}
+                  >
                     {children}
                   </span>
                 );
@@ -175,7 +176,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
               const fileExtension = langMap[language] || 'txt';
               const ts = chatItem
                 ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
-                : new Date().toLocaleString().replace(/[^0-9]/g, '');
+                : new Date().toLocaleString().replace(/\D/g, '');
 
               const fileName = chatItem ? `${chatItem.role}-${ts}.${fileExtension}` : `${ts}.${fileExtension}`;
               return (
@@ -189,7 +190,8 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
                             const actualCode = codeBlockRef.current.querySelector('code');
                             clipboardCopy(actualCode.innerText);
                           }
-                        }}>
+                        }}
+                      >
                         <ContentCopyIcon />
                       </IconButton>
                       <IconButton
@@ -199,7 +201,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
 
                             const element = document.createElement('a');
                             const file = new Blob([actualCode.innerText], {
-                              type: 'text/plain;charset=utf-8'
+                              type: 'text/plain;charset=utf-8',
                             });
                             element.href = URL.createObjectURL(file);
 
@@ -207,7 +209,8 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
                             document.body.appendChild(element);
                             element.click();
                           }
-                        }}>
+                        }}
+                      >
                         <DownloadIcon />
                       </IconButton>
                       {fileName} | {language}
@@ -232,8 +235,9 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
                   <br />
                 </>
               );
-            }
-          }}>
+            },
+          }}
+        >
           {renderMessage().toString()}
         </ReactMarkdown>
       )}

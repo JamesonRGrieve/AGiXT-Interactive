@@ -1,14 +1,13 @@
-import React, { useEffect, useState, ReactNode } from 'react';
-import { ChatContext, ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
-
+import React, { useState, ReactNode } from 'react';
 import AGiXTSDK from 'agixt';
+import { ChatContext, ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 
 export default function ChatContextWrapper({
   initialState = ChatDefaultConfig,
   requireKey = false,
   apiKey = null,
   agixtServer = '',
-  children
+  children,
 }: {
   requireKey?: boolean;
   apiKey?: string;
@@ -22,11 +21,11 @@ export default function ChatContextWrapper({
     ...ChatDefaultConfig,
     ...initialState,
     // Overridden in context provider.
-    mutate: null
+    mutate: null,
   } as ChatConfig);
   const sdk: AGiXTSDK = new AGiXTSDK({
     baseUri: agixtServer,
-    apiKey: apiKey
+    apiKey: apiKey,
   });
-  return <ChatContext.Provider value={{ ...ChatState, sdk: sdk, mutate: setChatState }}>{children}</ChatContext.Provider>
+  return <ChatContext.Provider value={{ ...ChatState, sdk: sdk, mutate: setChatState }}>{children}</ChatContext.Provider>;
 }

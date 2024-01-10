@@ -13,13 +13,13 @@ import {
   TextField,
   Button,
   Tooltip,
-  useTheme
+  useTheme,
 } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, ThumbDown } from '@mui/icons-material';
 import clipboardCopy from 'clipboard-copy';
 
-import MarkdownBlock from './MarkdownBlock';
 import { ChatContext } from '../../types/ChatContext';
+import MarkdownBlock from './MarkdownBlock';
 
 export default function ConversationHistory() {
   let lastUserMessage = ''; // track the last user message
@@ -28,29 +28,28 @@ export default function ConversationHistory() {
   const [lastConversation, setLastConversation] = useState(state.chatSettings.conversationName);
   const messagesEndRef = useRef(null);
   useEffect(() => {
-    if (state.chatSettings.conversationName === lastConversation) return;
-    else {
+    if (state.chatSettings.conversationName === lastConversation) {
+    } else {
       setLastConversation(state.chatSettings.conversationName);
 
-    state.sdk.getConversation(
-      '',
-      state.chatSettings.conversationName,
-      100,
-      1
-    ).then(result => {
-      state.mutate((oldState) => {
-        // Check if the current conversationName is the same as the previous one
-        if (oldState.chatSettings.conversationName === state.chatSettings.conversationName) {
-          return { ...oldState, chatState: { ...oldState.chatState, conversation: result } };
-        }
-        // If they are different, return the old state without any changes
-        return oldState;
+      state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1).then((result) => {
+        state.mutate((oldState) => {
+          // Check if the current conversationName is the same as the previous one
+          if (oldState.chatSettings.conversationName === state.chatSettings.conversationName) {
+            return { ...oldState, chatState: { ...oldState.chatState, conversation: result } };
+          }
+          // If they are different, return the old state without any changes
+          return oldState;
+        });
       });
-    })
-  }
+    }
   }, [state.chatSettings.conversationName]);
   useEffect(() => {
-    console.log('Conversation mutated, scrolling to bottom.', state.chatSettings.conversationName, state.chatState.conversation);
+    console.log(
+      'Conversation mutated, scrolling to bottom.',
+      state.chatSettings.conversationName,
+      state.chatState.conversation,
+    );
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [state.chatState.conversation]);
   return (
@@ -59,17 +58,16 @@ export default function ConversationHistory() {
       sx={{
         overflowY: 'scroll',
         flexGrow: '1',
-        backgroundColor: theme.palette.background.paper
-      }}>
+        backgroundColor: theme.palette.background.paper,
+      }}
+    >
       <Box display='flex' flexDirection='column' sx={{ overflowY: 'auto' }}>
         {state.chatState.conversation.length > 0 && state.chatState.conversation.map ? (
           state.chatState.conversation.map((chatItem, index) => {
             if (chatItem.role === 'USER') {
               lastUserMessage = chatItem.message;
             }
-            return (
-              <ChatMessage key={index} chatItem={chatItem} lastUserMessage={lastUserMessage} />
-            );
+            return <ChatMessage key={index} chatItem={chatItem} lastUserMessage={lastUserMessage} />;
           })
         ) : (
           <Box pb='3rem'>
@@ -87,17 +85,15 @@ export default function ConversationHistory() {
           </Box>
         )}
         {state.chatState.isLoading && (
-          <>
-            <ChatMessage
-              key={'Please Wait'}
-              chatItem={{
-                role: state.chatSettings.selectedAgent,
-                message: state.chatSettings.selectedAgent + ' is typing...',
-                timestamp: ''
-              }}
-              lastUserMessage={lastUserMessage}
-            />
-          </>
+          <ChatMessage
+            key={'Please Wait'}
+            chatItem={{
+              role: state.chatSettings.selectedAgent,
+              message: state.chatSettings.selectedAgent + ' is typing...',
+              timestamp: '',
+            }}
+            lastUserMessage={lastUserMessage}
+          />
         )}
         <div ref={messagesEndRef} />
       </Box>
@@ -131,7 +127,7 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
   const handleDownloadClick = () => {
     const element = document.createElement('a');
     const file = new Blob([formattedMessage], {
-      type: 'text/plain;charset=utf-8'
+      type: 'text/plain;charset=utf-8',
     });
     element.href = URL.createObjectURL(file);
     element.download = `${chatItem.role}-${chatItem.timestamp}.txt`;
@@ -150,16 +146,18 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
         padding: '10px',
         overflow: 'hidden',
         position: 'center',
-        color: theme.palette.text.primary
-      }}>
+        color: theme.palette.text.primary,
+      }}
+    >
       <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
       {chatItem.timestamp && (
         <Typography
           variant='caption'
           style={{
             width: '100%',
-            display: 'inline-block'
-          }}>
+            display: 'inline-block',
+          }}
+        >
           <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> • {chatItem.timestamp}
         </Typography>
       )}
@@ -219,7 +217,8 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
                 state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
               }
             }}
-            color='info'>
+            color='info'
+          >
             Submit
           </Button>
         </DialogActions>

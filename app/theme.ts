@@ -12,10 +12,10 @@ const baseTheme = {
           fontWeight: 'bold',
           fontSize: '14px',
           fontFamily: 'Encode Sans Semi Expanded, Arial, sans-serif',
-          textTransform: 'capitalize' as const
-        }
-      }
-    }
+          textTransform: 'capitalize' as const,
+        },
+      },
+    },
   },
   // Anything that you override from here https://mui.com/material-ui/customization/dark-mode/ needs to also be overridden in dark or it won't be applied.
   palette: {
@@ -23,33 +23,33 @@ const baseTheme = {
     primary: {
       light: '#CCCAE3',
       main: '#544D93',
-      dark: '#453F78'
+      dark: '#453F78',
     },
     secondary: {
       light: '#F07F9D',
       main: '#E01A4F',
-      dark: '#B71540'
+      dark: '#B71540',
     },
     error: {
       light: '#F6998D',
       main: '#F15946',
-      dark: '#E42A11'
+      dark: '#E42A11',
     },
     info: {
       light: '#91CFDE',
       main: '#53B3CB',
-      dark: '#1C515E'
+      dark: '#1C515E',
     },
     warning: {
       light: '#FBD774',
       main: '#F9C22E',
-      dark: '#EDB007'
+      dark: '#EDB007',
     },
     success: {
       light: '#8CB87A',
       main: '#62924F',
-      dark: '#436436'
-    }
+      dark: '#436436',
+    },
   },
   typography: {
     fontFamily: 'Arial, sans-serif',
@@ -86,18 +86,18 @@ const colorblindOverrides = {
       ...colorblindPalette,
     },
     secondary: {
-      ...colorblindPalette
+      ...colorblindPalette,
     },
     error: {
-      ...colorblindPalette
+      ...colorblindPalette,
     },
     success: {
-      ...colorblindPalette
+      ...colorblindPalette,
     },
     info: {
-      ...colorblindPalette
-    }
-  }
+      ...colorblindPalette,
+    },
+  },
 };
 export const themeLight = createTheme(baseTheme as ThemeOptions);
 export const themeDark = createTheme(deepmerge(baseTheme, darkOverrides) as ThemeOptions);

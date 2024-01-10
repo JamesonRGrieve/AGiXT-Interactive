@@ -39,7 +39,8 @@ export const MUI: Story = (args: Record<string, never>) => (
       alignItems: 'center',
       gap: '1rem',
     }}
-    {...args}>
+    {...args}
+  >
     <Typography variant='h1'>Heading 1</Typography>
     <Typography variant='h2'>Heading 2</Typography>
     <Typography variant='h3'>Heading 3</Typography>

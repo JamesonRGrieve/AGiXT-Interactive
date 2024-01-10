@@ -22,7 +22,8 @@
     ],
     "paths": {
       "@/*": ["./*"]
-    }
+    },
+    "incremental": true
   },
   "include": ["types/*.ts", "components/**/*", ".next/types/**/*.ts"],
   "exclude": []

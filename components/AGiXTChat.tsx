@@ -1,6 +1,7 @@
+import { ChatDefaultConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat';
-import { ChatDefaultConfig } from '../types/ChatContext';
+
 export type ChatProps = {
   mode: 'prompt' | 'chain';
   showAppBar?: boolean;
@@ -23,8 +24,9 @@ const Stateful = (props: ChatProps) => {
       initialState={{
         ...ChatDefaultConfig,
         prompt: props.opts?.promptName || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
-        promptCategory: props.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY
-      }}>
+        promptCategory: props.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
+      }}
+    >
       <Chat {...props} />
     </ContextWrapper>
   );
@@ -37,14 +39,14 @@ const AGiXTChat = ({
   mode,
   showAppBar = false,
   showConversationSelector = false,
-  opts
+  opts,
 }: ChatProps & { stateful?: boolean }) => {
   console.log(
     `AGiXTChat initialized as ${stateful ? '' : 'not '}stateful. ${
       stateful
         ? 'AGiXTChat will provide its own ChatContext Provider and state.'
         : 'Assuming a ChatContext Provider encloses this instance.'
-    }`
+    }`,
   );
   return stateful ? (
     <Stateful mode={mode} showAppBar={showAppBar} showConversationSelector={showConversationSelector} opts={opts} />
