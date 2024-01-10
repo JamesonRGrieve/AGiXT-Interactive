@@ -46,7 +46,7 @@ export type ChatConfig = {
   sdk: any;
 };
 
-export const ChatDefaultState = {
+export const ChatDefaultConfig = {
   conversations: [],
   chatSettings: {
     selectedAgent: 'gpt4free',
@@ -83,4 +83,4 @@ export const ChatDefaultState = {
   mutate: null,
   sdk: null
 };
-export const ChatContext: Context<ChatConfig> = createContext<ChatConfig>(ChatDefaultState);
+export const ChatContext: Context<ChatConfig> = createContext<ChatConfig>(ChatDefaultConfig);
