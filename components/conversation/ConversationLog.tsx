@@ -31,6 +31,7 @@ export default function ConversationHistory() {
   };
 
   useEffect(() => {
+    console.log('Setting loading to true.');
     state.mutate((oldState) => {
       return { ...oldState, chatState: { ...oldState.chatState, loading: true } };
     });
@@ -41,13 +42,14 @@ export default function ConversationHistory() {
         100,
         1
       );
+      console.log('Retrieved conversation: ', conversation);
       state.mutate((oldState) => {
         return { ...oldState, chatState: { ...oldState.chatState, conversation: conversation, loading: false } };
       });
     })();
   }, [state.chatConfig.conversationName]);
   useEffect(() => {
-    console.log('Conversation mutated', state.chatState.conversation);
+    console.log('Conversation mutated, scrolling to bottom.', state.chatState.conversation);
     scrollToBottom();
   }, [state.chatState.conversation]);
   return (
