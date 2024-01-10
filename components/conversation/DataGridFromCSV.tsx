@@ -3,7 +3,7 @@ import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextFie
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
 import { useState, useEffect, useContext } from 'react';
-import { ChatState } from '../../types/ChatState';
+import { ChatConfig } from '../../types/ChatContext';
 const ODD_OPACITY = 1;
 
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -31,7 +31,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   }
 }));
 
-export const DataGridFromCSV = ({ state, csvData }: { state: ChatState; csvData: any }) => {
+export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData: any }) => {
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
@@ -113,13 +113,13 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatState; csvData:
     lines.pop();
     const newCSVData = lines.join('\n');
     const chainArgs = {
-      conversation_name: state.chatConfig.conversationName,
+      conversation_name: state.chatSettings.conversationName,
       text: newCSVData
     };
     const response = await state.sdk.runChain(
       'Data Analysis',
       userMessage,
-      state.chatConfig.selectedAgent,
+      state.chatSettings.selectedAgent,
       false,
       1,
       chainArgs

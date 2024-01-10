@@ -14,7 +14,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useState } from 'react';
-import { ChatContext } from '../../types/ChatState';
+import { ChatContext } from '../../types/ChatContext';
 export default function ConversationSelector() {
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
@@ -23,7 +23,7 @@ export default function ConversationSelector() {
   const state = useContext(ChatContext);
   const handleAddConversation = async () => {
     if (!newConversationName) return;
-    await state.sdk.newConversation(state.chatConfig.selectedAgent, newConversationName);
+    await state.sdk.newConversation(state.chatSettings.selectedAgent, newConversationName);
     setNewConversationName('');
     setOpenNewConversation(false);
     const fetchConversations = async () => {
@@ -39,9 +39,9 @@ export default function ConversationSelector() {
     }));
   };
   const handleDeleteConversation = async () => {
-    if (!state.chatConfig.conversationName) return;
-    await state.sdk.deleteConversation(state.chatConfig.selectedAgent, state.chatConfig.conversationName);
-    const updatedConversations = state.conversations.filter((c) => c !== state.chatConfig.conversationName);
+    if (!state.chatSettings.conversationName) return;
+    await state.sdk.deleteConversation(state.chatSettings.selectedAgent, state.chatSettings.conversationName);
+    const updatedConversations = state.conversations.filter((c) => c !== state.chatSettings.conversationName);
     state.mutate((oldState) => {
       return {
         ...oldState,
@@ -53,13 +53,13 @@ export default function ConversationSelector() {
   };
 
   const handleExportConversation = async () => {
-    if (!state.chatConfig.conversationName) return;
+    if (!state.chatSettings.conversationName) return;
     const element = document.createElement('a');
     const file = new Blob([JSON.stringify(state.chatState.conversation)], {
       type: 'application/json'
     });
     element.href = URL.createObjectURL(file);
-    element.download = `${state.chatConfig.conversationName}.json`;
+    element.download = `${state.chatSettings.conversationName}.json`;
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
   };
@@ -91,7 +91,7 @@ export default function ConversationSelector() {
             fullWidth
             labelId='conversation-label'
             label='Select a Conversation'
-            value={state.chatConfig.conversationName}
+            value={state.chatSettings.conversationName}
             onChange={(e) =>
               state.mutate((oldState) => ({
                 ...oldState,

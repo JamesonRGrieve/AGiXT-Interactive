@@ -6,7 +6,7 @@ export type ChainRunConfig = {
   fromStep: number;
   allResponses: boolean;
 };
-export type ChatConfig = {
+export type ChatSettings = {
   selectedAgent: string;
   contextResults: number;
   shots: number;
@@ -34,8 +34,8 @@ export type Chat = {
   uploadedFiles: File[];
   isLoading: boolean;
 };
-export type ChatState = {
-  chatConfig: ChatConfig;
+export type ChatConfig = {
+  chatSettings: ChatSettings;
   chatState: Chat;
   conversations: string[]; // TODO Refactor all references to this into SWR. List of conversations.
   prompt: string;
@@ -48,7 +48,7 @@ export type ChatState = {
 
 export const ChatDefaultState = {
   conversations: [],
-  chatConfig: {
+  chatSettings: {
     selectedAgent: 'gpt4free',
     contextResults: 0,
     shots: 0,
@@ -83,4 +83,4 @@ export const ChatDefaultState = {
   mutate: null,
   sdk: null
 };
-export const ChatContext: Context<ChatState> = createContext<ChatState>(ChatDefaultState);
+export const ChatContext: Context<ChatConfig> = createContext<ChatConfig>(ChatDefaultState);
