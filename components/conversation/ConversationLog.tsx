@@ -33,7 +33,7 @@ export default function ConversationHistory() {
   useEffect(() => {
     console.log('Setting loading to true.');
     state.mutate((oldState) => {
-      return { ...oldState, chatState: { ...oldState.chatState, loading: true } };
+      return { ...oldState, chatState: { ...oldState.chatState, isLoading: true } };
     });
     (async () => {
       console.log('Retrieving conversation.');
@@ -45,7 +45,7 @@ export default function ConversationHistory() {
       );
       console.log('Retrieved conversation: ', conversation);
       state.mutate((oldState) => {
-        return { ...oldState, chatState: { ...oldState.chatState, conversation: conversation, loading: false } };
+        return { ...oldState, chatState: { ...oldState.chatState, conversation: conversation, isLoading: false } };
       });
     })();
   }, [state.chatSettings.conversationName]);
