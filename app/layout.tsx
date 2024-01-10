@@ -1,21 +1,23 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
+// eslint-disable-next-line import/no-unassigned-import
 import './globals.css';
 import { AppBar, Box, Typography } from '@mui/material';
 import ThemeWrapper from 'jrgcomponents/theming/ThemeWrapper';
-import themes from './theme';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
+import React, { ReactNode } from 'react';
+import themes from './theme';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME,
-  description: process.env.NEXT_PUBLIC_APP_DESCRIPTION
+  description: process.env.NEXT_PUBLIC_APP_DESCRIPTION,
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({ children }: { children: ReactNode }): ReactNode {
   const cookieStore = cookies();
   return (
     <html lang='en'>
@@ -51,7 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               display: 'flex',
               flexDirection: 'row',
               justifyContent: 'space-evenly',
-              alignItems: 'center'
+              alignItems: 'center',
             }}
           >
             <Typography variant='h1'>{process.env.NEXT_PUBLIC_APP_NAME}</Typography>

@@ -6,10 +6,10 @@
   "singleQuote": true,
   "quoteProps": "as-needed",
   "jsxSingleQuote": true,
-  "trailingComma": "none",
+  "trailingComma": "all",
   "bracketSpacing": true,
-  "jsxBracketSameLine": true,
+  "jsxBracketSameLine": false,
   "arrowParens": "always",
   "singleAttributePerLine": false,
-  "endOfLine": "crlf"
+  "endOfLine": "lf"
 }

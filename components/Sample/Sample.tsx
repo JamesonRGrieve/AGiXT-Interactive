@@ -1,5 +1,6 @@
 import { Paper, Button, Typography } from '@mui/material';
-import { useTheme } from '@mui/material/styles';
+import React from 'react';
+
 export type SampleProps = {
   heading: string;
   bodyText: string;

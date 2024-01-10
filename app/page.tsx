@@ -1,6 +1,8 @@
 'use client';
 import { Typography, useTheme } from '@mui/material';
-export default function Home() {
+import React, { ReactNode } from 'react';
+
+export default function Home(): ReactNode {
   const theme = useTheme();
   return (
     <Typography

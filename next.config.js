@@ -14,11 +14,11 @@ const nextConfig = {
       .reverse()
       .slice(0, 2)
       .reverse()
-      .join('.')}`
-  }
+      .join('.')}`,
+  },
 };
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: true
+  enabled: true,
 });
 module.exports = process.env.NEXT_ANALYZE === 'true' ? withBundleAnalyzer(nextConfig) : nextConfig;
