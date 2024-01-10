@@ -9,7 +9,7 @@
     "lint-fix": "next lint --fix",
     "prettier": "prettier .",
     "prettier-fix": "prettier --write .",
-    "fix": "next lint --fix && prettier --write .",
+    "fix": "prettier --write . && next lint --fix",
     "storybook": "storybook dev -p 6009",
     "storybook-build": "storybook build"
   },

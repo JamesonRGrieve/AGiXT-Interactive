@@ -15,13 +15,13 @@ export default function AudioRecorder() {
         ...oldState,
         chatState: {
           ...oldState.chatState,
-          isLoading: true
-        }
+          isLoading: true,
+        },
       };
     });
     navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
       mediaRecorder.current = new MediaRecorder(stream, {
-        mimeType: 'audio/mp4'
+        mimeType: 'audio/mp4',
       });
       mediaRecorder.current.ondataavailable = (event) => {
         setAudioData(event.data);
@@ -49,9 +49,9 @@ export default function AudioRecorder() {
           {
             base64_audio: base64Audio,
             conversation_results: state.chatSettings.conversationResults,
-            context_results: state.chatSettings.contextResults
+            context_results: state.chatSettings.contextResults,
           },
-          state.chatSettings.conversationName
+          state.chatSettings.conversationName,
         );
         setAudioData(null);
       };
@@ -66,7 +66,7 @@ export default function AudioRecorder() {
       state.mutate((oldState) => {
         return {
           ...oldState,
-          chatState: { ...oldState.chatState, isLoading: false }
+          chatState: { ...oldState.chatState, isLoading: false },
         };
       });
     }

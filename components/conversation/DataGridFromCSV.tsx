@@ -2,8 +2,9 @@ import { DataGrid, GridToolbar, gridClasses } from '@mui/x-data-grid';
 import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField, TextFieldProps } from '@mui/material';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { ChatConfig } from '../../types/ChatContext';
+
 const ODD_OPACITY = 1;
 
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -12,23 +13,23 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
     '&:hover, &.Mui-hovered': {
       backgroundColor: theme.palette.action.hover,
       '@media (hover: none)': {
-        backgroundColor: 'transparent'
-      }
+        backgroundColor: 'transparent',
+      },
     },
     '&.Mui-selected': {
       backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY + theme.palette.action.selectedOpacity),
       '&:hover, &.Mui-hovered': {
         backgroundColor: alpha(
           theme.palette.primary.main,
-          ODD_OPACITY + theme.palette.action.selectedOpacity + theme.palette.action.hoverOpacity
+          ODD_OPACITY + theme.palette.action.selectedOpacity + theme.palette.action.hoverOpacity,
         ),
         // Reset on touch devices, it doesn't add specificity
         '@media (hover: none)': {
-          backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY + theme.palette.action.selectedOpacity)
-        }
-      }
-    }
-  }
+          backgroundColor: alpha(theme.palette.primary.main, ODD_OPACITY + theme.palette.action.selectedOpacity),
+        },
+      },
+    },
+  },
 }));
 
 export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData: any }) => {
@@ -83,9 +84,9 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
           '& .MuiDataGrid-cell': {
             whiteSpace: 'nowrap',
             overflow: 'hidden',
-            textOverflow: 'ellipsis'
-          }
-        }
+            textOverflow: 'ellipsis',
+          },
+        },
       }));
     // If none of the rows have a value, don't show the column
     headers = headers.filter((header) => {
@@ -114,7 +115,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
     const newCSVData = lines.join('\n');
     const chainArgs = {
       conversation_name: state.chatSettings.conversationName,
-      text: newCSVData
+      text: newCSVData,
     };
     const response = await state.sdk.runChain(
       'Data Analysis',
@@ -122,7 +123,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
       state.chatSettings.selectedAgent,
       false,
       1,
-      chainArgs
+      chainArgs,
     );
     state.mutate((oldState) => {
       return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
@@ -154,9 +155,9 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
             initialState={{
               pagination: {
                 paginationModel: {
-                  pageSize: 5
-                }
-              }
+                  pageSize: 5,
+                },
+              },
             }}
             getRowClassName={(params) => (params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd')}
           />
@@ -164,8 +165,9 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
           <Box
             sx={{
               display: 'flex',
-              justifyContent: 'flex-end'
-            }}>
+              justifyContent: 'flex-end',
+            }}
+          >
             <Button color='info' variant='outlined' onClick={handleClickOpen}>
               <TipsAndUpdatesOutlinedIcon />
               &nbsp;Get Insights

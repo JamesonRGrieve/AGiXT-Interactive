@@ -66,21 +66,21 @@ export const ChatDefaultConfig = {
       chainArgs: {},
       singleStep: false,
       fromStep: 0,
-      allResponses: false
-    }
+      allResponses: false,
+    },
   },
   chatState: {
     conversation: [],
     hasFiles: false,
     lastResponse: {},
     uploadedFiles: [],
-    isLoading: false
+    isLoading: false,
   },
   prompt: '',
   promptCategory: '',
   chain: '',
   //message: '',
   mutate: null,
-  sdk: null
+  sdk: null,
 };
 export const ChatContext: Context<ChatConfig> = createContext<ChatConfig>(ChatDefaultConfig);

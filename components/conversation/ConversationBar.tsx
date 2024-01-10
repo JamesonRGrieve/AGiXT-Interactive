@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
-import AudioRecorder from '../conversation/AudioRecorder';
+import React, { useContext, useState } from 'react';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
@@ -13,7 +12,7 @@ import {
   DialogContentText,
   DialogActions,
   IconButton,
-  Typography
+  Typography,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { setCookie } from 'cookies-next';
@@ -51,9 +50,9 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
               ...oldState.chatState,
               conversation: [
                 ...oldState.chatState.conversation,
-                { role: 'USER', message: message, timestamp: 'Just now...' }
-              ]
-            }
+                { role: 'USER', message: message, timestamp: 'Just now...' },
+              ],
+            },
           };
         });
       })();
@@ -65,7 +64,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     state.mutate((oldState) => {
       return {
         ...oldState,
-        chatState: { ...oldState.chatState, isLoading: true }
+        chatState: { ...oldState.chatState, isLoading: true },
       };
     });
     const agentOverride = state.chatSettings.useSelectedAgent ? state.chatSettings.selectedAgent : '';
@@ -76,11 +75,11 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       agentOverride,
       false,
       0,
-      state.chatSettings.chainRunConfig.chainArgs
+      state.chatSettings.chainRunConfig.chainArgs,
     );
     state.mutate((oldState) => ({
       ...oldState,
-      chatState: { ...oldState.chatState, lastResponse: response, isLoading: false }
+      chatState: { ...oldState.chatState, lastResponse: response, isLoading: false },
     }));
   };
 
@@ -89,8 +88,12 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       return { ...oldState, chatState: { ...oldState.chatState, isLoading: true } };
     });
     const args: any = state.sdk.getPromptArgs(state.prompt, state.promptCategory);
-    if (message) args.user_input = message;
-    if (state.chatState.uploadedFiles.length > 0) args.import_files = state.chatState.uploadedFiles;
+    if (message) {
+      args.user_input = message;
+    }
+    if (state.chatState.uploadedFiles.length > 0) {
+      args.import_files = state.chatState.uploadedFiles;
+    }
     const promptName =
       state.prompt + (state.prompt == 'Chat with Commands' && state.chatState.hasFiles ? ' with Files' : '');
     const skipArgs = [
@@ -113,7 +116,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       'inject_memories_from_collection_number',
       'context_results',
       'persona',
-      ''
+      '',
     ];
     for (const arg of skipArgs) {
       delete args[arg];
@@ -129,9 +132,9 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       disable_memory: !state.chatSettings.enableMemory,
       inject_memories_from_collection_number: state.chatSettings.injectMemoriesFromCollectionNumber,
       conversation_results: state.chatSettings.conversationResults,
-      ...args
+      ...args,
     };
-    console.log("---Sending Message---")
+    console.log('---Sending Message---');
     console.log('State args', stateArgs);
     console.log('State', state);
     console.log('Prompt name', promptName);
@@ -139,14 +142,14 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     state.mutate((oldState) => {
       return {
         ...oldState,
-        chatState: { ...oldState.chatState, lastResponse: response, isLoading: false, uploadedFiles: [] }
+        chatState: { ...oldState.chatState, lastResponse: response, isLoading: false, uploadedFiles: [] },
       };
     });
 
     (async () => {
       const conversation = await state.sdk.getConversation(
         state.chatSettings.selectedAgent,
-        state.chatSettings.conversationName
+        state.chatSettings.conversationName,
       );
       state.mutate((oldState) => {
         return { ...oldState, chatState: { ...oldState.chatState, conversation: conversation } };
@@ -184,18 +187,20 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                         setFileUploadOpen(true);
                         state.mutate((oldState) => ({
                           ...oldState,
-                          chatState: { ...oldState.chatState, uploadedFiles: [] }
+                          chatState: { ...oldState.chatState, uploadedFiles: [] },
                         }));
                       }}
                       disabled={state.chatState.isLoading}
-                      sx={{ height: '56px' }}>
+                      sx={{ height: '56px' }}
+                    >
                       <NoteAddOutlinedIcon />
                     </IconButton>
                     <Dialog
                       open={fileUploadOpen}
                       onClose={() => {
                         setFileUploadOpen(false);
-                      }}>
+                      }}
+                    >
                       <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
                       <DialogContent>
                         <DialogContentText>Please upload the files you would like to send.</DialogContentText>
@@ -207,7 +212,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                           onChange={(e) => {
                             state.mutate((oldState) => ({
                               ...oldState,
-                              chatState: { ...oldState.chatState, uploadedFiles: Array(e.target.files) }
+                              chatState: { ...oldState.chatState, uploadedFiles: Array(e.target.files) },
                             }));
                           }}
                         />
@@ -217,7 +222,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                           onClick={() => {
                             setFileUploadOpen(false);
                           }}
-                          color='error'>
+                          color='error'
+                        >
                           Cancel
                         </Button>
                         <Button onClick={handleUploadFiles} color='info' disabled={state.chatState.isLoading}>
@@ -233,14 +239,15 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                       color='info'
                       onClick={handleSendMessage}
                       disabled={state.chatState.isLoading}
-                      sx={{ height: '56px', padding: '0.5rem' }}>
+                      sx={{ height: '56px', padding: '0.5rem' }}
+                    >
                       <SendIcon />
                     </IconButton>
                   </Tooltip>
                 )}
                 {/*mode == 'prompt' && <AudioRecorder />*/}
               </InputAdornment>
-            )
+            ),
           }}
         />
         {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' && (
@@ -252,11 +259,12 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
                 setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
                 state.mutate((oldState) => ({
                   ...oldState,
-                  chatConfig: { ...oldState.chatConfig, conversationName: uuid }
+                  chatConfig: { ...oldState.chatConfig, conversationName: uuid },
                 }));
               }}
               disabled={state.chatState.isLoading}
-              sx={{ height: '56px', padding: '1rem' }}>
+              sx={{ height: '56px', padding: '1rem' }}
+            >
               <DeleteForever />
             </IconButton>
           </Tooltip>
@@ -273,7 +281,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
           <Typography
             variant='caption'
             align='center'
-            style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}>
+            style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}
+          >
             <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT/AGiXT'>
               {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
             </Link>{' '}

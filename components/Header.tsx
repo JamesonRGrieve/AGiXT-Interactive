@@ -1,9 +1,9 @@
-import { AppBar, Box, Theme, Typography } from '@mui/material';
+import { AppBar, Box, Typography } from '@mui/material';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
-import ConversationSelector from './conversation/ConversationSelector';
 import { useContext } from 'react';
 import { ChatContext } from '../types/ChatContext';
+import ConversationSelector from './conversation/ConversationSelector';
 
 export default function Header({ showConversationSelector }: { showConversationSelector: boolean }) {
   showConversationSelector = true;
@@ -17,8 +17,9 @@ export default function Header({ showConversationSelector }: { showConversationS
         justifyContent: 'space-between',
         position: 'static',
         padding: '0.75rem',
-        backgroundColor: 'primary.dark'
-      }}>
+        backgroundColor: 'primary.dark',
+      }}
+    >
       <Box display='flex' flex='1' flexDirection='row'>
         <Box display='flex' flexDirection='row' width='100%' pr='4rem'>
           {showConversationSelector ? <ConversationSelector /> : <span>&nbsp;</span>}

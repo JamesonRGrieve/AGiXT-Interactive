@@ -8,13 +8,14 @@ import {
   DialogContent,
   TextField,
   DialogActions,
-  Tooltip
+  Tooltip,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useState } from 'react';
 import { ChatContext } from '../../types/ChatContext';
+
 export default function ConversationSelector() {
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
@@ -22,7 +23,9 @@ export default function ConversationSelector() {
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
   const state = useContext(ChatContext);
   const handleAddConversation = async () => {
-    if (!newConversationName) return;
+    if (!newConversationName) {
+      return;
+    }
     await state.sdk.newConversation(state.chatSettings.selectedAgent, newConversationName);
     setNewConversationName('');
     setOpenNewConversation(false);
@@ -35,28 +38,32 @@ export default function ConversationSelector() {
     fetchConversations();
     state.mutate((oldState) => ({
       ...oldState,
-      chatConfig: { ...oldState.chatConfig, conversationName: newConversationName }
+      chatConfig: { ...oldState.chatConfig, conversationName: newConversationName },
     }));
   };
   const handleDeleteConversation = async () => {
-    if (!state.chatSettings.conversationName) return;
+    if (!state.chatSettings.conversationName) {
+      return;
+    }
     await state.sdk.deleteConversation(state.chatSettings.selectedAgent, state.chatSettings.conversationName);
     const updatedConversations = state.conversations.filter((c) => c !== state.chatSettings.conversationName);
     state.mutate((oldState) => {
       return {
         ...oldState,
         conversation: updatedConversations,
-        chatConfig: { ...oldState.chatConfig, conversationName: updatedConversations[0] || '' }
+        chatConfig: { ...oldState.chatConfig, conversationName: updatedConversations[0] || '' },
       };
     });
     setOpenDeleteConversation(false);
   };
 
   const handleExportConversation = async () => {
-    if (!state.chatSettings.conversationName) return;
+    if (!state.chatSettings.conversationName) {
+      return;
+    }
     const element = document.createElement('a');
     const file = new Blob([JSON.stringify(state.chatState.conversation)], {
-      type: 'application/json'
+      type: 'application/json',
     });
     element.href = URL.createObjectURL(file);
     element.download = `${state.chatSettings.conversationName}.json`;
@@ -70,9 +77,10 @@ export default function ConversationSelector() {
           sx={{
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'center'
+            alignItems: 'center',
           }}
-          fullWidth>
+          fullWidth
+        >
           <Select
             sx={{
               color: 'white',
@@ -80,13 +88,13 @@ export default function ConversationSelector() {
               '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
               '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
               '.MuiSvgIcon-root ': {
-                fill: 'white !important'
+                fill: 'white !important',
               },
               '.MuiOutlinedInput-notchedOutline legend span': {
                 // Targeting the floating label specifically
                 color: 'white',
-                opacity: '1'
-              }
+                opacity: '1',
+              },
             }}
             fullWidth
             labelId='conversation-label'
@@ -95,9 +103,10 @@ export default function ConversationSelector() {
             onChange={(e) =>
               state.mutate((oldState) => ({
                 ...oldState,
-                chatConfig: { ...oldState.chatConfig, conversationName: e.target.value }
+                chatConfig: { ...oldState.chatConfig, conversationName: e.target.value },
               }))
-            }>
+            }
+          >
             {state.conversations
               ? state.conversations.map((c) => (
                   <MenuItem key={c} value={c}>

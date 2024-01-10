@@ -43,25 +43,6 @@ export default function RootLayout({ children }: { children: ReactNode }): React
           }
           defaultColorblind={cookieStore.get('colorblind')?.value === 'true'}
         >
-          <AppBar
-            position='static'
-            sx={{
-              textAlign: 'center',
-              height: '4rem',
-              fontSize: '2rem',
-              lineHeight: '4rem',
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-evenly',
-              alignItems: 'center',
-            }}
-          >
-            <Typography variant='h1'>{process.env.NEXT_PUBLIC_APP_NAME}</Typography>
-            <Box>
-              <SwitchDark />
-              <SwitchColorblind />
-            </Box>
-          </AppBar>
           {children}
         </ThemeWrapper>
       </body>
