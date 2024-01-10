@@ -42,8 +42,8 @@ const AGiXTChat = ({
   console.log(
     `AGiXTChat initialized as ${stateful ? '' : 'not '}stateful. ${
       stateful
-        ? 'AGiXTChat will provide its own AGiXTWrapper and state.'
-        : 'Assuming an AGiXTWrapper encloses this instance.'
+        ? 'AGiXTChat will provide its own ChatContext Provider and state.'
+        : 'Assuming a ChatContext Provider encloses this instance.'
     }`
   );
   return stateful ? (
