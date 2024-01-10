@@ -10,6 +10,8 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import Paper from '@mui/material/Paper';
 
+import React from 'react';
+
 // Configure Metadata.
 const meta = {
   title: 'Theme/Theme',
@@ -19,23 +21,23 @@ const meta = {
       variant: {
         control: {
           type: 'radio',
-          options: []
-        }
-      }
-    }
-  }
+          options: [],
+        },
+      },
+    },
+  },
 } satisfies Meta<typeof Paper>;
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Configure Component Stories.
-export const MUI: Story = (args: any) => (
+export const MUI: Story = (args: Record<string, never>) => (
   <Paper
     sx={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      gap: '1rem'
+      gap: '1rem',
     }}
     {...args}>
     <Typography variant='h1'>Heading 1</Typography>

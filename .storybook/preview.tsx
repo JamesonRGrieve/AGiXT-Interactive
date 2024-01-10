@@ -11,7 +11,7 @@ const themes = {
   light: themeLight,
   light_cb: themeLightColorblind,
   dark: themeDark,
-  dark_cb: themeDarkColorblind
+  dark_cb: themeDarkColorblind,
 };
 
 export const globalTypes = {
@@ -27,10 +27,10 @@ export const globalTypes = {
         { value: 'light', left: '☀️🌈', title: 'Light Mode' },
         { value: 'light_cb', left: '☀️🩶', title: 'Light Colorblind Mode' },
         { value: 'dark', left: '🌙🌈', title: 'Dark Mode' },
-        { value: 'dark_cb', left: '🌙🩶', title: 'Dark Colorblind Mode' }
-      ]
-    }
-  }
+        { value: 'dark_cb', left: '🌙🩶', title: 'Dark Colorblind Mode' },
+      ],
+    },
+  },
 };
 
 const preview: Preview = {
@@ -39,8 +39,8 @@ const preview: Preview = {
     controls: {
       matchers: {
         color: /(background|color)$/i,
-        date: /Date$/
-      }
+        date: /Date$/,
+      },
     },
     docs: {
       page: () => (
@@ -54,9 +54,9 @@ const preview: Preview = {
           <Controls />
           <Stories />
         </>
-      )
-    }
-  }
+      ),
+    },
+  },
 };
 
 export const withTheme = (Story: any, context: any) => {
