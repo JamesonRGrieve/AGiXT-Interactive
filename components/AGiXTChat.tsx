@@ -1,5 +1,4 @@
 import ContextWrapper from './ContextWrapper';
-import { getCookie } from 'cookies-next';
 import Chat from './Chat';
 import { ChatDefaultState } from '../types/ChatState';
 export type ChatProps = {

@@ -1,4 +1,3 @@
-'use client';
 import ConversationHistory from './conversation/ConversationLog';
 import ConversationBar from './conversation/ConversationBar';
 import Box from '@mui/material/Box';

@@ -1,4 +1,3 @@
-'use client';
 import React, { useEffect, useState, ReactNode } from 'react';
 import { ChatContext, ChatDefaultState, ChatState } from '../types/ChatState';
 

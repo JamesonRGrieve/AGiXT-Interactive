@@ -13,8 +13,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
-import { useContext, useEffect, useState } from 'react';
-import { setCookie } from 'cookies-next';
+import { useContext, useState } from 'react';
 import { ChatContext } from '../../types/ChatState';
 export default function ConversationSelector() {
   const [openNewConversation, setOpenNewConversation] = useState(false);
@@ -22,10 +21,6 @@ export default function ConversationSelector() {
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
   const state = useContext(ChatContext);
-  useEffect(() => {
-    console.log('Setting conversation name cookie.', state.chatConfig.conversationName);
-    setCookie('conversationName', state.chatConfig.conversationName);
-  }, [state.chatConfig.conversationName]);
   const handleAddConversation = async () => {
     if (!newConversationName) return;
     await state.sdk.newConversation(state.chatConfig.selectedAgent, newConversationName);

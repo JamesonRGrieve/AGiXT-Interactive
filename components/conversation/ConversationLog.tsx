@@ -31,13 +31,12 @@ export default function ConversationHistory() {
   };
 
   useEffect(() => {
-    console.log('Getting conversation', state.chatConfig.selectedAgent);
     state.mutate((oldState) => {
       return { ...oldState, chatState: { ...oldState.chatState, loading: true } };
     });
     (async () => {
       const conversation = await state.sdk.getConversation(
-        state.chatConfig.selectedAgent,
+        '',
         state.chatConfig.conversationName,
         100,
         1
@@ -46,7 +45,7 @@ export default function ConversationHistory() {
         return { ...oldState, chatState: { ...oldState.chatState, conversation: conversation, loading: false } };
       });
     })();
-  }, [state.chatConfig.selectedAgent, state.chatConfig.conversationName]);
+  }, [state.chatConfig.conversationName]);
   useEffect(() => {
     console.log('Conversation mutated', state.chatState.conversation);
     scrollToBottom();
@@ -66,7 +65,7 @@ export default function ConversationHistory() {
               lastUserMessage = chatItem.message;
             }
             return (
-              <ChatMessage key={index} chatItem={chatItem} state={state} theme={theme} lastUserMessage={lastUserMessage} />
+              <ChatMessage key={index} chatItem={chatItem} lastUserMessage={lastUserMessage} />
             );
           })
         ) : (
@@ -94,8 +93,6 @@ export default function ConversationHistory() {
                 timestamp: ''
               }}
               lastUserMessage={lastUserMessage}
-              state={state}
-              theme={theme}
             />
           </>
         )}
@@ -105,7 +102,9 @@ export default function ConversationHistory() {
   );
 }
 
-const ChatMessage = ({ chatItem, lastUserMessage, state, theme }) => {
+const ChatMessage = ({ chatItem, lastUserMessage }) => {
+  const theme = useTheme();
+  const state = useContext(ChatContext);
   const formattedMessage =
     typeof chatItem.message === 'string'
       ? chatItem.message.replace(/\\n/g, '  \n').replace(/\n/g, '  \n')
