@@ -19,7 +19,7 @@ import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, Thum
 import clipboardCopy from 'clipboard-copy';
 
 import MarkdownBlock from './MarkdownBlock';
-import { ChatContext } from '../../types/ChatState';
+import { ChatContext } from '../../types/ChatContext';
 
 export default function ConversationHistory() {
   let lastUserMessage = ''; // track the last user message
@@ -36,9 +36,10 @@ export default function ConversationHistory() {
       return { ...oldState, chatState: { ...oldState.chatState, loading: true } };
     });
     (async () => {
+      console.log('Retrieving conversation.');
       const conversation = await state.sdk.getConversation(
         '',
-        state.chatConfig.conversationName,
+        state.chatSettings.conversationName,
         100,
         1
       );
@@ -47,7 +48,7 @@ export default function ConversationHistory() {
         return { ...oldState, chatState: { ...oldState.chatState, conversation: conversation, loading: false } };
       });
     })();
-  }, [state.chatConfig.conversationName]);
+  }, [state.chatSettings.conversationName]);
   useEffect(() => {
     console.log('Conversation mutated, scrolling to bottom.', state.chatState.conversation);
     scrollToBottom();
@@ -90,8 +91,8 @@ export default function ConversationHistory() {
             <ChatMessage
               key={'Please Wait'}
               chatItem={{
-                role: state.chatConfig.selectedAgent,
-                message: state.chatConfig.selectedAgent + ' is typing...',
+                role: state.chatSettings.selectedAgent,
+                message: state.chatSettings.selectedAgent + ' is typing...',
                 timestamp: ''
               }}
               lastUserMessage={lastUserMessage}

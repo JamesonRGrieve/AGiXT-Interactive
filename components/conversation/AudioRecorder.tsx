@@ -1,7 +1,7 @@
 import { useState, useRef, useContext } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
-import { ChatContext } from '../../types/ChatState';
+import { ChatContext } from '../../types/ChatContext';
 
 export default function AudioRecorder() {
   const state = useContext(ChatContext);
@@ -44,14 +44,14 @@ export default function AudioRecorder() {
         const audioDataArray = new Uint8Array(reader.result as ArrayBufferLike);
         const base64Audio = btoa(String.fromCharCode.apply(null, audioDataArray)); // Convert to base64
         const response = state.sdk.executeCommand(
-          state.chatConfig.selectedAgent,
+          state.chatSettings.selectedAgent,
           'Chat with Voice',
           {
             base64_audio: base64Audio,
-            conversation_results: state.chatConfig.conversationResults,
-            context_results: state.chatConfig.contextResults
+            conversation_results: state.chatSettings.conversationResults,
+            context_results: state.chatSettings.contextResults
           },
-          state.chatConfig.conversationName
+          state.chatSettings.conversationName
         );
         setAudioData(null);
       };

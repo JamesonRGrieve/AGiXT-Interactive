@@ -24,7 +24,7 @@
     "./ConversationBar": "./dist/components/conversation/ConversationBar.js",
     "./ConversationLog": "./dist/components/conversation/ConversationLog.js",
     "./ConversationSelector": "./dist/components/conversation/ConversationSelector.js",
-    "./Context": "./dist/types/ChatState.js"
+    "./Context": "./dist/types/ChatContext.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",

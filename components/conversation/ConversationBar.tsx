@@ -21,7 +21,7 @@ import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import Link from 'next/link';
-import { ChatContext } from '../../types/ChatState';
+import { ChatContext } from '../../types/ChatContext';
 
 export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) {
   const state = useContext(ChatContext);
@@ -68,15 +68,15 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
         chatState: { ...oldState.chatState, isLoading: true }
       };
     });
-    const agentOverride = state.chatConfig.useSelectedAgent ? state.chatConfig.selectedAgent : '';
-    state.chatConfig.chainRunConfig.chainArgs['conversation_name'] = state.chatConfig.conversationName;
+    const agentOverride = state.chatSettings.useSelectedAgent ? state.chatSettings.selectedAgent : '';
+    state.chatSettings.chainRunConfig.chainArgs['conversation_name'] = state.chatSettings.conversationName;
     const response = await state.sdk.runChain(
       state.chain,
       message,
       agentOverride,
       false,
       0,
-      state.chatConfig.chainRunConfig.chainArgs
+      state.chatSettings.chainRunConfig.chainArgs
     );
     state.mutate((oldState) => ({
       ...oldState,
@@ -120,22 +120,22 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     }
     const stateArgs = {
       prompt_category: state.promptCategory,
-      conversation_name: state.chatConfig.conversationName,
-      context_results: state.chatConfig.contextResults,
-      shots: state.chatConfig.shots,
-      browse_links: state.chatConfig.browseLinks,
-      websearch: state.chatConfig.webSearch,
-      websearch_depth: state.chatConfig.websearchDepth,
-      disable_memory: !state.chatConfig.enableMemory,
-      inject_memories_from_collection_number: state.chatConfig.injectMemoriesFromCollectionNumber,
-      conversation_results: state.chatConfig.conversationResults,
+      conversation_name: state.chatSettings.conversationName,
+      context_results: state.chatSettings.contextResults,
+      shots: state.chatSettings.shots,
+      browse_links: state.chatSettings.browseLinks,
+      websearch: state.chatSettings.webSearch,
+      websearch_depth: state.chatSettings.websearchDepth,
+      disable_memory: !state.chatSettings.enableMemory,
+      inject_memories_from_collection_number: state.chatSettings.injectMemoriesFromCollectionNumber,
+      conversation_results: state.chatSettings.conversationResults,
       ...args
     };
     console.log("---Sending Message---")
     console.log('State args', stateArgs);
     console.log('State', state);
     console.log('Prompt name', promptName);
-    const response = await state.sdk.promptAgent(state.chatConfig.selectedAgent, promptName, stateArgs);
+    const response = await state.sdk.promptAgent(state.chatSettings.selectedAgent, promptName, stateArgs);
     state.mutate((oldState) => {
       return {
         ...oldState,
@@ -145,8 +145,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
 
     (async () => {
       const conversation = await state.sdk.getConversation(
-        state.chatConfig.selectedAgent,
-        state.chatConfig.conversationName
+        state.chatSettings.selectedAgent,
+        state.chatSettings.conversationName
       );
       state.mutate((oldState) => {
         return { ...oldState, chatState: { ...oldState.chatState, conversation: conversation } };
@@ -158,8 +158,8 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
     <>
       <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
         <TextField
-          label={`Type your message to ${state.chatConfig.selectedAgent} here.`}
-          placeholder={`Type your message to ${state.chatConfig.selectedAgent} here.`}
+          label={`Type your message to ${state.chatSettings.selectedAgent} here.`}
+          placeholder={`Type your message to ${state.chatSettings.selectedAgent} here.`}
           multiline
           rows={2}
           fullWidth
@@ -176,7 +176,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
-                {state.chatConfig.enableFileUpload && (
+                {state.chatSettings.enableFileUpload && (
                   <>
                     <IconButton
                       color='info'

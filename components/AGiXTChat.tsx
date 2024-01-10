@@ -1,6 +1,6 @@
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat';
-import { ChatDefaultState } from '../types/ChatState';
+import { ChatDefaultState } from '../types/ChatContext';
 export type ChatProps = {
   mode: 'prompt' | 'chain';
   showAppBar?: boolean;
