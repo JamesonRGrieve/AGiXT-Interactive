@@ -39,24 +39,6 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       setFileUploadOpen(false);
     }
   };
-  useEffect(() => {
-    console.log('Getting args for prompt.', state.prompt, state.promptCategory);
-    (async function getArgs(promptName, promptCategory) {
-      const promptArgData = await state.sdk.getPromptArgs(promptName, promptCategory);
-      if (promptArgData) {
-        const newArgs = {};
-        for (const arg of promptArgData) {
-          if (arg !== '') {
-            newArgs[arg] = '';
-          }
-        }
-        state.mutate((oldState) => {
-          return { ...oldState, chatConfig: { ...state.chatConfig, promptArgs: newArgs } };
-        });
-      }
-    })(state.prompt, state.promptCategory);
-  }, [state.prompt, state.promptCategory]);
-
   const handleSendMessage = async () => {
     if (mode == 'chain') {
       runChain();
@@ -79,7 +61,6 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       setMessage('');
     }
   };
-
   const runChain = async () => {
     state.mutate((oldState) => {
       return {
