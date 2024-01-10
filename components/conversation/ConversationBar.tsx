@@ -131,6 +131,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       conversation_results: state.chatConfig.conversationResults,
       ...args
     };
+    console.log("---Sending Message---")
     console.log('State args', stateArgs);
     console.log('State', state);
     console.log('Prompt name', promptName);
