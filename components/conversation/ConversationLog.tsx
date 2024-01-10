@@ -26,32 +26,21 @@ export default function ConversationHistory() {
   const theme = useTheme();
   const state = useContext(ChatContext);
   const messagesEndRef = useRef(null);
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   useEffect(() => {
-    console.log('Setting loading to true.');
-    state.mutate((oldState) => {
-      return { ...oldState, chatState: { ...oldState.chatState, isLoading: true } };
-    });
-    (async () => {
-      console.log('Retrieving conversation.');
-      const conversation = await state.sdk.getConversation(
-        '',
-        state.chatSettings.conversationName,
-        100,
-        1
-      );
-      console.log('Retrieved conversation: ', conversation);
+    state.sdk.getConversation(
+      '',
+      state.chatSettings.conversationName,
+      100,
+      1
+    ).then(result => {
       state.mutate((oldState) => {
-        return { ...oldState, chatState: { ...oldState.chatState, conversation: conversation, isLoading: false } };
+        return { ...oldState, chatState: { ...oldState.chatState, conversation: result } };
       });
-    })();
+    })
   }, [state.chatSettings.conversationName]);
   useEffect(() => {
-    console.log('Conversation mutated, scrolling to bottom.', state.chatState.conversation);
-    scrollToBottom();
+    console.log('Conversation mutated, scrolling to bottom.', state.chatSettings.conversationName, state.chatState.conversation);
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [state.chatState.conversation]);
   return (
     <Paper
