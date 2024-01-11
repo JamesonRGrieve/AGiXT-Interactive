@@ -130,6 +130,7 @@
     "promise/no-return-in-finally": "warn", // Avoid returning values from finally blocks in promises.
     "promise/no-return-wrap": "warn", // Avoid wrapping values in Promise.resolve or Promise.reject when not needed.
     "react-hooks/rules-of-hooks": "warn", // Checks rules of Hooks.
+    "react/react-in-jsx-scope": "warn", // Prevent missing React when using JSX.
     "react/jsx-boolean-value": "warn", // Enforce shorthand for boolean values in JSX.
     "react/jsx-closing-bracket-location": "warn", // Enforce the closing bracket location for JSX multiline elements.
     "react/jsx-closing-tag-location": "warn", // Enforce closing tag location in JSX.

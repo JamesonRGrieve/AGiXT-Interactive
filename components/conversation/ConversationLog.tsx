@@ -28,8 +28,7 @@ export default function ConversationHistory() {
   const [lastConversation, setLastConversation] = useState(state.chatSettings.conversationName);
   const messagesEndRef = useRef(null);
   useEffect(() => {
-    if (state.chatSettings.conversationName === lastConversation) {
-    } else {
+    if (state.chatSettings.conversationName !== lastConversation) {
       setLastConversation(state.chatSettings.conversationName);
 
       state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1).then((result) => {
