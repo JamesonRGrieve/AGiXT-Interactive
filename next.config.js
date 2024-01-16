@@ -24,6 +24,7 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY: process.env.AGIXT_REQUIRE_API_KEY || 'true',
     NEXT_PUBLIC_ADSENSE_ACCOUNT: process.env.ADSENSE_ACCOUNT || '',
     NEXT_PUBLIC_AGIXT_RLHF: process.env.AGIXT_RLHF || 'false',
+    NEXT_PUBLIC_DEFAULT_THEME_MODE: process.env.DEFAULT_THEME_MODE || 'dark',
     NEXT_PUBLIC_APP_NAME: process.env.APP_NAME || 'AGiXT',
     NEXT_PUBLIC_APP_DESCRIPTION: process.env.APP_DESCRIPTION || 'An AGiXT application.',
     NEXT_PUBLIC_APP_LOGO_URI: process.env.APP_LOGO || '',
