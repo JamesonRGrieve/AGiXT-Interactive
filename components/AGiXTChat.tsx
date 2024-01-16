@@ -1,4 +1,4 @@
-import { ChatDefaultConfig } from '../types/ChatContext';
+import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat';
 
@@ -6,28 +6,26 @@ export type ChatProps = {
   mode: 'prompt' | 'chain';
   showAppBar?: boolean;
   showConversationSelector?: boolean;
-  opts?: {
-    agixtServer?: string;
-    apiKey?: string;
-    agentName?: string;
-    promptName?: string;
-    promptCategory?: string;
-    conversationName?: string;
+  serverConfig?: {
+    apiKey: string;
+    agixtServer: string;
   };
+  opts?: ChatConfig;
 };
 const Stateful = (props: ChatProps) => {
   return (
     <ContextWrapper
       requireKey={process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true'}
-      apiKey={props.opts?.apiKey || process.env.NEXT_PUBLIC_API_KEY || ''}
-      agixtServer={props.opts?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437'}
+      apiKey={props.serverConfig?.apiKey || process.env.NEXT_PUBLIC_API_KEY || ''}
+      agixtServer={props.serverConfig?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437'}
       initialState={{
         ...ChatDefaultConfig,
         chatSettings: {
           ...ChatDefaultConfig.chatSettings,
-          selectedAgent: props.opts?.agentName || process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free',
+          ...props.opts?.chatSettings,
+          selectedAgent: props.opts?.chatSettings.selectedAgent || process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free',
         },
-        prompt: props.opts?.promptName || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
+        prompt: props.opts?.prompt || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
         promptCategory: props.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
       }}
     >
