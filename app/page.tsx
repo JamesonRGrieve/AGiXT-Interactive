@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import AGiXTChat from '../components/AGiXTChat';
 import { setCookie, getCookie } from 'cookies-next';
-
+import SearchParamWrapper from '../components/SearchParamWrapper';
 export default function Home() {
   const [apiKey, setApiKey] = useState(getCookie('apiKey'));
   const [loggedIn, setLoggedIn] = useState(getCookie('apiKey') ? true : false);
@@ -25,7 +25,17 @@ export default function Home() {
       </div>
     );
   } else {
-    return (
+    return process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG ? (
+      <SearchParamWrapper
+        showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
+        showConversationSelector={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
+        mode={
+          (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
+            ? process.env.NEXT_PUBLIC_AGIXT_MODE
+            : 'prompt') as 'chain' | 'prompt'
+        }
+      />
+    ) : (
       <AGiXTChat
         showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
         showConversationSelector={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
