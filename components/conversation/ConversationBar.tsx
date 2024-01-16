@@ -156,7 +156,6 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       });
     })();
   };
-  console.log('State', state);
   return (
     <>
       <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
@@ -255,12 +254,14 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
             <IconButton
               color='info'
               onClick={() => {
-                const uuid = crypto.randomUUID();
-                setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
-                state.mutate((oldState) => ({
-                  ...oldState,
-                  chatConfig: { ...oldState.chatConfig, conversationName: uuid },
-                }));
+                if (confirm('Are you sure you want to reset the conversation? This cannot be undone.')) {
+                  const uuid = crypto.randomUUID();
+                  setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+                  state.mutate((oldState) => ({
+                    ...oldState,
+                    chatConfig: { ...oldState.chatConfig, conversationName: uuid },
+                  }));
+                }
               }}
               disabled={state.chatState.isLoading}
               sx={{ height: '56px', padding: '1rem' }}
