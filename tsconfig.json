@@ -23,8 +23,8 @@
       "@/*": ["./*"]
     },
     "incremental": true,
-    "noEmit": true
+    "noEmit": false
   },
-  "include": ["types/*.ts", "components/**/*", ".next/types/**/*.ts"],
+  "include": ["types/*.ts", "components/**/*"],
   "exclude": ["app/*", ".next/*"]
 }
