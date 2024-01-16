@@ -49,7 +49,7 @@ export type ChatConfig = {
 export const ChatDefaultConfig = {
   conversations: [],
   chatSettings: {
-    selectedAgent: process.env.NEXT_PUBLIC_AGENT_NAME || 'gpt4free', 
+    selectedAgent: process.env.NEXT_PUBLIC_AGENT_NAME || 'gpt4free',
     contextResults: 0,
     shots: 0,
     websearchDepth: 0,
