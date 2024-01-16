@@ -23,7 +23,8 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "incremental": true
+    "incremental": true,
+    "noEmit": true
   },
   "include": ["types/*.ts", "components/**/*", ".next/types/**/*.ts"],
   "exclude": ["app/*", ".next/*"]

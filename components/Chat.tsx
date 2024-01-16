@@ -5,7 +5,7 @@ import ConversationBar from './conversation/ConversationBar';
 import Header from './Header';
 import { ChatProps } from './AGiXTChat';
 
-export default function Chat({ mode, showAppBar, showConversationSelector, opts }: ChatProps) {
+export default function Chat({ mode, showAppBar, showConversationSelector }: ChatProps) {
   const theme = useTheme();
 
   return (

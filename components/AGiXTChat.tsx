@@ -7,8 +7,8 @@ export type ChatProps = {
   showAppBar?: boolean;
   showConversationSelector?: boolean;
   opts?: {
-    agixtServer: string;
-    apiKey: string;
+    agixtServer?: string;
+    apiKey?: string;
     agentName?: string;
     promptName?: string;
     promptCategory?: string;
@@ -23,6 +23,10 @@ const Stateful = (props: ChatProps) => {
       agixtServer={props.opts?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437'}
       initialState={{
         ...ChatDefaultConfig,
+        chatSettings: {
+          ...ChatDefaultConfig.chatSettings,
+          selectedAgent: props.opts?.agentName || process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME,
+        },
         prompt: props.opts?.promptName || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
         promptCategory: props.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
       }}
