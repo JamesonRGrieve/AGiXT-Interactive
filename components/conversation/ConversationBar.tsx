@@ -156,7 +156,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       });
     })();
   };
-
+  console.log('State', state);
   return (
     <>
       <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
