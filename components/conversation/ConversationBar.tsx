@@ -269,7 +269,7 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
             </IconButton>
           </Tooltip>
         )}
-        {process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR !== 'true' && (
+        {process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true' && (
           <Box display='flex' flexDirection='column' alignItems='center'>
             <SwitchDark />
             <SwitchColorblind />
