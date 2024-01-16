@@ -25,7 +25,7 @@ const Stateful = (props: ChatProps) => {
         ...ChatDefaultConfig,
         chatSettings: {
           ...ChatDefaultConfig.chatSettings,
-          selectedAgent: props.opts?.agentName || process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME,
+          selectedAgent: props.opts?.agentName || process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free',
         },
         prompt: props.opts?.promptName || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
         promptCategory: props.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
