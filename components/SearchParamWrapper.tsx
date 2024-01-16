@@ -1,8 +1,9 @@
 'use client';
 import { useSearchParams } from 'next/navigation';
-import AGiXTChat from './AGiXTChat';
-import { ChatConfig } from '../types/ChatContext';
 import React from 'react';
+import { ChatConfig } from '../types/ChatContext';
+import AGiXTChat from './AGiXTChat';
+
 const SearchParamWrapper = () => {
   const searchParams = useSearchParams();
   return (
