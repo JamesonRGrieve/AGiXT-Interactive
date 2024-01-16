@@ -4,16 +4,18 @@ import React from 'react';
 import { ChatConfig } from '../types/ChatContext';
 import AGiXTChat from './AGiXTChat';
 
-const SearchParamWrapper = () => {
+const SearchParamWrapper = (mode?, showAppBar = false, showConversationSelector = false) => {
   const searchParams = useSearchParams();
   return (
     <AGiXTChat
       stateful
       mode={
-        ['prompt', 'chain'].includes(searchParams.get('mode')) ? (searchParams.get('mode') as 'prompt' | 'chain') : 'prompt'
+        ['prompt', 'chain'].includes(searchParams.get('mode'))
+          ? (searchParams.get('mode') as 'prompt' | 'chain')
+          : mode || 'prompt'
       }
-      showAppBar={false}
-      showConversationSelector={false}
+      showAppBar={showAppBar}
+      showConversationSelector={showConversationSelector}
       opts={
         {
           chatSettings: {

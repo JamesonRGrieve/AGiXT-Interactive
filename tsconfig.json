@@ -26,6 +26,6 @@
     "incremental": true,
     "noEmit": false
   },
-  "include": ["types/*.ts", "components/**/*"],
+  "include": ["types/*.ts", "components/**/*", ".next/types/**/*.ts"],
   "exclude": ["app/*", ".next/*"]
 }
