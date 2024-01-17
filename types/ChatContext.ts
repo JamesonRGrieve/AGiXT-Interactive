@@ -37,7 +37,6 @@ export type Chat = {
 export type ChatConfig = {
   chatSettings: ChatSettings;
   chatState: Chat;
-  conversations: string[]; // TODO Refactor all references to this into SWR. List of conversations.
   prompt: string;
   promptCategory: string;
   chain: string;

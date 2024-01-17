@@ -15,8 +15,11 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import { useContext, useState } from 'react';
 import { ChatContext } from '../../types/ChatContext';
+import useSWR, { mutate } from 'swr';
 
 export default function ConversationSelector() {
+  const AGiXTState = useContext(ChatContext);
+  const { data: conversationData } = useSWR(`/conversation`, async () => await AGiXTState.sdk.getConversations());
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
@@ -29,13 +32,7 @@ export default function ConversationSelector() {
     await state.sdk.newConversation(state.chatSettings.selectedAgent, newConversationName);
     setNewConversationName('');
     setOpenNewConversation(false);
-    const fetchConversations = async () => {
-      const updatedConversations = await state.sdk.getConversations();
-      state.mutate((oldState) => {
-        return { ...oldState, conversations: updatedConversations };
-      });
-    };
-    fetchConversations();
+    mutate('/conversation');
     state.mutate((oldState) => ({
       ...oldState,
       chatConfig: { ...oldState.chatConfig, conversationName: newConversationName },
@@ -46,7 +43,7 @@ export default function ConversationSelector() {
       return;
     }
     await state.sdk.deleteConversation(state.chatSettings.selectedAgent, state.chatSettings.conversationName);
-    const updatedConversations = state.conversations.filter((c) => c !== state.chatSettings.conversationName);
+    const updatedConversations = conversationData.filter((c) => c !== state.chatSettings.conversationName);
     state.mutate((oldState) => {
       return {
         ...oldState,
@@ -107,13 +104,11 @@ export default function ConversationSelector() {
               }))
             }
           >
-            {state.conversations
-              ? state.conversations.map((c) => (
-                  <MenuItem key={c} value={c}>
-                    {c}
-                  </MenuItem>
-                ))
-              : null}
+            {conversationData.map((c) => (
+              <MenuItem key={c} value={c}>
+                {c}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Tooltip>
