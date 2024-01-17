@@ -15,36 +15,32 @@ export default function Home() {
   if (!getCookie('uuid')) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
-  if (!loggedIn && process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true') {
-    return (
-      <div>
-        <h1>AGiXT Chat</h1>
-        <p>Please enter your API key to continue. You can find your API key in the AGiXT portal.</p>
-        <input type='text' value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
-        <button onClick={() => handleSetApiKey()}>Set API Key</button>
-      </div>
-    );
-  } else {
-    return process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG ? (
-      <SearchParamWrapper
-        showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
-        showConversationSelector={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
-        mode={
-          (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
-            ? process.env.NEXT_PUBLIC_AGIXT_MODE
-            : 'prompt') as 'chain' | 'prompt'
-        }
-      />
-    ) : (
-      <AGiXTChat
-        showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
-        showConversationSelector={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
-        mode={
-          (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
-            ? process.env.NEXT_PUBLIC_AGIXT_MODE
-            : 'prompt') as 'chain' | 'prompt'
-        }
-      />
-    );
-  }
+  return process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true' && !loggedIn ? (
+    <div>
+      <h1>AGiXT Chat</h1>
+      <p>Please enter your API key to continue. You can find your API key in the AGiXT portal.</p>
+      <input type='text' value={apiKey} onChange={(e) => setApiKey(e.target.value)} />
+      <button onClick={() => handleSetApiKey()}>Set API Key</button>
+    </div>
+  ) : process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG ? (
+    <SearchParamWrapper
+      showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
+      showConversationSelector={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
+      mode={
+        (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
+          ? process.env.NEXT_PUBLIC_AGIXT_MODE
+          : 'prompt') as 'chain' | 'prompt'
+      }
+    />
+  ) : (
+    <AGiXTChat
+      showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
+      showConversationSelector={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
+      mode={
+        (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
+          ? process.env.NEXT_PUBLIC_AGIXT_MODE
+          : 'prompt') as 'chain' | 'prompt'
+      }
+    />
+  );
 }
