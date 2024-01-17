@@ -69,7 +69,7 @@ export default function ConversationHistory() {
             return <ChatMessage key={index} chatItem={chatItem} lastUserMessage={lastUserMessage} />;
           })
         ) : (
-          <Box pb='3rem'>
+          <Box pt='2rem' pb='3rem'>
             <Typography variant='h1' align='center'>
               Welcome to {process.env.NEXT_PUBLIC_APP_NAME}
             </Typography>

@@ -27,5 +27,5 @@
     "noEmit": false
   },
   "include": ["types/*.ts", "components/**/*", ".next/types/**/*.ts"],
-  "exclude": [".next/*"]
+  "exclude": []
 }
