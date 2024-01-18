@@ -1,3 +1,4 @@
+'use client';
 import React, { useState, ReactNode } from 'react';
 import AGiXTSDK from 'agixt';
 import { ChatContext, ChatDefaultConfig, ChatConfig } from '../types/ChatContext';

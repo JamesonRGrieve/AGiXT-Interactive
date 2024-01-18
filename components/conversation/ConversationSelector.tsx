@@ -1,3 +1,4 @@
+'use client';
 import {
   Select,
   MenuItem,
@@ -16,7 +17,7 @@ import AddIcon from '@mui/icons-material/Add';
 import { useContext, useState } from 'react';
 import { ChatContext } from '../../types/ChatContext';
 import useSWR, { mutate } from 'swr';
-
+import React from 'react';
 export default function ConversationSelector() {
   const AGiXTState = useContext(ChatContext);
   const { data: conversationData } = useSWR(`/conversation`, async () => await AGiXTState.sdk.getConversations());
@@ -67,6 +68,7 @@ export default function ConversationSelector() {
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
   };
+  console.log('conversationData', conversationData);
   return (
     <>
       <Tooltip title='Select a Conversation'>
@@ -96,11 +98,11 @@ export default function ConversationSelector() {
             fullWidth
             labelId='conversation-label'
             label='Select a Conversation'
-            value={state.chatSettings.conversationName}
+            value={state.chatSettings.conversationName ?? ''}
             onChange={(e) =>
               state.mutate((oldState) => ({
                 ...oldState,
-                chatConfig: { ...oldState.chatConfig, conversationName: e.target.value },
+                chatSettings: { ...oldState.chatSettings, conversationName: e.target.value },
               }))
             }
           >
@@ -109,6 +111,15 @@ export default function ConversationSelector() {
                 {c}
               </MenuItem>
             ))}
+            {/* 
+              Workaround of a backend limitation - files only created (and rendered in conversation list) once they have messages.
+              Thanks, I hate it too.
+            */}
+            {!conversationData?.includes(state.chatSettings.conversationName) && (
+              <MenuItem key={state.chatSettings.conversationName} value={state.chatSettings.conversationName}>
+                {state.chatSettings.conversationName}
+              </MenuItem>
+            )}
           </Select>
         </FormControl>
       </Tooltip>

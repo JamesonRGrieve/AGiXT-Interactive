@@ -1,3 +1,4 @@
+"use client";
 import { Context, createContext } from 'react';
 
 export type ChainRunConfig = {

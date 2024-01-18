@@ -1,3 +1,4 @@
+'use client';
 import React, { useContext, useEffect, useState, useRef } from 'react';
 
 import {
@@ -25,12 +26,13 @@ export default function ConversationHistory() {
   let lastUserMessage = ''; // track the last user message
   const theme = useTheme();
   const state = useContext(ChatContext);
-  const [lastConversation, setLastConversation] = useState(state.chatSettings.conversationName);
+  const [lastConversation, setLastConversation] = useState('');
   const messagesEndRef = useRef(null);
   useEffect(() => {
+    console.log('Conversation state update outside of if.', state.chatSettings.conversationName);
     if (state.chatSettings.conversationName !== lastConversation) {
       setLastConversation(state.chatSettings.conversationName);
-
+      console.log("Conversation changed, fetching new conversation's messages.", state.chatSettings.conversationName);
       state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1).then((result) => {
         state.mutate((oldState) => {
           // Check if the current conversationName is the same as the previous one
