@@ -3,7 +3,7 @@ const nextConfig = {
     // Options
     NEXT_PUBLIC_AGIXT_AGENT: process.env.AGIXT_AGENT || 'gpt4free',
     NEXT_PUBLIC_AGIXT_CONVERSATION_MODE: process.env.AGIXT_CONVERSATION_MODE || 'static', // static, select or uuid
-    NEXT_PUBLIC_AGIXT_CONVERSATION_NAME: process.env.AGIXT_CONVERSATION_NAME || 'AGiXT Conversation',
+    NEXT_PUBLIC_AGIXT_CONVERSATION_NAME: process.env.AGIXT_CONVERSATION_NAME || 'Default',
     NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG: process.env.AGIXT_ENABLE_SEARCHPARAM_CONFIG || 'false',
     NEXT_PUBLIC_AGIXT_INSIGHT_AGENT: process.env.AGIXT_INSIGHT_AGENT || 'gpt4free',
     NEXT_PUBLIC_AGIXT_MODE: process.env.AGIXT_MODE || 'prompt',
