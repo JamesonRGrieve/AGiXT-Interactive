@@ -12,18 +12,22 @@ export type ChatProps = {
   };
   opts?: ChatConfig;
 };
+
 const Stateful = (props: ChatProps) => {
+  const apiKey = process.env.NEXT_PUBLIC_API_KEY || '';
+  const agixtServer = process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
+  const agentName = process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free';
   return (
     <ContextWrapper
       requireKey={process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true'}
-      apiKey={props.serverConfig?.apiKey || (process.env.NEXT_PUBLIC_API_KEY || '')}
-      agixtServer={props.serverConfig?.agixtServer || (process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437')}
+      apiKey={props.serverConfig?.apiKey || apiKey}
+      agixtServer={props.serverConfig?.agixtServer || agixtServer}
       initialState={{
         ...ChatDefaultConfig,
         chatSettings: {
           ...ChatDefaultConfig.chatSettings,
           ...props.opts?.chatSettings,
-          selectedAgent: props.opts?.chatSettings.selectedAgent || (process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free'),
+          selectedAgent: props.opts?.chatSettings.selectedAgent || agentName,
         },
         prompt: props.opts?.prompt || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
         promptCategory: props.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
