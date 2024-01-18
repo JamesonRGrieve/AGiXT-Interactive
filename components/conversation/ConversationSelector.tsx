@@ -104,7 +104,7 @@ export default function ConversationSelector() {
               }))
             }
           >
-            {conversationData.map((c) => (
+            {conversationData?.map((c) => (
               <MenuItem key={c} value={c}>
                 {c}
               </MenuItem>
