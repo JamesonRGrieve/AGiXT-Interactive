@@ -1,7 +1,10 @@
+'use client';
 import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat';
-
+import { getCookie } from 'cookies-next';
+import React from 'react';
+import { CompareSharp } from '@mui/icons-material';
 export type ChatProps = {
   mode: 'prompt' | 'chain';
   showAppBar?: boolean;
@@ -17,6 +20,15 @@ const Stateful = (props: ChatProps) => {
   const apiKey = process.env.NEXT_PUBLIC_API_KEY || '';
   const agixtServer = process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
   const agentName = process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free';
+  const uuid = getCookie('uuid');
+  if (!uuid) throw new Error('No UUID found in cookies, this should be set in this mode.');
+  console.log(
+    'Initializing with conversation',
+    process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE,
+    props.opts?.chatSettings.conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
+      ? getCookie('uuid')
+      : 'Default',
+  );
   return (
     <ContextWrapper
       requireKey={process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true'}
@@ -28,6 +40,10 @@ const Stateful = (props: ChatProps) => {
           ...ChatDefaultConfig.chatSettings,
           ...props.opts?.chatSettings,
           selectedAgent: props.opts?.chatSettings.selectedAgent || agentName,
+          conversationName:
+            props.opts?.chatSettings.conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
+              ? uuid
+              : 'Default',
         },
         prompt: props.opts?.prompt || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
         promptCategory: props.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,

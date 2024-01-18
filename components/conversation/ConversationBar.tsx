@@ -1,3 +1,4 @@
+'use client';
 import React, { useContext, useState } from 'react';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import Box from '@mui/material/Box';
@@ -254,13 +255,17 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
             <IconButton
               color='info'
               onClick={() => {
-                if (confirm('Are you sure you want to reset the conversation? This cannot be undone.')) {
-                  const uuid = crypto.randomUUID();
-                  setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
-                  state.mutate((oldState) => ({
-                    ...oldState,
-                    chatConfig: { ...oldState.chatConfig, conversationName: uuid },
-                  }));
+                if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE == 'uuid') {
+                  if (confirm('Are you sure you want to reset the conversation? This cannot be undone.')) {
+                    const uuid = crypto.randomUUID();
+                    setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+                    state.mutate((oldState) => ({
+                      ...oldState,
+                      chatConfig: { ...oldState.chatConfig, conversationName: uuid },
+                    }));
+                  }
+                } else {
+                  alert('This feature is not available in this mode.');
                 }
               }}
               disabled={state.chatState.isLoading}
