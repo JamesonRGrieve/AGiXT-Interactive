@@ -1,10 +1,10 @@
 'use client';
+import { getCookie } from 'cookies-next';
+import React from 'react';
 import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat';
-import { getCookie } from 'cookies-next';
-import React from 'react';
-import { CompareSharp } from '@mui/icons-material';
+
 export type ChatProps = {
   mode: 'prompt' | 'chain';
   showAppBar?: boolean;
@@ -21,8 +21,9 @@ const Stateful = (props: ChatProps) => {
   const agixtServer = process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
   const agentName = process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free';
   const uuid = getCookie('uuid');
-  if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid)
+  if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
     throw new Error('No UUID found in cookies, this should be set in this mode.');
+  }
 
   return (
     <ContextWrapper

@@ -14,10 +14,10 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
-import { useContext, useState } from 'react';
-import { ChatContext } from '../../types/ChatContext';
+import React, { useContext, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import React from 'react';
+import { ChatContext } from '../../types/ChatContext';
+
 export default function ConversationSelector() {
   const AGiXTState = useContext(ChatContext);
   const { data: conversationData } = useSWR(`/conversation`, async () => await AGiXTState.sdk.getConversations());
