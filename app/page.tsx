@@ -15,7 +15,7 @@ export default function Home() {
   const cookieStore = cookies();
 
   const loggedIn = true;
-  if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE == 'uuid' && !cookieStore.get('uuid').value) {
+  if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE == 'uuid' && !cookieStore.get('uuid')?.value) {
     cookieStore.set('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
   return process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true' && !loggedIn ? /*
