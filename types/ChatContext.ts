@@ -1,6 +1,7 @@
 "use client";
 import { Context, createContext } from 'react';
-
+const ChatDefault = require('./ChatDefault');
+console.log(ChatDefault);
 export type ChainRunConfig = {
   chainArgs: object;
   singleStep: boolean;
@@ -45,42 +46,5 @@ export type ChatConfig = {
   mutate: any;
   sdk: any;
 };
-
-export const ChatDefaultConfig = {
-  conversations: [],
-  chatSettings: {
-    selectedAgent: process.env.NEXT_PUBLIC_AGENT_NAME || 'gpt4free',
-    contextResults: 0,
-    shots: 0,
-    websearchDepth: 0,
-    injectMemoriesFromCollectionNumber: 0,
-    conversationResults: 5,
-    conversationName: 'Default',
-    browseLinks: false,
-    webSearch: false,
-    insightAgentName: '',
-    enableMemory: false,
-    enableFileUpload: false,
-    useSelectedAgent: true,
-    chainRunConfig: {
-      chainArgs: {},
-      singleStep: false,
-      fromStep: 0,
-      allResponses: false,
-    },
-  },
-  chatState: {
-    conversation: [],
-    hasFiles: false,
-    lastResponse: {},
-    uploadedFiles: [],
-    isLoading: false,
-  },
-  prompt: '',
-  promptCategory: '',
-  chain: '',
-  //message: '',
-  mutate: null,
-  sdk: null,
-};
-export const ChatContext: Context<ChatConfig> = createContext<ChatConfig>(ChatDefaultConfig);
+export const ChatContext: Context<ChatConfig> = createContext<ChatConfig>(ChatDefault as unknown as ChatConfig);
+export const ChatDefaultConfig = ChatDefault;
