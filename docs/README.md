@@ -25,33 +25,32 @@ If you don't already have AGiXT, [follow this link for instructions to set it up
 
 Modify the `.env.local` file to your liking.
 
-| Variable Name | Default Value | Description |
-|---------------|---------------|-------------|
-| `AGIXT_AGENT` | 'gpt4free' | The agent used in AGiXT. |
-| `AGIXT_CONVERSATION_MODE` | 'static' | The mode of conversation in AGiXT, can be 'static', 'select', or 'uuid'. |
-| `AGIXT_CONVERSATION_NAME` | 'AGiXT Conversation' | The name of the conversation in AGiXT. |
-| `AGIXT_ENABLE_SEARCHPARAM_CONFIG` | 'false' | Determines if search parameter configuration is enabled in AGiXT. |
-| `AGIXT_INSIGHT_AGENT` | 'gpt4free' | The insight agent used in AGiXT. |
-| `AGIXT_MODE` | 'prompt' | The operational mode of AGiXT, typically 'prompt'. |
-| `AGIXT_REQUIRE_API_KEY` | 'true' | Indicates whether an API key is required for AGiXT. |
-| `AGIXT_SERVER` | 'http://localhost:7437' | The server address for AGiXT. |
-| `AGIXT_PROMPT_NAME` | 'Chat' | The name of the prompt in AGiXT. |
-| `AGIXT_PROMPT_CATEGORY` | 'Default' | The category of the prompt in AGiXT. |
-| `AGIXT_CHAIN` | 'Postgres Chat' | The chain used in AGiXT. |
-| `AGIXT_USE_SELECTED_AGENT` | 'true' | Determines if the selected agent is used in AGiXT. |
-| `AGIXT_CHAIN_ARGS` | '{}' | The arguments for the chain in AGiXT. |
-| `AGIXT_FILE_UPLOAD_ENABLED` | 'false' | Indicates if file upload is enabled in AGiXT. |
-| `AGIXT_FOOTER_MESSAGE` | 'Powered by AGiXT' | The footer message displayed in AGiXT. |
-| `AGIXT_RLHF` | 'false' | Related to RLHF (Reinforcement Learning from Human Feedback) in AGiXT. |
-| `AGIXT_SHOW_APP_BAR` | 'false' | Determines if the app bar is shown in AGiXT. |
-| `AGIXT_SHOW_CHAT_THEME_TOGGLES` | 'true' | Indicates if chat theme toggles are shown in AGiXT. |
-| `AGIXT_SHOW_CONVERSATION_BAR` | 'false' | Determines if the conversation bar is shown in AGiXT. |
-| `APP_DESCRIPTION` | 'An AGiXT application.' | Description of the AGiXT application. |
-| `DEFAULT_THEME_MODE` | 'dark' | The default theme mode for AGiXT. |
-| `ADSENSE_ACCOUNT` | '' | The AdSense account associated with AGiXT. |
-| `APP_NAME` | 'AGiXT' | The name of the AGiXT application. |
-| `APP_URI` | 'http://localhost:3100' | The URI of the AGiXT application. |
-
+| Variable Name                     | Default Value           | Description                                                              |
+| --------------------------------- | ----------------------- | ------------------------------------------------------------------------ |
+| `AGIXT_AGENT`                     | 'gpt4free'              | The agent used in AGiXT.                                                 |
+| `AGIXT_CONVERSATION_MODE`         | 'static'                | The mode of conversation in AGiXT, can be 'static', 'select', or 'uuid'. |
+| `AGIXT_CONVERSATION_NAME`         | 'AGiXT Conversation'    | The name of the conversation in AGiXT.                                   |
+| `AGIXT_ENABLE_SEARCHPARAM_CONFIG` | 'false'                 | Determines if search parameter configuration is enabled in AGiXT.        |
+| `AGIXT_INSIGHT_AGENT`             | 'gpt4free'              | The insight agent used in AGiXT.                                         |
+| `AGIXT_MODE`                      | 'prompt'                | The operational mode of AGiXT, typically 'prompt'.                       |
+| `AGIXT_REQUIRE_API_KEY`           | 'true'                  | Indicates whether an API key is required for AGiXT.                      |
+| `AGIXT_SERVER`                    | 'http://localhost:7437' | The server address for AGiXT.                                            |
+| `AGIXT_PROMPT_NAME`               | 'Chat'                  | The name of the prompt in AGiXT.                                         |
+| `AGIXT_PROMPT_CATEGORY`           | 'Default'               | The category of the prompt in AGiXT.                                     |
+| `AGIXT_CHAIN`                     | 'Postgres Chat'         | The chain used in AGiXT.                                                 |
+| `AGIXT_USE_SELECTED_AGENT`        | 'true'                  | Determines if the selected agent is used in AGiXT.                       |
+| `AGIXT_CHAIN_ARGS`                | '{}'                    | The arguments for the chain in AGiXT.                                    |
+| `AGIXT_FILE_UPLOAD_ENABLED`       | 'false'                 | Indicates if file upload is enabled in AGiXT.                            |
+| `AGIXT_FOOTER_MESSAGE`            | 'Powered by AGiXT'      | The footer message displayed in AGiXT.                                   |
+| `AGIXT_RLHF`                      | 'false'                 | Related to RLHF (Reinforcement Learning from Human Feedback) in AGiXT.   |
+| `AGIXT_SHOW_APP_BAR`              | 'false'                 | Determines if the app bar is shown in AGiXT.                             |
+| `AGIXT_SHOW_CHAT_THEME_TOGGLES`   | 'true'                  | Indicates if chat theme toggles are shown in AGiXT.                      |
+| `AGIXT_SHOW_CONVERSATION_BAR`     | 'false'                 | Determines if the conversation bar is shown in AGiXT.                    |
+| `APP_DESCRIPTION`                 | 'An AGiXT application.' | Description of the AGiXT application.                                    |
+| `DEFAULT_THEME_MODE`              | 'dark'                  | The default theme mode for AGiXT.                                        |
+| `ADSENSE_ACCOUNT`                 | ''                      | The AdSense account associated with AGiXT.                               |
+| `APP_NAME`                        | 'AGiXT'                 | The name of the AGiXT application.                                       |
+| `APP_URI`                         | 'http://localhost:3100' | The URI of the AGiXT application.                                        |
 
 ### Run with Docker Compose
 
