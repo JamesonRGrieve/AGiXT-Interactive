@@ -1,6 +1,6 @@
 const ChatDefault = {
   chatSettings: {
-    selectedAgent: process.env.NEXT_PUBLIC_AGENT_NAME || 'gpt4free',
+    selectedAgent: 'gpt4free',
     contextResults: 0,
     shots: 0,
     websearchDepth: 0,
