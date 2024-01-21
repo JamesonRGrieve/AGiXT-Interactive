@@ -1,4 +1,4 @@
-import { useState, useRef, useContext } from 'react';
+import { useState, useRef, useContext, useEffect, useCallback } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
 import { ChatContext } from '../../types/ChatContext';
@@ -19,24 +19,38 @@ export default function AudioRecorder() {
         },
       };
     });
-    navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-      mediaRecorder.current = new MediaRecorder(stream, {
-        mimeType: 'audio/mp4',
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        mediaRecorder.current = new MediaRecorder(stream);
+        mediaRecorder.current.ondataavailable = (event) => {
+          setAudioData(event.data);
+        };
+        mediaRecorder.current.start();
+        setRecording(true);
+      })
+      .catch((error) => {
+        console.log(error);
+        state.mutate((oldState) => {
+          return {
+            ...oldState,
+            chatState: {
+              ...oldState.chatState,
+              isLoading: false,
+            },
+          };
+        });
       });
-      mediaRecorder.current.ondataavailable = (event) => {
-        setAudioData(event.data);
-      };
-      mediaRecorder.current.start();
-      setRecording(true);
-    });
   };
 
-  const sendAudio = () => {
+  const finishRecording = () => {
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
       setRecording(false);
     }
+  };
 
+  const sendAudio = useCallback(() => {
     if (audioData) {
       const reader = new FileReader();
       reader.readAsArrayBuffer(audioData); // Use ArrayBuffer for raw binary data
@@ -56,7 +70,13 @@ export default function AudioRecorder() {
         setAudioData(null);
       };
     }
-  };
+  }, [audioData, state]);
+
+  useEffect(() => {
+    if (audioData) {
+      sendAudio();
+    }
+  }, [audioData, sendAudio]);
 
   const cancelRecording = () => {
     if (mediaRecorder.current) {
@@ -88,7 +108,8 @@ export default function AudioRecorder() {
             </IconButton>
           </Tooltip>
           <Tooltip title='Send Audio'>
-            <IconButton color='info' onClick={sendAudio}>
+            {/* Finish recording triggers data as soon as audio data is available */}
+            <IconButton color='info' onClick={finishRecording}>
               <SendIcon />
             </IconButton>
           </Tooltip>
