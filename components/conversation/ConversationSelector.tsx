@@ -80,47 +80,51 @@ export default function ConversationSelector() {
           }}
           fullWidth
         >
-          <Select
-            sx={{
-              color: 'white',
-              '.MuiOutlinedInput-notchedOutline': { borderColor: '#CCC' },
-              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-              '.MuiSvgIcon-root ': {
-                fill: 'white !important',
-              },
-              '.MuiOutlinedInput-notchedOutline legend span': {
-                // Targeting the floating label specifically
+          {conversationData?.map ? (
+            <Select
+              sx={{
                 color: 'white',
-                opacity: '1',
-              },
-            }}
-            fullWidth
-            labelId='conversation-label'
-            label='Select a Conversation'
-            value={state.chatSettings.conversationName ?? ''}
-            onChange={(e) =>
-              state.mutate((oldState) => ({
-                ...oldState,
-                chatSettings: { ...oldState.chatSettings, conversationName: e.target.value },
-              }))
-            }
-          >
-            {conversationData?.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))}
-            {/* 
+                '.MuiOutlinedInput-notchedOutline': { borderColor: '#CCC' },
+                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+                '.MuiSvgIcon-root ': {
+                  fill: 'white !important',
+                },
+                '.MuiOutlinedInput-notchedOutline legend span': {
+                  // Targeting the floating label specifically
+                  color: 'white',
+                  opacity: '1',
+                },
+              }}
+              fullWidth
+              labelId='conversation-label'
+              label='Select a Conversation'
+              value={state.chatSettings.conversationName ?? ''}
+              onChange={(e) =>
+                state.mutate((oldState) => ({
+                  ...oldState,
+                  chatSettings: { ...oldState.chatSettings, conversationName: e.target.value },
+                }))
+              }
+            >
+              {conversationData?.map((c) => (
+                <MenuItem key={c} value={c}>
+                  {c}
+                </MenuItem>
+              ))}
+              {/* 
               Workaround of a backend limitation - files only created (and rendered in conversation list) once they have messages.
               Thanks, I hate it too.
             */}
-            {!conversationData?.includes(state.chatSettings.conversationName) && (
-              <MenuItem key={state.chatSettings.conversationName} value={state.chatSettings.conversationName}>
-                {state.chatSettings.conversationName}
-              </MenuItem>
-            )}
-          </Select>
+              {!conversationData?.includes(state.chatSettings.conversationName) && (
+                <MenuItem key={state.chatSettings.conversationName} value={state.chatSettings.conversationName}>
+                  {state.chatSettings.conversationName}
+                </MenuItem>
+              )}
+            </Select>
+          ) : (
+            <Select fullWidth={true} disabled></Select>
+          )}
         </FormControl>
       </Tooltip>
       <Tooltip title='Add Conversation'>
