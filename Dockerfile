@@ -2,8 +2,7 @@ FROM node:20-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache libc6-compat git
 COPY package.json package-lock.json ./
-RUN --mount=type=cache,target=/var/cache/npm,sharing=locked \
-    npm ci
+RUN npm ci
 
 FROM node:20-alpine AS themes
 WORKDIR /app
