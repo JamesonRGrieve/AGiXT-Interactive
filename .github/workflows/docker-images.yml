@@ -69,8 +69,6 @@ jobs:
           platforms: linux/amd64,linux/arm64/v8
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           build-args: |
             LOG_VERBOSITY_SERVER=${{ env.LOG_VERBOSITY_SERVER }}
             APP_NAME=${{ env.APP_NAME }}
