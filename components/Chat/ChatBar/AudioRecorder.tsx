@@ -1,7 +1,7 @@
 import { useState, useRef, useContext, useEffect, useCallback } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
-import { ChatContext } from '../../types/ChatContext';
+import { ChatContext } from '../../../types/ChatContext';
 
 export default function AudioRecorder() {
   const state = useContext(ChatContext);

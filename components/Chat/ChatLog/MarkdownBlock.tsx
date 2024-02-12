@@ -5,7 +5,7 @@ import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import clipboardCopy from 'clipboard-copy';
 import { IconButton } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
-import { ChatContext } from '../../types/ChatContext';
+import { ChatContext } from '../../../types/ChatContext';
 import { DataGridFromCSV } from './DataGridFromCSV';
 
 export default function MarkdownBlock({ content, chatItem }: { content: string; chatItem: any }) {

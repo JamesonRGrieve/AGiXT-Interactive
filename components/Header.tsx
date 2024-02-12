@@ -3,7 +3,7 @@ import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import { useContext } from 'react';
 import { ChatContext } from '../types/ChatContext';
-import ConversationSelector from './conversation/ConversationSelector';
+import ConversationSelector from './ConversationSelector';
 
 export default function Header({ showConversationSelector }: { showConversationSelector: boolean }) {
   showConversationSelector = true;

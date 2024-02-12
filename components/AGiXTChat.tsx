@@ -3,7 +3,9 @@ import { getCookie, setCookie } from 'cookies-next';
 import React from 'react';
 import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
-import Chat from './ChatWindow';
+import Chat from './Chat/Chat';
+import { Box, useTheme } from '@mui/material';
+import Header from './Header';
 
 export type ChatProps = {
   mode: 'prompt' | 'chain';
@@ -45,12 +47,36 @@ const Stateful = (props: ChatProps) => {
         promptCategory: props.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
       }}
     >
-      <Chat {...props} />
+      <ChatWrapper {...props} />
     </ContextWrapper>
   );
 };
 const Stateless = (props: ChatProps) => {
-  return <Chat {...props} />;
+  return <ChatWrapper {...props} />;
+};
+const ChatWrapper = (props: ChatProps) => {
+  const theme = useTheme();
+  return (
+    <Box height='100%' display='flex' flexDirection='column'>
+      {props.showAppBar && <Header showConversationSelector={props.showConversationSelector} />}
+      <Box
+        style={{
+          height: '100%',
+          maxWidth: '100%',
+          flexGrow: '1',
+          transition: theme.transitions.create('margin', {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.leavingScreen,
+          }),
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+        component='main'
+      >
+        <Chat mode={props.mode} />
+      </Box>
+    </Box>
+  );
 };
 const AGiXTChat = ({
   stateful = true,
