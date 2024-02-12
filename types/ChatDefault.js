@@ -21,7 +21,6 @@ const ChatDefault = {
     },
   },
   chatState: {
-    conversation: [],
     hasFiles: false,
     lastResponse: {},
     uploadedFiles: [],
