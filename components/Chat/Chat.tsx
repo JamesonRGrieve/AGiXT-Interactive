@@ -1,11 +1,11 @@
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material';
-import ConversationHistory from './conversation/ConversationHistory';
-import ConversationBar from './conversation/ConversationBar';
-import Header from './Header';
-import { ChatProps } from './AGiXTChat';
+import ConversationHistory from './ChatLog/ConversationHistory';
+import ConversationBar from './ChatBar/ConversationBar';
+import Header from '../Header';
+import { ChatProps } from '../AGiXTChat';
 import { useContext, useEffect, useState } from 'react';
-import { ChatContext } from '../types/ChatContext';
+import { ChatContext } from '../../types/ChatContext';
 
 export default function Chat({ mode }: ChatProps) {
   const [conversationArray, setConversationArray] = useState([]);
