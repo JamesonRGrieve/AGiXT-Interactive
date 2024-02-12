@@ -30,7 +30,6 @@ export type ChatItem = {
   timestamp: string;
 };
 export type Chat = {
-  conversation: ChatItem[];
   hasFiles: boolean;
   lastResponse: object;
   uploadedFiles: File[];

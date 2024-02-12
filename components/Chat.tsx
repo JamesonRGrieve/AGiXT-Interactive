@@ -1,34 +1,25 @@
 import Box from '@mui/material/Box';
 import { useTheme } from '@mui/material';
-import ConversationHistory from './conversation/ConversationLog';
+import ConversationHistory from './conversation/ConversationHistory';
 import ConversationBar from './conversation/ConversationBar';
 import Header from './Header';
 import { ChatProps } from './AGiXTChat';
+import { useContext, useEffect, useState } from 'react';
+import { ChatContext } from '../types/ChatContext';
 
-export default function Chat({ mode, showAppBar, showConversationSelector }: ChatProps) {
-  const theme = useTheme();
-
+export default function Chat({ mode }: ChatProps) {
+  const [conversationArray, setConversationArray] = useState([]);
+  const state = useContext(ChatContext);
+  useEffect(() => {
+    console.log("Conversation changed, fetching new conversation's messages.", state.chatSettings.conversationName);
+    state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1).then((result) => {
+      setConversationArray(result);
+    });
+  }, [state.chatSettings.conversationName]);
   return (
-    <Box height='100%' display='flex' flexDirection='column'>
-      {showAppBar && <Header showConversationSelector={showConversationSelector} />}
-
-      <Box
-        style={{
-          height: '100%',
-          maxWidth: '100%',
-          flexGrow: '1',
-          transition: theme.transitions.create('margin', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-          }),
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-        component='main'
-      >
-        <ConversationHistory />
-        <ConversationBar mode={mode} />
-      </Box>
-    </Box>
+    <>
+      <ConversationHistory conversation={conversationArray} />
+      <ConversationBar setConversation={setConversationArray} mode={mode} />
+    </>
   );
 }

@@ -23,7 +23,7 @@ import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import Link from 'next/link';
 import { ChatContext } from '../../types/ChatContext';
 
-export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) {
+export default function ConversationBar({ mode, setConversation }: { mode: 'prompt' | 'chain'; setConversation: any }) {
   const state = useContext(ChatContext);
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -44,18 +44,10 @@ export default function ConversationBar({ mode }: { mode: 'prompt' | 'chain' }) 
       runChain();
     } else {
       (async () => {
-        state.mutate((oldState) => {
-          return {
-            ...oldState,
-            chatState: {
-              ...oldState.chatState,
-              conversation: [
-                ...oldState.chatState.conversation,
-                { role: 'USER', message: message, timestamp: 'Just now...' },
-              ],
-            },
-          };
-        });
+        setConversation((oldConversation) => [
+          ...oldConversation,
+          { role: 'USER', message: message, timestamp: 'Just now...' },
+        ]);
       })();
       runPrompt();
       setMessage('');

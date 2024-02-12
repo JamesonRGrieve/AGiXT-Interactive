@@ -22,37 +22,17 @@ import clipboardCopy from 'clipboard-copy';
 import { ChatContext } from '../../types/ChatContext';
 import MarkdownBlock from './MarkdownBlock';
 
-export default function ConversationHistory() {
+export default function ConversationHistory({ conversation }) {
   let lastUserMessage = ''; // track the last user message
   const theme = useTheme();
   const state = useContext(ChatContext);
   const [lastConversation, setLastConversation] = useState('');
   const messagesEndRef = useRef(null);
+
   useEffect(() => {
-    console.log('Conversation state update outside of if.', state.chatSettings.conversationName);
-    if (state.chatSettings.conversationName !== lastConversation) {
-      setLastConversation(state.chatSettings.conversationName);
-      console.log("Conversation changed, fetching new conversation's messages.", state.chatSettings.conversationName);
-      state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1).then((result) => {
-        state.mutate((oldState) => {
-          // Check if the current conversationName is the same as the previous one
-          if (oldState.chatSettings.conversationName === state.chatSettings.conversationName) {
-            return { ...oldState, chatState: { ...oldState.chatState, conversation: result } };
-          }
-          // If they are different, return the old state without any changes
-          return oldState;
-        });
-      });
-    }
-  }, [state.chatSettings.conversationName]);
-  useEffect(() => {
-    console.log(
-      'Conversation mutated, scrolling to bottom.',
-      state.chatSettings.conversationName,
-      state.chatState.conversation,
-    );
+    console.log('Conversation mutated, scrolling to bottom.', state.chatSettings.conversationName, conversation);
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [state.chatState.conversation]);
+  }, [conversation]);
   return (
     <Paper
       elevation={5}
@@ -63,8 +43,8 @@ export default function ConversationHistory() {
       }}
     >
       <Box display='flex' flexDirection='column' sx={{ overflowY: 'auto' }}>
-        {state.chatState.conversation.length > 0 && state.chatState.conversation.map ? (
-          state.chatState.conversation.map((chatItem, index) => {
+        {conversation.length > 0 && conversation.map ? (
+          conversation.map((chatItem, index) => {
             if (chatItem.role === 'USER') {
               lastUserMessage = chatItem.message;
             }

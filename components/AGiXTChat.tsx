@@ -3,7 +3,7 @@ import { getCookie, setCookie } from 'cookies-next';
 import React from 'react';
 import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
-import Chat from './Chat';
+import Chat from './ChatWindow';
 
 export type ChatProps = {
   mode: 'prompt' | 'chain';

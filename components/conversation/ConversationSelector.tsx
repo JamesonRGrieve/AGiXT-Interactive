@@ -56,6 +56,8 @@ export default function ConversationSelector() {
   };
 
   const handleExportConversation = async () => {
+    // TODO Fetch the conversation from SDK.
+    /*
     if (!state.chatSettings.conversationName) {
       return;
     }
@@ -67,6 +69,7 @@ export default function ConversationSelector() {
     element.download = `${state.chatSettings.conversationName}.json`;
     document.body.appendChild(element); // Required for this to work in FireFox
     element.click();
+  */
   };
   console.log('conversationData', conversationData);
   return (
