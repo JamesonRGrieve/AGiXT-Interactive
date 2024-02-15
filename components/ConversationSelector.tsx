@@ -20,7 +20,10 @@ import { ChatContext } from '../types/ChatContext';
 
 export default function ConversationSelector() {
   const AGiXTState = useContext(ChatContext);
-  const { data: conversationData } = useSWR(`/conversation`, async () => await AGiXTState.sdk.getConversations());
+  const { data: conversationData } = useSWR<string[]>(
+    `/conversation`,
+    async () => (await AGiXTState.sdk.getConversations()) as string[],
+  );
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations

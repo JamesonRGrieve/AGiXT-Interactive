@@ -21,18 +21,30 @@ import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
 import Link from 'next/link';
+import { mutate } from 'swr';
 import { ChatContext } from '../../../types/ChatContext';
+import AudioRecorder from './AudioRecorder';
 
-export default function ConversationBar({ mode, setConversation }: { mode: 'prompt' | 'chain'; setConversation: any }) {
+export default function ConversationBar({
+  mode,
+  latestMessage,
+  setLatestMessage,
+}: {
+  mode: 'prompt' | 'chain';
+  latestMessage: string;
+  setLatestMessage: any;
+}) {
   const state = useContext(ChatContext);
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
+  const [alternativeInputActive, setAlternativeInputActive] = useState(false);
   const [message, setMessage] = useState('');
   const handleUploadFiles = async () => {
     // Uploaded files will be formatted like [{"file_name": "file_content"}]
     const newuploadedFiles: { [x: string]: string }[] = [];
     // Format for state.uploadedFiles should be [{"file_name": "file_content"}]
     // Iterate through the files and add them to the form data
-    for (const file of state.chatState.uploadedFiles) {
+    for (const file of uploadedFiles) {
       const fileContent = await file.text();
       newuploadedFiles.push({ [file.name]: fileContent });
       state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: newuploadedFiles } }));
@@ -40,55 +52,35 @@ export default function ConversationBar({ mode, setConversation }: { mode: 'prom
     }
   };
   const handleSendMessage = async () => {
-    if (mode == 'chain') {
-      runChain();
-    } else {
-      (async () => {
-        setConversation((oldConversation) => [
-          ...oldConversation,
-          { role: 'USER', message: message, timestamp: 'Just now...' },
-        ]);
-      })();
-      runPrompt();
-      setMessage('');
-    }
+    setLatestMessage(message);
+    const request = mode === 'chain' ? runChain() : runPrompt();
+    setMessage('');
+    await request;
+    setUploadedFiles([]);
+    setLatestMessage('');
+    mutate('/conversation/' + state.chatSettings.conversationName);
   };
   const runChain = async () => {
-    state.mutate((oldState) => {
-      return {
-        ...oldState,
-        chatState: { ...oldState.chatState, isLoading: true },
-      };
-    });
-    const agentOverride = state.chatSettings.useSelectedAgent ? state.chatSettings.selectedAgent : '';
-    state.chatSettings.chainRunConfig.chainArgs['conversation_name'] = state.chatSettings.conversationName;
-    const response = await state.sdk.runChain(
+    return await state.sdk.runChain(
       state.chain,
       message,
-      agentOverride,
+      state.chatSettings.useSelectedAgent ? state.chatSettings.selectedAgent : '',
       false,
       0,
-      state.chatSettings.chainRunConfig.chainArgs,
+      { ...state.chatSettings.chainRunConfig.chainArgs, conversation_name: state.chatSettings.conversationName },
     );
-    state.mutate((oldState) => ({
-      ...oldState,
-      chatState: { ...oldState.chatState, lastResponse: response, isLoading: false },
-    }));
   };
 
   const runPrompt = async () => {
-    state.mutate((oldState) => {
-      return { ...oldState, chatState: { ...oldState.chatState, isLoading: true } };
-    });
     const args: any = state.sdk.getPromptArgs(state.prompt, state.promptCategory);
     if (message) {
       args.user_input = message;
     }
-    if (state.chatState.uploadedFiles.length > 0) {
-      args.import_files = state.chatState.uploadedFiles;
+    if (uploadedFiles.length > 0) {
+      args.import_files = uploadedFiles;
     }
     const promptName =
-      state.prompt + (state.prompt == 'Chat with Commands' && state.chatState.hasFiles ? ' with Files' : '');
+      state.prompt + (state.prompt == 'Chat with Commands' && uploadedFiles.length > 0 ? ' with Files' : '');
     const skipArgs = [
       'conversation_history',
       'context',
@@ -127,34 +119,15 @@ export default function ConversationBar({ mode, setConversation }: { mode: 'prom
       conversation_results: state.chatSettings.conversationResults,
       ...args,
     };
-    console.log('---Sending Message---');
-    console.log('State args', stateArgs);
-    console.log('State', state);
-    console.log('Prompt name', promptName);
-    const response = await state.sdk.promptAgent(state.chatSettings.selectedAgent, promptName, stateArgs);
-    state.mutate((oldState) => {
-      return {
-        ...oldState,
-        chatState: { ...oldState.chatState, lastResponse: response, isLoading: false, uploadedFiles: [] },
-      };
-    });
-
-    (async () => {
-      const conversation = await state.sdk.getConversation(
-        state.chatSettings.selectedAgent,
-        state.chatSettings.conversationName,
-      );
-      state.mutate((oldState) => {
-        return { ...oldState, chatState: { ...oldState.chatState, conversation: conversation } };
-      });
-    })();
+    console.log('---Sending Message---\nState args:\n', stateArgs, '\nState:\n', state, '\nPrompt name:\n', promptName);
+    return await state.sdk.promptAgent(state.chatSettings.selectedAgent, promptName, stateArgs);
   };
   return (
     <>
       <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
         <TextField
-          label={`Type your message to ${state.chatSettings.selectedAgent} here.`}
-          placeholder={`Type your message to ${state.chatSettings.selectedAgent} here.`}
+          label={`Enter your message to ${state.chatSettings.selectedAgent} here.`}
+          placeholder={`Hello, ${state.chatSettings.selectedAgent}!`}
           multiline
           rows={2}
           fullWidth
@@ -167,7 +140,7 @@ export default function ConversationBar({ mode, setConversation }: { mode: 'prom
           }}
           onChange={(e) => setMessage(e.target.value)}
           sx={{ my: 2 }}
-          disabled={state.chatState.isLoading}
+          disabled={Boolean(latestMessage)}
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
@@ -182,7 +155,7 @@ export default function ConversationBar({ mode, setConversation }: { mode: 'prom
                           chatState: { ...oldState.chatState, uploadedFiles: [] },
                         }));
                       }}
-                      disabled={state.chatState.isLoading}
+                      disabled={Boolean(latestMessage)}
                       sx={{ height: '56px' }}
                     >
                       <NoteAddOutlinedIcon />
@@ -218,26 +191,30 @@ export default function ConversationBar({ mode, setConversation }: { mode: 'prom
                         >
                           Cancel
                         </Button>
-                        <Button onClick={handleUploadFiles} color='info' disabled={state.chatState.isLoading}>
+                        <Button onClick={handleUploadFiles} color='info' disabled={Boolean(latestMessage)}>
                           Upload
                         </Button>
                       </DialogActions>
                     </Dialog>
                   </>
                 )}
-                {!state.chatState.isLoading && (
+                {!alternativeInputActive && (
                   <Tooltip title='Send Message'>
                     <IconButton
                       color='info'
                       onClick={handleSendMessage}
-                      disabled={state.chatState.isLoading}
+                      disabled={Boolean(latestMessage)}
                       sx={{ height: '56px', padding: '0.5rem' }}
                     >
                       <SendIcon />
                     </IconButton>
                   </Tooltip>
                 )}
-                {/*mode == 'prompt' && <AudioRecorder />*/}
+                <AudioRecorder
+                  recording={alternativeInputActive}
+                  setRecording={setAlternativeInputActive}
+                  disabled={Boolean(latestMessage)}
+                />
               </InputAdornment>
             ),
           }}
@@ -260,7 +237,7 @@ export default function ConversationBar({ mode, setConversation }: { mode: 'prom
                   alert('This feature is not available in this mode.');
                 }
               }}
-              disabled={state.chatState.isLoading}
+              disabled={Boolean(latestMessage)}
               sx={{ height: '56px', padding: '1rem' }}
             >
               <DeleteForever />

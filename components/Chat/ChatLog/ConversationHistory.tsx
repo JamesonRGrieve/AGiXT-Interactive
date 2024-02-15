@@ -22,13 +22,11 @@ import clipboardCopy from 'clipboard-copy';
 import { ChatContext } from '../../../types/ChatContext';
 import MarkdownBlock from './MarkdownBlock';
 
-export default function ConversationHistory({ conversation }) {
+export default function ConversationHistory({ conversation, latestMessage }) {
   let lastUserMessage = ''; // track the last user message
-  const theme = useTheme();
   const state = useContext(ChatContext);
-  const [lastConversation, setLastConversation] = useState('');
   const messagesEndRef = useRef(null);
-
+  const theme = useTheme();
   useEffect(() => {
     console.log('Conversation mutated, scrolling to bottom.', state.chatSettings.conversationName, conversation);
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -65,16 +63,27 @@ export default function ConversationHistory({ conversation }) {
             </Typography>
           </Box>
         )}
-        {state.chatState.isLoading && (
-          <ChatMessage
-            key={'Please Wait'}
-            chatItem={{
-              role: state.chatSettings.selectedAgent,
-              message: state.chatSettings.selectedAgent + ' is typing...',
-              timestamp: '',
-            }}
-            lastUserMessage={lastUserMessage}
-          />
+        {latestMessage && (
+          <>
+            <ChatMessage
+              key={'Please Wait'}
+              chatItem={{
+                role: 'USER',
+                message: latestMessage,
+                timestamp: 'Just Now',
+              }}
+              lastUserMessage={null}
+            />
+            <ChatMessage
+              key={'Please Wait'}
+              chatItem={{
+                role: state.chatSettings.selectedAgent,
+                message: state.chatSettings.selectedAgent + ' is typing...',
+                timestamp: '',
+              }}
+              lastUserMessage={null}
+            />
+          </>
         )}
         <div ref={messagesEndRef} />
       </Box>
@@ -83,7 +92,6 @@ export default function ConversationHistory({ conversation }) {
 }
 
 const ChatMessage = ({ chatItem, lastUserMessage }) => {
-  const theme = useTheme();
   const state = useContext(ChatContext);
   const formattedMessage =
     typeof chatItem.message === 'string'
@@ -92,7 +100,7 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
   const [vote, setVote] = useState(0);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
-
+  const theme = useTheme();
   const handleClickOpen = (newVote) => {
     setVote(newVote);
     setOpen(true);
@@ -115,15 +123,11 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
     document.body.appendChild(element);
     element.click();
   };
+  console.log(theme);
   return (
     <Box
       sx={{
-        backgroundColor:
-          chatItem.role === 'USER'
-            ? theme.palette.background.default
-            : theme.palette.mode !== 'dark'
-              ? theme.palette.primary.light
-              : theme.palette.primary.dark,
+        backgroundColor: chatItem.role === 'USER' ? theme.palette.background.default : theme.palette.secondary.main,
         padding: '10px',
         overflow: 'hidden',
         position: 'center',
@@ -142,7 +146,7 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
           <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> • {chatItem.timestamp}
         </Typography>
       )}
-      {chatItem.role != 'USER' && !state.chatState.isLoading && (
+      {chatItem.role != 'USER' && !lastUserMessage && (
         <>
           {process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
             <>
