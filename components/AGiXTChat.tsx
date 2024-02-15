@@ -1,10 +1,10 @@
 'use client';
 import { getCookie, setCookie } from 'cookies-next';
 import React from 'react';
+import { Box, useTheme } from '@mui/material';
 import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
-import { Box, useTheme } from '@mui/material';
 import Header from './Header';
 
 export type ChatProps = {

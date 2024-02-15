@@ -1,24 +1,15 @@
 import { useState, useRef, useContext, useEffect, useCallback } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
+import { mutate } from 'swr';
 import { ChatContext } from '../../../types/ChatContext';
 
-export default function AudioRecorder() {
+export default function AudioRecorder({ recording, setRecording, disabled }) {
   const state = useContext(ChatContext);
-  const [recording, setRecording] = useState(false);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
 
   const startRecording = () => {
-    state.mutate((oldState) => {
-      return {
-        ...oldState,
-        chatState: {
-          ...oldState.chatState,
-          isLoading: true,
-        },
-      };
-    });
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
@@ -31,15 +22,6 @@ export default function AudioRecorder() {
       })
       .catch((error) => {
         console.log(error);
-        state.mutate((oldState) => {
-          return {
-            ...oldState,
-            chatState: {
-              ...oldState.chatState,
-              isLoading: false,
-            },
-          };
-        });
       });
   };
 
@@ -57,16 +39,20 @@ export default function AudioRecorder() {
       reader.onloadend = () => {
         const audioDataArray = new Uint8Array(reader.result as ArrayBufferLike);
         const base64Audio = btoa(String.fromCharCode.apply(null, audioDataArray)); // Convert to base64
-        const response = state.sdk.executeCommand(
-          state.chatSettings.selectedAgent,
-          'Chat with Voice',
-          {
-            base64_audio: base64Audio,
-            conversation_results: state.chatSettings.conversationResults,
-            context_results: state.chatSettings.contextResults,
-          },
-          state.chatSettings.conversationName,
-        );
+        const response = state.sdk
+          .executeCommand(
+            state.chatSettings.selectedAgent,
+            'Prompt with Voice',
+            {
+              base64_audio: base64Audio,
+              conversation_results: state.chatSettings.conversationResults,
+              context_results: state.chatSettings.contextResults,
+            },
+            state.chatSettings.conversationName,
+          )
+          .then(() => {
+            mutate('/conversation/' + state.chatSettings.conversationName);
+          });
         setAudioData(null);
       };
     }
@@ -92,29 +78,25 @@ export default function AudioRecorder() {
     }
   };
 
-  return (
-    <div>
-      {!recording ? (
-        <Tooltip title='Record Audio'>
-          <IconButton color='info' disabled={state.chatState.isLoading} onClick={startRecording}>
-            <MicIcon />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <>
-          <Tooltip title='Cancel Recording'>
-            <IconButton color='error' onClick={cancelRecording}>
-              <CancelIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title='Send Audio'>
-            {/* Finish recording triggers data as soon as audio data is available */}
-            <IconButton color='info' onClick={finishRecording}>
-              <SendIcon />
-            </IconButton>
-          </Tooltip>
-        </>
-      )}
-    </div>
+  return !recording ? (
+    <Tooltip title='Record Audio'>
+      <IconButton color='info' disabled={disabled} onClick={startRecording}>
+        <MicIcon />
+      </IconButton>
+    </Tooltip>
+  ) : (
+    <>
+      <Tooltip title='Cancel Recording'>
+        <IconButton color='error' onClick={cancelRecording}>
+          <CancelIcon />
+        </IconButton>
+      </Tooltip>
+      <Tooltip title='Send Audio'>
+        {/* Finish recording triggers data as soon as audio data is available */}
+        <IconButton color='info' onClick={finishRecording}>
+          <SendIcon />
+        </IconButton>
+      </Tooltip>
+    </>
   );
 }

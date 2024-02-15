@@ -1,4 +1,5 @@
 'use client';
+import AGiXTSDK from 'agixt';
 import { Context, createContext } from 'react';
 const ChatDefault = require('./ChatDefault');
 console.log(ChatDefault);
@@ -29,21 +30,14 @@ export type ChatItem = {
   message: string;
   timestamp: string;
 };
-export type Chat = {
-  hasFiles: boolean;
-  lastResponse: object;
-  uploadedFiles: File[];
-  isLoading: boolean;
-};
 export type ChatConfig = {
   chatSettings: ChatSettings;
-  chatState: Chat;
   prompt: string;
   promptCategory: string;
   chain: string;
   //message: string;
   mutate: any;
-  sdk: any;
+  sdk: AGiXTSDK;
 };
 export const ChatContext: Context<ChatConfig> = createContext<ChatConfig>(ChatDefault as unknown as ChatConfig);
 export const ChatDefaultConfig = ChatDefault;

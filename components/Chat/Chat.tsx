@@ -1,25 +1,28 @@
-import Box from '@mui/material/Box';
-import { useTheme } from '@mui/material';
+import { useContext, useEffect, useState } from 'react';
+import useSWR, { mutate } from 'swr';
+import { ChatProps } from '../AGiXTChat';
+import { ChatContext } from '../../types/ChatContext';
 import ConversationHistory from './ChatLog/ConversationHistory';
 import ConversationBar from './ChatBar/ConversationBar';
-import Header from '../Header';
-import { ChatProps } from '../AGiXTChat';
-import { useContext, useEffect, useState } from 'react';
-import { ChatContext } from '../../types/ChatContext';
 
 export default function Chat({ mode }: ChatProps) {
-  const [conversationArray, setConversationArray] = useState([]);
+  const [latestMessage, setLatestMessage] = useState('');
   const state = useContext(ChatContext);
+  const conversation = useSWR(
+    '/conversation/' + state.chatSettings.conversationName,
+    async () => await state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1),
+    {
+      fallbackData: [],
+    },
+  );
   useEffect(() => {
     console.log("Conversation changed, fetching new conversation's messages.", state.chatSettings.conversationName);
-    state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1).then((result) => {
-      setConversationArray(result);
-    });
+    mutate('/conversation/' + state.chatSettings.conversationName);
   }, [state.chatSettings.conversationName]);
   return (
     <>
-      <ConversationHistory conversation={conversationArray} />
-      <ConversationBar setConversation={setConversationArray} mode={mode} />
+      <ConversationHistory conversation={conversation.data} latestMessage={latestMessage} />
+      <ConversationBar setLatestMessage={setLatestMessage} latestMessage={latestMessage} mode={mode} />
     </>
   );
 }
