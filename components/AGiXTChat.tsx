@@ -48,6 +48,7 @@ const Stateful = (props: ChatProps) => {
         chain: props.opts?.chain || process.env.NEXT_PUBLIC_AGIXT_CHAIN,
         command: props.opts?.command || process.env.NEXT_PUBLIC_AGIXT_COMMAND,
         commandArgs: props.opts?.commandArgs || {},
+        commandMessageArg: props.opts?.commandMessageArg || process.env.NEXT_PUBLIC_AGIXT_COMMAND_MESSAGE_ARG,
       }}
     >
       <ChatWrapper {...props} />

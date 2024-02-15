@@ -43,6 +43,7 @@ const SearchParamWrapper = (mode?, showAppBar = false, showConversationSelector 
           promptCategory: searchParams.get('promptCategory') || undefined,
           command: searchParams.get('command') || undefined,
           commandArgs: JSON.parse(searchParams.get('commandArgs')) || undefined,
+          commandMessageArg: searchParams.get('commandMessageArg') || undefined,
           chain: searchParams.get('chain') || undefined,
           conversations: undefined,
           mutate: undefined,

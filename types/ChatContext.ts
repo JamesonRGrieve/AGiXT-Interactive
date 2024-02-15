@@ -31,6 +31,7 @@ export type ChatConfig = {
   promptCategory: string;
   command: string;
   commandArgs: object;
+  commandMessageArg: string;
   chain: string;
   mutate: any;
   sdk: AGiXTSDK;

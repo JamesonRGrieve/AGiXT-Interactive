@@ -71,10 +71,12 @@ export default function ConversationBar({
     );
   };
   const runCommand = async () => {
+    const args = { ...state.commandArgs, [state.commandMessageArg]: message };
+    console.log('Command Args:', args);
     return await state.sdk.executeCommand(
       state.chatSettings.selectedAgent,
       state.command,
-      { ...state.commandArgs },
+      args,
       state.chatSettings.conversationName,
     );
   };
