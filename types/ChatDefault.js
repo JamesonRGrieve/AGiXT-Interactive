@@ -31,6 +31,7 @@ const ChatDefault = {
   chain: '',
   command: '',
   commandArgs: {},
+  commandMessageArg: 'notes',
   mutate: null,
   sdk: null,
 };
