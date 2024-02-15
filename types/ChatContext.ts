@@ -25,17 +25,13 @@ export type ChatSettings = {
   useSelectedAgent: boolean;
   chainRunConfig: ChainRunConfig;
 };
-export type ChatItem = {
-  role: string;
-  message: string;
-  timestamp: string;
-};
 export type ChatConfig = {
   chatSettings: ChatSettings;
   prompt: string;
   promptCategory: string;
+  command: string;
+  commandArgs: object;
   chain: string;
-  //message: string;
   mutate: any;
   sdk: AGiXTSDK;
 };

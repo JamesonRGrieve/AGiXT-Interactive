@@ -30,7 +30,7 @@ export default function ConversationBar({
   latestMessage,
   setLatestMessage,
 }: {
-  mode: 'prompt' | 'chain';
+  mode: 'prompt' | 'chain' | 'command';
   latestMessage: string;
   setLatestMessage: any;
 }) {
@@ -53,7 +53,7 @@ export default function ConversationBar({
   };
   const handleSendMessage = async () => {
     setLatestMessage(message);
-    const request = mode === 'chain' ? runChain() : runPrompt();
+    const request = mode === 'chain' ? runChain() : mode === 'command' ? runCommand() : runPrompt();
     setMessage('');
     await request;
     setUploadedFiles([]);
@@ -70,8 +70,16 @@ export default function ConversationBar({
       { ...state.chatSettings.chainRunConfig.chainArgs, conversation_name: state.chatSettings.conversationName },
     );
   };
-
+  const runCommand = async () => {
+    return await state.sdk.executeCommand(
+      state.chatSettings.selectedAgent,
+      state.command,
+      { ...state.commandArgs },
+      state.chatSettings.conversationName,
+    );
+  };
   const runPrompt = async () => {
+    console.log('Prompt Category and Prompt: ', state.promptCategory, state.prompt);
     const args: any = state.sdk.getPromptArgs(state.prompt, state.promptCategory);
     if (message) {
       args.user_input = message;

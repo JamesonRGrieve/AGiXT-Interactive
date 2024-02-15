@@ -123,7 +123,6 @@ const ChatMessage = ({ chatItem, lastUserMessage }) => {
     document.body.appendChild(element);
     element.click();
   };
-  console.log(theme);
   return (
     <Box
       sx={{
