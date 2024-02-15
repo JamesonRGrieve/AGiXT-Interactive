@@ -1,4 +1,5 @@
 const ChatDefault = require('./types/ChatDefault');
+console.log('Chat Default at Env Initialization: ', ChatDefault);
 // TODO: Add validation.
 const nextConfig = {
   env: {
@@ -33,6 +34,7 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY: process.env.AGIXT_PROMPT_CATEGORY || ChatDefault.promptCategory,
     // Chain Mode Options, Defined in ./types/ChatDefault.js
     NEXT_PUBLIC_AGIXT_CHAIN: process.env.AGIXT_CHAIN || ChatDefault.chain,
+    NEXT_PUBLIC_AGIXT_CHAIN: process.env.AGIXT_COMMAND || ChatDefault.command,
     NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT:
       process.env.AGIXT_USE_SELECTED_AGENT || String(ChatDefault.chatSettings.chainRunConfig.useSelectedAgent),
     NEXT_PUBLIC_AGIXT_CHAIN_ARGS:

@@ -16,6 +16,15 @@ export default function ChatContextWrapper({
   initialState?: ChatConfig;
   children: ReactNode;
 }) {
+  console.log('Default Config Provided:', ChatDefaultConfig);
+  console.log('Initial State Provided:', initialState);
+  console.log('Booting State With:', {
+    ...ChatDefaultConfig,
+    ...initialState,
+    // Overridden in context provider.
+    mutate: null,
+  });
+
   // Used to determine whether to render the app or not (populates with any fetch errors from tryFetch calls).
   const [ChatState, setChatState] = useState<ChatConfig>({
     // Default state and initializes the SDK

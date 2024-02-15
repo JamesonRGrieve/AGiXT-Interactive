@@ -39,12 +39,15 @@ const Stateful = (props: ChatProps) => {
           ...props.opts?.chatSettings,
           selectedAgent: props.opts?.chatSettings?.selectedAgent || agentName || process.env.NEXT_PUBLIC_AGIXT_AGENT,
           conversationName:
-            props.opts?.chatSettings?.conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
+            process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
               ? uuid
-              : process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME,
+              : props.opts?.chatSettings?.conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME,
         },
         prompt: props.opts?.prompt || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
         promptCategory: props.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
+        chain: props.opts?.chain || process.env.NEXT_PUBLIC_AGIXT_CHAIN,
+        command: props.opts?.command || process.env.NEXT_PUBLIC_AGIXT_COMMAND,
+        commandArgs: props.opts?.commandArgs || {},
       }}
     >
       <ChatWrapper {...props} />
@@ -92,6 +95,7 @@ const AGiXTChat = ({
         : 'Assuming a ChatContext Provider encloses this instance.'
     }`,
   );
+  console.log('Opts Provided: ', opts);
   return stateful ? (
     <Stateful mode={mode} showAppBar={showAppBar} showConversationSelector={showConversationSelector} opts={opts} />
   ) : (

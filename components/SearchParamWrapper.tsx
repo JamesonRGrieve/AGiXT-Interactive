@@ -41,11 +41,11 @@ const SearchParamWrapper = (mode?, showAppBar = false, showConversationSelector 
           },
           prompt: searchParams.get('prompt') || undefined,
           promptCategory: searchParams.get('promptCategory') || undefined,
-          conversationName: searchParams.get('conversationName') || undefined,
+          command: searchParams.get('command') || undefined,
+          commandArgs: JSON.parse(searchParams.get('commandArgs')) || undefined,
           chain: searchParams.get('chain') || undefined,
           conversations: undefined,
           mutate: undefined,
-          chatState: undefined,
           sdk: undefined,
         } as ChatConfig
       }
