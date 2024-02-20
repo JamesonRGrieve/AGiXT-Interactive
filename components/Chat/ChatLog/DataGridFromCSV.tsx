@@ -32,7 +32,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData: any }) => {
+export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData: any }): React.JSX.Element => {
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);

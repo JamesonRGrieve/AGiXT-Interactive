@@ -18,7 +18,7 @@ import React, { useContext, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { ChatContext } from '../types/ChatContext';
 
-export default function ConversationSelector() {
+export default function ConversationSelector(): React.JSX.Element {
   const AGiXTState = useContext(ChatContext);
   const { data: conversationData } = useSWR<string[]>(
     `/conversation`,

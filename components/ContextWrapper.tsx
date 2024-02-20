@@ -15,7 +15,7 @@ export default function ChatContextWrapper({
   agixtServer?: string;
   initialState?: ChatConfig;
   children: ReactNode;
-}) {
+}): React.JSX.Element {
   console.log('Default Config Provided:', ChatDefaultConfig);
   console.log('Initial State Provided:', initialState);
   console.log('Booting State With:', {

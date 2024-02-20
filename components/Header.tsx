@@ -5,7 +5,7 @@ import { useContext } from 'react';
 import { ChatContext } from '../types/ChatContext';
 import ConversationSelector from './ConversationSelector';
 
-export default function Header({ showConversationSelector }: { showConversationSelector: boolean }) {
+export default function Header({ showConversationSelector }: { showConversationSelector: boolean }): React.JSX.Element {
   showConversationSelector = true;
   const state = useContext(ChatContext);
   return (

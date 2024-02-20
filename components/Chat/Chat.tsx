@@ -5,7 +5,7 @@ import { ChatContext } from '../../types/ChatContext';
 import ConversationHistory from './ChatLog/ConversationHistory';
 import ConversationBar from './ChatBar/ConversationBar';
 
-export default function Chat({ mode }: ChatProps) {
+export default function Chat({ mode }: ChatProps): React.JSX.Element {
   const [latestMessage, setLatestMessage] = useState('');
   const state = useContext(ChatContext);
   const conversation = useSWR(
