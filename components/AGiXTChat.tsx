@@ -1,6 +1,6 @@
 'use client';
 import { getCookie, setCookie } from 'cookies-next';
-import React, { ReactElement } from 'react';
+import React from 'react';
 import { Box, useTheme } from '@mui/material';
 import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
@@ -18,7 +18,7 @@ export type ChatProps = {
   opts?: ChatConfig;
 };
 
-const Stateful = (props: ChatProps): ReactElement => {
+const Stateful = (props: ChatProps): React.JSX.Element => {
   const apiKey = process.env.NEXT_PUBLIC_API_KEY || '';
   const agixtServer = process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
   const agentName = process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free';
@@ -55,10 +55,10 @@ const Stateful = (props: ChatProps): ReactElement => {
     </ContextWrapper>
   );
 };
-const Stateless = (props: ChatProps) => {
+const Stateless = (props: ChatProps): React.JSX.Element => {
   return <ChatWrapper {...props} />;
 };
-const ChatWrapper = (props: ChatProps) => {
+const ChatWrapper = (props: ChatProps): React.JSX.Element => {
   const theme = useTheme();
   return (
     <Box height='100%' display='flex' flexDirection='column'>
@@ -88,7 +88,7 @@ const AGiXTChat = ({
   showAppBar = false,
   showConversationSelector = false,
   opts,
-}: ChatProps & { stateful?: boolean }) => {
+}: ChatProps & { stateful?: boolean }): React.JSX.Element => {
   console.log(
     `AGiXTChat initialized as ${stateful ? '' : 'not '}stateful. ${
       stateful

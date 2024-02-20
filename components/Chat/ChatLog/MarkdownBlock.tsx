@@ -8,7 +8,7 @@ import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/i
 import { ChatContext } from '../../../types/ChatContext';
 import { DataGridFromCSV } from './DataGridFromCSV';
 
-export default function MarkdownBlock({ content, chatItem }: { content: string; chatItem: any }) {
+export default function MarkdownBlock({ content, chatItem }: { content: string; chatItem: any }): React.JSX.Element {
   const state = useContext(ChatContext);
   const langMap = {
     '': 'txt',

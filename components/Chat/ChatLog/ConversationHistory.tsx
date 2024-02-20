@@ -22,7 +22,7 @@ import clipboardCopy from 'clipboard-copy';
 import { ChatContext } from '../../../types/ChatContext';
 import MarkdownBlock from './MarkdownBlock';
 
-export default function ConversationHistory({ conversation, latestMessage }) {
+export default function ConversationHistory({ conversation, latestMessage }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
   const state = useContext(ChatContext);
   const messagesEndRef = useRef(null);
@@ -91,7 +91,7 @@ export default function ConversationHistory({ conversation, latestMessage }) {
   );
 }
 
-const ChatMessage = ({ chatItem, lastUserMessage }) => {
+const ChatMessage = ({ chatItem, lastUserMessage }): React.JSX.Element => {
   const state = useContext(ChatContext);
   const formattedMessage =
     typeof chatItem.message === 'string'

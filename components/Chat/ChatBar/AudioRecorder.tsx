@@ -4,7 +4,7 @@ import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/ico
 import { mutate } from 'swr';
 import { ChatContext } from '../../../types/ChatContext';
 
-export default function AudioRecorder({ recording, setRecording, disabled }) {
+export default function AudioRecorder({ recording, setRecording, disabled }): React.JSX.Element {
   const state = useContext(ChatContext);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);

@@ -4,7 +4,7 @@ import React from 'react';
 import { ChatConfig } from '../types/ChatContext';
 import AGiXTChat from './AGiXTChat';
 
-const SearchParamWrapper = (mode?, showAppBar = false, showConversationSelector = false) => {
+const SearchParamWrapper = (mode?, showAppBar = false, showConversationSelector = false): React.JSX.Element => {
   const searchParams = useSearchParams();
   return (
     <AGiXTChat
