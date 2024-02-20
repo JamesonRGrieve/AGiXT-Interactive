@@ -8,7 +8,7 @@ import Chat from './Chat/Chat';
 import Header from './Header';
 
 export type ChatProps = {
-  mode: 'prompt' | 'chain';
+  mode: 'prompt' | 'chain' | 'command';
   showAppBar?: boolean;
   showConversationSelector?: boolean;
   serverConfig?: {
