@@ -10,6 +10,7 @@
     "strictNullChecks": false, // TODO Make this work.
     "esModuleInterop": true,
     "module": "esnext",
+    "declaration": true,
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
