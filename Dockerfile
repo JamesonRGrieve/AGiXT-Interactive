@@ -1,5 +1,5 @@
 FROM python:3.8-slim AS themes
-RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
+RUN apt install git && git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
 
 FROM node:20-alpine AS builder
 WORKDIR /app
