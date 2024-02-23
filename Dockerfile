@@ -1,8 +1,9 @@
 FROM node:20-alpine AS deps
 WORKDIR /app
 RUN apk add --no-cache libc6-compat git
+RUN npm install -g npm@latest
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN for i in {1..5}; do npm ci && break || sleep 15; done
 RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
 
 FROM node:20-alpine AS builder
