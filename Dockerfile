@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . .
 RUN apk add --no-cache libc6-compat git && \
     git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes && \
-    cp /app/themes/${THEME_NAME} /app
+    cp -r themes/* /app
 ARG APP_NAME
 ARG APP_DESCRIPTION
 ARG APP_URI
