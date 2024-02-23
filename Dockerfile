@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bulleye AS themes
+FROM python:3.10-slim-bullseye AS themes
 RUN apt-get -y update && apt-get install -y git && git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
 
 FROM node:20-alpine AS builder
