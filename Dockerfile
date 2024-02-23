@@ -1,16 +1,6 @@
-FROM node:20-alpine AS deps
-WORKDIR /app
-RUN apk add --no-cache libc6-compat git
-COPY package.json package-lock.json ./
-RUN npm ci
-
-FROM node:20-alpine AS themes
-WORKDIR /app
-RUN apk add --no-cache git
-RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
-
 FROM node:20-alpine AS builder
 WORKDIR /app
+RUN apk add --no-cache libc6-compat git
 ARG APP_NAME
 ARG APP_DESCRIPTION
 ARG APP_URI
@@ -33,7 +23,7 @@ ARG AGIXT_RLHF
 ARG AGIXT_FOOTER_MESSAGE
 ARG AGIXT_SHOW_AGENT_BAR
 ARG ADSENSE_ACCOUNT
-ARG THEME_NAME
+ARG THEME_NAME=valentines
 ARG LOG_VERBOSITY_SERVER
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
@@ -63,8 +53,6 @@ ENV NODE_ENV=production \
     ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
-COPY --from=themes /app/themes/${THEME_NAME} ./app
-
 RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "APP_NAME=${APP_NAME}" >> .env \
     && echo "APP_DESCRIPTION=${APP_DESCRIPTION}" >> .env \
@@ -89,8 +77,10 @@ RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "THEME_NAME=${THEME_NAME}" >> .env \
     && echo "LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER}" >> .env \
     && echo "ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}" >> .env
-
-RUN npm run build
+RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
+COPY /app/themes/${THEME_NAME} ./app
+COPY package.json package-lock.json ./
+RUN npm install && npm run build
 
 FROM node:20-alpine AS runner
 WORKDIR /app
