@@ -1,10 +1,12 @@
-FROM python:3.10-slim-bullseye AS themes
-RUN apt-get -y update && apt-get install -y git && apt-get clean && rm -rf /var/lib/apt/lists/*
-RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes /app/themes
+FROM node:20-alpine AS deps
+WORKDIR /app
+RUN apk add --no-cache libc6-compat git
+COPY package.json package-lock.json ./
+RUN npm ci
+RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
 
 FROM node:20-alpine AS builder
 WORKDIR /app
-RUN apk add --no-cache libc6-compat
 ARG APP_NAME
 ARG APP_DESCRIPTION
 ARG APP_URI
@@ -55,6 +57,8 @@ ENV NODE_ENV=production \
     THEME_NAME=${THEME_NAME} \
     LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER} \
     ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
 RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "APP_NAME=${APP_NAME}" >> .env \
     && echo "APP_DESCRIPTION=${APP_DESCRIPTION}" >> .env \
@@ -79,10 +83,7 @@ RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "THEME_NAME=${THEME_NAME}" >> .env \
     && echo "LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER}" >> .env \
     && echo "ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}" >> .env
-COPY --from=themes /app/themes/${THEME_NAME} ./app
-COPY package.json package-lock.json ./
-RUN npm install
-COPY . .
+COPY --from=deps /app/themes/${THEME_NAME} ./app
 RUN npm run build
 
 FROM node:20-alpine AS runner
