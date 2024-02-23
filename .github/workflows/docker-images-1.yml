@@ -1,0 +1,96 @@
+name: Interactive Front End Service Docker Builds
+on:
+  push:
+    branches: ['main']
+    tags: ['v*.*.*']
+  pull_request:
+    branches: ['main']
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+jobs:
+  build:
+    strategy:
+      matrix:
+        environment: ['vhai', 'santa', 'doomer']
+    runs-on: ubuntu-latest
+    environment: ${{ matrix.environment }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+
+      - name: Setup Docker buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log into registry ${{ env.REGISTRY }}
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5.2.0
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}_${{ matrix.environment }}
+      - name: Build and push Docker image
+        id: build-and-push
+        uses: docker/build-push-action@v5.1.0
+        env:
+          LOG_VERBOSITY_SERVER: ${{ vars.LOG_VERBOSITY_SERVER }}
+          APP_NAME: ${{ vars.APP_NAME }}
+          APP_DESCRIPTION: ${{ vars.APP_DESCRIPTION }}
+          APP_URI: ${{ vars.APP_URI }}
+          AGIXT_SERVER: ${{ vars.AGIXT_SERVER }}
+          AUTH_WEB: ${{ vars.AUTH_WEB }}
+          AGIXT_AGENT: ${{ vars.AGIXT_AGENT }}
+          AGIXT_INSIGHT_AGENT: ${{ vars.AGIXT_INSIGHT_AGENT }}
+          AGIXT_MODE: ${{ vars.AGIXT_MODE }}
+          AGIXT_PROMPT_NAME: ${{ vars.AGIXT_PROMPT_NAME }}
+          AGIXT_PROMPT_CATEGORY: ${{ vars.AGIXT_PROMPT_CATEGORY }}
+          AGIXT_CHAIN: ${{ vars.AGIXT_CHAIN }}
+          AGIXT_USE_SELECTED_AGENT: ${{ vars.AGIXT_USE_SELECTED_AGENT }}
+          AGIXT_CHAIN_ARGS: ${{ vars.AGIXT_CHAIN_ARGS }}
+          AGIXT_FILE_UPLOAD_ENABLED: ${{ vars.AGIXT_FILE_UPLOAD_ENABLED }}
+          AGIXT_SHOW_APP_BAR: ${{ vars.AGIXT_SHOW_APP_BAR }}
+          AGIXT_SHOW_CONVERSATION_BAR: ${{ vars.AGIXT_SHOW_CONVERSATION_BAR }}
+          AGIXT_CONVERSATION_NAME: ${{ vars.AGIXT_CONVERSATION_NAME }}
+          AGIXT_REQUIRE_API_KEY: ${{ vars.AGIXT_REQUIRE_API_KEY }}
+          AGIXT_RLHF: ${{ vars.AGIXT_RLHF }}
+          AGIXT_FOOTER_MESSAGE: ${{ vars.AGIXT_FOOTER_MESSAGE }}
+          AGIXT_SHOW_AGENT_BAR: ${{ vars.AGIXT_SHOW_AGENT_BAR }}
+          THEME_NAME: ${{ vars.THEME_NAME }}
+          ADSENSE_ACCOUNT: ${{ vars.ADSENSE_ACCOUNT }}
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          platforms: linux/amd64,linux/arm64/v8
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          build-args: |
+            LOG_VERBOSITY_SERVER=${{ env.LOG_VERBOSITY_SERVER }}
+            APP_NAME=${{ env.APP_NAME }}
+            APP_DESCRIPTION=${{ env.APP_DESCRIPTION }}
+            APP_URI=${{ env.APP_URI }}
+            AGIXT_SERVER=${{ env.AGIXT_SERVER }}
+            AUTH_WEB=${{ env.AUTH_WEB }}
+            AGIXT_AGENT=${{ env.AGIXT_AGENT }}
+            AGIXT_INSIGHT_AGENT=${{ env.AGIXT_INSIGHT_AGENT }}
+            AGIXT_MODE=${{ env.AGIXT_MODE }}
+            AGIXT_PROMPT_NAME=${{ env.AGIXT_PROMPT_NAME }}
+            AGIXT_PROMPT_CATEGORY=${{ env.AGIXT_PROMPT_CATEGORY }}
+            AGIXT_CHAIN=${{ env.AGIXT_CHAIN }}
+            AGIXT_USE_SELECTED_AGENT=${{ env.AGIXT_USE_SELECTED_AGENT }}
+            AGIXT_CHAIN_ARGS=${{ env.AGIXT_CHAIN_ARGS }}
+            AGIXT_FILE_UPLOAD_ENABLED=${{ env.AGIXT_FILE_UPLOAD_ENABLED }}
+            AGIXT_SHOW_APP_BAR=${{ env.AGIXT_SHOW_APP_BAR }}
+            AGIXT_SHOW_CONVERSATION_BAR=${{ env.AGIXT_SHOW_CONVERSATION_BAR }}
+            AGIXT_CONVERSATION_NAME=${{ env.AGIXT_CONVERSATION_NAME }}
+            AGIXT_REQUIRE_API_KEY=${{ env.AGIXT_REQUIRE_API_KEY }}
+            AGIXT_RLHF=${{ env.AGIXT_RLHF }}
+            AGIXT_FOOTER_MESSAGE=${{ env.AGIXT_FOOTER_MESSAGE }}
+            AGIXT_SHOW_AGENT_BAR=${{ env.AGIXT_SHOW_AGENT_BAR }}
+            THEME_NAME=${{ env.THEME_NAME }}
+            ADSENSE_ACCOUNT=${{ env.ADSENSE_ACCOUNT }}
