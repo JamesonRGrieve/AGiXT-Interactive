@@ -1,5 +1,9 @@
+FROM python:3.8-slim AS themes
+RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
+
 FROM node:20-alpine AS builder
 WORKDIR /app
+RUN apk add --no-cache libc6-compat
 COPY . .
 ARG APP_NAME
 ARG APP_DESCRIPTION
@@ -75,12 +79,8 @@ RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "THEME_NAME=${THEME_NAME}" >> .env \
     && echo "LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER}" >> .env \
     && echo "ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}" >> .env
-RUN apk add --no-cache libc6-compat git && \
-    git clone https://github.com/JamesonRGrieve/jrgcomponents-themes /app/themes && \
-    mv /app/themes/${THEME_NAME}/* /app && \
-    rm -rf /app/themes && \
-    npm install && \
-    npm run build
+COPY --from=themes /app/themes/${THEME_NAME} ./app
+RUN npm install && npm run build
 
 FROM node:20-alpine AS runner
 WORKDIR /app
