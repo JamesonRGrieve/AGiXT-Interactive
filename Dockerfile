@@ -1,9 +1,6 @@
 FROM node:20-alpine AS builder
 WORKDIR /app
 COPY . .
-RUN apk add --no-cache libc6-compat git && \
-    git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes && \
-    cp -r themes/* /app
 ARG APP_NAME
 ARG APP_DESCRIPTION
 ARG APP_URI
@@ -78,6 +75,9 @@ RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "THEME_NAME=${THEME_NAME}" >> .env \
     && echo "LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER}" >> .env \
     && echo "ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}" >> .env
+RUN apk add --no-cache libc6-compat git && \
+    git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes && \
+    cp /app/themes/${THEME_NAME} /app
 RUN npm install && npm run build
 
 FROM node:20-alpine AS runner
