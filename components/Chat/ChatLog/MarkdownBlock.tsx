@@ -86,6 +86,13 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
       const csvData = message.split('```csv')[1].split('```')[0].replace(/\n/g, '\r\n');
       return <DataGridFromCSV state={state} csvData={csvData} />;
     }
+    if (message.includes('<audio controls><source src=')) {
+      // Replace the html audio control with a link to the audio
+      const match = message.match(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/);
+      const audioSrc = match[1];
+      // We can reformat it any way we want for testing like this.
+      return message.replace(match[0], `[Click here for the audio response](${audioSrc})`);
+    }
     return content;
   };
   const generateId = (text) => {
@@ -172,8 +179,8 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
               }
               // eslint-disable-next-line react-hooks/rules-of-hooks
               const codeBlockRef = React.useRef(null);
-              const language = props.className?.replace(/language-/, '');
-              const fileExtension = langMap[language] || 'txt';
+              const language = props.className?.replace(/language-/, '') || 'markdown';
+              const fileExtension = langMap[language] || 'md';
               const ts = chatItem
                 ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
                 : new Date().toLocaleString().replace(/\D/g, '');
