@@ -76,8 +76,8 @@ RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER}" >> .env \
     && echo "ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}" >> .env
 RUN apk add --no-cache libc6-compat git && \
-    git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes && \
-    cp -r /app/themes/${THEME_NAME}/* /app && \
+    git clone https://github.com/JamesonRGrieve/jrgcomponents-themes /app/themes && \
+    mv /app/themes/${THEME_NAME}/* /app && \
     rm -rf /app/themes && \
     npm install && \
     npm run build
