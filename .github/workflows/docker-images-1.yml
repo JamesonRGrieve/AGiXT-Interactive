@@ -1,4 +1,4 @@
-name: Interactive Front End Service Docker Builds
+name: VHAI, Santa, Doomer
 on:
   push:
     branches: ['main']
