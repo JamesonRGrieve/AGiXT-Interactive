@@ -51,7 +51,6 @@ ENV NODE_ENV=production \
     THEME_NAME=${THEME_NAME} \
     LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER} \
     ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}
-COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "APP_NAME=${APP_NAME}" >> .env \
