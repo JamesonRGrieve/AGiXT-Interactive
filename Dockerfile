@@ -1,5 +1,6 @@
 FROM python:3.10-slim-bullseye AS themes
-RUN apt-get -y update && apt-get install -y git && git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
+RUN apt-get -y update && apt-get install -y git && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes /app/themes
 
 FROM node:20-alpine AS builder
 WORKDIR /app
