@@ -77,8 +77,10 @@ RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}" >> .env
 RUN apk add --no-cache libc6-compat git && \
     git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes && \
-    cp /app/themes/${THEME_NAME} /app
-RUN npm install && npm run build
+    cp -r /app/themes/${THEME_NAME}/* /app && \
+    rm -rf /app/themes && \
+    npm install && \
+    npm run build
 
 FROM node:20-alpine AS runner
 WORKDIR /app
