@@ -76,8 +76,7 @@ RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "THEME_NAME=${THEME_NAME}" >> .env \
     && echo "LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER}" >> .env \
     && echo "ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}" >> .env
-RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes
-COPY /app/themes/${THEME_NAME} ./app
+RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes themes && cp /app/themes/${THEME_NAME} /app
 COPY package.json package-lock.json ./
 RUN npm install && npm run build
 
