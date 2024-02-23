@@ -5,7 +5,6 @@ RUN git clone https://github.com/JamesonRGrieve/jrgcomponents-themes /app/themes
 FROM node:20-alpine AS builder
 WORKDIR /app
 RUN apk add --no-cache libc6-compat
-COPY . .
 ARG APP_NAME
 ARG APP_DESCRIPTION
 ARG APP_URI
@@ -81,7 +80,10 @@ RUN echo "AGIXT_SERVER=${AGIXT_SERVER}" >> .env \
     && echo "LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER}" >> .env \
     && echo "ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT}" >> .env
 COPY --from=themes /app/themes/${THEME_NAME} ./app
-RUN npm install && npm run build
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . .
+RUN npm run build
 
 FROM node:20-alpine AS runner
 WORKDIR /app
