@@ -5,7 +5,7 @@ services:
     init: true
     environment:
       - ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT-ca-pub-7353611168636388}
-      - AGIXT_AGENT=${AGIXT_AGENT-gpt4free}
+      - AGIXT_AGENT=${AGIXT_AGENT-Software Engineer}
       - AGIXT_FILE_UPLOAD_ENABLED=${AGIXT_FILE_UPLOAD_ENABLED-true}
       - AGIXT_FOOTER_MESSAGE=${AGIXT_FOOTER_MESSAGE-Powered by AGiXT}
       - AGIXT_MODE=${AGIXT_MODE-prompt}
