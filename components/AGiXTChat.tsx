@@ -37,7 +37,7 @@ const Stateful = (props: ChatProps): React.JSX.Element => {
         chatSettings: {
           ...ChatDefaultConfig.chatSettings,
           ...props.opts?.chatSettings,
-          selectedAgent: props.opts?.chatSettings?.selectedAgent || agentName || process.env.NEXT_PUBLIC_AGIXT_AGENT,
+          selectedAgent: props.opts?.chatSettings?.selectedAgent || process.env.NEXT_PUBLIC_AGIXT_AGENT || agentName,
           conversationName:
             process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
               ? uuid
