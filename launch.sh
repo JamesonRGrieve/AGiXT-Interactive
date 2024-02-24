@@ -1,7 +1,7 @@
 #!/bin/sh
 echo "" > /app/.env
 env | while IFS='=' read -r name value; do
-  printf '%s=%s\n' "$name" "$value" >> /app/.env
+  printf '%s="%s"\n' "$name" "$value" >> /app/.env
 done
 # Show full env
 cat /app/.env
