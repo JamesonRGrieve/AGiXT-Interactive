@@ -2,8 +2,7 @@ version: '3.7'
 services:
   agixtchat:
     image: joshxt/agixtchat:main
-    env_file:
-      - .env
+    init: true
     environment:
       - ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT-ca-pub-7353611168636388}
       - AGIXT_AGENT=${AGIXT_AGENT-gpt4free}
@@ -24,5 +23,5 @@ services:
       - THEME_NAME=${THEME_NAME-valentines}
       - TZ=${TZ-America/New_York}
     ports:
-      - '3437:3437'
+      - 24498:24498
     restart: unless-stopped

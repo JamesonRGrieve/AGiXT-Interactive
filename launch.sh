@@ -10,4 +10,5 @@ set +a
 theme=$(grep -oP 'THEME_NAME=\K.*' /app/.env)
 cp -r /app/themes/$theme/* /app
 npm run build
+rm /app/.env
 npm start
