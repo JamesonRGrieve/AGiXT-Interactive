@@ -10,5 +10,5 @@ RUN touch /app/.env
 RUN addgroup -g 1001 nodejs && adduser -D -u 1001 -G nodejs nextjs
 RUN chown -R nextjs:nodejs /app
 USER nextjs
-EXPOSE 24498
+EXPOSE 3437
 ENTRYPOINT ["/app/launch.sh"]
