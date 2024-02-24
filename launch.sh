@@ -10,7 +10,9 @@ set -a
 . /app/.env
 set +a
 theme=$(grep '^THEME_NAME=' /app/.env | cut -d'=' -f2)
-cp -r "/app/themes/$theme/"* /app/
+cp -r /app/themes/$theme/* /app/
+npm install -g npm@latest
+npm install
 npm run build
 rm /app/.env
 npm start
