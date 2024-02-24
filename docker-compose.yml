@@ -23,5 +23,5 @@ services:
       - THEME_NAME=${THEME_NAME-valentines}
       - TZ=${TZ-America/New_York}
     ports:
-      - 24498:24498
+      - 3437:3437
     restart: unless-stopped
