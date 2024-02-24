@@ -1,7 +1,7 @@
 #!/bin/sh
 echo "" > /app/.env
-env | while read -r line; do
-  echo "$line" >> /app/.env
+env | while IFS='=' read -r name value; do
+  printf '%s=%s\n' "$name" "$value" >> /app/.env
 done
 # Show full env
 cat /app/.env
@@ -9,8 +9,8 @@ git clone https://github.com/JamesonRGrieve/jrgcomponents-themes /app/themes
 set -a
 . /app/.env
 set +a
-theme=$(grep -oP 'THEME_NAME=\K.*' /app/.env)
-cp -r /app/themes/$theme/* /app
+theme=$(grep '^THEME_NAME=' /app/.env | cut -d'=' -f2)
+cp -r "/app/themes/$theme/"* /app/
 npm run build
 rm /app/.env
 npm start
