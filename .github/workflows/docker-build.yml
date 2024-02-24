@@ -7,11 +7,7 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 jobs:
   build:
-    strategy:
-      matrix:
-        environment: ['vhai', 'santa', 'doomer']
     runs-on: ubuntu-latest
-    environment: ${{ matrix.environment }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -28,7 +24,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5.2.0
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}_${{ matrix.environment }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v5.1.0
