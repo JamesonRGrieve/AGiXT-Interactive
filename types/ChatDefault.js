@@ -1,6 +1,6 @@
 const ChatDefault = {
   chatSettings: {
-    selectedAgent: 'gpt4free',
+    selectedAgent: process.env.NEXT_PUBLIC_AGIXT_AGENT || 'gpt4free',
     contextResults: 0,
     shots: 0,
     websearchDepth: 0,
