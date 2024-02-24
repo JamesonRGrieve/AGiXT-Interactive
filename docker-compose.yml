@@ -1,7 +1,7 @@
 version: '3.7'
 services:
   agixtchat:
-    image: joshxt/agixtchat:main
+    image: ghcr.io/gt-umbrella/interactive_web:main
     init: true
     environment:
       - ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT-ca-pub-7353611168636388}
