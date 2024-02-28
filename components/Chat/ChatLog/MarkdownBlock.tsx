@@ -7,7 +7,6 @@ import { IconButton } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
 import { ChatContext } from '../../../types/ChatContext';
 import { DataGridFromCSV } from './DataGridFromCSV';
-import ReactAudioPlayer from 'react-audio-player';
 
 export default function MarkdownBlock({ content, chatItem }: { content: string; chatItem: any }): React.JSX.Element {
   const state = useContext(ChatContext);
@@ -87,6 +86,13 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
       const csvData = message.split('```csv')[1].split('```')[0].replace(/\n/g, '\r\n');
       return <DataGridFromCSV state={state} csvData={csvData} />;
     }
+    if (message.includes('<audio controls><source src=')) {
+      // Replace the html audio control with a link to the audio
+      const match = message.match(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/);
+      const audioSrc = match[1];
+      // We can reformat it any way we want for testing like this.
+      return message.replace(match[0], `[Click here for the audio response](${audioSrc})`);
+    }
     return content;
   };
   const generateId = (text) => {
@@ -137,9 +143,6 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
         <ReactMarkdown
           className='react-markdown'
           components={{
-            audio({ node, children, ...props }) {
-              return <ReactAudioPlayer src={props.src} controls autoPlay />;
-            },
             a: renderLink,
             h1({ node, children }) {
               return renderHeader('h1', children);
