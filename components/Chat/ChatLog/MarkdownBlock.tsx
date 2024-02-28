@@ -172,7 +172,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
               }
               // eslint-disable-next-line react-hooks/rules-of-hooks
               const codeBlockRef = React.useRef(null);
-              const language = props.className?.replace(/language-/, '');
+              const language = props.className?.replace(/language-/, '') || 'txt';
               const fileExtension = langMap[language] || 'txt';
               const ts = chatItem
                 ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
