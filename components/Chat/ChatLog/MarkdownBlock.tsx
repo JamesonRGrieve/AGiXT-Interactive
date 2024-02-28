@@ -136,6 +136,9 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
         <ReactMarkdown
           className='react-markdown'
           components={{
+            audio({ node, children, ...props }) {
+              return <audio {...props}>{children}</audio>;
+            },
             a: renderLink,
             h1({ node, children }) {
               return renderHeader('h1', children);
@@ -154,9 +157,6 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
             },
             li({ children }) {
               return <li style={{ marginBottom: '0.5em' }}>{children}</li>;
-            },
-            audio({ node, children, ...props }) {
-              return <audio {...props}>{children}</audio>;
             },
             code({ node, inline, children, ...props }) {
               if (inline) {
