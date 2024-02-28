@@ -115,6 +115,14 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
     return <Tag id={id}>{children}</Tag>;
   };
   const renderLink = ({ node, children, ...props }) => {
+    if (/\.(mp3|wav)$/.test(props.href)) {
+      return (
+        <audio controls>
+          <source src={props.href} type={`audio/${props.href.split('.').pop()}`} />
+          Your browser does not support the audio element.
+        </audio>
+      );
+    }
     const isExternal = props.href && !props.href.startsWith('#');
     return (
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events
@@ -136,10 +144,15 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
         <ReactMarkdown
           className='react-markdown'
           components={{
-            audio({ node, children, ...props }) {
-              return <audio {...props}>{children}</audio>;
-            },
             a: renderLink,
+            audio({ node, children, ...props }) {
+              return (
+                <audio controls>
+                  <source src={props.src} type={`audio/${props.src.split('.').pop()}`} />
+                  Your browser does not support the audio element.
+                </audio>
+              );
+            },
             h1({ node, children }) {
               return renderHeader('h1', children);
             },
