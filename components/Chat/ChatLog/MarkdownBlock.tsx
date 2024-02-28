@@ -118,8 +118,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
     if (/\.(mp3|wav)$/.test(props.href)) {
       return (
         <audio controls>
-          <source src={props.href} type={`audio/${props.href.split('.').pop()}`} />
-          Your browser does not support the audio element.
+          <source src={props.href} type='audio/wav' />
         </audio>
       );
     }
@@ -145,14 +144,6 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
           className='react-markdown'
           components={{
             a: renderLink,
-            audio({ node, children, ...props }) {
-              return (
-                <audio controls>
-                  <source src={props.src} type={`audio/${props.src.split('.').pop()}`} />
-                  Your browser does not support the audio element.
-                </audio>
-              );
-            },
             h1({ node, children }) {
               return renderHeader('h1', children);
             },
