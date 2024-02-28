@@ -155,6 +155,9 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
             li({ children }) {
               return <li style={{ marginBottom: '0.5em' }}>{children}</li>;
             },
+            audio({ node, children, ...props }) {
+              return <audio {...props} controls />;
+            },
             code({ node, inline, children, ...props }) {
               if (inline) {
                 return (
