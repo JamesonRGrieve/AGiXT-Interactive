@@ -66,6 +66,16 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
     nim: 'nim',
   };
 
+  const renderAudio = ({ node, ...props }) => {
+    const src = node.properties.src || '';
+    const type = node.properties.type || 'audio/wav';
+    return (
+      <audio controls>
+        <source src={src} type={type} />
+        Your browser does not support the audio element.
+      </audio>
+    );
+  };
   const renderMessage = () => {
     const message = content.toString();
     const match = message.match(/#(.*?)(?=\n|$)/);
@@ -155,9 +165,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
             li({ children }) {
               return <li style={{ marginBottom: '0.5em' }}>{children}</li>;
             },
-            audio({ node, children, ...props }) {
-              return <audio {...props} controls />;
-            },
+            audio: renderAudio,
             code({ node, inline, children, ...props }) {
               if (inline) {
                 return (
@@ -175,8 +183,8 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
               }
               // eslint-disable-next-line react-hooks/rules-of-hooks
               const codeBlockRef = React.useRef(null);
-              const language = props.className?.replace(/language-/, '') || 'txt';
-              const fileExtension = langMap[language] || 'txt';
+              const language = props.className?.replace(/language-/, '') || 'markdown';
+              const fileExtension = langMap[language] || 'md';
               const ts = chatItem
                 ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
                 : new Date().toLocaleString().replace(/\D/g, '');
