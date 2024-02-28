@@ -7,6 +7,7 @@ import { IconButton } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
 import { ChatContext } from '../../../types/ChatContext';
 import { DataGridFromCSV } from './DataGridFromCSV';
+import ReactAudioPlayer from 'react-audio-player';
 
 export default function MarkdownBlock({ content, chatItem }: { content: string; chatItem: any }): React.JSX.Element {
   const state = useContext(ChatContext);
@@ -115,13 +116,6 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
     return <Tag id={id}>{children}</Tag>;
   };
   const renderLink = ({ node, children, ...props }) => {
-    if (/\.(mp3|wav)$/.test(props.href)) {
-      return (
-        <audio controls>
-          <source src={props.href} type='audio/wav' />
-        </audio>
-      );
-    }
     const isExternal = props.href && !props.href.startsWith('#');
     return (
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events
@@ -143,6 +137,9 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
         <ReactMarkdown
           className='react-markdown'
           components={{
+            audio({ node, children, ...props }) {
+              return <ReactAudioPlayer src={props.src} controls autoPlay />;
+            },
             a: renderLink,
             h1({ node, children }) {
               return renderHeader('h1', children);
