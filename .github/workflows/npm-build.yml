@@ -1,4 +1,4 @@
-name: Test NPM build on all branches
+name: NPM Build Test
 
 on:
   push:
@@ -10,7 +10,7 @@ jobs:
     name: NPM Build Test
     steps:
       - uses: actions/checkout@v3
-      - name: Run linting rules and tests
+      - name: Install Packages and Build
         uses: actions/setup-node@v3
         with:
           node-version: 20
