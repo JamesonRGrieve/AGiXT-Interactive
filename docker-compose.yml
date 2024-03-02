@@ -4,6 +4,7 @@ services:
     image: ghcr.io/gt-umbrella/interactive_web:main
     init: true
     environment:
+      - NEXT_TELEMETRY_DISABLED=1
       - ADSENSE_ACCOUNT=${ADSENSE_ACCOUNT-ca-pub-7353611168636388}
       - AGIXT_AGENT=${AGIXT_AGENT-Software Engineer}
       - AGIXT_FILE_UPLOAD_ENABLED=${AGIXT_FILE_UPLOAD_ENABLED-true}
