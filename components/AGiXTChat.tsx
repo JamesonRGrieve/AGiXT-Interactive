@@ -6,6 +6,7 @@ import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Header from './Header';
+import Footer from './Footer';
 
 export type ChatProps = {
   mode: 'prompt' | 'chain';
@@ -79,6 +80,7 @@ const ChatWrapper = (props: ChatProps): React.JSX.Element => {
       >
         <Chat mode={props.mode} />
       </Box>
+      <Footer />
     </Box>
   );
 };
