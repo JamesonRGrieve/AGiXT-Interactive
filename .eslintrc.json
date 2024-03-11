@@ -156,7 +156,7 @@
     "react/no-danger-with-children": "warn", // Disallow children with dangerouslySetInnerHTML.
     "react/no-deprecated": "warn", // Disallow usage of deprecated methods.
     "react/no-direct-mutation-state": "warn", // Disallow direct mutation of this.state.
-    "react/no-multi-comp": "warn", // Prevent multiple component definitions per file.
+    "react/no-multi-comp": "off", // Prevent multiple component definitions per file.
     "react/no-unescaped-entities": "warn", // Disallow unescaped entities in JSX.
     "react/no-unstable-nested-components": "warn", // Prevent creating unstable components inside components.
     "react/no-unused-state": "warn", // Prevents unused state values.

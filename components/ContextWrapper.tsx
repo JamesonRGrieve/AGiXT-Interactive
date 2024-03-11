@@ -5,7 +5,6 @@ import { ChatContext, ChatDefaultConfig, ChatConfig } from '../types/ChatContext
 
 export default function ChatContextWrapper({
   initialState = ChatDefaultConfig,
-  requireKey = false,
   apiKey = null,
   agixtServer = '',
   children,
