@@ -73,6 +73,7 @@ export default function ConversationBar({
   const runCommand = async () => {
     const args = { ...state.commandArgs, [state.commandMessageArg]: message };
     console.log('Command Args:', args);
+    console.log('Command Agent:', state.chatSettings.selectedAgent);
     return await state.sdk.executeCommand(
       state.chatSettings.selectedAgent,
       state.command,

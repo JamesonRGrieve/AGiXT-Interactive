@@ -33,6 +33,7 @@ export default function ChatContextWrapper({
     // Overridden in context provider.
     mutate: null,
   } as ChatConfig);
+  console.log('Context Wrapper initializing AGiXTSDK with baseUri/apiKey: ', agixtServer, apiKey);
   const sdk: AGiXTSDK = new AGiXTSDK({
     baseUri: agixtServer,
     apiKey: apiKey,
