@@ -40,6 +40,7 @@ export default function ConversationSelector(): React.JSX.Element {
     state.mutate((oldState) => ({
       ...oldState,
       chatConfig: { ...oldState.chatConfig, conversationName: newConversationName },
+      chatSettings: { ...oldState.chatSettings, conversationName: newConversationName },
     }));
   };
   const handleDeleteConversation = async () => {
@@ -145,7 +146,7 @@ export default function ConversationSelector(): React.JSX.Element {
           <DeleteIcon sx={{ minWidth: '20px' }} color={'error'} />
         </Button>
       </Tooltip>
-      <Dialog open={openNewConversation} onClose={() => setOpenNewConversation(false)}>
+      <Dialog open={openNewConversation} onClose={() => setOpenNewConversation(false)} disableRestoreFocus>
         <DialogTitle>Create New Conversation</DialogTitle>
         <DialogContent>
           <TextField
@@ -158,6 +159,7 @@ export default function ConversationSelector(): React.JSX.Element {
             onChange={(e) => setNewConversationName(e.target.value)}
             variant='outlined'
             color='info'
+            autoFocus
           />
         </DialogContent>
         <DialogActions>

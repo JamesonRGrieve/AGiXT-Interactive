@@ -6,6 +6,7 @@ import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Header from './Header';
+import Footer from './Footer';
 
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
@@ -37,7 +38,7 @@ const Stateful = (props: ChatProps): React.JSX.Element => {
         chatSettings: {
           ...ChatDefaultConfig.chatSettings,
           ...props.opts?.chatSettings,
-          selectedAgent: props.opts?.chatSettings?.selectedAgent || agentName || process.env.NEXT_PUBLIC_AGIXT_AGENT,
+          selectedAgent: props.opts?.chatSettings?.selectedAgent || process.env.NEXT_PUBLIC_AGIXT_AGENT || agentName,
           conversationName:
             process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
               ? uuid
@@ -79,6 +80,7 @@ const ChatWrapper = (props: ChatProps): React.JSX.Element => {
       >
         <Chat mode={props.mode} />
       </Box>
+      <Footer />
     </Box>
   );
 };

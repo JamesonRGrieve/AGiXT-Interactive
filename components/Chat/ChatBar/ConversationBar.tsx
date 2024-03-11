@@ -13,14 +13,12 @@ import {
   DialogContentText,
   DialogActions,
   IconButton,
-  Typography,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { setCookie } from 'cookies-next';
 import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
-import Link from 'next/link';
 import { mutate } from 'swr';
 import { ChatContext } from '../../../types/ChatContext';
 import AudioRecorder from './AudioRecorder';
@@ -134,103 +132,103 @@ export default function ConversationBar({
     return await state.sdk.promptAgent(state.chatSettings.selectedAgent, promptName, stateArgs);
   };
   return (
-    <>
-      <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
-        <TextField
-          label={`Enter your message to ${state.chatSettings.selectedAgent} here.`}
-          placeholder={`Hello, ${state.chatSettings.selectedAgent}!`}
-          multiline
-          rows={2}
-          fullWidth
-          value={message}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' && !event.shiftKey && message) {
-              event.preventDefault();
-              handleSendMessage();
-            }
-          }}
-          onChange={(e) => setMessage(e.target.value)}
-          sx={{ my: 2 }}
-          disabled={Boolean(latestMessage)}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position='end'>
-                {state.chatSettings.enableFileUpload && (
-                  <>
-                    <IconButton
-                      color='info'
-                      onClick={() => {
-                        setFileUploadOpen(true);
-                        state.mutate((oldState) => ({
-                          ...oldState,
-                          chatState: { ...oldState.chatState, uploadedFiles: [] },
-                        }));
-                      }}
-                      disabled={Boolean(latestMessage)}
-                      sx={{ height: '56px' }}
-                    >
-                      <NoteAddOutlinedIcon />
-                    </IconButton>
-                    <Dialog
-                      open={fileUploadOpen}
-                      onClose={() => {
-                        setFileUploadOpen(false);
-                      }}
-                    >
-                      <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
-                      <DialogContent>
-                        <DialogContentText>Please upload the files you would like to send.</DialogContentText>
-                        <input
-                          accept='*'
-                          id='contained-button-file'
-                          multiple
-                          type='file'
-                          onChange={(e) => {
-                            state.mutate((oldState) => ({
-                              ...oldState,
-                              chatState: { ...oldState.chatState, uploadedFiles: Array(e.target.files) },
-                            }));
-                          }}
-                        />
-                      </DialogContent>
-                      <DialogActions>
-                        <Button
-                          onClick={() => {
-                            setFileUploadOpen(false);
-                          }}
-                          color='error'
-                        >
-                          Cancel
-                        </Button>
-                        <Button onClick={handleUploadFiles} color='info' disabled={Boolean(latestMessage)}>
-                          Upload
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
-                  </>
-                )}
-                {!alternativeInputActive && (
-                  <Tooltip title='Send Message'>
-                    <IconButton
-                      color='info'
-                      onClick={handleSendMessage}
-                      disabled={Boolean(latestMessage)}
-                      sx={{ height: '56px', padding: '0.5rem' }}
-                    >
-                      <SendIcon />
-                    </IconButton>
-                  </Tooltip>
-                )}
-                <AudioRecorder
-                  recording={alternativeInputActive}
-                  setRecording={setAlternativeInputActive}
-                  disabled={Boolean(latestMessage)}
-                />
-              </InputAdornment>
-            ),
-          }}
-        />
-        {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' && (
+    <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
+      <TextField
+        label={`Enter your message to ${state.chatSettings.selectedAgent} here.`}
+        placeholder={`Hello, ${state.chatSettings.selectedAgent}!`}
+        multiline
+        rows={2}
+        fullWidth
+        value={message}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter' && !event.shiftKey && message) {
+            event.preventDefault();
+            handleSendMessage();
+          }
+        }}
+        onChange={(e) => setMessage(e.target.value)}
+        sx={{ my: 2 }}
+        disabled={Boolean(latestMessage)}
+        InputProps={{
+          endAdornment: (
+            <InputAdornment position='end'>
+              {state.chatSettings.enableFileUpload && (
+                <>
+                  <IconButton
+                    color='info'
+                    onClick={() => {
+                      setFileUploadOpen(true);
+                      state.mutate((oldState) => ({
+                        ...oldState,
+                        chatState: { ...oldState.chatState, uploadedFiles: [] },
+                      }));
+                    }}
+                    disabled={Boolean(latestMessage)}
+                    sx={{ height: '56px' }}
+                  >
+                    <NoteAddOutlinedIcon />
+                  </IconButton>
+                  <Dialog
+                    open={fileUploadOpen}
+                    onClose={() => {
+                      setFileUploadOpen(false);
+                    }}
+                  >
+                    <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
+                    <DialogContent>
+                      <DialogContentText>Please upload the files you would like to send.</DialogContentText>
+                      <input
+                        accept='*'
+                        id='contained-button-file'
+                        multiple
+                        type='file'
+                        onChange={(e) => {
+                          state.mutate((oldState) => ({
+                            ...oldState,
+                            chatState: { ...oldState.chatState, uploadedFiles: Array(e.target.files) },
+                          }));
+                        }}
+                      />
+                    </DialogContent>
+                    <DialogActions>
+                      <Button
+                        onClick={() => {
+                          setFileUploadOpen(false);
+                        }}
+                        color='error'
+                      >
+                        Cancel
+                      </Button>
+                      <Button onClick={handleUploadFiles} color='info' disabled={Boolean(latestMessage)}>
+                        Upload
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
+                </>
+              )}
+              {!alternativeInputActive && (
+                <Tooltip title='Send Message'>
+                  <IconButton
+                    color='info'
+                    onClick={handleSendMessage}
+                    disabled={Boolean(latestMessage)}
+                    sx={{ height: '56px', padding: '0.5rem' }}
+                  >
+                    <SendIcon />
+                  </IconButton>
+                </Tooltip>
+              )}
+              <AudioRecorder
+                recording={alternativeInputActive}
+                setRecording={setAlternativeInputActive}
+                disabled={Boolean(latestMessage)}
+              />
+            </InputAdornment>
+          ),
+        }}
+      />
+      {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
+        process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE == 'uuid' && (
           <Tooltip title='Reset Conversation (Forever)'>
             <IconButton
               color='info'
@@ -255,35 +253,12 @@ export default function ConversationBar({
             </IconButton>
           </Tooltip>
         )}
-        {process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true' && (
-          <Box display='flex' flexDirection='column' alignItems='center'>
-            <SwitchDark />
-            <SwitchColorblind />
-          </Box>
-        )}
-      </Box>
-      {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE && (
-        <Box>
-          <Typography
-            variant='caption'
-            align='center'
-            style={{ width: '100%', display: 'inline-block', fontWeight: 'bold', fontSize: '0.8rem' }}
-          >
-            <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT/AGiXT'>
-              {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
-            </Link>{' '}
-            • Built by{' '}
-            <Link style={{ textDecoration: 'none' }} href='https://github.com/Josh-XT'>
-              JoshXT
-            </Link>{' '}
-            and{' '}
-            <Link style={{ textDecoration: 'none' }} href='https://github.com/jamesonrgrieve'>
-              James G.
-            </Link>{' '}
-            &copy; 2023
-          </Typography>
+      {process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true' && (
+        <Box display='flex' flexDirection='column' alignItems='center'>
+          <SwitchDark />
+          <SwitchColorblind />
         </Box>
       )}
-    </>
+    </Box>
   );
 }
