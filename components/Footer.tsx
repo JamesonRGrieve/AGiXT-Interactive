@@ -3,14 +3,8 @@ import Box from '@mui/material/Box';
 import { Typography } from '@mui/material';
 //import Link from 'next/link';
 
-export default function Footer({
-  message = process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE,
-}: {
-  message: string;
-}): React.JSX.Element {
-  console.log('Footer Prop: ', message);
-  console.log('Footer Env: ', process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE);
-  return message ? (
+export default function Footer({ message }: { message: string }): React.JSX.Element {
+  return (
     <Box>
       <Typography
         variant='caption'
@@ -21,7 +15,8 @@ export default function Footer({
         {message}
       </Typography>
     </Box>
-  ) : /*
+  );
+  /*
     <Box>
       <Typography
         variant='caption'
@@ -44,5 +39,4 @@ export default function Footer({
       </Typography>
     </Box>
     */
-  null;
 }
