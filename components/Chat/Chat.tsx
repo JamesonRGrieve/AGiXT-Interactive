@@ -5,7 +5,7 @@ import { ChatContext } from '../../types/ChatContext';
 import ConversationHistory from './ChatLog/ConversationHistory';
 import ConversationBar from './ChatBar/ConversationBar';
 
-export default function Chat({ mode, showChatThemeToggles }: ChatProps & UIProps): React.JSX.Element {
+export default function Chat({ mode, showChatThemeToggles, alternateBackground }: ChatProps & UIProps): React.JSX.Element {
   console.log('Chat Themes: ', showChatThemeToggles);
 
   const [latestMessage, setLatestMessage] = useState('');
@@ -23,7 +23,11 @@ export default function Chat({ mode, showChatThemeToggles }: ChatProps & UIProps
   }, [state.chatSettings.conversationName]);
   return (
     <>
-      <ConversationHistory conversation={conversation.data} latestMessage={latestMessage} />
+      <ConversationHistory
+        conversation={conversation.data}
+        latestMessage={latestMessage}
+        alternateBackground={alternateBackground}
+      />
       <ConversationBar
         setLatestMessage={setLatestMessage}
         latestMessage={latestMessage}
