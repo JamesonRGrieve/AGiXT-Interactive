@@ -1,5 +1,5 @@
 import { useState, useRef, useContext, useEffect, useCallback } from 'react';
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip, useTheme } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
 import { mutate } from 'swr';
 import { ChatContext } from '../../../types/ChatContext';
@@ -8,7 +8,7 @@ export default function AudioRecorder({ recording, setRecording, disabled }): Re
   const state = useContext(ChatContext);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
-
+  const theme = useTheme();
   const startRecording = () => {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
@@ -80,20 +80,30 @@ export default function AudioRecorder({ recording, setRecording, disabled }): Re
 
   return !recording ? (
     <Tooltip title='Record Audio'>
-      <IconButton color='info' disabled={disabled} onClick={startRecording}>
+      <IconButton
+        sx={{ color: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
+        disabled={disabled}
+        onClick={startRecording}
+      >
         <MicIcon />
       </IconButton>
     </Tooltip>
   ) : (
     <>
       <Tooltip title='Cancel Recording'>
-        <IconButton color='error' onClick={cancelRecording}>
+        <IconButton
+          sx={{ color: theme.palette['error'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
+          onClick={cancelRecording}
+        >
           <CancelIcon />
         </IconButton>
       </Tooltip>
       <Tooltip title='Send Audio'>
         {/* Finish recording triggers data as soon as audio data is available */}
-        <IconButton color='info' onClick={finishRecording}>
+        <IconButton
+          sx={{ color: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
+          onClick={finishRecording}
+        >
           <SendIcon />
         </IconButton>
       </Tooltip>
