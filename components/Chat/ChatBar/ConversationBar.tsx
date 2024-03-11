@@ -169,7 +169,10 @@ export default function ConversationBar({
                       }));
                     }}
                     disabled={Boolean(latestMessage)}
-                    sx={{ height: '56px', color: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
+                    sx={{
+                      height: '56px',
+                      color: theme.palette['primary'][theme.palette.mode === 'dark' ? 'light' : 'dark'],
+                    }}
                   >
                     <NoteAddOutlinedIcon />
                   </IconButton>
@@ -206,7 +209,7 @@ export default function ConversationBar({
                       </Button>
                       <Button
                         onClick={handleUploadFiles}
-                        sx={{ backgroundColor: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
+                        sx={{ backgroundColor: theme.palette['primary'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
                         disabled={Boolean(latestMessage)}
                       >
                         Upload
@@ -223,7 +226,7 @@ export default function ConversationBar({
                     sx={{
                       height: '56px',
                       padding: '0.5rem',
-                      color: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'],
+                      color: theme.palette['primary'][theme.palette.mode === 'dark' ? 'light' : 'dark'],
                     }}
                   >
                     <SendIcon />
@@ -261,7 +264,7 @@ export default function ConversationBar({
               sx={{
                 height: '56px',
                 padding: '1rem',
-                color: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'],
+                color: theme.palette['primary'][theme.palette.mode === 'dark' ? 'light' : 'dark'],
               }}
             >
               <DeleteForever />
