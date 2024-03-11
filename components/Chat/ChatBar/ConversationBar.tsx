@@ -13,6 +13,7 @@ import {
   DialogContentText,
   DialogActions,
   IconButton,
+  useTheme,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { setCookie } from 'cookies-next';
@@ -35,6 +36,7 @@ export default function ConversationBar({
   showChatThemeToggles: boolean;
 }) {
   const state = useContext(ChatContext);
+  const theme = useTheme();
   console.log('Prop Show Themes', showChatThemeToggles);
   console.log('Env Show Themes', process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
@@ -159,7 +161,6 @@ export default function ConversationBar({
               {state.chatSettings.enableFileUpload && (
                 <>
                   <IconButton
-                    color='info'
                     onClick={() => {
                       setFileUploadOpen(true);
                       state.mutate((oldState) => ({
@@ -168,7 +169,7 @@ export default function ConversationBar({
                       }));
                     }}
                     disabled={Boolean(latestMessage)}
-                    sx={{ height: '56px' }}
+                    sx={{ height: '56px', color: theme.palette['info'][theme.palette.mode] }}
                   >
                     <NoteAddOutlinedIcon />
                   </IconButton>
@@ -203,7 +204,11 @@ export default function ConversationBar({
                       >
                         Cancel
                       </Button>
-                      <Button onClick={handleUploadFiles} color='info' disabled={Boolean(latestMessage)}>
+                      <Button
+                        onClick={handleUploadFiles}
+                        sx={{ backgroundColor: theme.palette['info'][theme.palette.mode] }}
+                        disabled={Boolean(latestMessage)}
+                      >
                         Upload
                       </Button>
                     </DialogActions>
@@ -213,10 +218,9 @@ export default function ConversationBar({
               {!alternativeInputActive && (
                 <Tooltip title='Send Message'>
                   <IconButton
-                    color='info'
                     onClick={handleSendMessage}
                     disabled={Boolean(latestMessage)}
-                    sx={{ height: '56px', padding: '0.5rem' }}
+                    sx={{ height: '56px', padding: '0.5rem', color: theme.palette['info'][theme.palette.mode] }}
                   >
                     <SendIcon />
                   </IconButton>
@@ -235,7 +239,6 @@ export default function ConversationBar({
         process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE == 'uuid' && (
           <Tooltip title='Reset Conversation (Forever)'>
             <IconButton
-              color='info'
               onClick={() => {
                 if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE == 'uuid') {
                   if (confirm('Are you sure you want to reset the conversation? This cannot be undone.')) {
@@ -251,7 +254,7 @@ export default function ConversationBar({
                 }
               }}
               disabled={Boolean(latestMessage)}
-              sx={{ height: '56px', padding: '1rem' }}
+              sx={{ height: '56px', padding: '1rem', color: theme.palette['info'][theme.palette.mode] }}
             >
               <DeleteForever />
             </IconButton>

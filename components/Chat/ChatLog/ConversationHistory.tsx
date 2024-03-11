@@ -22,7 +22,7 @@ import clipboardCopy from 'clipboard-copy';
 import { ChatContext } from '../../../types/ChatContext';
 import MarkdownBlock from './MarkdownBlock';
 
-export default function ConversationHistory({ conversation, latestMessage }): React.JSX.Element {
+export default function ConversationHistory({ conversation, latestMessage, alternateBackground }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
   const state = useContext(ChatContext);
   const messagesEndRef = useRef(null);
@@ -73,6 +73,7 @@ export default function ConversationHistory({ conversation, latestMessage }): Re
                 timestamp: 'Just Now',
               }}
               lastUserMessage={null}
+              alternateBackground={alternateBackground}
             />
             <ChatMessage
               key={'Please Wait'}
@@ -82,6 +83,7 @@ export default function ConversationHistory({ conversation, latestMessage }): Re
                 timestamp: '',
               }}
               lastUserMessage={null}
+              alternateBackground={alternateBackground}
             />
           </>
         )}
@@ -91,11 +93,18 @@ export default function ConversationHistory({ conversation, latestMessage }): Re
   );
 }
 
-const ChatMessage = ({ chatItem, lastUserMessage }): React.JSX.Element => {
+const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary' }): React.JSX.Element => {
   const state = useContext(ChatContext);
   const formattedMessage =
     typeof chatItem.message === 'string'
-      ? chatItem.message.replace(/\\n/g, '  \n').replace(/\n/g, '  \n')
+      ? (function () {
+          try {
+            const parsed = JSON.parse(chatItem.message);
+            return parsed.text || chatItem.message;
+          } catch (e) {
+            return chatItem.message.replace(/\\n/g, '  \n').replace(/\n/g, '  \n');
+          }
+        })()
       : chatItem.message;
   const [vote, setVote] = useState(0);
   const [open, setOpen] = useState(false);
@@ -126,7 +135,10 @@ const ChatMessage = ({ chatItem, lastUserMessage }): React.JSX.Element => {
   return (
     <Box
       sx={{
-        backgroundColor: chatItem.role === 'USER' ? theme.palette.background.default : theme.palette.secondary.main,
+        backgroundColor:
+          chatItem.role === 'USER'
+            ? theme.palette.background.default
+            : theme.palette[alternateBackground][theme.palette.mode],
         padding: '10px',
         overflow: 'hidden',
         position: 'center',
@@ -142,7 +154,7 @@ const ChatMessage = ({ chatItem, lastUserMessage }): React.JSX.Element => {
             display: 'inline-block',
           }}
         >
-          <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> • {chatItem.timestamp}
+          <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> • {new Date(chatItem.timestamp).toLocaleString()}
         </Typography>
       )}
       {chatItem.role != 'USER' && !lastUserMessage && (

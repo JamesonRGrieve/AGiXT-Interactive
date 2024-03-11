@@ -40,6 +40,7 @@ export default function Home() {
         showRLHF: false,
         showChatThemeToggles: true,
         footerMeessage: process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE || 'Powered by AGiXT',
+        alternateBackground: 'primary',
       }}
       chatConfig={{
         mode: (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)

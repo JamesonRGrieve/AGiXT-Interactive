@@ -17,6 +17,7 @@ export type UIProps = {
   showConversationSelector?: boolean;
   showChatThemeToggles?: boolean;
   showRLHF?: boolean;
+  alternateBackground?: 'primary' | 'secondary';
   footerMeessage?: string;
 };
 export type ServerProps = {
@@ -95,7 +96,11 @@ const ChatWrapper = (props: ChatProps & UIProps): React.JSX.Element => {
         }}
         component='main'
       >
-        <Chat mode={props.mode} showChatThemeToggles={props.showChatThemeToggles} />
+        <Chat
+          mode={props.mode}
+          showChatThemeToggles={props.showChatThemeToggles}
+          alternateBackground={props.alternateBackground}
+        />
       </Box>
       <Footer message={props.footerMeessage} />
     </Box>
@@ -111,6 +116,7 @@ const AGiXTChat = ({
     showChatThemeToggles: false,
     showRLHF: false,
     footerMeessage: '',
+    alternateBackground: 'primary',
   },
 }: AGiXTChatProps & { stateful?: boolean }): React.JSX.Element => {
   console.log(
