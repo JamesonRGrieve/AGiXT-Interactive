@@ -34,13 +34,18 @@ export default function Home() {
     />
   ) : (
     <AGiXTChat
-      showAppBar={process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
-      showConversationSelector={process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true'} // Show the conversation selection bar to create, delete, and export conversations
-      mode={
-        (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
+      uiConfig={{
+        showAppBar: process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
+        showConversationSelector: process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
+        showRLHF: false,
+        showChatThemeToggles: true,
+        footerMeessage: process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE || 'Powered by AGiXT',
+      }}
+      chatConfig={{
+        mode: (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
           ? process.env.NEXT_PUBLIC_AGIXT_MODE
-          : 'prompt') as 'chain' | 'prompt'
-      }
+          : 'prompt') as 'chain' | 'prompt',
+      }}
     />
   );
 }

@@ -27,12 +27,16 @@ export default function ConversationBar({
   mode,
   latestMessage,
   setLatestMessage,
+  showChatThemeToggles = process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
 }: {
   mode: 'prompt' | 'chain' | 'command';
   latestMessage: string;
   setLatestMessage: any;
+  showChatThemeToggles: boolean;
 }) {
   const state = useContext(ChatContext);
+  console.log('Prop Show Themes', showChatThemeToggles);
+  console.log('Env Show Themes', process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [alternativeInputActive, setAlternativeInputActive] = useState(false);
@@ -253,7 +257,7 @@ export default function ConversationBar({
             </IconButton>
           </Tooltip>
         )}
-      {process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true' && (
+      {showChatThemeToggles && (
         <Box display='flex' flexDirection='column' alignItems='center'>
           <SwitchDark />
           <SwitchColorblind />

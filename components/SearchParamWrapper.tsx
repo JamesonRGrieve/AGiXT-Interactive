@@ -9,15 +9,15 @@ const SearchParamWrapper = (mode?, showAppBar = false, showConversationSelector 
   return (
     <AGiXTChat
       stateful
-      mode={
-        ['prompt', 'chain'].includes(searchParams.get('mode'))
+      uiConfig={{
+        showAppBar: showAppBar,
+        showConversationSelector: showConversationSelector,
+      }}
+      chatConfig={{
+        mode: ['prompt', 'chain'].includes(searchParams.get('mode'))
           ? (searchParams.get('mode') as 'prompt' | 'chain')
-          : mode || 'prompt'
-      }
-      showAppBar={showAppBar}
-      showConversationSelector={showConversationSelector}
-      opts={
-        {
+          : mode || 'prompt',
+        opts: {
           chatSettings: {
             selectedAgent: searchParams.get('agent') || undefined,
             contextResults: Number(searchParams.get('contextResults')) || undefined,
@@ -48,8 +48,8 @@ const SearchParamWrapper = (mode?, showAppBar = false, showConversationSelector 
           conversations: undefined,
           mutate: undefined,
           sdk: undefined,
-        } as ChatConfig
-      }
+        } as ChatConfig,
+      }}
     />
   );
 };

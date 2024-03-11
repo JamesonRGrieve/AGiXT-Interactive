@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { ChatProps } from '../AGiXTChat';
+import { ChatProps, UIProps } from '../AGiXTChat';
 import { ChatContext } from '../../types/ChatContext';
 import ConversationHistory from './ChatLog/ConversationHistory';
 import ConversationBar from './ChatBar/ConversationBar';
 
-export default function Chat({ mode }: ChatProps): React.JSX.Element {
+export default function Chat({ mode, showChatThemeToggles }: ChatProps & UIProps): React.JSX.Element {
+  console.log('Chat Themes: ', showChatThemeToggles);
+
   const [latestMessage, setLatestMessage] = useState('');
   const state = useContext(ChatContext);
   const conversation = useSWR(
@@ -22,7 +24,12 @@ export default function Chat({ mode }: ChatProps): React.JSX.Element {
   return (
     <>
       <ConversationHistory conversation={conversation.data} latestMessage={latestMessage} />
-      <ConversationBar setLatestMessage={setLatestMessage} latestMessage={latestMessage} mode={mode} />
+      <ConversationBar
+        setLatestMessage={setLatestMessage}
+        latestMessage={latestMessage}
+        mode={mode}
+        showChatThemeToggles={showChatThemeToggles}
+      />
     </>
   );
 }

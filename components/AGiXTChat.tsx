@@ -10,16 +10,26 @@ import Footer from './Footer';
 
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
-  showAppBar?: boolean;
-  showConversationSelector?: boolean;
-  serverConfig?: {
-    apiKey: string;
-    agixtServer: string;
-  };
   opts?: ChatConfig;
 };
+export type UIProps = {
+  showAppBar?: boolean;
+  showConversationSelector?: boolean;
+  showChatThemeToggles?: boolean;
+  showRLHF?: boolean;
+  footerMeessage?: string;
+};
+export type ServerProps = {
+  apiKey: string;
+  agixtServer: string;
+};
+export type AGiXTChatProps = {
+  uiConfig?: UIProps;
+  serverConfig?: ServerProps;
+  chatConfig?: ChatProps;
+};
 
-const Stateful = (props: ChatProps): React.JSX.Element => {
+const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
   const apiKey = props.serverConfig.apiKey || process.env.NEXT_PUBLIC_API_KEY || '';
   const agixtServer = props.serverConfig.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
   const agentName = process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free';
@@ -27,8 +37,11 @@ const Stateful = (props: ChatProps): React.JSX.Element => {
   if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
+  console.log('Stateful Footer Message: ', props.uiConfig.footerMeessage);
+  console.log('Stateful Themes: ', props.uiConfig.showChatThemeToggles);
   console.log('Environment AGiXT Server: ', process.env.NEXT_PUBLIC_AGIXT_SERVER);
   console.log('Stateful AGiXTChat initialized with server config (server:key): ', agixtServer, apiKey);
+  console.log('AGiXT Chat Props: ', props);
   return (
     <ContextWrapper
       requireKey={process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true'}
@@ -38,30 +51,33 @@ const Stateful = (props: ChatProps): React.JSX.Element => {
         ...ChatDefaultConfig,
         chatSettings: {
           ...ChatDefaultConfig.chatSettings,
-          ...props.opts?.chatSettings,
-          selectedAgent: props.opts?.chatSettings?.selectedAgent || process.env.NEXT_PUBLIC_AGIXT_AGENT || agentName,
+          ...props.chatConfig.opts?.chatSettings,
+          selectedAgent:
+            props.chatConfig.opts?.chatSettings?.selectedAgent || process.env.NEXT_PUBLIC_AGIXT_AGENT || agentName,
           conversationName:
             process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
               ? uuid
-              : props.opts?.chatSettings?.conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME,
+              : props.chatConfig.opts?.chatSettings?.conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME,
         },
-        prompt: props.opts?.prompt || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
-        promptCategory: props.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
-        chain: props.opts?.chain || process.env.NEXT_PUBLIC_AGIXT_CHAIN,
-        command: props.opts?.command || process.env.NEXT_PUBLIC_AGIXT_COMMAND,
-        commandArgs: props.opts?.commandArgs || {},
-        commandMessageArg: props.opts?.commandMessageArg || process.env.NEXT_PUBLIC_AGIXT_COMMAND_MESSAGE_ARG,
+        prompt: props.chatConfig.opts?.prompt || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
+        promptCategory: props.chatConfig.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
+        chain: props.chatConfig.opts?.chain || process.env.NEXT_PUBLIC_AGIXT_CHAIN,
+        command: props.chatConfig.opts?.command || process.env.NEXT_PUBLIC_AGIXT_COMMAND,
+        commandArgs: props.chatConfig.opts?.commandArgs || {},
+        commandMessageArg: props.chatConfig.opts?.commandMessageArg || process.env.NEXT_PUBLIC_AGIXT_COMMAND_MESSAGE_ARG,
       }}
     >
-      <ChatWrapper {...props} />
+      <ChatWrapper {...props.chatConfig} {...props.uiConfig} />
     </ContextWrapper>
   );
 };
-const Stateless = (props: ChatProps): React.JSX.Element => {
+const Stateless = (props: ChatProps & UIProps): React.JSX.Element => {
   return <ChatWrapper {...props} />;
 };
-const ChatWrapper = (props: ChatProps): React.JSX.Element => {
+const ChatWrapper = (props: ChatProps & UIProps): React.JSX.Element => {
   const theme = useTheme();
+  console.log('ChatWrapper Footer Message: ', props.footerMeessage);
+  console.log('ChatWrapper Themes: ', props.showChatThemeToggles);
   return (
     <Box height='100%' display='flex' flexDirection='column'>
       {props.showAppBar && <Header showConversationSelector={props.showConversationSelector} />}
@@ -79,20 +95,24 @@ const ChatWrapper = (props: ChatProps): React.JSX.Element => {
         }}
         component='main'
       >
-        <Chat mode={props.mode} />
+        <Chat mode={props.mode} showChatThemeToggles={props.showChatThemeToggles} />
       </Box>
-      <Footer />
+      <Footer message={props.footerMeessage} />
     </Box>
   );
 };
 const AGiXTChat = ({
   stateful = true,
-  mode,
-  showAppBar = false,
-  showConversationSelector = false,
+  chatConfig = null,
   serverConfig = null,
-  opts,
-}: ChatProps & { stateful?: boolean }): React.JSX.Element => {
+  uiConfig = {
+    showAppBar: false,
+    showConversationSelector: false,
+    showChatThemeToggles: false,
+    showRLHF: false,
+    footerMeessage: '',
+  },
+}: AGiXTChatProps & { stateful?: boolean }): React.JSX.Element => {
   console.log(
     `AGiXTChat initialized as ${stateful ? '' : 'not '}stateful. ${
       stateful
@@ -100,22 +120,11 @@ const AGiXTChat = ({
         : 'Assuming a ChatContext Provider encloses this instance.'
     }`,
   );
-  console.log('Opts Provided: ', opts);
+  console.log('Opts Provided: ', chatConfig?.opts);
   return stateful ? (
-    <Stateful
-      mode={mode}
-      showAppBar={showAppBar}
-      showConversationSelector={showConversationSelector}
-      serverConfig={serverConfig}
-      opts={opts}
-    />
+    <Stateful chatConfig={chatConfig} serverConfig={serverConfig} uiConfig={uiConfig} />
   ) : (
-    <Stateless
-      mode={mode}
-      showAppBar={showAppBar}
-      serverConfig={serverConfig}
-      showConversationSelector={showConversationSelector}
-    />
+    <Stateless {...uiConfig} {...chatConfig} />
   );
 };
 export default AGiXTChat;
