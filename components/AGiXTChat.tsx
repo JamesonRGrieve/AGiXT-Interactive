@@ -20,13 +20,14 @@ export type ChatProps = {
 };
 
 const Stateful = (props: ChatProps): React.JSX.Element => {
-  const apiKey = process.env.NEXT_PUBLIC_API_KEY || '';
-  const agixtServer = process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
+  const apiKey = props.serverConfig.apiKey || process.env.NEXT_PUBLIC_API_KEY || '';
+  const agixtServer = props.serverConfig.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
   const agentName = process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free';
   const uuid = getCookie('uuid');
   if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
+  console.log('Environment AGiXT Server: ', process.env.NEXT_PUBLIC_AGIXT_SERVER);
   console.log('Stateful AGiXTChat initialized with server config (server:key): ', agixtServer, apiKey);
   return (
     <ContextWrapper
@@ -89,6 +90,7 @@ const AGiXTChat = ({
   mode,
   showAppBar = false,
   showConversationSelector = false,
+  serverConfig = null,
   opts,
 }: ChatProps & { stateful?: boolean }): React.JSX.Element => {
   console.log(
@@ -100,9 +102,20 @@ const AGiXTChat = ({
   );
   console.log('Opts Provided: ', opts);
   return stateful ? (
-    <Stateful mode={mode} showAppBar={showAppBar} showConversationSelector={showConversationSelector} opts={opts} />
+    <Stateful
+      mode={mode}
+      showAppBar={showAppBar}
+      showConversationSelector={showConversationSelector}
+      serverConfig={serverConfig}
+      opts={opts}
+    />
   ) : (
-    <Stateless mode={mode} showAppBar={showAppBar} showConversationSelector={showConversationSelector} />
+    <Stateless
+      mode={mode}
+      showAppBar={showAppBar}
+      serverConfig={serverConfig}
+      showConversationSelector={showConversationSelector}
+    />
   );
 };
 export default AGiXTChat;
