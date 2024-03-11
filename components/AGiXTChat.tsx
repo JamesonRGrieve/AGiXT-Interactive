@@ -26,7 +26,7 @@ const Stateful = (props: ChatProps): React.JSX.Element => {
   if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
-
+  console.log('Stateful AGiXTChat initialized with server config (server:key): ', agixtServer, apiKey);
   return (
     <ContextWrapper
       requireKey={process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true'}
