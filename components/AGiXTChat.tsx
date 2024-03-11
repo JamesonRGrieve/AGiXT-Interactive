@@ -80,7 +80,7 @@ const ChatWrapper = (props: ChatProps & UIProps): React.JSX.Element => {
   console.log('ChatWrapper Footer Message: ', props.footerMeessage);
   console.log('ChatWrapper Themes: ', props.showChatThemeToggles);
   return (
-    <Box height='100%' display='flex' flexDirection='column'>
+    <Box flexGrow={1} display='flex' flexDirection='column'>
       {props.showAppBar && <Header showConversationSelector={props.showConversationSelector} />}
       <Box
         style={{
