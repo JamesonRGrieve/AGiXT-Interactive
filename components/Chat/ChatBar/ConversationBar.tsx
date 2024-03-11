@@ -169,7 +169,7 @@ export default function ConversationBar({
                       }));
                     }}
                     disabled={Boolean(latestMessage)}
-                    sx={{ height: '56px', color: theme.palette['info'][theme.palette.mode] }}
+                    sx={{ height: '56px', color: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
                   >
                     <NoteAddOutlinedIcon />
                   </IconButton>
@@ -200,13 +200,13 @@ export default function ConversationBar({
                         onClick={() => {
                           setFileUploadOpen(false);
                         }}
-                        color='error'
+                        sx={{ color: theme.palette['error'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
                       >
                         Cancel
                       </Button>
                       <Button
                         onClick={handleUploadFiles}
-                        sx={{ backgroundColor: theme.palette['info'][theme.palette.mode] }}
+                        sx={{ backgroundColor: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
                         disabled={Boolean(latestMessage)}
                       >
                         Upload
@@ -220,7 +220,11 @@ export default function ConversationBar({
                   <IconButton
                     onClick={handleSendMessage}
                     disabled={Boolean(latestMessage)}
-                    sx={{ height: '56px', padding: '0.5rem', color: theme.palette['info'][theme.palette.mode] }}
+                    sx={{
+                      height: '56px',
+                      padding: '0.5rem',
+                      color: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'],
+                    }}
                   >
                     <SendIcon />
                   </IconButton>
@@ -254,7 +258,11 @@ export default function ConversationBar({
                 }
               }}
               disabled={Boolean(latestMessage)}
-              sx={{ height: '56px', padding: '1rem', color: theme.palette['info'][theme.palette.mode] }}
+              sx={{
+                height: '56px',
+                padding: '1rem',
+                color: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'],
+              }}
             >
               <DeleteForever />
             </IconButton>
