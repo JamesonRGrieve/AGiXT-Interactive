@@ -1,6 +1,6 @@
 {
   "name": "agixtchat",
-  "version": "0.0.48",
+  "version": "0.0.49",
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "next build",
