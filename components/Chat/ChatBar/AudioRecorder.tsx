@@ -80,30 +80,20 @@ export default function AudioRecorder({ recording, setRecording, disabled }): Re
 
   return !recording ? (
     <Tooltip title='Record Audio'>
-      <IconButton
-        sx={{ color: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
-        disabled={disabled}
-        onClick={startRecording}
-      >
+      <IconButton color='primary' disabled={disabled} onClick={startRecording}>
         <MicIcon />
       </IconButton>
     </Tooltip>
   ) : (
     <>
       <Tooltip title='Cancel Recording'>
-        <IconButton
-          sx={{ color: theme.palette['error'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
-          onClick={cancelRecording}
-        >
+        <IconButton color='error' onClick={cancelRecording}>
           <CancelIcon />
         </IconButton>
       </Tooltip>
       <Tooltip title='Send Audio'>
         {/* Finish recording triggers data as soon as audio data is available */}
-        <IconButton
-          sx={{ color: theme.palette['info'][theme.palette.mode === 'dark' ? 'light' : 'dark'] }}
-          onClick={finishRecording}
-        >
+        <IconButton color='primary' onClick={finishRecording}>
           <SendIcon />
         </IconButton>
       </Tooltip>
