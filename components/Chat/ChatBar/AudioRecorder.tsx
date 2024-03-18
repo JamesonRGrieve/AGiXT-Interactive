@@ -4,11 +4,10 @@ import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/ico
 import { mutate } from 'swr';
 import { ChatContext } from '../../../types/ChatContext';
 
-export default function AudioRecorder({ recording, setRecording, disabled }): React.JSX.Element {
+export default function AudioRecorder({ recording, setRecording, disabled, mode }): React.JSX.Element {
   const state = useContext(ChatContext);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
-  const theme = useTheme();
   const startRecording = () => {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
@@ -31,28 +30,93 @@ export default function AudioRecorder({ recording, setRecording, disabled }): Re
       setRecording(false);
     }
   };
-
+  const runAudioCommand = async (base64Audio) => {
+    const args = { ...state.commandArgs };
+    console.log('Command Args:', args);
+    console.log('Command Agent:', state.chatSettings.selectedAgent);
+    console.log('Command:', state.command);
+    console.log('Command Message Arg:', state.commandMessageArg);
+    return await state.sdk.executeCommand(
+      state.chatSettings.selectedAgent,
+      'Command with Voice',
+      {
+        base64_audio: base64Audio,
+        audio_format: 'webm',
+        audio_variable: state.commandMessageArg,
+        command_name: state.command,
+        command_args: {
+          conversation_results: state.chatSettings.conversationResults,
+          context_results: state.chatSettings.contextResults,
+        },
+      },
+      state.chatSettings.conversationName,
+    );
+  };
+  const runAudioPrompt = async (base64Audio) => {
+    console.log('Prompt Category and Prompt: ', state.promptCategory, state.prompt);
+    const args: any = state.sdk.getPromptArgs(state.prompt, state.promptCategory);
+    const promptName = state.prompt;
+    const skipArgs = [
+      'conversation_history',
+      'context',
+      'COMMANDS',
+      'command_list',
+      'date',
+      'agent_name',
+      'working_directory',
+      'helper_agent_name',
+      'prompt_name',
+      'context_results',
+      'conversation_results',
+      'conversation_name',
+      'prompt_category',
+      'websearch',
+      'websearch_depth',
+      'enable_memory',
+      'inject_memories_from_collection_number',
+      'context_results',
+      'persona',
+      '',
+    ];
+    for (const arg of skipArgs) {
+      delete args[arg];
+    }
+    const stateArgs = {
+      prompt_category: state.promptCategory,
+      conversation_name: state.chatSettings.conversationName,
+      context_results: state.chatSettings.contextResults,
+      shots: state.chatSettings.shots,
+      browse_links: state.chatSettings.browseLinks,
+      websearch: state.chatSettings.webSearch,
+      websearch_depth: state.chatSettings.websearchDepth,
+      disable_memory: !state.chatSettings.enableMemory,
+      inject_memories_from_collection_number: state.chatSettings.injectMemoriesFromCollectionNumber,
+      conversation_results: state.chatSettings.conversationResults,
+      ...args,
+    };
+    console.log('---Sending Message---\nState args:\n', stateArgs, '\nState:\n', state, '\nPrompt name:\n', promptName);
+    return await state.sdk.executeCommand(
+      state.chatSettings.selectedAgent,
+      'Prompt with Voice',
+      {
+        prompt_name: promptName,
+        audio_format: 'webm',
+        base64_audio: base64Audio,
+        prompt_args: stateArgs,
+      },
+      state.chatSettings.conversationName,
+    );
+  };
   const sendAudio = useCallback(() => {
     if (audioData) {
       const reader = new FileReader();
-      reader.readAsArrayBuffer(audioData); // Use ArrayBuffer for raw binary data
+      reader.readAsDataURL(audioData); // Use readAsDataURL for base64 conversion
       reader.onloadend = () => {
-        const audioDataArray = new Uint8Array(reader.result as ArrayBufferLike);
-        const base64Audio = btoa(String.fromCharCode.apply(null, audioDataArray)); // Convert to base64
-        const response = state.sdk
-          .executeCommand(
-            state.chatSettings.selectedAgent,
-            'Prompt with Voice',
-            {
-              base64_audio: base64Audio,
-              conversation_results: state.chatSettings.conversationResults,
-              context_results: state.chatSettings.contextResults,
-            },
-            state.chatSettings.conversationName,
-          )
-          .then(() => {
-            mutate('/conversation/' + state.chatSettings.conversationName);
-          });
+        const base64Audio = (reader.result as string).split(',')[1]; // Extract base64 data from data URL
+        const response = (mode === 'command' ? runAudioCommand(base64Audio) : runAudioPrompt(base64Audio)).then(() => {
+          mutate('/conversation/' + state.chatSettings.conversationName);
+        });
+
         setAudioData(null);
       };
     }
@@ -60,6 +124,7 @@ export default function AudioRecorder({ recording, setRecording, disabled }): Re
 
   useEffect(() => {
     if (audioData) {
+      console.log('Audio: ', audioData);
       sendAudio();
     }
   }, [audioData, sendAudio]);
