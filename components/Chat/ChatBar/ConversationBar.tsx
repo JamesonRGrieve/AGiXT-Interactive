@@ -18,8 +18,8 @@ import {
 import SendIcon from '@mui/icons-material/Send';
 import { setCookie } from 'cookies-next';
 import { DeleteForever } from '@mui/icons-material';
-import SwitchDark from 'jrgcomponents/theming/SwitchDark';
-import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
+import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
+import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
 import { mutate } from 'swr';
 import { ChatContext } from '../../../types/ChatContext';
 import AudioRecorder from './AudioRecorder';

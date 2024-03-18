@@ -3,10 +3,7 @@ import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 // eslint-disable-next-line import/no-unassigned-import
 import './globals.css';
-import ThemeWrapper from 'jrgcomponents/theming/ThemeWrapper';
-import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
-import SwitchDark from 'jrgcomponents/theming/SwitchDark';
-import React, { ReactNode } from 'react';
+import ThemeWrapper from 'jrgcomponents/Theming/ThemeWrapper';
 import themes from './theme';
 import React, { ReactNode } from 'react';
 const inter = Inter({ subsets: ['latin'] });
