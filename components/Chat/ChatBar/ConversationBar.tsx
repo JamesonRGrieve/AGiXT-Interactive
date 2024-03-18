@@ -230,6 +230,7 @@ export default function ConversationBar({
                 </Tooltip>
               )}
               <AudioRecorder
+                mode={mode}
                 recording={alternativeInputActive}
                 setRecording={setAlternativeInputActive}
                 disabled={Boolean(latestMessage)}
