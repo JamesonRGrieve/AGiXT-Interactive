@@ -1,6 +1,6 @@
 import { AppBar, Box, Typography } from '@mui/material';
-import SwitchColorblind from 'jrgcomponents/theming/SwitchColorblind';
-import SwitchDark from 'jrgcomponents/theming/SwitchDark';
+import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
+import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
 import { useContext } from 'react';
 import { ChatContext } from '../types/ChatContext';
 import ConversationSelector from './ConversationSelector';
