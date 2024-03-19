@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 // eslint-disable-next-line import/no-unassigned-import
 import './globals.css';
 import ThemeWrapper from 'jrgcomponents/Theming/ThemeWrapper';
-import themes from './theme';
+import theme from './theme';
 import React, { ReactNode } from 'react';
 const inter = Inter({ subsets: ['latin'] });
 
@@ -32,7 +32,7 @@ export default function RootLayout({ children }: { children: ReactNode }): React
       </head>
       <body className={inter.className}>
         <ThemeWrapper
-          themes={themes}
+          themeInjection={{ theme: theme }}
           defaultDark={
             cookieStore.get('dark')?.value
               ? cookieStore.get('dark')?.value === 'true'

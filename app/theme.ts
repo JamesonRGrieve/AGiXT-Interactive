@@ -1,22 +1,6 @@
 'use client';
-import { SxProps, Theme, createTheme, ThemeOptions } from '@mui/material';
-import { deepmerge } from '@mui/utils';
-import { Themes } from 'jrgcomponents/types/Theming';
 
-const baseTheme = {
-  //Components
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          fontWeight: 'bold',
-          fontSize: '14px',
-          fontFamily: 'Encode Sans Semi Expanded, Arial, sans-serif',
-          textTransform: 'capitalize' as const,
-        },
-      },
-    },
-  },
+const theme = {
   // Anything that you override from here https://mui.com/material-ui/customization/dark-mode/ needs to also be overridden in dark or it won't be applied.
   palette: {
     colorblind: false,
@@ -69,46 +53,4 @@ const baseTheme = {
     },
   },
 };
-const darkOverrides = {
-  palette: {
-    mode: 'dark',
-  },
-};
-const colorblindPalette = {
-  light: '#CCC',
-  main: '#999',
-  dark: '#333',
-};
-const colorblindOverrides = {
-  palette: {
-    colorblind: true,
-    primary: {
-      ...colorblindPalette,
-    },
-    secondary: {
-      ...colorblindPalette,
-    },
-    error: {
-      ...colorblindPalette,
-    },
-    success: {
-      ...colorblindPalette,
-    },
-    info: {
-      ...colorblindPalette,
-    },
-  },
-};
-export const themeLight = createTheme(baseTheme as ThemeOptions);
-export const themeDark = createTheme(deepmerge(baseTheme, darkOverrides) as ThemeOptions);
-export const themeLightColorblind = createTheme(deepmerge(baseTheme, colorblindOverrides) as ThemeOptions);
-export const themeDarkColorblind = createTheme(
-  deepmerge(deepmerge(baseTheme, darkOverrides), colorblindOverrides) as ThemeOptions,
-);
-const themes = {
-  light: themeLight,
-  dark: themeDark,
-  lightColorblind: themeLightColorblind,
-  darkColorblind: themeDarkColorblind,
-} as Themes;
-export default themes;
+export default theme;

@@ -36,19 +36,21 @@ export default function AudioRecorder({ recording, setRecording, disabled, mode 
     console.log('Command Agent:', state.chatSettings.selectedAgent);
     console.log('Command:', state.command);
     console.log('Command Message Arg:', state.commandMessageArg);
+    const requestArgs = {
+      base64_audio: base64Audio,
+      audio_format: 'webm',
+      audio_variable: state.commandMessageArg,
+      command_name: state.command,
+      command_args: {
+        conversation_results: state.chatSettings.conversationResults,
+        context_results: state.chatSettings.contextResults,
+      },
+    };
+    console.log(requestArgs);
     return await state.sdk.executeCommand(
       state.chatSettings.selectedAgent,
       'Command with Voice',
-      {
-        base64_audio: base64Audio,
-        audio_format: 'webm',
-        audio_variable: state.commandMessageArg,
-        command_name: state.command,
-        command_args: {
-          conversation_results: state.chatSettings.conversationResults,
-          context_results: state.chatSettings.contextResults,
-        },
-      },
+      requestArgs,
       state.chatSettings.conversationName,
     );
   };
@@ -113,6 +115,7 @@ export default function AudioRecorder({ recording, setRecording, disabled, mode 
       reader.readAsDataURL(audioData); // Use readAsDataURL for base64 conversion
       reader.onloadend = () => {
         const base64Audio = (reader.result as string).split(',')[1]; // Extract base64 data from data URL
+        console.log(base64Audio);
         const response = (mode === 'command' ? runAudioCommand(base64Audio) : runAudioPrompt(base64Audio)).then(() => {
           mutate('/conversation/' + state.chatSettings.conversationName);
         });
