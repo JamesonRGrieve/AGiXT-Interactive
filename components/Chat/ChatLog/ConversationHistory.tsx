@@ -94,19 +94,28 @@ export default function ConversationHistory({ conversation, latestMessage, alter
 }
 
 const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary' }): React.JSX.Element => {
+  console.log(chatItem);
   const state = useContext(ChatContext);
-  const formattedMessage =
-    typeof chatItem.message === 'string'
-      ? (function () {
-          try {
-            const parsed = JSON.parse(chatItem.message);
-            return parsed.text || chatItem.message;
-          } catch (e) {
-            return chatItem.message.replace(/\\n/g, '  \n').replace(/\n/g, '  \n');
-          }
-        })()
+  const formattedMessage = useMemo(() => {
+    const toFormat = chatItem.message.includes('#GENERATED_AUDIO:')
+      ? chatItem.message.split('#GENERATED_AUDIO:')[0]
       : chatItem.message;
-  const audio = useMemo(() => '', [chatItem]);
+    let formatted = toFormat;
+    try {
+      const parsed = JSON.parse(toFormat);
+      formatted = parsed.text || toFormat;
+    } catch (e) {
+      formatted = toFormat.replace(/\\n/g, '  \n').replace(/\n/g, '  \n');
+    }
+    if (chatItem.message.includes('#GENERATED_AUDIO:')) console.log('Formatted: ', formatted);
+    return formatted;
+  }, [chatItem]);
+
+  const audio = useMemo(() => {
+    const theAudio = chatItem.message.includes('#GENERATED_AUDIO:') ? chatItem.message.split('#GENERATED_AUDIO:')[1] : null;
+    console.log('Audio: ', theAudio);
+    return theAudio;
+  }, [chatItem]);
   const [vote, setVote] = useState(0);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
@@ -146,8 +155,8 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
         color: theme.palette.text.primary,
       }}
     >
-      {audio && <AudioPlayer base64audio={audio} />}
       <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
+      {audio && <AudioPlayer base64audio={audio} />}
       {chatItem.timestamp && (
         <Typography
           variant='caption'
