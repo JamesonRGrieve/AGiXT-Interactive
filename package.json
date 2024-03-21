@@ -1,6 +1,6 @@
 {
   "name": "agixtchat",
-  "version": "0.0.51",
+  "version": "0.0.52",
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "next build",
@@ -20,12 +20,12 @@
   "exports": {
     ".": "./dist/components/AGiXTChat.js",
     "./WithSearchParams": "./dist/components/AGiXTChat.js",
-    "./MarkdownBlock": "./dist/components/conversation/MarkdownBlock.js",
-    "./CSVDataGrid": "./dist/components/conversation/DataGridFromCSV.js",
-    "./AudioRecorder": "./dist/components/conversation/AudioRecorder.js",
-    "./ConversationBar": "./dist/components/conversation/ConversationBar.js",
-    "./ConversationLog": "./dist/components/conversation/ConversationLog.js",
-    "./ConversationSelector": "./dist/components/conversation/ConversationSelector.js",
+    "./MarkdownBlock": "./dist/components/Chat/ChatLog/MarkdownBlock.js",
+    "./CSVDataGrid": "./dist/components/Chat/ChatLog/DataGridFromCSV.js",
+    "./AudioRecorder": "./dist/components/Chat/ChatBar/AudioRecorder.js",
+    "./ConversationBar": "./dist/components/Chat/ChatBar/ConversationBar.js",
+    "./ConversationLog": "./dist/components/ChatLog/ConversationLog.js",
+    "./ConversationSelector": "./dist/components/ConversationSelector.js",
     "./Context": "./dist/types/ChatContext.js"
   },
   "dependencies": {
