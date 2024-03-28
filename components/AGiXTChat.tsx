@@ -31,15 +31,15 @@ export type AGiXTChatProps = {
 };
 
 const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
-  const apiKey = props.serverConfig.apiKey || process.env.NEXT_PUBLIC_API_KEY || '';
-  const agixtServer = props.serverConfig.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
+  const apiKey = props.serverConfig?.apiKey || process.env.NEXT_PUBLIC_API_KEY || '';
+  const agixtServer = props.serverConfig?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
   const agentName = process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free';
   const uuid = getCookie('uuid');
   if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
-  console.log('Stateful Footer Message: ', props.uiConfig.footerMeessage);
-  console.log('Stateful Themes: ', props.uiConfig.showChatThemeToggles);
+  console.log('Stateful Footer Message: ', props.uiConfig?.footerMeessage);
+  console.log('Stateful Themes: ', props.uiConfig?.showChatThemeToggles);
   console.log('Environment AGiXT Server: ', process.env.NEXT_PUBLIC_AGIXT_SERVER);
   console.log('Stateful AGiXTChat initialized with server config (server:key): ', agixtServer, apiKey);
   console.log('AGiXT Chat Props: ', props);

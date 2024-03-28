@@ -114,11 +114,13 @@ export default function ConversationSelector(): React.JSX.Element {
               }))
             }
           >
-            {conversationData?.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))}
+            {conversationData &&
+              conversationData.map &&
+              conversationData?.map((c) => (
+                <MenuItem key={c} value={c}>
+                  {c}
+                </MenuItem>
+              ))}
             {/* 
               Workaround of a backend limitation - files only created (and rendered in conversation list) once they have messages.
               Thanks, I hate it too.
