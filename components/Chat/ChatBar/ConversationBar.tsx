@@ -41,20 +41,12 @@ export default function ConversationBar({
   console.log('Env Show Themes', process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
-  const [alternativeInputActive, setAlternativeInputActive] = useState(false);
   const [message, setMessage] = useState('');
-  const handleUploadFiles = async () => {
-    // Uploaded files will be formatted like [{"file_name": "file_content"}]
-    const newuploadedFiles: { [x: string]: string }[] = [];
-    // Format for state.uploadedFiles should be [{"file_name": "file_content"}]
-    // Iterate through the files and add them to the form data
-    for (const file of uploadedFiles) {
-      const fileContent = await file.text();
-      newuploadedFiles.push({ [file.name]: fileContent });
-      state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: newuploadedFiles } }));
-      setFileUploadOpen(false);
-    }
-  };
+  const [alternativeInputActive, setAlternativeInputActive] = useState(false);
+
+  /*
+
+
   const handleSendMessage = async () => {
     setLatestMessage(message);
     const request = mode === 'chain' ? runChain() : mode === 'command' ? runCommand() : runPrompt();
@@ -137,6 +129,62 @@ export default function ConversationBar({
     console.log('---Sending Message---\nState args:\n', stateArgs, '\nState:\n', state, '\nPrompt name:\n', promptName);
     return await state.sdk.promptAgent(state.chatSettings.selectedAgent, promptName, stateArgs);
   };
+  */
+
+  const handleUploadFiles = async () => {
+    // Uploaded files will be formatted like [{"file_name": "file_content"}]
+    const newuploadedFiles: { [x: string]: string }[] = [];
+    // Format for state.uploadedFiles should be [{"file_name": "file_content"}]
+    // Iterate through the files and add them to the form data
+    for (const file of uploadedFiles) {
+      const fileContent = await file.text();
+      newuploadedFiles.push({ [file.name]: fileContent });
+      state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: newuploadedFiles } }));
+      setFileUploadOpen(false);
+    }
+  };
+  async function chat() {
+    const messages = [];
+    if (uploadedFiles.length > 0) {
+      const fileContents = await Promise.all(
+        uploadedFiles.map((file) => {
+          return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = function (event) {
+              const base64Content = Buffer.from(event.target.result as string, 'binary').toString('base64');
+              resolve({
+                type: `${file.type.split('/')[0]}_url`,
+                [`${file.type.split('/')[0]}_url`]: {
+                  url: `data:${file.type};base64,${base64Content}`,
+                },
+              });
+            };
+            reader.onerror = reject;
+            reader.readAsBinaryString(file);
+          });
+        }),
+      );
+      messages.push({
+        role: 'user',
+        content: [
+          { type: 'text', text: message },
+          ...fileContents, // Spread operator to include all file contents
+        ],
+      });
+    } else {
+      messages.push({ role: 'user', content: message });
+    }
+    const chatCompletion = await state.openai.chat.completions.create({
+      messages: messages,
+      model: state.chatSettings.selectedAgent,
+      user: state.chatSettings.conversationName,
+    });
+    if (chatCompletion?.choices[0]?.message.content.length > 0) {
+      return chatCompletion.choices[0].message.content;
+    } else {
+      return 'Unable to get response from the agent';
+    }
+  }
   return (
     <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
       <TextField
@@ -149,7 +197,7 @@ export default function ConversationBar({
         onKeyDown={(event) => {
           if (event.key === 'Enter' && !event.shiftKey && message) {
             event.preventDefault();
-            handleSendMessage();
+            chat();
           }
         }}
         onChange={(e) => setMessage(e.target.value)}
@@ -217,7 +265,7 @@ export default function ConversationBar({
               {!alternativeInputActive && (
                 <Tooltip title='Send Message'>
                   <IconButton
-                    onClick={handleSendMessage}
+                    onClick={chat}
                     disabled={Boolean(latestMessage)}
                     color='primary'
                     sx={{
