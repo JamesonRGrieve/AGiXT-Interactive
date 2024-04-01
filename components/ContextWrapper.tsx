@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, ReactNode } from 'react';
 import AGiXTSDK from 'agixt';
+import OpenAI from 'openai';
 import { ChatContext, ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 
 export default function ChatContextWrapper({
@@ -37,5 +38,10 @@ export default function ChatContextWrapper({
     baseUri: agixtServer,
     apiKey: apiKey,
   });
-  return <ChatContext.Provider value={{ ...ChatState, sdk: sdk, mutate: setChatState }}>{children}</ChatContext.Provider>;
+  const openai: OpenAI = new OpenAI({ apiKey: apiKey, baseURL: agixtServer });
+  return (
+    <ChatContext.Provider value={{ ...ChatState, sdk: sdk, openai: openai, mutate: setChatState }}>
+      {children}
+    </ChatContext.Provider>
+  );
 }
