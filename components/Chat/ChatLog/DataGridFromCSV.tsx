@@ -99,11 +99,11 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
     });
     setColumns(headers);
     setRows(newRows);
-    console.log('newRows', newRows);
-    console.log('headers', headers);
+    // console.log('newRows', newRows);
+    // console.log('headers', headers);
   };
   useEffect(() => {
-    console.log('Parsing CSV');
+    // console.log('Parsing CSV');
     parseCSV(csvData);
   }, [csvData]);
 

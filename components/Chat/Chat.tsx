@@ -6,7 +6,7 @@ import ConversationHistory from './ChatLog/ConversationHistory';
 import ConversationBar from './ChatBar/ConversationBar';
 
 export default function Chat({ mode, showChatThemeToggles, alternateBackground }: ChatProps & UIProps): React.JSX.Element {
-  console.log('Chat Themes: ', showChatThemeToggles);
+  // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
   const [latestMessage, setLatestMessage] = useState('');
   const state = useContext(ChatContext);
@@ -55,7 +55,7 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
     };
     setLoading(true);
     setLatestMessage(message);
-    console.log('Sending: ', toOpenAI);
+    // console.log('Sending: ', toOpenAI);
     const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
     mutate('/conversation/' + state.chatSettings.conversationName);
     setLoading(false);
@@ -67,7 +67,7 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
     }
   }
   useEffect(() => {
-    console.log("Conversation changed, fetching new conversation's messages.", state.chatSettings.conversationName);
+    // console.log("Conversation changed, fetching new conversation's messages.", state.chatSettings.conversationName);
     mutate('/conversation/' + state.chatSettings.conversationName);
   }, [state.chatSettings.conversationName]);
   return (

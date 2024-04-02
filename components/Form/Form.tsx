@@ -5,8 +5,8 @@ import { ChatContext } from '../../types/ChatContext';
 import ConversationBar from '../Chat/ChatBar/ConversationBar';
 import FormInput from './FormInput';
 import FormOutput from './FormOutput';
-import { v4 as uuidv4 } from 'uuid';
 import { Alert } from '@mui/material';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Form({ mode, showChatThemeToggles }: ChatProps & UIProps): React.JSX.Element {
   const state = useContext(ChatContext);
@@ -20,24 +20,24 @@ export default function Form({ mode, showChatThemeToggles }: ChatProps & UIProps
       fallbackData: [],
     },
   );
-  const { data: promptArgs } = useSWR('/prompt/args', async () => await state.sdk.getPromptArgs(state.prompt), {
-    fallbackData: [],
-  });
+  const { data: promptArgs } = useSWR(
+    '/prompt/args',
+    async () => (await state.sdk.getPromptArgs(state.prompt)).filter((arg) => arg !== 'user_input'),
+    {
+      fallbackData: [],
+    },
+  );
   useEffect(() => {
     mutate('/results');
   }, [uuids]);
 
-  console.log(promptArgs);
-  console.log(argValues);
   useEffect(() => {
-    console.log(promptArgs);
     if (promptArgs.length > 0) {
       setArgValues(promptArgs.reduce((obj, key) => ({ ...obj, [key]: '' }), {}));
     }
   }, [promptArgs]);
   async function submit(message, files) {
-    const messages = [...(promptArgs.length > 0 ? [] : [])];
-    messages[0]['prompt_name'] = state.prompt;
+    const messages = [];
     if (files.length > 0) {
       const fileContents = await Promise.all(
         files.map((file) => {
@@ -59,13 +59,11 @@ export default function Form({ mode, showChatThemeToggles }: ChatProps & UIProps
       );
       messages.push({
         role: 'user',
-        content: [
-          { type: 'text', text: message },
-          ...fileContents, // Spread operator to include all file contents
-        ],
+        content: [{ type: 'text', text: message }, ...fileContents],
+        prompt_args: { ...argValues },
       });
     } else {
-      messages.push({ role: 'user', content: message });
+      messages.push({ role: 'user', content: message, prompt_args: { ...argValues } });
     }
     const uuid = uuidv4();
     const toOpenAI = {
