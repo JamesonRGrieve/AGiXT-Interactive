@@ -174,11 +174,13 @@ export default function ConversationBar({
     } else {
       messages.push({ role: 'user', content: message });
     }
-    const chatCompletion = await state.openai.chat.completions.create({
+    const toOpenAI = {
       messages: messages,
       model: state.chatSettings.selectedAgent,
       user: state.chatSettings.conversationName,
-    });
+    };
+    console.log('Sending: ', toOpenAI);
+    const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
     if (chatCompletion?.choices[0]?.message.content.length > 0) {
       return chatCompletion.choices[0].message.content;
     } else {

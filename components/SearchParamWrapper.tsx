@@ -48,6 +48,7 @@ const SearchParamWrapper = (mode?, showAppBar = false, showConversationSelector 
           conversations: undefined,
           mutate: undefined,
           sdk: undefined,
+          openai: undefined,
         } as ChatConfig,
       }}
     />
