@@ -38,14 +38,14 @@ const theme = {
   typography: {
     fontFamily: 'Arial, sans-serif',
     h1: {
-      fontSize: '1rem',
+      fontSize: '1.5rem',
       fontWeight: 'bold',
       '@media (min-width:600px)': {
-        fontSize: '1.5rem',
+        fontSize: '2rem',
       },
     },
     body1: {
-      fontSize: '0.75rem',
+      fontSize: '1rem',
     },
     button: {
       fontWeight: 'bold',

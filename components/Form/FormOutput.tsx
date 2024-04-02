@@ -1,6 +1,6 @@
-import { Box, Card, CardContent, CardHeader, IconButton, Typography } from '@mui/material';
+import { Box, Card, CardContent, CardHeader, IconButton, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, CopyAllOutlined } from '@mui/icons-material';
 import MarkdownBlock from '../Chat/ChatLog/MarkdownBlock';
 export default function FormInput({ results }) {
   const [resultNum, setResultNum] = useState(0);
@@ -10,10 +10,26 @@ export default function FormInput({ results }) {
   }, [results]);
   return (
     results.length > 0 && (
-      <Box px='1rem' display='flex' flexDirection='row' justifyContent='center' alignItems='center'>
-        <Card raised={true}>
-          <Typography display='flex' alignItems='center' variant='h4' component='span' justifyContent='center'>
-            Result
+      <Card
+        raised={true}
+        sx={{
+          overflowY: 'scroll',
+          flexGrow: '1',
+          mx: '1rem',
+        }}
+      >
+        <Typography display='flex' alignItems='center' variant='h4' component='span' justifyContent='center'>
+          <Tooltip title='Copy this result.'>
+            <IconButton
+              onClick={() => {
+                navigator.clipboard.writeText(results[resultNum]);
+              }}
+            >
+              <CopyAllOutlined sx={{ fontSize: '3rem' }} />
+            </IconButton>
+          </Tooltip>
+          Result
+          <Tooltip title='Previous result.'>
             <IconButton
               onClick={() => {
                 setResultNum((previous) => (previous >= 1 ? previous - 1 : results.length - 1));
@@ -21,7 +37,9 @@ export default function FormInput({ results }) {
             >
               <ChevronLeft sx={{ fontSize: '3rem' }} />
             </IconButton>
-            {`${resultNum + 1}/${results.length}`}
+          </Tooltip>
+          {`${resultNum + 1}/${results.length}`}
+          <Tooltip title='Next result.'>
             <IconButton
               onClick={() => {
                 setResultNum((previous) => (previous < results.length - 1 ? previous + 1 : 0));
@@ -29,13 +47,13 @@ export default function FormInput({ results }) {
             >
               <ChevronRight sx={{ fontSize: '3rem' }} />
             </IconButton>
-          </Typography>
+          </Tooltip>
+        </Typography>
 
-          <CardContent>
-            <MarkdownBlock content={results[resultNum]} />
-          </CardContent>
-        </Card>
-      </Box>
+        <CardContent>
+          <MarkdownBlock content={results[resultNum]} />
+        </CardContent>
+      </Card>
     )
   );
 }
