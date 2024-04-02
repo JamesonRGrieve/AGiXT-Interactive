@@ -179,8 +179,12 @@ export default function ConversationBar({
       model: state.chatSettings.selectedAgent,
       user: state.chatSettings.conversationName,
     };
+    setLatestMessage(message);
+    setMessage('');
     console.log('Sending: ', toOpenAI);
     const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
+    mutate('/conversation/' + state.chatSettings.conversationName);
+    setLatestMessage('');
     if (chatCompletion?.choices[0]?.message.content.length > 0) {
       return chatCompletion.choices[0].message.content;
     } else {
@@ -196,10 +200,10 @@ export default function ConversationBar({
         rows={2}
         fullWidth
         value={message}
-        onKeyDown={(event) => {
+        onKeyDown={async (event) => {
           if (event.key === 'Enter' && !event.shiftKey && message) {
             event.preventDefault();
-            chat();
+            console.log(await chat());
           }
         }}
         onChange={(e) => setMessage(e.target.value)}
