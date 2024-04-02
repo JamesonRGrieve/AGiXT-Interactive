@@ -7,6 +7,7 @@ import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Header from './Header';
 import Footer from './Footer';
+import Form from './Form/Form';
 
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
@@ -97,11 +98,15 @@ const ChatWrapper = (props: ChatProps & UIProps): React.JSX.Element => {
         }}
         component='main'
       >
-        <Chat
-          mode={props.mode}
-          showChatThemeToggles={props.showChatThemeToggles}
-          alternateBackground={props.alternateBackground}
-        />
+        {process.env.NEXT_PUBLIC_INTERACTIVE_MODE === 'form' ? (
+          <Form mode={props.mode} showChatThemeToggles={props.showChatThemeToggles} />
+        ) : (
+          <Chat
+            mode={props.mode}
+            showChatThemeToggles={props.showChatThemeToggles}
+            alternateBackground={props.alternateBackground}
+          />
+        )}
       </Box>
       {(props.footerMeessage ?? process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE) && <Footer message={props.footerMeessage} />}
     </>
