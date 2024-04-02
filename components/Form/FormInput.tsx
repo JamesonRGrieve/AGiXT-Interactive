@@ -7,7 +7,7 @@ export default function FormInput({ argValues, setArgValues, disabled }) {
         <TextField
           variant='outlined'
           disabled={disabled}
-          label={arg}
+          label={arg.replaceAll('_', ' ').toUpperCase()}
           key={arg}
           value={argValues[arg]}
           onChange={(event) => {
