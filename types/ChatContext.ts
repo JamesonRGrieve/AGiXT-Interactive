@@ -36,7 +36,7 @@ export type ChatConfig = {
   chain?: string;
   mutate?: any;
   sdk?: AGiXTSDK;
-  openai: OpenAI;
+  openai?: OpenAI;
 };
 export const ChatContext: Context<ChatConfig> = createContext<ChatConfig>(ChatDefault as unknown as ChatConfig);
 export const ChatDefaultConfig = ChatDefault;

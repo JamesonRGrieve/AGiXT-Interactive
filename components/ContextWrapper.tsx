@@ -38,7 +38,7 @@ export default function ChatContextWrapper({
     baseUri: agixtServer,
     apiKey: apiKey,
   });
-  const openai: OpenAI = new OpenAI({ apiKey: apiKey, baseURL: agixtServer });
+  const openai: OpenAI = new OpenAI({ apiKey: apiKey, baseURL: agixtServer, dangerouslyAllowBrowser: true });
   return (
     <ChatContext.Provider value={{ ...ChatState, sdk: sdk, openai: openai, mutate: setChatState }}>
       {children}
