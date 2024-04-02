@@ -37,8 +37,8 @@ export default function ConversationBar({
 }) {
   const state = useContext(ChatContext);
   const theme = useTheme();
-  console.log('Prop Show Themes', showChatThemeToggles);
-  console.log('Env Show Themes', process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true');
+  // console.log('Prop Show Themes', showChatThemeToggles);
+  // console.log('Env Show Themes', process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -133,13 +133,13 @@ export default function ConversationBar({
 
   const handleUploadFiles = async () => {
     // Uploaded files will be formatted like [{"file_name": "file_content"}]
-    const newuploadedFiles: { [x: string]: string }[] = [];
+    const newUploadedFiles: { [x: string]: string }[] = [];
     // Format for state.uploadedFiles should be [{"file_name": "file_content"}]
     // Iterate through the files and add them to the form data
     for (const file of uploadedFiles) {
       const fileContent = await file.text();
-      newuploadedFiles.push({ [file.name]: fileContent });
-      state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: newuploadedFiles } }));
+      newUploadedFiles.push({ [file.name]: fileContent });
+      state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: newUploadedFiles } }));
       setFileUploadOpen(false);
     }
   };
@@ -247,11 +247,11 @@ export default function ConversationBar({
         }}
       />
       {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
-        process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE == 'uuid' && (
+        process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && (
           <Tooltip title='Reset Conversation (Forever)'>
             <IconButton
               onClick={() => {
-                if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE == 'uuid') {
+                if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid') {
                   if (confirm('Are you sure you want to reset the conversation? This cannot be undone.')) {
                     const uuid = crypto.randomUUID();
                     setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });

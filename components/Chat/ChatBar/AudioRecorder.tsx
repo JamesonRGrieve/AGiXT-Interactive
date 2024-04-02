@@ -1,14 +1,14 @@
 import { useState, useRef, useContext, useEffect, useCallback } from 'react';
-import { IconButton, Tooltip, useTheme } from '@mui/material';
+import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
 import { mutate } from 'swr';
 import { ChatContext } from '../../../types/ChatContext';
 
-export default function AudioRecorder({ recording, setRecording, disabled, mode }): React.JSX.Element {
+export default function AudioRecorder({ recording, setRecording, disabled, mode }: any): React.JSX.Element {
   const state = useContext(ChatContext);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
-  const startRecording = () => {
+  const startRecording = (): void => {
     navigator.mediaDevices
       .getUserMedia({ audio: true })
       .then((stream) => {
@@ -19,23 +19,23 @@ export default function AudioRecorder({ recording, setRecording, disabled, mode 
         mediaRecorder.current.start();
         setRecording(true);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch(() => {
+        // console.log(error);
       });
   };
 
-  const finishRecording = () => {
+  const finishRecording = (): void => {
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
       setRecording(false);
     }
   };
   const runAudioCommand = async (base64Audio) => {
-    const args = { ...state.commandArgs };
-    console.log('Command Args:', args);
-    console.log('Command Agent:', state.chatSettings.selectedAgent);
-    console.log('Command:', state.command);
-    console.log('Command Message Arg:', state.commandMessageArg);
+    // const args = { ...state.commandArgs };
+    // console.log('Command Args:', args);
+    // console.log('Command Agent:', state.chatSettings.selectedAgent);
+    // console.log('Command:', state.command);
+    // console.log('Command Message Arg:', state.commandMessageArg);
     const requestArgs = {
       base64_audio: base64Audio,
       audio_format: 'webm',
@@ -46,7 +46,7 @@ export default function AudioRecorder({ recording, setRecording, disabled, mode 
         context_results: state.chatSettings.contextResults,
       },
     };
-    console.log(requestArgs);
+    // console.log(requestArgs);
     return await state.sdk.executeCommand(
       state.chatSettings.selectedAgent,
       'Command with Voice',
@@ -55,7 +55,7 @@ export default function AudioRecorder({ recording, setRecording, disabled, mode 
     );
   };
   const runAudioPrompt = async (base64Audio) => {
-    console.log('Prompt Category and Prompt: ', state.promptCategory, state.prompt);
+    // console.log('Prompt Category and Prompt: ', state.promptCategory, state.prompt);
     const args: any = state.sdk.getPromptArgs(state.prompt, state.promptCategory);
     const promptName = state.prompt;
     const skipArgs = [
@@ -96,7 +96,7 @@ export default function AudioRecorder({ recording, setRecording, disabled, mode 
       conversation_results: state.chatSettings.conversationResults,
       ...args,
     };
-    console.log('---Sending Message---\nState args:\n', stateArgs, '\nState:\n', state, '\nPrompt name:\n', promptName);
+    // console.log('---Sending Message---\nState args:\n', stateArgs, '\nState:\n', state, '\nPrompt name:\n', promptName);
     return await state.sdk.executeCommand(
       state.chatSettings.selectedAgent,
       'Prompt with Voice',
@@ -113,26 +113,27 @@ export default function AudioRecorder({ recording, setRecording, disabled, mode 
     if (audioData) {
       const reader = new FileReader();
       reader.readAsDataURL(audioData); // Use readAsDataURL for base64 conversion
-      reader.onloadend = () => {
+      reader.onloadend = (): any => {
         const base64Audio = (reader.result as string).split(',')[1]; // Extract base64 data from data URL
-        console.log(base64Audio);
+        // console.log(base64Audio);
         const response = (mode === 'command' ? runAudioCommand(base64Audio) : runAudioPrompt(base64Audio)).then(() => {
           mutate('/conversation/' + state.chatSettings.conversationName);
         });
 
         setAudioData(null);
+        return response;
       };
     }
-  }, [audioData, state]);
+  }, [audioData, state, mode, runAudioPrompt, runAudioCommand]);
 
   useEffect(() => {
     if (audioData) {
-      console.log('Audio: ', audioData);
+      // console.log('Audio: ', audioData);
       sendAudio();
     }
   }, [audioData, sendAudio]);
 
-  const cancelRecording = () => {
+  const cancelRecording = (): void => {
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
       setRecording(false);

@@ -4,8 +4,9 @@ import { cookies } from 'next/headers';
 import Login from './Login';
 export default function Home() {
   const cookieStore = cookies();
-  const apiKey = cookieStore.get('apiKey')?.value ?? cookieStore.get('jwt')?.value ?? '';
-  console.log('API Key: ', apiKey);
+  const apiKey =
+    process.env.NEXT_PUBLIC_AGIXT_API_KEY ?? cookieStore.get('apiKey')?.value ?? cookieStore.get('jwt')?.value ?? '';
+  // console.log('API Key: ', apiKey);
   return process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true' && !apiKey ? (
     <Login />
   ) : (

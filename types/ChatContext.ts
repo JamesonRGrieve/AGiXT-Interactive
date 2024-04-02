@@ -3,7 +3,6 @@ import AGiXTSDK from 'agixt';
 import OpenAI from 'openai';
 import { Context, createContext } from 'react';
 const ChatDefault = require('./ChatDefault');
-console.log(ChatDefault);
 export type ChainRunConfig = {
   chainArgs: object;
   singleStep: boolean;

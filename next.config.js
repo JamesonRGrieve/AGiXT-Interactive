@@ -1,5 +1,5 @@
 const ChatDefault = require('./types/ChatDefault');
-console.log('Chat Default at Env Initialization: ', ChatDefault);
+// console.log('Chat Default at Env Initialization: ', ChatDefault);
 // TODO: Add validation.
 const nextConfig = {
   env: {
@@ -16,6 +16,7 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG: process.env.AGIXT_ENABLE_SEARCHPARAM_CONFIG || 'true',
     NEXT_PUBLIC_AGIXT_MODE: process.env.AGIXT_MODE || 'prompt',
     NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY: process.env.AGIXT_REQUIRE_API_KEY || 'true',
+    NEXT_PUBLIC_AGIXT_API_KEY: process.env.AGIXT_API_KEY || '',
     NEXT_PUBLIC_AGIXT_SERVER: process.env.AGIXT_SERVER || 'http://localhost:7437',
     NEXT_PUBLIC_INTERACTIVE_MODE: process.env.INTERACTIVE_MODE || 'chat',
     // UI Options
