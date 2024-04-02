@@ -8,6 +8,7 @@ import Chat from './Chat/Chat';
 import Header from './Header';
 import Footer from './Footer';
 import Form from './Form/Form';
+import { useSearchParams } from 'next/navigation';
 
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
@@ -19,7 +20,7 @@ export type UIProps = {
   showChatThemeToggles?: boolean;
   showRLHF?: boolean;
   alternateBackground?: 'primary' | 'secondary';
-  footerMeessage?: string;
+  footerMessage?: string;
 };
 export type ServerProps = {
   apiKey: string;
@@ -32,18 +33,58 @@ export type AGiXTChatProps = {
 };
 
 const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
-  const apiKey = props.serverConfig?.apiKey || process.env.NEXT_PUBLIC_API_KEY || '';
+  const searchParams = useSearchParams();
+  const searchParamConfig = {
+    mode: ['prompt', 'chain'].includes(searchParams.get('mode'))
+      ? (searchParams.get('mode') as 'prompt' | 'chain')
+      : props.chatConfig.mode || 'prompt',
+    opts: {
+      chatSettings: {
+        selectedAgent: searchParams.get('agent') || undefined,
+        contextResults: Number(searchParams.get('contextResults')) || undefined,
+        shots: Number(searchParams.get('shots')) || undefined,
+        websearchDepth: Number(searchParams.get('websearchDepth')) || undefined,
+        injectMemoriesFromCollectionNumber: Number(searchParams.get('injectMemoriesFromCollectionNumber')) || undefined,
+        conversationResults: Number(searchParams.get('results')) || undefined,
+        conversationName: searchParams.get('conversation') || undefined,
+        browseLinks: Boolean(searchParams.get('browseLinks')) || undefined,
+        webSearch: Boolean(searchParams.get('webSearch')) || undefined,
+        insightAgentName: searchParams.get('insightAgent') || undefined,
+        enableMemory: Boolean(searchParams.get('memory')) || undefined,
+        enableFileUpload: Boolean(searchParams.get('fileUpload')) || undefined,
+        useSelectedAgent: Boolean(searchParams.get('useSelectedAgent')) || undefined,
+        chainRunConfig: {
+          chainArgs: JSON.parse(searchParams.get('chainArgs')) || undefined,
+          singleStep: Boolean(searchParams.get('singleStep')) || undefined,
+          fromStep: Number(searchParams.get('fromStep')) || undefined,
+          allResponses: Boolean(searchParams.get('allResponses')) || undefined,
+        },
+      },
+      prompt: searchParams.get('prompt') || undefined,
+      promptCategory: searchParams.get('promptCategory') || undefined,
+      command: searchParams.get('command') || undefined,
+      commandArgs: JSON.parse(searchParams.get('commandArgs')) || undefined,
+      commandMessageArg: searchParams.get('commandMessageArg') || undefined,
+      chain: searchParams.get('chain') || undefined,
+      conversations: undefined,
+      mutate: undefined,
+      sdk: undefined,
+      openai: undefined,
+    },
+  } as ChatConfig;
+  const apiKey =
+    props.serverConfig?.apiKey || getCookie('apiKey') || getCookie('jwt') || process.env.NEXT_PUBLIC_API_KEY || '';
   const agixtServer = props.serverConfig?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
   const agentName = process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free';
   const uuid = getCookie('uuid');
   if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
-  console.log('Stateful Footer Message: ', props.uiConfig?.footerMeessage);
+  console.log('Stateful Footer Message: ', props.uiConfig?.footerMessage);
   console.log('Stateful Themes: ', props.uiConfig?.showChatThemeToggles);
   console.log('Environment AGiXT Server: ', process.env.NEXT_PUBLIC_AGIXT_SERVER);
   console.log('Stateful AGiXTChat initialized with server config (server:key): ', agixtServer, apiKey);
-  console.log('AGiXT Chat Props: ', props);
+  console.log('InteractiveAGiXT Props: ', props);
   return (
     <ContextWrapper
       requireKey={process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true'}
@@ -60,6 +101,7 @@ const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
             process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
               ? uuid
               : props.chatConfig.opts?.chatSettings?.conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME,
+          ...(process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG === 'true' ? searchParamConfig : {}),
         },
         prompt: props.chatConfig.opts?.prompt || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
         promptCategory: props.chatConfig.opts?.promptCategory || process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
@@ -78,7 +120,7 @@ const Stateless = (props: ChatProps & UIProps): React.JSX.Element => {
 };
 const ChatWrapper = (props: ChatProps & UIProps): React.JSX.Element => {
   const theme = useTheme();
-  console.log('ChatWrapper Footer Message: ', props.footerMeessage);
+  console.log('ChatWrapper Footer Message: ', props.footerMessage);
   console.log('ChatWrapper Themes: ', props.showChatThemeToggles);
   return (
     <>
@@ -108,7 +150,7 @@ const ChatWrapper = (props: ChatProps & UIProps): React.JSX.Element => {
           />
         )}
       </Box>
-      {(props.footerMeessage ?? process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE) && <Footer message={props.footerMeessage} />}
+      {(props.footerMessage ?? process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE) && <Footer message={props.footerMessage} />}
     </>
   );
 };
@@ -121,18 +163,18 @@ const AGiXTChat = ({
     showConversationSelector: false,
     showChatThemeToggles: false,
     showRLHF: false,
-    footerMeessage: '',
+    footerMessage: process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE ?? '',
     alternateBackground: 'primary',
   },
 }: AGiXTChatProps & { stateful?: boolean }): React.JSX.Element => {
   console.log(
-    `AGiXTChat initialized as ${stateful ? '' : 'not '}stateful. ${
+    `InteractiveAGiXT initialized as ${stateful ? '' : 'not '}stateful. ${
       stateful
         ? 'AGiXTChat will provide its own ChatContext Provider and state.'
         : 'Assuming a ChatContext Provider encloses this instance.'
     }`,
   );
-  console.log('Opts Provided: ', chatConfig?.opts);
+  console.log('Configuration Provided: ', chatConfig, serverConfig, uiConfig);
   return stateful ? (
     <Stateful chatConfig={chatConfig} serverConfig={serverConfig} uiConfig={uiConfig} />
   ) : (

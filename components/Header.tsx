@@ -1,13 +1,9 @@
 import { AppBar, Box, Typography } from '@mui/material';
 import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
 import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
-import { useContext } from 'react';
-import { ChatContext } from '../types/ChatContext';
 import ConversationSelector from './ConversationSelector';
 
 export default function Header({ showConversationSelector }: { showConversationSelector: boolean }): React.JSX.Element {
-  showConversationSelector = true;
-  const state = useContext(ChatContext);
   return (
     <AppBar
       sx={{
@@ -26,7 +22,7 @@ export default function Header({ showConversationSelector }: { showConversationS
         </Box>
       </Box>
       <Typography variant='h1' sx={{ justifySelf: 'center', color: 'white' }}>
-        {process.env.NEXT_PUBLIC_APP_NAME} Chat
+        {process.env.NEXT_PUBLIC_APP_NAME} {process.env.NEXT_PUBLIC_INTERACTIVE_MODE === 'form' ? 'Form' : 'Chat'}
       </Typography>
       <Box flex='1'>
         <Box display='flex' justifyContent='end'>

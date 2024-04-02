@@ -1,11 +1,13 @@
 import { Box, TextField } from '@mui/material';
-import { ChatContext } from '../../types/ChatContext';
 import React, { useContext } from 'react';
-export default function FormInput({ argValues, setArgValues }) {
+export default function FormInput({ argValues, setArgValues, disabled }) {
   return (
-    <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
+    <Box mt='1rem' px='1rem' display='flex' flexDirection='row' gap='1rem' justifyContent='center' alignItems='center'>
       {Object.keys(argValues).map((arg) => (
         <TextField
+          variant='outlined'
+          disabled={disabled}
+          label={arg}
           key={arg}
           value={argValues[arg]}
           onChange={(event) => {

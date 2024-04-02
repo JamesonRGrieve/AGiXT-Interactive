@@ -79,7 +79,7 @@
     "@typescript-eslint/explicit-module-boundary-types": "warn", // Require explicit boundary types on exported modules.
     "@typescript-eslint/no-empty-function": "warn", // Disallow empty functions.
     "@typescript-eslint/no-inferrable-types": "warn", // Disallows explicit type declarations for variables or parameters initialized to a number, string, or boolean.
-    "@typescript-eslint/no-magic-numbers": "warn", // Disallow magic numbers.
+    "@typescript-eslint/no-magic-numbers": "off", // Disallow magic numbers.
     "@typescript-eslint/no-namespace": "warn", // Disallow the use of custom TypeScript modules and namespaces.
     "@typescript-eslint/no-unused-expressions": "warn", // Disallow unused expressions.
     "@typescript-eslint/no-var-requires": "warn", // Disallow the use of `require` statements except in import statements.
