@@ -26,13 +26,13 @@ import AudioRecorder from './AudioRecorder';
 
 export default function ConversationBar({
   mode,
-  latestMessage,
-  setLatestMessage,
+  onSend,
+  disabled,
   showChatThemeToggles = process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
 }: {
   mode: 'prompt' | 'chain' | 'command';
-  latestMessage: string;
-  setLatestMessage: any;
+  onSend: any;
+  disabled: boolean;
   showChatThemeToggles: boolean;
 }) {
   const state = useContext(ChatContext);
@@ -143,54 +143,7 @@ export default function ConversationBar({
       setFileUploadOpen(false);
     }
   };
-  async function chat() {
-    const messages = [];
-    if (uploadedFiles.length > 0) {
-      const fileContents = await Promise.all(
-        uploadedFiles.map((file) => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = function (event) {
-              const base64Content = Buffer.from(event.target.result as string, 'binary').toString('base64');
-              resolve({
-                type: `${file.type.split('/')[0]}_url`,
-                [`${file.type.split('/')[0]}_url`]: {
-                  url: `data:${file.type};base64,${base64Content}`,
-                },
-              });
-            };
-            reader.onerror = reject;
-            reader.readAsBinaryString(file);
-          });
-        }),
-      );
-      messages.push({
-        role: 'user',
-        content: [
-          { type: 'text', text: message },
-          ...fileContents, // Spread operator to include all file contents
-        ],
-      });
-    } else {
-      messages.push({ role: 'user', content: message });
-    }
-    const toOpenAI = {
-      messages: messages,
-      model: state.chatSettings.selectedAgent,
-      user: state.chatSettings.conversationName,
-    };
-    setLatestMessage(message);
-    setMessage('');
-    console.log('Sending: ', toOpenAI);
-    const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
-    mutate('/conversation/' + state.chatSettings.conversationName);
-    setLatestMessage('');
-    if (chatCompletion?.choices[0]?.message.content.length > 0) {
-      return chatCompletion.choices[0].message.content;
-    } else {
-      return 'Unable to get response from the agent';
-    }
-  }
+
   return (
     <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
       <TextField
@@ -203,12 +156,12 @@ export default function ConversationBar({
         onKeyDown={async (event) => {
           if (event.key === 'Enter' && !event.shiftKey && message) {
             event.preventDefault();
-            console.log(await chat());
+            onSend(message, uploadedFiles);
           }
         }}
         onChange={(e) => setMessage(e.target.value)}
         sx={{ my: 2 }}
-        disabled={Boolean(latestMessage)}
+        disabled={disabled}
         InputProps={{
           endAdornment: (
             <InputAdornment position='end'>
@@ -222,7 +175,7 @@ export default function ConversationBar({
                         chatState: { ...oldState.chatState, uploadedFiles: [] },
                       }));
                     }}
-                    disabled={Boolean(latestMessage)}
+                    disabled={disabled}
                     color='primary'
                     sx={{
                       height: '56px',
@@ -261,7 +214,7 @@ export default function ConversationBar({
                       >
                         Cancel
                       </Button>
-                      <Button onClick={handleUploadFiles} disabled={Boolean(latestMessage)} color='primary'>
+                      <Button onClick={handleUploadFiles} disabled={disabled} color='primary'>
                         Upload
                       </Button>
                     </DialogActions>
@@ -271,8 +224,8 @@ export default function ConversationBar({
               {!alternativeInputActive && (
                 <Tooltip title='Send Message'>
                   <IconButton
-                    onClick={chat}
-                    disabled={Boolean(latestMessage)}
+                    onClick={() => onSend(message, uploadedFiles)}
+                    disabled={disabled}
                     color='primary'
                     sx={{
                       height: '56px',
@@ -287,7 +240,7 @@ export default function ConversationBar({
                 mode={mode}
                 recording={alternativeInputActive}
                 setRecording={setAlternativeInputActive}
-                disabled={Boolean(latestMessage)}
+                disabled={disabled}
               />
             </InputAdornment>
           ),
@@ -311,7 +264,7 @@ export default function ConversationBar({
                   alert('This feature is not available in this mode.');
                 }
               }}
-              disabled={Boolean(latestMessage)}
+              disabled={disabled}
               color='primary'
               sx={{
                 height: '56px',

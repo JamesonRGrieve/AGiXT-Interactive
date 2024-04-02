@@ -17,8 +17,8 @@
     "dist"
   ],
   "exports": {
-    ".": "./dist/components/AGiXTChat.js",
-    "./WithSearchParams": "./dist/components/AGiXTChat.js",
+    ".": "./dist/components/InteractiveAGiXT.js",
+    "./WithSearchParams": "./dist/components/InteractiveAGiXT.js",
     "./MarkdownBlock": "./dist/components/Chat/ChatLog/MarkdownBlock.js",
     "./CSVDataGrid": "./dist/components/Chat/ChatLog/DataGridFromCSV.js",
     "./AudioRecorder": "./dist/components/Chat/ChatBar/AudioRecorder.js",
@@ -47,7 +47,8 @@
     "react-dom": "^18.2.0",
     "react-markdown": "^8.0.7",
     "react-syntax-highlighter": "^15.5.0",
-    "swr": "^2.2.5"
+    "swr": "^2.2.5",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "^14.1.4",
