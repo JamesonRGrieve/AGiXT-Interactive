@@ -7,9 +7,6 @@ import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Form from './Form/Form';
 import { useSearchParams } from 'next/navigation';
-import HeaderFooter from 'jrgcomponents/AppWrapper/HeaderFooter';
-import ConversationSelector from './ConversationSelector';
-import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
   opts?: ChatConfig;
@@ -111,43 +108,22 @@ const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
         commandMessageArg: props.chatConfig.opts?.commandMessageArg || process.env.NEXT_PUBLIC_AGIXT_COMMAND_MESSAGE_ARG,
       }}
     >
-      <ChatWrapper {...props.chatConfig} {...props.uiConfig} />
+      <Interactive {...props.chatConfig} {...props.uiConfig} />
     </ContextWrapper>
   );
 };
 const Stateless = (props: ChatProps & UIProps): React.JSX.Element => {
-  return <ChatWrapper {...props} />;
+  return <Interactive {...props} />;
 };
-const ChatWrapper = (props: ChatProps & UIProps): React.JSX.Element => {
-  return (
-    <AppWrapper
-      header={
-        props.showAppBar && {
-          components: { left: props.showConversationSelector ? <ConversationSelector /> : <span>&nbsp;</span> },
-        }
-      }
-      footer={
-        props.footerMessage && {
-          components: {
-            center: (
-              <Typography sx={{ margin: 0 }} variant='caption' textAlign='center'>
-                {props.footerMessage}
-              </Typography>
-            ),
-          },
-        }
-      }
-    >
-      {process.env.NEXT_PUBLIC_INTERACTIVE_MODE === 'form' ? (
-        <Form mode={props.mode} showChatThemeToggles={props.showChatThemeToggles} />
-      ) : (
-        <Chat
-          mode={props.mode}
-          showChatThemeToggles={props.showChatThemeToggles}
-          alternateBackground={props.alternateBackground}
-        />
-      )}
-    </AppWrapper>
+const Interactive = (props: ChatProps & UIProps): React.JSX.Element => {
+  return process.env.NEXT_PUBLIC_INTERACTIVE_MODE === 'form' ? (
+    <Form mode={props.mode} showChatThemeToggles={props.showChatThemeToggles} />
+  ) : (
+    <Chat
+      mode={props.mode}
+      showChatThemeToggles={props.showChatThemeToggles}
+      alternateBackground={props.alternateBackground}
+    />
   );
 };
 const AGiXTChat = ({
