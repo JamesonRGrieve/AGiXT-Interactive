@@ -2,10 +2,10 @@ import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { ChatProps, UIProps } from '../InteractiveAGiXT';
 import { ChatContext } from '../../types/ChatContext';
-import ConversationBar from '../Chat/ChatBar/ConversationBar';
+import ConversationBar from '../Chat/ChatBar';
 import FormInput from './FormInput';
 import FormOutput from './FormOutput';
-import { Alert } from '@mui/material';
+import { Alert, Typography } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 
 export default function Form({ mode, showChatThemeToggles }: ChatProps & UIProps): React.JSX.Element {
@@ -85,6 +85,7 @@ export default function Form({ mode, showChatThemeToggles }: ChatProps & UIProps
   return (
     <>
       <FormInput disabled={loading} argValues={argValues} setArgValues={setArgValues} />
+
       <ConversationBar
         onSend={(message, files) => submit(message, files)}
         disabled={loading}

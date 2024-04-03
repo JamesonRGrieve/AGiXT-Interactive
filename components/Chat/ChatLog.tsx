@@ -19,8 +19,8 @@ import {
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, ThumbDown } from '@mui/icons-material';
 import clipboardCopy from 'clipboard-copy';
 
-import { ChatContext } from '../../../types/ChatContext';
-import MarkdownBlock from './MarkdownBlock';
+import { ChatContext } from '../../types/ChatContext';
+import MarkdownBlock from '../MarkdownBlock';
 
 export default function ConversationHistory({ conversation, latestMessage, alternateBackground }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message

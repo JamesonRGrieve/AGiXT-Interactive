@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { ChatProps, UIProps } from '../InteractiveAGiXT';
 import { ChatContext } from '../../types/ChatContext';
-import ConversationHistory from './ChatLog/ConversationHistory';
-import ConversationBar from './ChatBar/ConversationBar';
+import ConversationHistory from './ChatLog';
+import ConversationBar from './ChatBar';
 
 export default function Chat({ mode, showChatThemeToggles, alternateBackground }: ChatProps & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);

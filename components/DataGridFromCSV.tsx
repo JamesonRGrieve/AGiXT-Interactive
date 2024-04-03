@@ -3,7 +3,7 @@ import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextFie
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
 import { useState, useEffect } from 'react';
-import { ChatConfig } from '../../../types/ChatContext';
+import { ChatConfig } from '../types/ChatContext';
 
 const ODD_OPACITY = 1;
 
