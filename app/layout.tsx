@@ -23,12 +23,12 @@ export default function RootLayout({ children }: { children: ReactNode }): React
       <body className={inter.className}>
         <ThemeWrapper
           themeInjection={{ theme: theme }}
-          defaultDark={
-            cookieStore.get('dark')?.value
+          defaultTheme={{
+            dark: cookieStore.get('dark')?.value
               ? cookieStore.get('dark')?.value === 'true'
-              : process.env.NEXT_PUBLIC_DEFAULT_THEME_MODE === 'dark'
-          }
-          defaultColorblind={cookieStore.get('colorblind')?.value === 'true'}
+              : process.env.NEXT_PUBLIC_DEFAULT_THEME_MODE === 'dark',
+            colorblind: cookieStore.get('colorblind')?.value === 'true',
+          }}
         >
           {children}
         </ThemeWrapper>

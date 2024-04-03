@@ -1,15 +1,15 @@
 'use client';
 import { getCookie, setCookie } from 'cookies-next';
 import React from 'react';
-import { Box, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
-import Header from './Header';
-import Footer from './Footer';
 import Form from './Form/Form';
 import { useSearchParams } from 'next/navigation';
-
+import HeaderFooter from 'jrgcomponents/AppWrapper/HeaderFooter';
+import ConversationSelector from './ConversationSelector';
+import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
   opts?: ChatConfig;
@@ -119,39 +119,35 @@ const Stateless = (props: ChatProps & UIProps): React.JSX.Element => {
   return <ChatWrapper {...props} />;
 };
 const ChatWrapper = (props: ChatProps & UIProps): React.JSX.Element => {
-  const theme = useTheme();
-  // console.log('ChatWrapper Footer Message: ', props.footerMessage);
-  // console.log('ChatWrapper Themes: ', props.showChatThemeToggles);
   return (
-    <>
-      {props.showAppBar && <Header showConversationSelector={props.showConversationSelector} />}
-      <Box
-        style={{
-          height: '100%',
-          maxWidth: '100%',
-          flexGrow: '1',
-          transition: theme.transitions.create('margin', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-          }),
-          display: 'flex',
-          flexDirection: 'column',
-          overflowY: 'clip',
-        }}
-        component='main'
-      >
-        {process.env.NEXT_PUBLIC_INTERACTIVE_MODE === 'form' ? (
-          <Form mode={props.mode} showChatThemeToggles={props.showChatThemeToggles} />
-        ) : (
-          <Chat
-            mode={props.mode}
-            showChatThemeToggles={props.showChatThemeToggles}
-            alternateBackground={props.alternateBackground}
-          />
-        )}
-      </Box>
-      {(props.footerMessage ?? process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE) && <Footer message={props.footerMessage} />}
-    </>
+    <AppWrapper
+      header={
+        props.showAppBar && {
+          components: { left: props.showConversationSelector ? <ConversationSelector /> : <span>&nbsp;</span> },
+        }
+      }
+      footer={
+        props.footerMessage && {
+          components: {
+            center: (
+              <Typography sx={{ margin: 0 }} variant='caption' textAlign='center'>
+                {props.footerMessage}
+              </Typography>
+            ),
+          },
+        }
+      }
+    >
+      {process.env.NEXT_PUBLIC_INTERACTIVE_MODE === 'form' ? (
+        <Form mode={props.mode} showChatThemeToggles={props.showChatThemeToggles} />
+      ) : (
+        <Chat
+          mode={props.mode}
+          showChatThemeToggles={props.showChatThemeToggles}
+          alternateBackground={props.alternateBackground}
+        />
+      )}
+    </AppWrapper>
   );
 };
 const AGiXTChat = ({
@@ -167,13 +163,13 @@ const AGiXTChat = ({
     alternateBackground: 'primary',
   },
 }: AGiXTChatProps & { stateful?: boolean }): React.JSX.Element => {
-  // console.log(
-  //   `InteractiveAGiXT initialized as ${stateful ? '' : 'not '}stateful. ${
-  //     stateful
-  //       ? 'AGiXTChat will provide its own ChatContext Provider and state.'
-  //       : 'Assuming a ChatContext Provider encloses this instance.'
-  //   }`,
-  // );
+  console.log(
+    `InteractiveAGiXT initialized as ${stateful ? '' : 'not '}stateful. ${
+      stateful
+        ? 'InteractiveAGiXT will provide its own ChatContext Provider and state.'
+        : 'Assuming a ChatContext Provider encloses this instance.'
+    }`,
+  );
   // console.log('Configuration Provided: ', chatConfig, serverConfig, uiConfig);
   return stateful ? (
     <Stateful chatConfig={chatConfig} serverConfig={serverConfig} uiConfig={uiConfig} />
