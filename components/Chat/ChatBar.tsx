@@ -241,6 +241,7 @@ export default function ConversationBar({
                 recording={alternativeInputActive}
                 setRecording={setAlternativeInputActive}
                 disabled={disabled}
+                onSend={onSend}
               />
             </InputAdornment>
           ),
