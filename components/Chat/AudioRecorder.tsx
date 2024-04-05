@@ -115,15 +115,16 @@ export default function AudioRecorder({ recording, setRecording, disabled, mode,
       const reader = new FileReader();
       reader.readAsDataURL(audioData); // Use readAsDataURL for base64 conversion
       reader.onloadend = (): any => {
-        const base64Audio = (reader.result as string).split(',')[1]; // Extract base64 data from data URL
-        // console.log(base64Audio);
-        // const response = (mode === 'command' ? runAudioCommand(base64Audio) : runAudioPrompt(base64Audio)).then(() => {
-        //   mutate('/conversation/' + state.chatSettings.conversationName);
-        // });
-        const response = onSend(base64Audio);
+        const base64Audio = reader.result as string; // Format looks like: data:audio/webm;codecs=opus;base64,GkXfo59ChoEBQveBAU...
+        const response = {
+          type: 'audio_url',
+          url: {
+            url: base64Audio,
+          },
+        };
 
         setAudioData(null);
-        return response;
+        return onSend(response);
       };
     }
   }, [audioData, onSend]);

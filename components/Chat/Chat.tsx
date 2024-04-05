@@ -17,37 +17,50 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
       fallbackData: [],
     },
   );
+
   async function chat(message, files) {
     const messages = [];
-    if (files.length > 0) {
-      const fileContents = await Promise.all(
-        files.map((file) => {
-          return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = function (event) {
-              const base64Content = Buffer.from(event.target.result as string, 'binary').toString('base64');
-              resolve({
-                type: `${file.type.split('/')[0]}_url`,
-                [`${file.type.split('/')[0]}_url`]: {
-                  url: `data:${file.type};base64,${base64Content}`,
-                },
-              });
-            };
-            reader.onerror = reject;
-            reader.readAsBinaryString(file);
-          });
-        }),
-      );
+
+    if (typeof message === 'object' && message.type === 'audio_url') {
       messages.push({
         role: 'user',
-        content: [
-          { type: 'text', text: message },
-          ...fileContents, // Spread operator to include all file contents
-        ],
+        content: {
+          type: 'audio',
+          url: message.url.url,
+        },
       });
     } else {
-      messages.push({ role: 'user', content: message });
+      if (files?.length > 0) {
+        const fileContents = await Promise.all(
+          files.map((file) => {
+            return new Promise((resolve, reject) => {
+              const reader = new FileReader();
+              reader.onload = function (event) {
+                const base64Content = Buffer.from(event.target.result as string, 'binary').toString('base64');
+                resolve({
+                  type: `${file.type.split('/')[0]}_url`,
+                  [`${file.type.split('/')[0]}_url`]: {
+                    url: `data:${file.type};base64,${base64Content}`,
+                  },
+                });
+              };
+              reader.onerror = reject;
+              reader.readAsBinaryString(file);
+            });
+          }),
+        );
+        messages.push({
+          role: 'user',
+          content: [
+            { type: 'text', text: message },
+            ...fileContents, // Spread operator to include all file contents
+          ],
+        });
+      } else {
+        messages.push({ role: 'user', content: message });
+      }
     }
+
     const toOpenAI = {
       messages: messages,
       model: state.chatSettings.selectedAgent,
