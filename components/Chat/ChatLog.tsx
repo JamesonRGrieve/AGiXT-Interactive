@@ -96,9 +96,12 @@ export default function ConversationHistory({ conversation, latestMessage, alter
 const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary' }): React.JSX.Element => {
   const state = useContext(ChatContext);
   const formattedMessage = useMemo(() => {
-    const toFormat = chatItem.message.includes('#GENERATED_AUDIO:')
-      ? chatItem.message.split('#GENERATED_AUDIO:')[0]
-      : chatItem.message;
+    const toFormat =
+      typeof chatItem.message !== 'string'
+        ? 'An audio message'
+        : chatItem.message.includes('#GENERATED_AUDIO:')
+          ? chatItem.message.split('#GENERATED_AUDIO:')[0]
+          : chatItem.message;
     let formatted = toFormat;
     try {
       const parsed = JSON.parse(toFormat);
@@ -111,7 +114,12 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
   }, [chatItem]);
 
   const audio = useMemo(() => {
-    const theAudio = chatItem.message.includes('#GENERATED_AUDIO:') ? chatItem.message.split('#GENERATED_AUDIO:')[1] : null;
+    const theAudio =
+      typeof chatItem.message !== 'string'
+        ? 'An audio message'
+        : chatItem.message.includes('#GENERATED_AUDIO:')
+          ? chatItem.message.split('#GENERATED_AUDIO:')[1]
+          : null;
     // console.log('Audio: ', theAudio);
     return theAudio;
   }, [chatItem]);
