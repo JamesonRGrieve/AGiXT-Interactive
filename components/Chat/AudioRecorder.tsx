@@ -118,9 +118,7 @@ export default function AudioRecorder({ recording, setRecording, disabled, mode,
         const base64Audio = reader.result as string; // Format looks like: data:audio/webm;codecs=opus;base64,GkXfo59ChoEBQveBAU...
         const response = {
           type: 'audio_url',
-          audio_url: {
-            url: base64Audio,
-          },
+          audio_url: base64Audio,
         };
 
         setAudioData(null);
