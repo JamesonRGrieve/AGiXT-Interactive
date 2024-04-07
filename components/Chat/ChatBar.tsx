@@ -20,7 +20,6 @@ import { setCookie } from 'cookies-next';
 import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
-import { mutate } from 'swr';
 import { ChatContext } from '../../types/ChatContext';
 import AudioRecorder from './AudioRecorder';
 
