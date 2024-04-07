@@ -114,14 +114,12 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
   }, [chatItem]);
 
   const audio = useMemo(() => {
-    const theAudio =
-      typeof chatItem.message !== 'string'
-        ? 'An audio message'
-        : chatItem.message.includes('#GENERATED_AUDIO:')
-          ? chatItem.message.split('#GENERATED_AUDIO:')[1]
-          : null;
     // console.log('Audio: ', theAudio);
-    return theAudio;
+    return typeof chatItem.message !== 'string'
+      ? 'An audio message'
+      : chatItem.message.includes('#GENERATED_AUDIO:')
+        ? chatItem.message.split('#GENERATED_AUDIO:')[1]
+        : null;
   }, [chatItem]);
   const [vote, setVote] = useState(0);
   const [open, setOpen] = useState(false);

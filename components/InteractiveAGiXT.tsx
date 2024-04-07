@@ -1,12 +1,12 @@
 'use client';
 import { getCookie, setCookie } from 'cookies-next';
 import React from 'react';
-import { Box, Typography, useTheme } from '@mui/material';
+import { useSearchParams } from 'next/navigation';
 import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Form from './Form/Form';
-import { useSearchParams } from 'next/navigation';
+
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
   opts?: ChatConfig;

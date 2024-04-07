@@ -1,17 +1,20 @@
-import { Box, Card, CardContent, CardHeader, IconButton, Tooltip, Typography } from '@mui/material';
+import { Card, CardContent, IconButton, Tooltip, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, CopyAllOutlined } from '@mui/icons-material';
 import MarkdownBlock from '../MarkdownBlock';
+
 export default function FormInput({ results }) {
   const [resultNum, setResultNum] = useState(0);
   console.log('Results', results);
   useEffect(() => {
-    if (results.length > 0) setResultNum(results.length - 1);
+    if (results.length > 0) {
+      setResultNum(results.length - 1);
+    }
   }, [results]);
   return (
     results.length > 0 && (
       <Card
-        raised={true}
+        raised
         sx={{
           overflowY: 'scroll',
           flexGrow: '1',
