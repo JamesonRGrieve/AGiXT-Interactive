@@ -20,14 +20,11 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
 
   async function chat(message, files) {
     const messages = [];
-
+    console.log(message);
     if (typeof message === 'object' && message.type === 'audio_url') {
       messages.push({
         role: 'user',
-        content: {
-          type: 'audio',
-          url: message.url.url,
-        },
+        content: [message],
       });
     } else {
       if (files?.length > 0) {
@@ -68,7 +65,7 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
     };
     setLoading(true);
     setLatestMessage(message);
-    // console.log('Sending: ', toOpenAI);
+    console.log('Sending: ', toOpenAI);
     const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
     mutate('/conversation/' + state.chatSettings.conversationName);
     setLoading(false);
