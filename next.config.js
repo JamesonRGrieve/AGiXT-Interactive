@@ -17,20 +17,22 @@ const nextConfig = {
     // Common Options
     NEXT_PUBLIC_AGIXT_CONVERSATION_NAME: process.env.AGIXT_CONVERSATION || 'Default',
     NEXT_PUBLIC_AGIXT_CONVERSATION_MODE: process.env.AGIXT_CONVERSATION_MODE || 'static', // static, select or uuid
-    NEXT_PUBLIC_AGIXT_API_KEY: process.env.AGIXT_API_KEY || undefined, // undefined to prompt, empty string for cookie, or defined for static
+    NEXT_PUBLIC_AGIXT_CONVERSATION_NAME: process.env.AGIXT_CONVERSATION_NAME || 'Default',
+    NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG: process.env.AGIXT_ENABLE_SEARCHPARAM_CONFIG || 'true',
+    NEXT_PUBLIC_AGIXT_MODE: process.env.AGIXT_MODE || 'prompt',
+    NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY: process.env.AGIXT_REQUIRE_API_KEY || 'true',
+    NEXT_PUBLIC_AGIXT_API_KEY: process.env.AGIXT_API_KEY || '',
     NEXT_PUBLIC_AGIXT_SERVER: process.env.AGIXT_SERVER || 'http://localhost:7437',
-
+    NEXT_PUBLIC_INTERACTIVE_MODE: process.env.INTERACTIVE_MODE || 'chat',
     // UI Options
     NEXT_PUBLIC_INTERACTIVE_UI: process.env.INTERACTIVE_MODE || 'chat',
     NEXT_PUBLIC_AGIXT_SHOW_APP_BAR: process.env.AGIXT_SHOW_APP_BAR || 'true',
     NEXT_PUBLIC_AGIXT_SHOW_SELECTION: process.env.AGIXT_SHOW_SELECTION_BAR || '', // empty, 'agent', 'conversation' or 'prompt'
     NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE: process.env.AGIXT_FOOTER_MESSAGE || 'Powered by AGiXT',
     NEXT_PUBLIC_AGIXT_RLHF: process.env.AGIXT_RLHF || 'false',
+    NEXT_PUBLIC_AGIXT_SHOW_APP_BAR: process.env.AGIXT_SHOW_APP_BAR || 'true',
     NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES: process.env.AGIXT_SHOW_CHAT_THEME_TOGGLES || 'false',
-    NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED:
-      process.env.AGIXT_FILE_UPLOAD_ENABLED || String(ChatDefault.chatSettings.enableFileUpload),
-    NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED:
-      process.env.AGIXT_VOICE_INPUT_ENABLED || String(ChatDefault.chatSettings.enableVoiceInput),
+    NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR: process.env.AGIXT_SHOW_CONVERSATION_BAR || 'false',
 
     // Override Options
     NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG: process.env.AGIXT_ENABLE_SEARCHPARAM_CONFIG || 'true',
