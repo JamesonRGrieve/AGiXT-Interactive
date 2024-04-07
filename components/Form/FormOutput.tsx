@@ -5,7 +5,7 @@ import MarkdownBlock from '../MarkdownBlock';
 
 export default function FormInput({ results }) {
   const [resultNum, setResultNum] = useState(0);
-  console.log('Results', results);
+  // console.log('Results', results);
   useEffect(() => {
     if (results.length > 0) {
       setResultNum(results.length - 1);
