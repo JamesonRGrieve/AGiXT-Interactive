@@ -72,7 +72,7 @@ export default function Form({ mode, showChatThemeToggles }: ChatProps & UIProps
       user: uuid,
     };
     setLoading(true);
-    console.log('Sending: ', toOpenAI);
+    // console.log('Sending: ', toOpenAI);
     const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
     setLoading(false);
     setUUIDs((previous) => [...previous, uuid]);
