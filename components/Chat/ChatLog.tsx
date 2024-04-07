@@ -19,8 +19,8 @@ import {
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, ThumbDown } from '@mui/icons-material';
 import clipboardCopy from 'clipboard-copy';
 
-import { ChatContext } from '../../../types/ChatContext';
-import MarkdownBlock from './MarkdownBlock';
+import { ChatContext } from '../../types/ChatContext';
+import MarkdownBlock from '../MarkdownBlock';
 
 export default function ConversationHistory({ conversation, latestMessage, alternateBackground }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
@@ -28,7 +28,7 @@ export default function ConversationHistory({ conversation, latestMessage, alter
   const messagesEndRef = useRef(null);
   const theme = useTheme();
   useEffect(() => {
-    console.log('Conversation mutated, scrolling to bottom.', state.chatSettings.conversationName, conversation);
+    // console.log('Conversation mutated, scrolling to bottom.', state.chatSettings.conversationName, conversation);
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
   return (
@@ -94,12 +94,14 @@ export default function ConversationHistory({ conversation, latestMessage, alter
 }
 
 const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary' }): React.JSX.Element => {
-  console.log(chatItem);
   const state = useContext(ChatContext);
   const formattedMessage = useMemo(() => {
-    const toFormat = chatItem.message.includes('#GENERATED_AUDIO:')
-      ? chatItem.message.split('#GENERATED_AUDIO:')[0]
-      : chatItem.message;
+    const toFormat =
+      typeof chatItem.message !== 'string'
+        ? 'An audio message'
+        : chatItem.message.includes('#GENERATED_AUDIO:')
+          ? chatItem.message.split('#GENERATED_AUDIO:')[0]
+          : chatItem.message;
     let formatted = toFormat;
     try {
       const parsed = JSON.parse(toFormat);
@@ -107,14 +109,17 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
     } catch (e) {
       formatted = toFormat.replace(/\\n/g, '  \n').replace(/\n/g, '  \n');
     }
-    if (chatItem.message.includes('#GENERATED_AUDIO:')) console.log('Formatted: ', formatted);
+    // if (chatItem.message.includes('#GENERATED_AUDIO:')) console.log('Formatted: ', formatted);
     return formatted;
   }, [chatItem]);
 
   const audio = useMemo(() => {
-    const theAudio = chatItem.message.includes('#GENERATED_AUDIO:') ? chatItem.message.split('#GENERATED_AUDIO:')[1] : null;
-    console.log('Audio: ', theAudio);
-    return theAudio;
+    // console.log('Audio: ', theAudio);
+    return typeof chatItem.message !== 'string'
+      ? 'An audio message'
+      : chatItem.message.includes('#GENERATED_AUDIO:')
+        ? chatItem.message.split('#GENERATED_AUDIO:')[1]
+        : null;
   }, [chatItem]);
   const [vote, setVote] = useState(0);
   const [open, setOpen] = useState(false);
@@ -168,7 +173,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
           <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> • {new Date(chatItem.timestamp).toLocaleString()}
         </Typography>
       )}
-      {chatItem.role != 'USER' && !lastUserMessage && (
+      {chatItem.role !== 'USER' && !lastUserMessage && (
         <>
           {process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
             <>

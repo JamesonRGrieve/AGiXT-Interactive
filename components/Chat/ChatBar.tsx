@@ -20,41 +20,32 @@ import { setCookie } from 'cookies-next';
 import { DeleteForever } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
-import { mutate } from 'swr';
-import { ChatContext } from '../../../types/ChatContext';
+import { ChatContext } from '../../types/ChatContext';
 import AudioRecorder from './AudioRecorder';
 
 export default function ConversationBar({
   mode,
-  latestMessage,
-  setLatestMessage,
+  onSend,
+  disabled,
   showChatThemeToggles = process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
 }: {
   mode: 'prompt' | 'chain' | 'command';
-  latestMessage: string;
-  setLatestMessage: any;
+  onSend: any;
+  disabled: boolean;
   showChatThemeToggles: boolean;
 }) {
   const state = useContext(ChatContext);
   const theme = useTheme();
-  console.log('Prop Show Themes', showChatThemeToggles);
-  console.log('Env Show Themes', process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true');
+  // console.log('Prop Show Themes', showChatThemeToggles);
+  // console.log('Env Show Themes', process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true');
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
-  const [alternativeInputActive, setAlternativeInputActive] = useState(false);
   const [message, setMessage] = useState('');
-  const handleUploadFiles = async () => {
-    // Uploaded files will be formatted like [{"file_name": "file_content"}]
-    const newuploadedFiles: { [x: string]: string }[] = [];
-    // Format for state.uploadedFiles should be [{"file_name": "file_content"}]
-    // Iterate through the files and add them to the form data
-    for (const file of uploadedFiles) {
-      const fileContent = await file.text();
-      newuploadedFiles.push({ [file.name]: fileContent });
-      state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: newuploadedFiles } }));
-      setFileUploadOpen(false);
-    }
-  };
+  const [alternativeInputActive, setAlternativeInputActive] = useState(false);
+
+  /*
+
+
   const handleSendMessage = async () => {
     setLatestMessage(message);
     const request = mode === 'chain' ? runChain() : mode === 'command' ? runCommand() : runPrompt();
@@ -137,6 +128,21 @@ export default function ConversationBar({
     console.log('---Sending Message---\nState args:\n', stateArgs, '\nState:\n', state, '\nPrompt name:\n', promptName);
     return await state.sdk.promptAgent(state.chatSettings.selectedAgent, promptName, stateArgs);
   };
+  */
+
+  const handleUploadFiles = async () => {
+    // Uploaded files will be formatted like [{"file_name": "file_content"}]
+    const newUploadedFiles: { [x: string]: string }[] = [];
+    // Format for state.uploadedFiles should be [{"file_name": "file_content"}]
+    // Iterate through the files and add them to the form data
+    for (const file of uploadedFiles) {
+      const fileContent = await file.text();
+      newUploadedFiles.push({ [file.name]: fileContent });
+      state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: newUploadedFiles } }));
+      setFileUploadOpen(false);
+    }
+  };
+
   return (
     <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
       <TextField
@@ -146,15 +152,15 @@ export default function ConversationBar({
         rows={2}
         fullWidth
         value={message}
-        onKeyDown={(event) => {
+        onKeyDown={async (event) => {
           if (event.key === 'Enter' && !event.shiftKey && message) {
             event.preventDefault();
-            handleSendMessage();
+            onSend(message, uploadedFiles);
           }
         }}
         onChange={(e) => setMessage(e.target.value)}
         sx={{ my: 2 }}
-        disabled={Boolean(latestMessage)}
+        disabled={disabled}
         InputProps={{
           endAdornment: (
             <InputAdornment position='end'>
@@ -168,7 +174,7 @@ export default function ConversationBar({
                         chatState: { ...oldState.chatState, uploadedFiles: [] },
                       }));
                     }}
-                    disabled={Boolean(latestMessage)}
+                    disabled={disabled}
                     color='primary'
                     sx={{
                       height: '56px',
@@ -207,7 +213,7 @@ export default function ConversationBar({
                       >
                         Cancel
                       </Button>
-                      <Button onClick={handleUploadFiles} disabled={Boolean(latestMessage)} color='primary'>
+                      <Button onClick={handleUploadFiles} disabled={disabled} color='primary'>
                         Upload
                       </Button>
                     </DialogActions>
@@ -217,8 +223,8 @@ export default function ConversationBar({
               {!alternativeInputActive && (
                 <Tooltip title='Send Message'>
                   <IconButton
-                    onClick={handleSendMessage}
-                    disabled={Boolean(latestMessage)}
+                    onClick={() => onSend(message, uploadedFiles)}
+                    disabled={disabled}
                     color='primary'
                     sx={{
                       height: '56px',
@@ -233,18 +239,19 @@ export default function ConversationBar({
                 mode={mode}
                 recording={alternativeInputActive}
                 setRecording={setAlternativeInputActive}
-                disabled={Boolean(latestMessage)}
+                disabled={disabled}
+                onSend={onSend}
               />
             </InputAdornment>
           ),
         }}
       />
       {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
-        process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE == 'uuid' && (
+        process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && (
           <Tooltip title='Reset Conversation (Forever)'>
             <IconButton
               onClick={() => {
-                if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE == 'uuid') {
+                if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid') {
                   if (confirm('Are you sure you want to reset the conversation? This cannot be undone.')) {
                     const uuid = crypto.randomUUID();
                     setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
@@ -257,7 +264,7 @@ export default function ConversationBar({
                   alert('This feature is not available in this mode.');
                 }
               }}
-              disabled={Boolean(latestMessage)}
+              disabled={disabled}
               color='primary'
               sx={{
                 height: '56px',

@@ -1,5 +1,5 @@
 const ChatDefault = require('./types/ChatDefault');
-console.log('Chat Default at Env Initialization: ', ChatDefault);
+// console.log('Chat Default at Env Initialization: ', ChatDefault);
 // TODO: Add validation.
 const nextConfig = {
   env: {
@@ -13,15 +13,17 @@ const nextConfig = {
     // Options
     NEXT_PUBLIC_AGIXT_CONVERSATION_MODE: process.env.AGIXT_CONVERSATION_MODE || 'static', // static, select or uuid
     NEXT_PUBLIC_AGIXT_CONVERSATION_NAME: process.env.AGIXT_CONVERSATION_NAME || 'Default',
-    NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG: process.env.AGIXT_ENABLE_SEARCHPARAM_CONFIG || 'false',
+    NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG: process.env.AGIXT_ENABLE_SEARCHPARAM_CONFIG || 'true',
     NEXT_PUBLIC_AGIXT_MODE: process.env.AGIXT_MODE || 'prompt',
     NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY: process.env.AGIXT_REQUIRE_API_KEY || 'true',
+    NEXT_PUBLIC_AGIXT_API_KEY: process.env.AGIXT_API_KEY || '',
     NEXT_PUBLIC_AGIXT_SERVER: process.env.AGIXT_SERVER || 'http://localhost:7437',
+    NEXT_PUBLIC_INTERACTIVE_MODE: process.env.INTERACTIVE_MODE || 'chat',
     // UI Options
     NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE: process.env.AGIXT_FOOTER_MESSAGE || 'Powered by AGiXT',
     NEXT_PUBLIC_AGIXT_RLHF: process.env.AGIXT_RLHF || 'false',
-    NEXT_PUBLIC_AGIXT_SHOW_APP_BAR: process.env.AGIXT_SHOW_APP_BAR || 'false',
-    NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES: process.env.AGIXT_SHOW_CHAT_THEME_TOGGLES || 'true',
+    NEXT_PUBLIC_AGIXT_SHOW_APP_BAR: process.env.AGIXT_SHOW_APP_BAR || 'true',
+    NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES: process.env.AGIXT_SHOW_CHAT_THEME_TOGGLES || 'false',
     NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR: process.env.AGIXT_SHOW_CONVERSATION_BAR || 'false',
 
     // State Options, Defined in ./types/ChatDefault.js

@@ -1,8 +1,8 @@
 'use client';
 import AGiXTSDK from 'agixt';
+import OpenAI from 'openai';
 import { Context, createContext } from 'react';
 const ChatDefault = require('./ChatDefault');
-console.log(ChatDefault);
 export type ChainRunConfig = {
   chainArgs: object;
   singleStep: boolean;
@@ -35,6 +35,7 @@ export type ChatConfig = {
   chain?: string;
   mutate?: any;
   sdk?: AGiXTSDK;
+  openai?: OpenAI;
 };
 export const ChatContext: Context<ChatConfig> = createContext<ChatConfig>(ChatDefault as unknown as ChatConfig);
 export const ChatDefaultConfig = ChatDefault;
