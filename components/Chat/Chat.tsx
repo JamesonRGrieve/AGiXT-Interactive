@@ -30,25 +30,13 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
         content: [message],
       });
     } else {
-      if (files?.length > 0) {
-        const fileContents = await Promise.all(
-          files.map((file) => {
-            return new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onload = function (event): any {
-                const base64Content = Buffer.from(event.target.result as string, 'binary').toString('base64');
-                resolve({
-                  type: `${file.type.split('/')[0]}_url`,
-                  [`${file.type.split('/')[0]}_url`]: {
-                    url: `data:${file.type};base64,${base64Content}`,
-                  },
-                });
-              };
-              reader.onerror = reject;
-              reader.readAsBinaryString(file);
-            });
-          }),
-        );
+      if (Object.keys(files).length > 0) {
+        const fileContents = Object.entries(files).map(([fileName, fileContent]: [string, string]) => ({
+          type: `${fileContent.split(':')[1].split('/')[0]}_url`,
+          [`${fileContent.split(':')[1].split('/')[0]}_url`]: {
+            url: fileContent,
+          },
+        }));
         messages.push({
           role: 'user',
           content: [
@@ -68,7 +56,7 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
     };
     setLoading(true);
     setLatestMessage(message);
-    // console.log('Sending: ', state.openai, toOpenAI);
+    console.log('Sending: ', state.openai, toOpenAI);
     const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
     mutate(conversationSWRPath + state.chatSettings.conversationName);
     setLoading(false);
