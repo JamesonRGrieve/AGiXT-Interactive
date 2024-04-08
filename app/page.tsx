@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import Login from './Login';
 import ConversationSelector from '../components/ConversationSelector';
 import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 export default function Home() {
   const cookieStore = cookies();
   const apiKey =
@@ -30,9 +30,11 @@ export default function Home() {
         process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE && {
           components: {
             center: (
-              <Typography sx={{ margin: 0 }} variant='caption' textAlign='center'>
-                {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
-              </Typography>
+              <Box textAlign='center'>
+                <Typography sx={{ margin: 0 }} variant='caption'>
+                  {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
+                </Typography>
+              </Box>
             ),
           },
         }
