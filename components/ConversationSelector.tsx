@@ -79,7 +79,7 @@ export default function ConversationSelector(): React.JSX.Element {
   // console.log('conversationData', conversationData);
 
   return (
-    <Box sx={{ '& button': { mr: 1 } }}>
+    <>
       <Tooltip title='Select a Conversation'>
         <FormControl
           sx={{
@@ -136,16 +136,19 @@ export default function ConversationSelector(): React.JSX.Element {
           </Select>
         </FormControl>
       </Tooltip>
+      &nbsp;
       <Tooltip title='Add Conversation'>
         <Button variant='outlined' onClick={() => setOpenNewConversation(true)} color={'info'} sx={{ minWidth: '20px' }}>
           <AddIcon sx={{ minWidth: '20px' }} color={'info'} />
         </Button>
       </Tooltip>
+      &nbsp;
       <Tooltip title='Export Conversation'>
         <Button variant='outlined' onClick={handleExportConversation} color={'info'} sx={{ minWidth: '20px' }}>
           <FileDownloadOutlinedIcon sx={{ minWidth: '20px' }} color={'info'} />
         </Button>
       </Tooltip>
+      &nbsp;
       <Tooltip title='Delete Conversation'>
         <Button variant='outlined' onClick={() => setOpenDeleteConversation(true)} color={'error'} sx={{ minWidth: '20px' }}>
           <DeleteIcon sx={{ minWidth: '20px' }} color={'error'} />
@@ -190,6 +193,6 @@ export default function ConversationSelector(): React.JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </Box>
+    </>
   );
 }
