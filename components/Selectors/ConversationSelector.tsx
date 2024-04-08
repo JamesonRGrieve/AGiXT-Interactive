@@ -56,8 +56,8 @@ export default function ConversationSelector(): React.JSX.Element {
       state.mutate((oldState) => {
         return {
           ...oldState,
-          chatConfig: {
-            ...oldState.chatConfig,
+          chatSettings: {
+            ...oldState.chatSettings,
             conversationName: conversationData[0],
           },
         };
