@@ -44,6 +44,7 @@ export default function ChatContextWrapper({
     mutate: null,
   } as ChatConfig);
 
+  /*
   console.log(
     'Context Wrapper initializing AGiXTSDK and OpenAI with baseUri/apiKey: ',
     agixtServer,
@@ -54,7 +55,7 @@ export default function ChatContextWrapper({
   );
   useEffect(() => {
     console.log('State changed to...', ChatState);
-  }, [ChatState]);
+  }, [ChatState]);*/
   return (
     <ChatContext.Provider value={{ ...ChatState, sdk: sdk, openai: openai, mutate: setChatState }}>
       {children}
