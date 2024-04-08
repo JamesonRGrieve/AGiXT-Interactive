@@ -90,6 +90,7 @@ export default function Form({ mode, showChatThemeToggles }: ChatProps & UIProps
         onSend={(message, files) => submit(message, files)}
         disabled={loading}
         mode={mode}
+        clearOnSend={false}
         showChatThemeToggles={showChatThemeToggles}
       />
       {loading && (
