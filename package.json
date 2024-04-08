@@ -1,6 +1,6 @@
 {
   "name": "agixtchat",
-  "version": "0.0.56",
+  "version": "0.0.57",
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "next build",
@@ -38,7 +38,7 @@
     "agixt": "1.0.50",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.1.1",
-    "jrgcomponents": "^0.0.108",
+    "jrgcomponents": "^0.0.109",
     "next": "^14.1.4",
     "openai": "^4.33.0",
     "react": "^18.2.0",
