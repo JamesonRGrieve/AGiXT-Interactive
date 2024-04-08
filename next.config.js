@@ -39,6 +39,7 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_COMMAND: process.env.AGIXT_COMMAND || ChatDefault.command,
     NEXT_PUBLIC_AGIXT_COMMAND_MESSAGE_ARG: process.env.AGIXT_COMMAND_MESSAGE_ARG || ChatDefault.commandMessageArg,
     NEXT_PUBLIC_APP_AUTHENTICATION_ENABLED: process.env.APP_AUTHENTICATION_ENABLED || 'true',
+    NEXT_PUBLIC_AUTH_WEB: process.env.AUTH_WEB || 'http://localhost:3001',
 
     NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT:
       process.env.AGIXT_USE_SELECTED_AGENT || String(ChatDefault.chatSettings.chainRunConfig.useSelectedAgent),
