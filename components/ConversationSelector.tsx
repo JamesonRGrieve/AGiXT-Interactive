@@ -104,6 +104,7 @@ export default function ConversationSelector(): React.JSX.Element {
                 color: 'white',
                 opacity: '1',
               },
+              fontSize: '12px',
             }}
             fullWidth
             labelId='conversation-label'
