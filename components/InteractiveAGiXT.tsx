@@ -6,7 +6,6 @@ import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Form from './Form/Form';
-
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
   opts?: ChatConfig;
@@ -70,7 +69,7 @@ const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
     },
   } as ChatConfig;
   const apiKey =
-    props.serverConfig?.apiKey ?? getCookie('apiKey') ?? getCookie('jwt') ?? process.env.NEXT_PUBLIC_AGIXT_API_KEY ?? '';
+    props.serverConfig?.apiKey || getCookie('apiKey') || getCookie('jwt') || process.env.NEXT_PUBLIC_AGIXT_API_KEY || '';
   console.log('Stateful API Key: ', apiKey);
 
   const agixtServer = props.serverConfig?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
@@ -130,14 +129,18 @@ const Interactive = (props: ChatProps & UIProps): React.JSX.Element => {
 };
 const AGiXTChat = ({
   stateful = true,
-  chatConfig = null,
+  chatConfig = {
+    mode: (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
+      ? process.env.NEXT_PUBLIC_AGIXT_MODE
+      : 'prompt') as 'chain' | 'prompt',
+  },
   serverConfig = null,
   uiConfig = {
-    showAppBar: false,
-    showConversationSelector: false,
-    showChatThemeToggles: false,
-    showRLHF: false,
-    footerMessage: process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE ?? '',
+    showAppBar: process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
+    showConversationSelector: process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
+    showRLHF: process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true',
+    showChatThemeToggles: process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
+    footerMessage: process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE || '',
     alternateBackground: 'primary',
   },
 }: AGiXTChatProps & { stateful?: boolean }): React.JSX.Element => {

@@ -38,25 +38,7 @@ export default function Home() {
         }
       }
     >
-      <AGiXTChat
-        uiConfig={{
-          showAppBar: process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
-          showConversationSelector: process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
-          showRLHF: process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true',
-          showChatThemeToggles: process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
-          footerMessage: process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE || 'Powered by AGiXT',
-          alternateBackground: 'primary',
-        }}
-        chatConfig={{
-          mode: (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
-            ? process.env.NEXT_PUBLIC_AGIXT_MODE
-            : 'prompt') as 'chain' | 'prompt',
-        }}
-        serverConfig={{
-          apiKey: apiKey,
-          agixtServer: process.env.NEXT_PUBLIC_AGIXT_SERVER ?? '',
-        }}
-      />
+      <AGiXTChat />
     </AppWrapper>
   );
 }
