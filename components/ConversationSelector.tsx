@@ -52,12 +52,13 @@ export default function ConversationSelector(): React.JSX.Element {
   const handleDeleteConversation = async (): Promise<void> => {
     if (state.chatSettings.conversationName) {
       await state.sdk.deleteConversation(state.chatSettings.selectedAgent, state.chatSettings.conversationName);
+      await mutate('/conversation');
       state.mutate((oldState) => {
         return {
           ...oldState,
           chatConfig: {
             ...oldState.chatConfig,
-            conversationName: conversationData.filter((c) => c !== state.chatSettings.conversationName)[0] || '',
+            conversationName: conversationData[0],
           },
         };
       });
