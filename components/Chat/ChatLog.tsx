@@ -21,6 +21,30 @@ import clipboardCopy from 'clipboard-copy';
 
 import { ChatContext } from '../../types/ChatContext';
 import MarkdownBlock from '../MarkdownBlock';
+function formatDate(timestamp: string) {
+  // Create a date object from the timestamp
+  const date = new Date(timestamp);
+
+  // Convert the date to the server timezone
+  const serverDate = new Date(date.toLocaleString('en-US', { timeZone: process.env.NEXT_PUBLIC_TZ.replace('TZ-', '') }));
+
+  // Calculate the time difference between the server date and the original date
+  const timeDifference = date.getTime() - serverDate.getTime();
+
+  // Create a new date object that represents the local time
+  const localDate = new Date(date.getTime() + timeDifference);
+
+  // Format the local date
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  };
+  return localDate.toLocaleString('en-US', options);
+}
 
 export default function ConversationHistory({ conversation, latestMessage, alternateBackground }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
@@ -72,7 +96,7 @@ export default function ConversationHistory({ conversation, latestMessage, alter
               chatItem={{
                 role: 'USER',
                 message: latestMessage,
-                timestamp: 'Just Now',
+                timestamp: undefined,
               }}
               lastUserMessage={null}
               alternateBackground={alternateBackground}
@@ -164,7 +188,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
     >
       <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
       {audio && <AudioPlayer base64audio={audio} />}
-      {chatItem.timestamp && (
+      {chatItem.timestamp !== '' && (
         <Typography
           variant='caption'
           style={{
@@ -172,7 +196,8 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
             display: 'inline-block',
           }}
         >
-          <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> • {new Date(chatItem.timestamp).toLocaleString()}
+          <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> •{' '}
+          {chatItem.timestamp === undefined ? 'Just Now...' : formatDate(new Date(chatItem.timestamp))}
         </Typography>
       )}
       {chatItem.role !== 'USER' && !lastUserMessage && (

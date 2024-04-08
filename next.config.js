@@ -33,10 +33,7 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_SHOW_APP_BAR: process.env.AGIXT_SHOW_APP_BAR || 'true',
     NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES: process.env.AGIXT_SHOW_CHAT_THEME_TOGGLES || 'false',
     NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR: process.env.AGIXT_SHOW_CONVERSATION_BAR || 'false',
-
-    // Override Options
-    NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG: process.env.AGIXT_ENABLE_SEARCHPARAM_CONFIG || 'true',
-    NEXT_PUBLIC_AGIXT_MODE: process.env.AGIXT_MODE || 'prompt',
+    NEXT_PUBLIC_TZ: process.env.TZ || 'TZ-America/New_York',
     // State Options, Defined in ./types/ChatDefault.js
     NEXT_PUBLIC_AGIXT_AGENT: process.env.AGIXT_AGENT || ChatDefault.chatSettings.selectedAgent,
     NEXT_PUBLIC_AGIXT_INSIGHT_AGENT: process.env.AGIXT_INSIGHT_AGENT || ChatDefault.chatSettings.insightAgentName,
