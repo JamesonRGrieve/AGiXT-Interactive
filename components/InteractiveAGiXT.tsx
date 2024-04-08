@@ -71,6 +71,8 @@ const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
   } as ChatConfig;
   const apiKey =
     props.serverConfig?.apiKey ?? getCookie('apiKey') ?? getCookie('jwt') ?? process.env.NEXT_PUBLIC_AGIXT_API_KEY ?? '';
+  console.log('Stateful API Key: ', apiKey);
+
   const agixtServer = props.serverConfig?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
   const agentName = process.env.NEXT_PUBLIC_AGIXT_AGENT_NAME || 'gpt4free';
   const uuid = getCookie('uuid');
@@ -146,7 +148,7 @@ const AGiXTChat = ({
         : 'Assuming a ChatContext Provider encloses this instance.'
     }`,
   );
-  // console.log('Configuration Provided: ', chatConfig, serverConfig, uiConfig);
+  console.log('Configuration Provided From Server: ', chatConfig, serverConfig, uiConfig);
   return stateful ? (
     <Stateful chatConfig={chatConfig} serverConfig={serverConfig} uiConfig={uiConfig} />
   ) : (
