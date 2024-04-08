@@ -72,8 +72,7 @@ const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
       openai: undefined,
     },
   } as ChatConfig;
-  const apiKey =
-    props.serverConfig?.apiKey || getCookie('apiKey') || getCookie('jwt') || process.env.NEXT_PUBLIC_AGIXT_API_KEY || '';
+  const apiKey = props.serverConfig?.apiKey || getCookie('jwt') || process.env.NEXT_PUBLIC_AGIXT_API_KEY || '';
   // console.log('Stateful API Key: ', apiKey);
 
   const agixtServer = props.serverConfig?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
