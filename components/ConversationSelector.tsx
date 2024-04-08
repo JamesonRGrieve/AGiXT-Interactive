@@ -10,7 +10,6 @@ import {
   TextField,
   DialogActions,
   Tooltip,
-  Box,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -37,7 +36,7 @@ export default function ConversationSelector(): React.JSX.Element {
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
 
-  const handleAddConversation = async () => {
+  const handleAddConversation = async (): Promise<void> => {
     if (newConversationName) {
       await state.sdk.newConversation(state.chatSettings.selectedAgent, newConversationName);
       setNewConversationName('');
@@ -49,7 +48,7 @@ export default function ConversationSelector(): React.JSX.Element {
       }));
     }
   };
-  const handleDeleteConversation = async () => {
+  const handleDeleteConversation = async (): Promise<void> => {
     if (state.chatSettings.conversationName) {
       await state.sdk.deleteConversation(state.chatSettings.selectedAgent, state.chatSettings.conversationName);
       state.mutate((oldState) => {
@@ -65,7 +64,7 @@ export default function ConversationSelector(): React.JSX.Element {
     }
   };
 
-  const handleExportConversation = async () => {
+  const handleExportConversation = async (): Promise<void> => {
     if (state.chatSettings.conversationName) {
       const element = document.createElement('a');
       const file = new Blob([JSON.stringify(currentConversation)], {
@@ -168,7 +167,6 @@ export default function ConversationSelector(): React.JSX.Element {
             onChange={(e) => setNewConversationName(e.target.value)}
             variant='outlined'
             color='info'
-            autoFocus
           />
         </DialogContent>
         <DialogActions>

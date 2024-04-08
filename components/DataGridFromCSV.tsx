@@ -37,7 +37,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
-  const parseCSV = (csvData) => {
+  const parseCSV = (csvData): any => {
     let headers = [];
     const lines = csvData.split('\n');
     if (lines.length === 2) {
@@ -74,7 +74,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
     }
     headers = headers
       .filter((header) => header !== 'id')
-      .map((header, index) => ({
+      .map((header) => ({
         field: header,
         width: Math.max(160, header.length * 10),
         flex: 1,
@@ -90,8 +90,8 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
       }));
     // If none of the rows have a value, don't show the column
     headers = headers.filter((header) => {
-      for (let i = 0; i < newRows.length; i++) {
-        if (newRows[i][header.field]) {
+      for (const row of newRows) {
+        if (row[header.field]) {
           return true;
         }
       }
