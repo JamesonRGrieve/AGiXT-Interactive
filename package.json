@@ -25,7 +25,9 @@
     "./AudioRecorder": "./dist/components/Chat/AudioRecorder.js",
     "./ConversationBar": "./dist/components/Chat/ChatBar.js",
     "./ConversationLog": "./dist/components/Chat/ChatLog.js",
-    "./ConversationSelector": "./dist/components/ConversationSelector.js",
+    "./ConversationSelector": "./dist/components/Selectors/ConversationSelector.js",
+    "./PromptSelector": "./dist/components/Selectors/PromptSelector.js",
+    "./AgentSelector": "./dist/components/Selectors/AgentSelector.js",
     "./Context": "./dist/types/ChatContext.js"
   },
   "dependencies": {

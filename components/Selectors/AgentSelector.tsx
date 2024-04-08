@@ -2,16 +2,13 @@
 import { Select, MenuItem, FormControl, Tooltip } from '@mui/material';
 import React, { useContext } from 'react';
 import useSWR from 'swr';
-import { ChatContext } from '../types/ChatContext';
+import { ChatContext } from '../../types/ChatContext';
 
 export default function ConversationSelector(): React.JSX.Element {
   const state = useContext(ChatContext);
-  const { data: promptData } = useSWR<string[]>(
-    `/prompt`,
-    async () => (await state.sdk.getPrompts(state.promptCategory)) as string[],
-  );
+  const { data: agentData } = useSWR<string[]>(`/agent`, async () => (await state.sdk.getAgents()) as string[]);
   return (
-    <Tooltip title='Select a Prompt'>
+    <Tooltip title='Select an Agent'>
       <FormControl
         sx={{
           display: 'flex',
@@ -38,20 +35,23 @@ export default function ConversationSelector(): React.JSX.Element {
             fontSize: '12px',
           }}
           fullWidth
-          labelId='conversation-label'
-          label='Select a Prompt'
-          disabled={promptData?.length === 0}
-          value={state.prompt}
+          labelId='agent-label'
+          label='Select an Agent'
+          disabled={agentData?.length === 0}
+          value={state.chatSettings.selectedAgent}
           onChange={(e) =>
             state.mutate((oldState) => ({
               ...oldState,
-              prompt: e.target.value,
+              chatSettings: {
+                ...oldState.chatSettings,
+                selectedAgent: e.target.value,
+              },
             }))
           }
         >
-          {promptData &&
-            promptData.map &&
-            promptData?.map((c) => (
+          {agentData &&
+            agentData.map &&
+            agentData?.map((c) => (
               <MenuItem key={c} value={c}>
                 {c}
               </MenuItem>

@@ -2,7 +2,7 @@ import React from 'react';
 import AGiXTChat from '../components/InteractiveAGiXT';
 import { cookies } from 'next/headers';
 import Login from './Login';
-import ConversationSelector from '../components/ConversationSelector';
+import ConversationSelector from '../components/Selectors/ConversationSelector';
 import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
 import { Box, Typography } from '@mui/material';
 export default function Home() {
