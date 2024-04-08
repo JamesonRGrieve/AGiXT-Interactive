@@ -6,7 +6,7 @@ import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Form from './Form/Form';
-import ConversationSelector from './ConversationSelector';
+import ConversationSelector from './Selectors/ConversationSelector';
 import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
 
 import { Box, Typography } from '@mui/material';

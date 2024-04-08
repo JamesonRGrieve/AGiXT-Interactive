@@ -16,7 +16,7 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import React, { useContext, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { ChatContext } from '../types/ChatContext';
+import { ChatContext } from '../../types/ChatContext';
 
 export default function ConversationSelector(): React.JSX.Element {
   const state = useContext(ChatContext);
