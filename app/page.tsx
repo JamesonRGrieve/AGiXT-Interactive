@@ -10,37 +10,5 @@ export default function Home() {
   const apiKey =
     process.env.NEXT_PUBLIC_AGIXT_API_KEY ?? cookieStore.get('apiKey')?.value ?? cookieStore.get('jwt')?.value ?? '';
   // console.log('Server-Side API Key: ', apiKey);
-  return process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true' && !apiKey ? (
-    <Login />
-  ) : (
-    <AppWrapper
-      header={
-        process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true' && {
-          components: {
-            left:
-              process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true' ? (
-                <ConversationSelector />
-              ) : (
-                <span>&nbsp;</span>
-              ),
-          },
-        }
-      }
-      footer={
-        process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE && {
-          components: {
-            center: (
-              <Box textAlign='center'>
-                <Typography sx={{ margin: 0 }} variant='caption'>
-                  {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
-                </Typography>
-              </Box>
-            ),
-          },
-        }
-      }
-    >
-      <AGiXTChat />
-    </AppWrapper>
-  );
+  return process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true' && !apiKey ? <Login /> : <AGiXTChat />;
 }
