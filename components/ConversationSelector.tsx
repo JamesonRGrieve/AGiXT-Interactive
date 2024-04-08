@@ -37,7 +37,7 @@ export default function ConversationSelector(): React.JSX.Element {
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
 
   const handleAddConversation = async (): Promise<void> => {
-    console.log(state);
+    //console.log(state);
     if (newConversationName) {
       await state.sdk.newConversation(state.chatSettings.selectedAgent, newConversationName);
       setNewConversationName('');
