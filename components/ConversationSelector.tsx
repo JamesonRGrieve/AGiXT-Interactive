@@ -10,6 +10,7 @@ import {
   TextField,
   DialogActions,
   Tooltip,
+  Box,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -76,8 +77,9 @@ export default function ConversationSelector(): React.JSX.Element {
   */
   };
   // console.log('conversationData', conversationData);
+
   return (
-    <>
+    <Box sx={{ '& button': { m: 1 } }}>
       <Tooltip title='Select a Conversation'>
         <FormControl
           sx={{
@@ -86,6 +88,7 @@ export default function ConversationSelector(): React.JSX.Element {
             alignItems: 'center',
           }}
           fullWidth
+          size='small'
         >
           <Select
             sx={{
@@ -134,17 +137,17 @@ export default function ConversationSelector(): React.JSX.Element {
         </FormControl>
       </Tooltip>
       <Tooltip title='Add Conversation'>
-        <Button onClick={() => setOpenNewConversation(true)} color={'info'} sx={{ minWidth: '20px' }}>
+        <Button variant='outlined' onClick={() => setOpenNewConversation(true)} color={'info'} sx={{ minWidth: '20px' }}>
           <AddIcon sx={{ minWidth: '20px' }} color={'info'} />
         </Button>
       </Tooltip>
       <Tooltip title='Export Conversation'>
-        <Button onClick={handleExportConversation} color={'info'} sx={{ minWidth: '20px' }}>
+        <Button variant='outlined' onClick={handleExportConversation} color={'info'} sx={{ minWidth: '20px' }}>
           <FileDownloadOutlinedIcon sx={{ minWidth: '20px' }} color={'info'} />
         </Button>
       </Tooltip>
       <Tooltip title='Delete Conversation'>
-        <Button onClick={() => setOpenDeleteConversation(true)} color={'error'} sx={{ minWidth: '20px' }}>
+        <Button variant='outlined' onClick={() => setOpenDeleteConversation(true)} color={'error'} sx={{ minWidth: '20px' }}>
           <DeleteIcon sx={{ minWidth: '20px' }} color={'error'} />
         </Button>
       </Tooltip>
@@ -187,6 +190,6 @@ export default function ConversationSelector(): React.JSX.Element {
           </Button>
         </DialogActions>
       </Dialog>
-    </>
+    </Box>
   );
 }
