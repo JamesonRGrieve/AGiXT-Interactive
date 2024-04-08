@@ -129,93 +129,89 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
       return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
     });
   };
-  return (
+  return rows.length > 1 ? (
     <>
-      {rows.length > 1 ? (
-        <>
-          <StripedDataGrid
-            density='compact'
-            rows={rows}
-            columns={columns}
-            components={{ Toolbar: GridToolbar }}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
-              },
+      <StripedDataGrid
+        density='compact'
+        rows={rows}
+        columns={columns}
+        components={{ Toolbar: GridToolbar }}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5,
+            },
+          },
+        }}
+        getRowClassName={(params) => (params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd')}
+      />
+      <br />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <Button
+          color='info'
+          variant='outlined'
+          onClick={() => {
+            setOpen(true);
+          }}
+        >
+          <TipsAndUpdatesOutlinedIcon />
+          &nbsp;Get Insights
+        </Button>
+      </Box>
+      <Dialog
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+      >
+        <DialogTitle>Get Insights</DialogTitle>
+        <DialogContent>
+          <TextField
+            margin='dense'
+            id='name'
+            label='What would you like insights on?'
+            fullWidth
+            value={userMessage}
+            onChange={(event) => {
+              setUserMessage(event.target.value);
             }}
-            getRowClassName={(params) => (params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd')}
+            onClick={(e) => {
+              if ((e.target as TextFieldProps).value === 'Surprise me!') {
+                setUserMessage('');
+              }
+            }}
+            variant='outlined'
+            color='info'
           />
-          <br />
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-            }}
-          >
-            <Button
-              color='info'
-              variant='outlined'
-              onClick={() => {
-                setOpen(true);
-              }}
-            >
-              <TipsAndUpdatesOutlinedIcon />
-              &nbsp;Get Insights
-            </Button>
-          </Box>
-          <Dialog
-            open={open}
-            onClose={() => {
+        </DialogContent>
+        <DialogActions>
+          <Button
+            color='error'
+            onClick={() => {
               setOpen(false);
             }}
           >
-            <DialogTitle>Get Insights</DialogTitle>
-            <DialogContent>
-              <TextField
-                margin='dense'
-                id='name'
-                label='What would you like insights on?'
-                fullWidth
-                value={userMessage}
-                onChange={(event) => {
-                  setUserMessage(event.target.value);
-                }}
-                onClick={(e) => {
-                  if ((e.target as TextFieldProps).value === 'Surprise me!') {
-                    setUserMessage('');
-                  }
-                }}
-                variant='outlined'
-                color='info'
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button
-                color='error'
-                onClick={() => {
-                  setOpen(false);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                color='info'
-                onClick={() => {
-                  getInsights(userMessage);
-                  setOpen(false);
-                }}
-              >
-                Get Insights
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
-      ) : (
-        csvData
-      )}
+            Cancel
+          </Button>
+          <Button
+            color='info'
+            onClick={() => {
+              getInsights(userMessage);
+              setOpen(false);
+            }}
+          >
+            Get Insights
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
+  ) : (
+    csvData
   );
 };
 export default DataGridFromCSV;
