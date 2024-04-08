@@ -79,7 +79,7 @@ export default function ConversationSelector(): React.JSX.Element {
   // console.log('conversationData', conversationData);
 
   return (
-    <Box sx={{ '& button': { m: 1 } }}>
+    <Box sx={{ '& button': { mr: 1 } }}>
       <Tooltip title='Select a Conversation'>
         <FormControl
           sx={{
