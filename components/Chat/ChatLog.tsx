@@ -61,12 +61,13 @@ export default function ConversationHistory({ conversation, latestMessage, alter
       sx={{
         display: 'flex',
         flexDirection: 'column-reverse',
-        overflowY: 'scroll',
+        flex: '1 1 0',
         flexGrow: '1',
         backgroundColor: theme.palette.background.paper,
+        overflow: 'auto',
       }}
     >
-      <Box display='flex' flexDirection='column' sx={{ overflowY: 'auto' }}>
+      <Box display='flex' minHeight='min-content' flexDirection='column'>
         {conversation.length > 0 && conversation.map ? (
           conversation.map((chatItem, index) => {
             if (chatItem.role === 'USER') {
