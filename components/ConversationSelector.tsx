@@ -38,33 +38,31 @@ export default function ConversationSelector(): React.JSX.Element {
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
 
   const handleAddConversation = async () => {
-    if (!newConversationName) {
-      return;
+    if (newConversationName) {
+      await state.sdk.newConversation(state.chatSettings.selectedAgent, newConversationName);
+      setNewConversationName('');
+      setOpenNewConversation(false);
+      mutate('/conversation');
+      state.mutate((oldState) => ({
+        ...oldState,
+        chatSettings: { ...oldState.chatSettings, conversationName: newConversationName },
+      }));
     }
-    await state.sdk.newConversation(state.chatSettings.selectedAgent, newConversationName);
-    setNewConversationName('');
-    setOpenNewConversation(false);
-    mutate('/conversation');
-    state.mutate((oldState) => ({
-      ...oldState,
-      chatConfig: { ...oldState.chatConfig, conversationName: newConversationName },
-      chatSettings: { ...oldState.chatSettings, conversationName: newConversationName },
-    }));
   };
   const handleDeleteConversation = async () => {
-    if (!state.chatSettings.conversationName) {
-      return;
+    if (state.chatSettings.conversationName) {
+      await state.sdk.deleteConversation(state.chatSettings.selectedAgent, state.chatSettings.conversationName);
+      state.mutate((oldState) => {
+        return {
+          ...oldState,
+          chatConfig: {
+            ...oldState.chatConfig,
+            conversationName: conversationData.filter((c) => c !== state.chatSettings.conversationName)[0] || '',
+          },
+        };
+      });
+      setOpenDeleteConversation(false);
     }
-    await state.sdk.deleteConversation(state.chatSettings.selectedAgent, state.chatSettings.conversationName);
-    const updatedConversations = conversationData.filter((c) => c !== state.chatSettings.conversationName);
-    state.mutate((oldState) => {
-      return {
-        ...oldState,
-        conversation: updatedConversations,
-        chatConfig: { ...oldState.chatConfig, conversationName: updatedConversations[0] || '' },
-      };
-    });
-    setOpenDeleteConversation(false);
   };
 
   const handleExportConversation = async () => {
