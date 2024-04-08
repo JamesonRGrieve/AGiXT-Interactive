@@ -4,8 +4,6 @@ import { ChatProps, UIProps } from '../InteractiveAGiXT';
 import { ChatContext } from '../../types/ChatContext';
 import ConversationHistory from './ChatLog';
 import ConversationBar from './ChatBar';
-import OpenAI from 'openai';
-import { getCookie } from 'cookies-next';
 
 const conversationSWRPath = /conversation/;
 export default function Chat({ mode, showChatThemeToggles, alternateBackground }: ChatProps & UIProps): React.JSX.Element {
@@ -23,11 +21,6 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
   );
 
   async function chat(message, files): Promise<string> {
-    const openai: OpenAI = new OpenAI({
-      apiKey: getCookie('jwt'),
-      baseURL: process.env.NEXT_PUBLIC_AGIXT_SERVER + '/v1',
-      dangerouslyAllowBrowser: true,
-    });
     const messages = [];
     // console.log(message);
     if (typeof message === 'object' && message.type === 'audio_url') {
@@ -75,7 +68,7 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
     setLoading(true);
     setLatestMessage(message);
     // console.log('Sending: ', toOpenAI);
-    const chatCompletion = await openai.chat.completions.create(toOpenAI);
+    const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
     mutate(conversationSWRPath + state.chatSettings.conversationName);
     setLoading(false);
     setLatestMessage('');
