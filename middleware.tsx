@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 const Middleware = (req: NextRequest) => {
-  console.log(process.env.NEXT_PUBLIC_APP_AUTHENTICATION_ENABLED === 'true');
-  console.log(!req.cookies?.get('jwt'));
+  // console.log(process.env.NEXT_PUBLIC_APP_AUTHENTICATION_ENABLED === 'true');
+  // console.log(!req.cookies?.get('jwt'));
   if (process.env.NEXT_PUBLIC_APP_AUTHENTICATION_ENABLED === 'true' && !req.cookies?.get('jwt'))
     return NextResponse.redirect(new URL(process.env.NEXT_PUBLIC_AUTH_WEB as string));
   else if (

@@ -9,7 +9,7 @@ export default function Home() {
   const cookieStore = cookies();
   const apiKey =
     process.env.NEXT_PUBLIC_AGIXT_API_KEY ?? cookieStore.get('apiKey')?.value ?? cookieStore.get('jwt')?.value ?? '';
-  console.log('Server-Side API Key: ', apiKey);
+  // console.log('Server-Side API Key: ', apiKey);
   return process.env.NEXT_PUBLIC_AGIXT_REQUIRE_API_KEY === 'true' && !apiKey ? (
     <Login />
   ) : (
