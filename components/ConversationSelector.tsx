@@ -20,16 +20,23 @@ import useSWR, { mutate } from 'swr';
 import { ChatContext } from '../types/ChatContext';
 
 export default function ConversationSelector(): React.JSX.Element {
-  const AGiXTState = useContext(ChatContext);
+  const state = useContext(ChatContext);
   const { data: conversationData } = useSWR<string[]>(
     `/conversation`,
-    async () => (await AGiXTState.sdk.getConversations()) as string[],
+    async () => (await state.sdk.getConversations()) as string[],
+  );
+  const { data: currentConversation } = useSWR(
+    '/conversation/' + state.chatSettings.conversationName,
+    async () => await state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1),
+    {
+      fallbackData: [],
+    },
   );
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
-  const state = useContext(ChatContext);
+
   const handleAddConversation = async () => {
     if (!newConversationName) {
       return;
@@ -61,22 +68,17 @@ export default function ConversationSelector(): React.JSX.Element {
   };
 
   const handleExportConversation = async () => {
-    // TODO Fetch the conversation from SDK.
-    /*
-    if (!state.chatSettings.conversationName) {
-      return;
+    if (state.chatSettings.conversationName) {
+      const element = document.createElement('a');
+      const file = new Blob([JSON.stringify(currentConversation)], {
+        type: 'application/json',
+      });
+      element.href = URL.createObjectURL(file);
+      element.download = `${state.chatSettings.conversationName}.json`;
+      document.body.appendChild(element); // Required for this to work in FireFox
+      element.click();
     }
-    const element = document.createElement('a');
-    const file = new Blob([JSON.stringify(state.chatState.conversation)], {
-      type: 'application/json',
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = `${state.chatSettings.conversationName}.json`;
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-  */
   };
-  // console.log('conversationData', conversationData);
 
   return (
     <>
@@ -139,20 +141,20 @@ export default function ConversationSelector(): React.JSX.Element {
       </Tooltip>
       &nbsp;
       <Tooltip title='Add Conversation'>
-        <Button variant='outlined' onClick={() => setOpenNewConversation(true)} color={'info'} sx={{ minWidth: '20px' }}>
-          <AddIcon sx={{ minWidth: '20px' }} color={'info'} />
+        <Button variant='outlined' onClick={() => setOpenNewConversation(true)} color='info' sx={{ minWidth: '20px' }}>
+          <AddIcon sx={{ minWidth: '20px' }} />
         </Button>
       </Tooltip>
       &nbsp;
       <Tooltip title='Export Conversation'>
-        <Button variant='outlined' onClick={handleExportConversation} color={'info'} sx={{ minWidth: '20px' }}>
-          <FileDownloadOutlinedIcon sx={{ minWidth: '20px' }} color={'info'} />
+        <Button variant='outlined' onClick={handleExportConversation} color='info' sx={{ minWidth: '20px' }}>
+          <FileDownloadOutlinedIcon sx={{ minWidth: '20px' }} />
         </Button>
       </Tooltip>
       &nbsp;
       <Tooltip title='Delete Conversation'>
-        <Button variant='outlined' onClick={() => setOpenDeleteConversation(true)} color={'error'} sx={{ minWidth: '20px' }}>
-          <DeleteIcon sx={{ minWidth: '20px' }} color={'error'} />
+        <Button variant='outlined' onClick={() => setOpenDeleteConversation(true)} color='error' sx={{ minWidth: '20px' }}>
+          <DeleteIcon sx={{ minWidth: '20px' }} />
         </Button>
       </Tooltip>
       <Dialog open={openNewConversation} onClose={() => setOpenNewConversation(false)} disableRestoreFocus>
