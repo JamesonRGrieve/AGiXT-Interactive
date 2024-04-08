@@ -6,6 +6,10 @@ import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Form from './Form/Form';
+import ConversationSelector from './ConversationSelector';
+import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
+
+import { Box, Typography } from '@mui/material';
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
   opts?: ChatConfig;
@@ -117,14 +121,44 @@ const Stateless = (props: ChatProps & UIProps): React.JSX.Element => {
   return <Interactive {...props} />;
 };
 const Interactive = (props: ChatProps & UIProps): React.JSX.Element => {
-  return process.env.NEXT_PUBLIC_INTERACTIVE_MODE === 'form' ? (
-    <Form mode={props.mode} showChatThemeToggles={props.showChatThemeToggles} />
-  ) : (
-    <Chat
-      mode={props.mode}
-      showChatThemeToggles={props.showChatThemeToggles}
-      alternateBackground={props.alternateBackground}
-    />
+  return (
+    <AppWrapper
+      header={
+        process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true' && {
+          components: {
+            left:
+              process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true' ? (
+                <ConversationSelector />
+              ) : (
+                <span>&nbsp;</span>
+              ),
+          },
+        }
+      }
+      footer={
+        process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE && {
+          components: {
+            center: (
+              <Box textAlign='center'>
+                <Typography sx={{ margin: 0 }} variant='caption'>
+                  {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
+                </Typography>
+              </Box>
+            ),
+          },
+        }
+      }
+    >
+      {process.env.NEXT_PUBLIC_INTERACTIVE_MODE === 'form' ? (
+        <Form mode={props.mode} showChatThemeToggles={props.showChatThemeToggles} />
+      ) : (
+        <Chat
+          mode={props.mode}
+          showChatThemeToggles={props.showChatThemeToggles}
+          alternateBackground={props.alternateBackground}
+        />
+      )}
+    </AppWrapper>
   );
 };
 const AGiXTChat = ({
