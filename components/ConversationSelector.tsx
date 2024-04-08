@@ -10,6 +10,7 @@ import {
   TextField,
   DialogActions,
   Tooltip,
+  Box,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -76,6 +77,7 @@ export default function ConversationSelector(): React.JSX.Element {
   */
   };
   // console.log('conversationData', conversationData);
+
   return (
     <>
       <Tooltip title='Select a Conversation'>
@@ -86,6 +88,7 @@ export default function ConversationSelector(): React.JSX.Element {
             alignItems: 'center',
           }}
           fullWidth
+          size='small'
         >
           <Select
             sx={{
@@ -101,6 +104,7 @@ export default function ConversationSelector(): React.JSX.Element {
                 color: 'white',
                 opacity: '1',
               },
+              fontSize: '12px',
             }}
             fullWidth
             labelId='conversation-label'
@@ -133,18 +137,21 @@ export default function ConversationSelector(): React.JSX.Element {
           </Select>
         </FormControl>
       </Tooltip>
+      &nbsp;
       <Tooltip title='Add Conversation'>
-        <Button onClick={() => setOpenNewConversation(true)} color={'info'} sx={{ minWidth: '20px' }}>
+        <Button variant='outlined' onClick={() => setOpenNewConversation(true)} color={'info'} sx={{ minWidth: '20px' }}>
           <AddIcon sx={{ minWidth: '20px' }} color={'info'} />
         </Button>
       </Tooltip>
+      &nbsp;
       <Tooltip title='Export Conversation'>
-        <Button onClick={handleExportConversation} color={'info'} sx={{ minWidth: '20px' }}>
+        <Button variant='outlined' onClick={handleExportConversation} color={'info'} sx={{ minWidth: '20px' }}>
           <FileDownloadOutlinedIcon sx={{ minWidth: '20px' }} color={'info'} />
         </Button>
       </Tooltip>
+      &nbsp;
       <Tooltip title='Delete Conversation'>
-        <Button onClick={() => setOpenDeleteConversation(true)} color={'error'} sx={{ minWidth: '20px' }}>
+        <Button variant='outlined' onClick={() => setOpenDeleteConversation(true)} color={'error'} sx={{ minWidth: '20px' }}>
           <DeleteIcon sx={{ minWidth: '20px' }} color={'error'} />
         </Button>
       </Tooltip>
