@@ -68,7 +68,7 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
     };
     setLoading(true);
     setLatestMessage(message);
-    console.log('Sending: ', state.openai, toOpenAI);
+    // console.log('Sending: ', toOpenAI);
     const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
     mutate(conversationSWRPath + state.chatSettings.conversationName);
     setLoading(false);
