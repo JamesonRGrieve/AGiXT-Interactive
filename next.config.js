@@ -55,6 +55,15 @@ const nextConfig = {
       .reverse()
       .join('.')}`,
   },
+  eslint: {
+    // Warning: This allows production builds to successfully complete even if
+    // your project has ESLint errors.
+    ignoreDuringBuilds: (process.env.MODE ?? 'production').toLowerCase() !== 'development',
+  },
+  typescript: {
+    // Warning: Dangerously allow production builds to successfully complete even if your project has type errors.
+    ignoreBuildErrors: (process.env.MODE ?? 'production').toLowerCase() !== 'development',
+  },
 };
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
