@@ -28,7 +28,11 @@ export default function ChatContextWrapper({
     baseUri: agixtServer,
     apiKey: apiKey,
   });
-  const openai: OpenAI = new OpenAI({ apiKey: apiKey, baseURL: agixtServer + '/v1', dangerouslyAllowBrowser: true });
+  const openai: OpenAI = new OpenAI({
+    apiKey: apiKey.replace('Bearer ', ''),
+    baseURL: agixtServer + '/v1',
+    dangerouslyAllowBrowser: true,
+  });
   // Used to determine whether to render the app or not (populates with any fetch errors from tryFetch calls).
   const [ChatState, setChatState] = useState<ChatConfig>({
     // Default state and initializes the SDK
