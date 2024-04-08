@@ -35,6 +35,8 @@ export default function ConversationHistory({ conversation, latestMessage, alter
     <Paper
       elevation={5}
       sx={{
+        display: 'flex',
+        flexDirection: 'column-reverse',
         overflowY: 'scroll',
         flexGrow: '1',
         backgroundColor: theme.palette.background.paper,
