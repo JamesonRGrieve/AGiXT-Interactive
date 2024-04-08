@@ -129,20 +129,6 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
       return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
     });
   };
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-  const handleUserMessageChange = (event) => {
-    setUserMessage(event.target.value);
-  };
-  const handleGetInsights = () => {
-    getInsights(userMessage);
-    setOpen(false);
-  };
-
   return (
     <>
       {rows.length > 1 ? (
@@ -168,12 +154,23 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
               justifyContent: 'flex-end',
             }}
           >
-            <Button color='info' variant='outlined' onClick={handleClickOpen}>
+            <Button
+              color='info'
+              variant='outlined'
+              onClick={() => {
+                setOpen(true);
+              }}
+            >
               <TipsAndUpdatesOutlinedIcon />
               &nbsp;Get Insights
             </Button>
           </Box>
-          <Dialog open={open} onClose={handleClose}>
+          <Dialog
+            open={open}
+            onClose={() => {
+              setOpen(false);
+            }}
+          >
             <DialogTitle>Get Insights</DialogTitle>
             <DialogContent>
               <TextField
@@ -182,7 +179,9 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
                 label='What would you like insights on?'
                 fullWidth
                 value={userMessage}
-                onChange={handleUserMessageChange}
+                onChange={(event) => {
+                  setUserMessage(event.target.value);
+                }}
                 onClick={(e) => {
                   if ((e.target as TextFieldProps).value === 'Surprise me!') {
                     setUserMessage('');
@@ -193,10 +192,21 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
               />
             </DialogContent>
             <DialogActions>
-              <Button color='error' onClick={handleClose}>
+              <Button
+                color='error'
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
                 Cancel
               </Button>
-              <Button color='info' onClick={handleGetInsights}>
+              <Button
+                color='info'
+                onClick={() => {
+                  getInsights(userMessage);
+                  setOpen(false);
+                }}
+              >
                 Get Insights
               </Button>
             </DialogActions>
