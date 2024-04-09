@@ -105,12 +105,12 @@ const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
           ...ChatDefaultConfig.chatSettings,
           ...props.chatConfig.opts?.chatSettings,
           enableFileUpload:
-            props.chatConfig?.opts?.chatSettings?.enableFileUpload ||
-            process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true' ||
+            props.chatConfig?.opts?.chatSettings?.enableFileUpload ??
+            process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true' ??
             true,
           enableVoiceInput:
-            props.chatConfig?.opts?.chatSettings?.enableVoiceInput ||
-            process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true' ||
+            props.chatConfig?.opts?.chatSettings?.enableVoiceInput ??
+            process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true' ??
             true,
           selectedAgent:
             props.chatConfig?.opts?.chatSettings?.selectedAgent || process.env.NEXT_PUBLIC_AGIXT_AGENT || agentName,
