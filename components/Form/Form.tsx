@@ -22,7 +22,7 @@ export default function Form({ mode, showChatThemeToggles }: ChatProps & UIProps
   );
   const { data: promptArgs } = useSWR(
     '/prompt/args',
-    async () => (await state.sdk.getPromptArgs(state.prompt)).filter((arg) => arg !== 'user_input'),
+    async () => (await state.sdk.getPromptArgs(state.prompt, state.promptCategory)).filter((arg) => arg !== 'user_input'),
     {
       fallbackData: [],
     },
