@@ -59,6 +59,7 @@ const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
         insightAgentName: searchParams.get('insightAgent') || undefined,
         enableMemory: Boolean(searchParams.get('memory')) || undefined,
         enableFileUpload: Boolean(searchParams.get('fileUpload')) || undefined,
+        enableVoiceInput: Boolean(searchParams.get('voiceInput')) || undefined,
         useSelectedAgent: Boolean(searchParams.get('useSelectedAgent')) || undefined,
         chainRunConfig: {
           chainArgs: JSON.parse(searchParams.get('chainArgs')) || undefined,
@@ -104,15 +105,19 @@ const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
           ...ChatDefaultConfig.chatSettings,
           ...props.chatConfig.opts?.chatSettings,
           enableFileUpload:
-            props.chatConfig.opts?.chatSettings?.enableFileUpload ||
+            props.chatConfig?.opts?.chatSettings?.enableFileUpload ||
             process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true' ||
             true,
+          enableVoiceInput:
+            props.chatConfig?.opts?.chatSettings?.enableVoiceInput ||
+            process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true' ||
+            true,
           selectedAgent:
-            props.chatConfig.opts?.chatSettings?.selectedAgent || process.env.NEXT_PUBLIC_AGIXT_AGENT || agentName,
+            props.chatConfig?.opts?.chatSettings?.selectedAgent || process.env.NEXT_PUBLIC_AGIXT_AGENT || agentName,
           conversationName:
             process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
               ? uuid
-              : props.chatConfig.opts?.chatSettings?.conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME,
+              : props.chatConfig?.opts?.chatSettings?.conversationName || process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME,
           ...(process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG === 'true' ? searchParamConfig : {}),
         },
         prompt: props.chatConfig.opts?.prompt || process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,

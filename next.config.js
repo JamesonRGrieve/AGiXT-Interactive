@@ -31,6 +31,8 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_INSIGHT_AGENT: process.env.AGIXT_INSIGHT_AGENT || ChatDefault.chatSettings.insightAgentName,
     NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED:
       process.env.AGIXT_FILE_UPLOAD_ENABLED || String(ChatDefault.chatSettings.enableFileUpload),
+    NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED:
+      process.env.AGIXT_VOICE_INPUT_ENABLED || String(ChatDefault.chatSettings.enableVoiceInput),
     // Prompt Mode Options, Defined in ./types/ChatDefault.js
     NEXT_PUBLIC_AGIXT_PROMPT_NAME: process.env.AGIXT_PROMPT_NAME || ChatDefault.prompt,
     NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY: process.env.AGIXT_PROMPT_CATEGORY || ChatDefault.promptCategory,
