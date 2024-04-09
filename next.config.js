@@ -24,7 +24,7 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_RLHF: process.env.AGIXT_RLHF || 'false',
     NEXT_PUBLIC_AGIXT_SHOW_APP_BAR: process.env.AGIXT_SHOW_APP_BAR || 'true',
     NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES: process.env.AGIXT_SHOW_CHAT_THEME_TOGGLES || 'false',
-    NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR: process.env.AGIXT_SHOW_CONVERSATION_BAR || 'false',
+    NEXT_PUBLIC_AGIXT_SHOW_SELECTION_BAR: process.env.AGIXT_SHOW_SELECTION_BAR || '', // empty, 'agent', 'conversation' or 'prompt'
     NEXT_PUBLIC_TZ: process.env.TZ || 'TZ-America/New_York',
     // State Options, Defined in ./types/ChatDefault.js
     NEXT_PUBLIC_AGIXT_AGENT: process.env.AGIXT_AGENT || ChatDefault.chatSettings.selectedAgent,

@@ -10,6 +10,8 @@ import ConversationSelector from './Selectors/ConversationSelector';
 import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
 
 import { Box, Typography } from '@mui/material';
+import AgentSelector from './Selectors/AgentSelector';
+import PromptSelector from './Selectors/PromptSelector';
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
   opts?: ChatConfig;
@@ -31,7 +33,12 @@ export type AGiXTChatProps = {
   serverConfig?: ServerProps;
   chatConfig?: ChatProps;
 };
-
+const selectionBars = {
+  agent: <AgentSelector />,
+  conversation: <ConversationSelector />,
+  prompt: <PromptSelector />,
+  '': <span>&nbsp;</span>,
+};
 const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
   const searchParams = useSearchParams();
   const searchParamConfig = {
@@ -129,12 +136,7 @@ const Interactive = (props: ChatProps & UIProps): React.JSX.Element => {
       header={
         process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true' && {
           components: {
-            left:
-              process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true' ? (
-                <ConversationSelector />
-              ) : (
-                <span>&nbsp;</span>
-              ),
+            left: selectionBars[process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION_BAR],
           },
         }
       }

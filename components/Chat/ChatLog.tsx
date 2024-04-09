@@ -198,7 +198,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
           }}
         >
           <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> •{' '}
-          {chatItem.timestamp === undefined ? 'Just Now...' : formatDate(new Date(chatItem.timestamp))}
+          {chatItem.timestamp === undefined ? 'Just Now...' : formatDate(chatItem.timestamp)}
         </Typography>
       )}
       {chatItem.role !== 'USER' && !lastUserMessage && (

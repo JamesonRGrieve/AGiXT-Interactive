@@ -4,7 +4,7 @@ import React, { useContext } from 'react';
 import useSWR from 'swr';
 import { ChatContext } from '../../types/ChatContext';
 
-export default function ConversationSelector(): React.JSX.Element {
+export default function AgentSelector(): React.JSX.Element {
   const state = useContext(ChatContext);
   const { data: agentData } = useSWR<string[]>(`/agent`, async () => (await state.sdk.getAgents()) as string[]);
   return (
