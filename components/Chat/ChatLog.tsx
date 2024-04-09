@@ -26,7 +26,11 @@ function formatDate(timestamp: string) {
   const date = new Date(timestamp);
 
   // Convert the date to the server timezone
-  const serverDate = new Date(date.toLocaleString('en-US', { timeZone: process.env.NEXT_PUBLIC_TZ.replace('TZ-', '') }));
+  const serverDate = new Date(
+    date.toLocaleString('en-US', {
+      timeZone: process.env.NEXT_PUBLIC_TZ ? process.env.NEXT_PUBLIC_TZ.replace('TZ-', '') : '',
+    }),
+  );
 
   // Calculate the time difference between the server date and the original date
   const timeDifference = date.getTime() - serverDate.getTime();
