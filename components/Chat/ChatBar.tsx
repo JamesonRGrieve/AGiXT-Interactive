@@ -226,13 +226,15 @@ export default function ConversationBar({
                     </IconButton>
                   </Tooltip>
                 )}
-                <AudioRecorder
-                  mode={mode}
-                  recording={alternativeInputActive}
-                  setRecording={setAlternativeInputActive}
-                  disabled={disabled}
-                  onSend={onSend}
-                />
+                {state.chatSettings.enableVoiceInput && (
+                  <AudioRecorder
+                    mode={mode}
+                    recording={alternativeInputActive}
+                    setRecording={setAlternativeInputActive}
+                    disabled={disabled}
+                    onSend={onSend}
+                  />
+                )}
               </InputAdornment>
             ),
           }}

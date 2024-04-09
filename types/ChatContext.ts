@@ -22,6 +22,7 @@ export type ChatSettings = {
   insightAgentName?: string;
   enableMemory?: boolean;
   enableFileUpload?: boolean;
+  enableVoiceInput?: boolean;
   useSelectedAgent?: boolean;
   chainRunConfig?: ChainRunConfig;
 };
