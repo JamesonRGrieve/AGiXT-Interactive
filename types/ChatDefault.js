@@ -33,6 +33,7 @@ const ChatDefault = {
   command: '',
   commandArgs: {},
   commandMessageArg: 'message',
+  mode: 'prompt',
   mutate: null,
   sdk: null,
 };
