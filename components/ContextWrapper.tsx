@@ -16,14 +16,16 @@ export default function ChatContextWrapper({
   initialState?: ChatConfig;
   children: ReactNode;
 }): React.JSX.Element {
-  // console.log('Default Config Provided:', ChatDefaultConfig);
-  // console.log('Initial State Provided:', initialState);
-  // console.log('Booting State With:', {
-  //   ...ChatDefaultConfig,
-  //   ...initialState,
-  //   // Overridden in context provider.
-  //   mutate: null,
-  // });
+  if (process.env.NEXT_PUBLIC_MODE === 'development') {
+    console.log('Default Config Provided:', ChatDefaultConfig);
+    console.log('Initial State Provided:', initialState);
+    console.log('Booting State With:', {
+      ...ChatDefaultConfig,
+      ...initialState,
+      // Overridden in context provider.
+      mutate: null,
+    });
+  }
   const sdk: AGiXTSDK = new AGiXTSDK({
     baseUri: agixtServer,
     apiKey: apiKey,
@@ -44,18 +46,19 @@ export default function ChatContextWrapper({
     mutate: null,
   } as ChatConfig);
 
-  /*
-  console.log(
-    'Context Wrapper initializing AGiXTSDK and OpenAI with baseUri/apiKey: ',
-    agixtServer,
-    apiKey,
-    sdk,
-    openai,
-    ChatState,
-  );
-  useEffect(() => {
-    console.log('State changed to...', ChatState);
-  }, [ChatState]);*/
+  if (process.env.NEXT_PUBLIC_MODE === 'development') {
+    console.log(
+      'Context Wrapper initializing AGiXTSDK and OpenAI with baseUri/apiKey: ',
+      agixtServer,
+      apiKey,
+      sdk,
+      openai,
+      ChatState,
+    );
+    useEffect(() => {
+      console.log('State changed to...', ChatState);
+    }, [ChatState]);
+  }
   return (
     <ChatContext.Provider value={{ ...ChatState, sdk: sdk, openai: openai, mutate: setChatState }}>
       {children}
