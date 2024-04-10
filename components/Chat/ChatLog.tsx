@@ -132,14 +132,15 @@ export default function ConversationHistory({
   );
 }
 
+const generatedAudioString = '#GENERATED_AUDIO:';
 const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary' }): React.JSX.Element => {
   const state = useContext(ChatContext);
   const formattedMessage = useMemo(() => {
     const toFormat =
       typeof chatItem.message !== 'string'
         ? 'An audio message'
-        : chatItem.message.includes('#GENERATED_AUDIO:')
-          ? chatItem.message.split('#GENERATED_AUDIO:')[0]
+        : chatItem.message.includes(generatedAudioString)
+          ? chatItem.message.split(generatedAudioString)[0]
           : chatItem.message;
     let formatted = toFormat;
     try {
@@ -156,8 +157,8 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
     // console.log('Audio: ', theAudio);
     return typeof chatItem.message !== 'string'
       ? 'An audio message'
-      : chatItem.message.includes('#GENERATED_AUDIO:')
-        ? chatItem.message.split('#GENERATED_AUDIO:')[1]
+      : chatItem.message.includes(generatedAudioString)
+        ? chatItem.message.split(generatedAudioString)[1]
         : null;
   }, [chatItem]);
   const [vote, setVote] = useState(0);
