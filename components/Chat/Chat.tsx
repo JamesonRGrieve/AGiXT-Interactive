@@ -6,7 +6,7 @@ import ConversationHistory from './ChatLog';
 import ConversationBar from './ChatBar';
 
 const conversationSWRPath = /conversation/;
-export default function Chat({ mode, showChatThemeToggles, alternateBackground }: ChatProps & UIProps): React.JSX.Element {
+export default function Chat({ showChatThemeToggles, alternateBackground }: ChatProps & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
   const [latestMessage, setLatestMessage] = useState('');
@@ -31,7 +31,7 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
       });
     } else {
       if (Object.keys(files).length > 0) {
-        const fileContents = Object.entries(files).map(([fileName, fileContent]: [string, string]) => ({
+        const fileContents = Object.entries(files).map(([, fileContent]: [string, string]) => ({
           type: `${fileContent.split(':')[1].split('/')[0]}_url`,
           [`${fileContent.split(':')[1].split('/')[0]}_url`]: {
             url: fileContent,
@@ -81,7 +81,6 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
       <ConversationBar
         onSend={(message, files) => chat(message, files)}
         disabled={loading}
-        mode={mode}
         showChatThemeToggles={showChatThemeToggles}
       />
     </>

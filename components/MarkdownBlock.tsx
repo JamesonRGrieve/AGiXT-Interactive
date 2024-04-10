@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { ReactNode, useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
@@ -64,9 +64,15 @@ const langMap = {
   nim: 'nim',
 };
 
-export default function MarkdownBlock({ content, chatItem }: { content: string; chatItem?: any }): React.JSX.Element {
+export default function MarkdownBlock({
+  content,
+  chatItem,
+}: {
+  content: string;
+  chatItem?: { role: string; timestamp: string };
+}): React.JSX.Element {
   const state = useContext(ChatContext);
-  const renderMessage = () => {
+  const renderMessage = (): ReactNode => {
     const message = content.toString();
     const match = message.match(/#(.*?)(?=\n|$)/);
     if (match) {
@@ -95,10 +101,10 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
     }
     return content;
   };
-  const generateId = (text) => {
+  const generateId = (text): string => {
     return text ? text.toLowerCase().replace(/\W+/g, '-') : '';
   };
-  const handleAnchorClick = (e) => {
+  const handleAnchorClick = (e): void => {
     const href = e.target.getAttribute('href');
     if (href.startsWith('#')) {
       e.preventDefault();
@@ -113,7 +119,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
     }
   };
 
-  const renderHeader = (Tag, children) => {
+  const renderHeader = (Tag, children): ReactNode => {
     let text = '';
     if (children && children[0]) {
       text = children[0];
@@ -121,7 +127,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
     const id = generateId(text);
     return <Tag id={id}>{children}</Tag>;
   };
-  const renderLink = ({ node, children, ...props }) => {
+  const renderLink = ({ children, ...props }): ReactNode => {
     const isExternal = props.href && !props.href.startsWith('#');
     return (
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events
@@ -144,16 +150,16 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
           className='react-markdown'
           components={{
             a: renderLink,
-            h1({ node, children }) {
+            h1({ children }) {
               return renderHeader('h1', children);
             },
-            h2({ node, children }) {
+            h2({ children }) {
               return renderHeader('h2', children);
             },
-            h3({ node, children }) {
+            h3({ children }) {
               return renderHeader('h3', children);
             },
-            h4({ node, children }) {
+            h4({ children }) {
               return renderHeader('h4', children);
             },
             ol({ children }) {
@@ -162,7 +168,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
             li({ children }) {
               return <li style={{ marginBottom: '0.5em' }}>{children}</li>;
             },
-            code({ node, inline, children, ...props }) {
+            code({ inline, children, ...props }) {
               if (inline) {
                 return (
                   <span
@@ -180,7 +186,7 @@ export default function MarkdownBlock({ content, chatItem }: { content: string; 
               // eslint-disable-next-line react-hooks/rules-of-hooks
               const codeBlockRef = React.useRef(null);
               const language = props.className?.replace(/language-/, '') || 'markdown';
-              const fileExtension = langMap[language] || 'md';
+              const fileExtension = langMap[String(language)] || 'md';
               const ts = chatItem
                 ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
                 : new Date().toLocaleString().replace(/\D/g, '');

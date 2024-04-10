@@ -9,7 +9,7 @@ const nextConfig = {
     NEXT_PUBLIC_APP_URI: process.env.APP_URI ?? 'http://localhost:3100',
     NEXT_PUBLIC_THEME_DEFAULT_MODE: process.env.DEFAULT_THEME_MODE || 'dark',
     NEXT_PUBLIC_TZ: process.env.TZ || 'TZ-America/New_York', // Server timezone
-    NEXT_PUBLIC_AUTH_WEB: process.env.AUTH_WEB || undefined, // undefined to disable auth.
+    NEXT_PUBLIC_AUTH_WEB: process.env.AUTH_WEB || '',
     NEXT_PUBLIC_MODE: process.env.MODE || 'production',
     // Monetization Options
     NEXT_PUBLIC_ADSENSE_ACCOUNT: process.env.ADSENSE_ACCOUNT || '',
@@ -17,7 +17,7 @@ const nextConfig = {
     // Common Options
     NEXT_PUBLIC_AGIXT_CONVERSATION_NAME: process.env.AGIXT_CONVERSATION || 'Default',
     NEXT_PUBLIC_AGIXT_CONVERSATION_MODE: process.env.AGIXT_CONVERSATION_MODE || 'static', // static, select or uuid
-    NEXT_PUBLIC_AGIXT_API_KEY: process.env.AGIXT_API_KEY || process.env.AUTH_WEB ? '' : undefined, // undefined to prompt, empty string for cookie, or defined for static
+    NEXT_PUBLIC_AGIXT_API_KEY: process.env.AGIXT_API_KEY || '',
     NEXT_PUBLIC_AGIXT_SERVER: process.env.AGIXT_SERVER || 'http://localhost:7437',
     NEXT_PUBLIC_INTERACTIVE_MODE: process.env.INTERACTIVE_MODE || 'chat',
     // UI Options
