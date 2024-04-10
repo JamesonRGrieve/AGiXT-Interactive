@@ -27,7 +27,8 @@ const nextConfig = {
       process.env.AGIXT_SHOW_SELECTION_BAR || process.env.AGIXT_CONVERSATION_MODE === 'select' ? 'conversation' : '', // empty, 'agent', 'conversation' or 'prompt'
     NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE: process.env.AGIXT_FOOTER_MESSAGE || 'Powered by AGiXT',
     NEXT_PUBLIC_AGIXT_RLHF: process.env.AGIXT_RLHF || 'false',
-    NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES: process.env.AGIXT_SHOW_CHAT_THEME_TOGGLES || 'false',
+    NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES:
+      process.env.AGIXT_SHOW_CHAT_THEME_TOGGLES || process.env.AGIXT_SHOW_APP_BAR === 'false' ? 'true' : 'false',
     NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED:
       process.env.AGIXT_FILE_UPLOAD_ENABLED || String(ChatDefault.chatSettings.enableFileUpload),
     NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED:
