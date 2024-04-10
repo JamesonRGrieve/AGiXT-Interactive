@@ -10,7 +10,7 @@ const nextConfig = {
     NEXT_PUBLIC_THEME_DEFAULT_MODE: process.env.DEFAULT_THEME_MODE || 'dark',
     NEXT_PUBLIC_TZ: process.env.TZ || 'TZ-America/New_York', // Server timezone
     NEXT_PUBLIC_AUTH_WEB: process.env.AUTH_WEB || undefined, // undefined to disable auth.
-
+    NEXT_PUBLIC_MODE: process.env.MODE || 'production',
     // Monetization Options
     NEXT_PUBLIC_ADSENSE_ACCOUNT: process.env.ADSENSE_ACCOUNT || '',
 
