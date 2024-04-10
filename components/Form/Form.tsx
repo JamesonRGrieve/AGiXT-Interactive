@@ -8,7 +8,7 @@ import ConversationBar from '../Chat/ChatBar';
 import FormInput from './FormInput';
 import FormOutput from './FormOutput';
 
-export default function Form({ mode, showChatThemeToggles }: ChatProps & UIProps): React.JSX.Element {
+export default function Form({ showChatThemeToggles }: ChatProps & UIProps): React.JSX.Element {
   const state = useContext(ChatContext);
   const [argValues, setArgValues] = useState({});
   const [uuids, setUUIDs] = useState([]);
@@ -36,14 +36,14 @@ export default function Form({ mode, showChatThemeToggles }: ChatProps & UIProps
       setArgValues(promptArgs.reduce((obj, key) => ({ ...obj, [key]: '' }), {}));
     }
   }, [promptArgs]);
-  async function submit(message, files) {
+  async function submit(message, files): Promise<string> {
     const messages = [];
     if (files.length > 0) {
       const fileContents = await Promise.all(
         files.map((file) => {
           return new Promise((resolve, reject) => {
             const reader = new FileReader();
-            reader.onload = function (event) {
+            reader.onload = function (event): void {
               const base64Content = Buffer.from(event.target.result as string, 'binary').toString('base64');
               resolve({
                 type: `${file.type.split('/')[0]}_url`,
@@ -89,7 +89,6 @@ export default function Form({ mode, showChatThemeToggles }: ChatProps & UIProps
       <ConversationBar
         onSend={(message, files) => submit(message, files)}
         disabled={loading}
-        mode={mode}
         clearOnSend={false}
         showChatThemeToggles={showChatThemeToggles}
       />

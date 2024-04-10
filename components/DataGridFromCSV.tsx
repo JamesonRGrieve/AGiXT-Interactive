@@ -2,7 +2,7 @@ import { DataGrid, GridToolbar, gridClasses } from '@mui/x-data-grid';
 import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextField, TextFieldProps } from '@mui/material';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { ChatConfig } from '../types/ChatContext';
 
 const ODD_OPACITY = 1;
@@ -32,12 +32,12 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData: any }): React.JSX.Element => {
+export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData: string }): ReactNode => {
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
   const [columns, setColumns] = useState([]);
-  const parseCSV = (csvData): any => {
+  const parseCSV = (csvData): void => {
     let headers = [];
     const lines = csvData.split('\n');
     if (lines.length === 2) {
@@ -47,21 +47,23 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
     headers = rawHeaders.map((header) => header.trim());
     const newRows = [];
     for (let i = 1; i < lines.length; i++) {
-      const values = lines[i].split('","');
+      const values = lines[String(i)].split('","');
       if (values.length === headers.length) {
-        const row = {} as any;
+        const row = {} as {
+          id: number;
+        };
         for (let j = 0; j < headers.length; j++) {
-          values[j] = values[j].trim();
-          if (values[j].startsWith('"') && values[j].endsWith('"')) {
-            values[j] = values[j].slice(1, -1);
+          values[String(j)] = values[String(j)].trim();
+          if (values[String(j)].startsWith('"') && values[String(j)].endsWith('"')) {
+            values[String(j)] = values[String(j)].slice(1, -1);
           }
-          if (values[j].startsWith('"')) {
-            values[j] = values[j].slice(1);
+          if (values[String(j)].startsWith('"')) {
+            values[String(j)] = values[String(j)].slice(1);
           }
-          if (values[j].endsWith('"')) {
-            values[j] = values[j].slice(0, -1);
+          if (values[String(j)].endsWith('"')) {
+            values[String(j)] = values[String(j)].slice(0, -1);
           }
-          row[headers[j]] = values[j];
+          row[headers[String(j)]] = values[String(j)];
         }
         if (!row.id) {
           row.id = i;

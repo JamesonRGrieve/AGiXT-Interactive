@@ -1,12 +1,11 @@
 import React from 'react';
 import AGiXTChat from '../components/InteractiveAGiXT';
 import { cookies } from 'next/headers';
-import Login from './Login';
+import EnterKey from './EnterKey';
 export default function Home() {
-  const cookieStore = cookies();
-  const apiKey = process.env.NEXT_PUBLIC_AGIXT_API_KEY ?? cookieStore.get('jwt')?.value ?? '';
+  const apiKey = process.env.NEXT_PUBLIC_AGIXT_API_KEY ?? cookies().get('jwt')?.value ?? '';
   if (process.env.MODE === 'development') {
     console.log('Server-Side API Key: ', apiKey);
   }
-  return apiKey ? <AGiXTChat /> : <Login />;
+  return apiKey ? <AGiXTChat /> : <EnterKey />;
 }

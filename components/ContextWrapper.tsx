@@ -55,6 +55,7 @@ export default function ChatContextWrapper({
       openai,
       ChatState,
     );
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     useEffect(() => {
       console.log('State changed to...', ChatState);
     }, [ChatState]);

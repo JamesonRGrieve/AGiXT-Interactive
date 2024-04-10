@@ -1,8 +1,12 @@
 'use client';
 import AGiXTSDK from 'agixt';
 import OpenAI from 'openai';
+import { Chat } from 'openai/resources/index.mjs';
 import { Context, createContext } from 'react';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const ChatDefault = require('./ChatDefault');
+
 export type ChainRunConfig = {
   chainArgs: object;
   singleStep: boolean;
@@ -34,7 +38,7 @@ export type ChatConfig = {
   commandArgs?: object;
   commandMessageArg?: string;
   chain?: string;
-  mutate?: any;
+  mutate?: (ChatConfig) => void | ((previous: ChatConfig) => ChatConfig);
   sdk?: AGiXTSDK;
   openai?: OpenAI;
 };

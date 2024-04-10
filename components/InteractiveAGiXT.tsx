@@ -2,16 +2,17 @@
 import { getCookie, setCookie } from 'cookies-next';
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
+import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
+import { Box, Typography } from '@mui/material';
 import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Form from './Form/Form';
 import ConversationSelector from './Selectors/ConversationSelector';
-import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
 
-import { Box, Typography } from '@mui/material';
 import AgentSelector from './Selectors/AgentSelector';
 import PromptSelector from './Selectors/PromptSelector';
+
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
   opts?: ChatConfig;

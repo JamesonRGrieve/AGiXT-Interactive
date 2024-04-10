@@ -18,10 +18,10 @@ import {
 } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, ThumbDown } from '@mui/icons-material';
 import clipboardCopy from 'clipboard-copy';
-
 import { ChatContext } from '../../types/ChatContext';
 import MarkdownBlock from '../MarkdownBlock';
-function formatDate(timestamp: string) {
+
+function formatDate(timestamp: string): string {
   // Create a date object from the timestamp
   const date = new Date(timestamp);
 
@@ -50,7 +50,15 @@ function formatDate(timestamp: string) {
   return localDate.toLocaleString('en-US', options);
 }
 
-export default function ConversationHistory({ conversation, latestMessage, alternateBackground }): React.JSX.Element {
+export default function ConversationHistory({
+  conversation,
+  latestMessage,
+  alternateBackground,
+}: {
+  conversation: { role: string; message: string; timestamp: string }[];
+  latestMessage: string;
+  alternateBackground?: string;
+}): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
   const state = useContext(ChatContext);
   const messagesEndRef = useRef(null);
@@ -73,11 +81,11 @@ export default function ConversationHistory({ conversation, latestMessage, alter
     >
       <Box display='flex' minHeight='min-content' flexDirection='column'>
         {conversation.length > 0 && conversation.map ? (
-          conversation.map((chatItem, index) => {
+          conversation.map((chatItem) => {
             if (chatItem.role === 'USER') {
               lastUserMessage = chatItem.message;
             }
-            return <ChatMessage key={index} chatItem={chatItem} lastUserMessage={lastUserMessage} />;
+            return <ChatMessage key={chatItem.timestamp} chatItem={chatItem} lastUserMessage={lastUserMessage} />;
           })
         ) : (
           <Box pt='2rem' pb='3rem'>
@@ -156,35 +164,13 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
   const theme = useTheme();
-  const handleClickOpen = (newVote) => {
-    setVote(newVote);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleCopyClick = () => {
-    clipboardCopy(formattedMessage);
-  };
-  const handleDownloadClick = () => {
-    const element = document.createElement('a');
-    const file = new Blob([formattedMessage], {
-      type: 'text/plain;charset=utf-8',
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = `${chatItem.role}-${chatItem.timestamp}.txt`;
-    document.body.appendChild(element);
-    element.click();
-  };
   return (
     <Box
       sx={{
         backgroundColor:
           chatItem.role === 'USER'
             ? theme.palette.background.default
-            : theme.palette[alternateBackground][theme.palette.mode],
+            : theme.palette[String(alternateBackground)][theme.palette.mode],
         padding: '10px',
         overflow: 'hidden',
         position: 'center',
@@ -210,30 +196,61 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
           {process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
             <>
               <Tooltip title='Provide Positive Feedback'>
-                <IconButton onClick={() => handleClickOpen(1)}>
+                <IconButton
+                  onClick={() => {
+                    setVote(1);
+                    setOpen(true);
+                  }}
+                >
                   <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
                 </IconButton>
               </Tooltip>
               <Tooltip title='Provide Negative Feedback'>
-                <IconButton onClick={() => handleClickOpen(-1)}>
+                <IconButton
+                  onClick={() => {
+                    setVote(-1);
+                    setOpen(true);
+                  }}
+                >
                   <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
                 </IconButton>
               </Tooltip>
             </>
           )}
           <Tooltip title='Copy Message'>
-            <IconButton onClick={handleCopyClick}>
+            <IconButton
+              onClick={() => {
+                clipboardCopy(formattedMessage);
+              }}
+            >
               <ContentCopyIcon />
             </IconButton>
           </Tooltip>
           <Tooltip title='Download Message'>
-            <IconButton onClick={handleDownloadClick}>
+            <IconButton
+              onClick={() => {
+                const element = document.createElement('a');
+                const file = new Blob([formattedMessage], {
+                  type: 'text/plain;charset=utf-8',
+                });
+                element.href = URL.createObjectURL(file);
+                element.download = `${chatItem.role}-${chatItem.timestamp}.txt`;
+                document.body.appendChild(element);
+                element.click();
+              }}
+            >
               <DownloadIcon />
             </IconButton>
           </Tooltip>
         </>
       )}
-      <Dialog open={open} onClose={handleClose} aria-labelledby='form-dialog-title'>
+      <Dialog
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        aria-labelledby='form-dialog-title'
+      >
         <DialogTitle id='form-dialog-title'>Provide Feedback</DialogTitle>
         <DialogContent>
           <DialogContentText>Please provide some feedback regarding the message.</DialogContentText>
@@ -248,13 +265,18 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color='error'>
+          <Button
+            onClick={() => {
+              setOpen(false);
+            }}
+            color='error'
+          >
             Cancel
           </Button>
           <Button
             onClick={() => {
               const messageText = `User Feedback: ${feedback} \n\n Message: ${chatItem.message} \n\n Last User Message: ${lastUserMessage}`;
-              handleClose();
+              setOpen(false);
               if (vote === 1) {
                 state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 2);
               } else {
