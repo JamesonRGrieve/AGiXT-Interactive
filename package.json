@@ -1,6 +1,6 @@
 {
   "name": "agixtchat",
-  "version": "0.0.57",
+  "version": "0.0.58",
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "next build",
@@ -25,7 +25,9 @@
     "./AudioRecorder": "./dist/components/Chat/AudioRecorder.js",
     "./ConversationBar": "./dist/components/Chat/ChatBar.js",
     "./ConversationLog": "./dist/components/Chat/ChatLog.js",
-    "./ConversationSelector": "./dist/components/ConversationSelector.js",
+    "./ConversationSelector": "./dist/components/Selectors/ConversationSelector.js",
+    "./PromptSelector": "./dist/components/Selectors/PromptSelector.js",
+    "./AgentSelector": "./dist/components/Selectors/AgentSelector.js",
     "./Context": "./dist/types/ChatContext.js"
   },
   "dependencies": {
@@ -38,7 +40,7 @@
     "agixt": "1.0.50",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.1.1",
-    "jrgcomponents": "^0.0.109",
+    "jrgcomponents": "^0.0.110",
     "next": "^14.1.4",
     "openai": "^4.33.0",
     "react": "^18.2.0",

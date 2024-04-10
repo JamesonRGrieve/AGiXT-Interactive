@@ -16,66 +16,69 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import React, { useContext, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { ChatContext } from '../types/ChatContext';
+import { ChatContext } from '../../types/ChatContext';
 
 export default function ConversationSelector(): React.JSX.Element {
-  const AGiXTState = useContext(ChatContext);
+  const state = useContext(ChatContext);
   const { data: conversationData } = useSWR<string[]>(
     `/conversation`,
-    async () => (await AGiXTState.sdk.getConversations()) as string[],
+    async () => (await state.sdk.getConversations()) as string[],
+  );
+  const { data: currentConversation } = useSWR(
+    '/conversation/' + state.chatSettings.conversationName,
+    async () => await state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1),
+    {
+      fallbackData: [],
+    },
   );
   const [openNewConversation, setOpenNewConversation] = useState(false);
   const [newConversationName, setNewConversationName] = useState('');
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
-  const state = useContext(ChatContext);
-  const handleAddConversation = async () => {
-    if (!newConversationName) {
-      return;
-    }
-    await state.sdk.newConversation(state.chatSettings.selectedAgent, newConversationName);
-    setNewConversationName('');
-    setOpenNewConversation(false);
-    mutate('/conversation');
-    state.mutate((oldState) => ({
-      ...oldState,
-      chatConfig: { ...oldState.chatConfig, conversationName: newConversationName },
-      chatSettings: { ...oldState.chatSettings, conversationName: newConversationName },
-    }));
-  };
-  const handleDeleteConversation = async () => {
-    if (!state.chatSettings.conversationName) {
-      return;
-    }
-    await state.sdk.deleteConversation(state.chatSettings.selectedAgent, state.chatSettings.conversationName);
-    const updatedConversations = conversationData.filter((c) => c !== state.chatSettings.conversationName);
-    state.mutate((oldState) => {
-      return {
+
+  const handleAddConversation = async (): Promise<void> => {
+    //console.log(state);
+    if (newConversationName) {
+      await state.sdk.newConversation(state.chatSettings.selectedAgent, newConversationName);
+      setNewConversationName('');
+      setOpenNewConversation(false);
+      mutate('/conversation');
+      state.mutate((oldState) => ({
         ...oldState,
-        conversation: updatedConversations,
-        chatConfig: { ...oldState.chatConfig, conversationName: updatedConversations[0] || '' },
-      };
-    });
-    setOpenDeleteConversation(false);
+        chatSettings: { ...oldState.chatSettings, conversationName: newConversationName },
+      }));
+    }
+  };
+  const handleDeleteConversation = async (): Promise<void> => {
+    if (state.chatSettings.conversationName) {
+      await state.sdk.deleteConversation(state.chatSettings.selectedAgent, state.chatSettings.conversationName);
+      await mutate('/conversation');
+      state.mutate((oldState) => {
+        return {
+          ...oldState,
+          chatSettings: {
+            ...oldState.chatSettings,
+            conversationName: conversationData[0],
+          },
+        };
+      });
+      setOpenDeleteConversation(false);
+    }
   };
 
-  const handleExportConversation = async () => {
-    // TODO Fetch the conversation from SDK.
-    /*
-    if (!state.chatSettings.conversationName) {
-      return;
+  const handleExportConversation = async (): Promise<void> => {
+    if (state.chatSettings.conversationName) {
+      const element = document.createElement('a');
+      const file = new Blob([JSON.stringify(currentConversation)], {
+        type: 'application/json',
+      });
+      element.href = URL.createObjectURL(file);
+      element.download = `${state.chatSettings.conversationName}.json`;
+      document.body.appendChild(element); // Required for this to work in FireFox
+      element.click();
     }
-    const element = document.createElement('a');
-    const file = new Blob([JSON.stringify(state.chatState.conversation)], {
-      type: 'application/json',
-    });
-    element.href = URL.createObjectURL(file);
-    element.download = `${state.chatSettings.conversationName}.json`;
-    document.body.appendChild(element); // Required for this to work in FireFox
-    element.click();
-  */
   };
-  // console.log('conversationData', conversationData);
+
   return (
     <>
       <Tooltip title='Select a Conversation'>
@@ -86,6 +89,7 @@ export default function ConversationSelector(): React.JSX.Element {
             alignItems: 'center',
           }}
           fullWidth
+          size='small'
         >
           <Select
             sx={{
@@ -101,6 +105,7 @@ export default function ConversationSelector(): React.JSX.Element {
                 color: 'white',
                 opacity: '1',
               },
+              fontSize: '12px',
             }}
             fullWidth
             labelId='conversation-label'
@@ -133,19 +138,22 @@ export default function ConversationSelector(): React.JSX.Element {
           </Select>
         </FormControl>
       </Tooltip>
+      &nbsp;
       <Tooltip title='Add Conversation'>
-        <Button onClick={() => setOpenNewConversation(true)} color={'info'} sx={{ minWidth: '20px' }}>
-          <AddIcon sx={{ minWidth: '20px' }} color={'info'} />
+        <Button variant='outlined' onClick={() => setOpenNewConversation(true)} color='info' sx={{ minWidth: '20px' }}>
+          <AddIcon sx={{ minWidth: '20px' }} />
         </Button>
       </Tooltip>
+      &nbsp;
       <Tooltip title='Export Conversation'>
-        <Button onClick={handleExportConversation} color={'info'} sx={{ minWidth: '20px' }}>
-          <FileDownloadOutlinedIcon sx={{ minWidth: '20px' }} color={'info'} />
+        <Button variant='outlined' onClick={handleExportConversation} color='info' sx={{ minWidth: '20px' }}>
+          <FileDownloadOutlinedIcon sx={{ minWidth: '20px' }} />
         </Button>
       </Tooltip>
+      &nbsp;
       <Tooltip title='Delete Conversation'>
-        <Button onClick={() => setOpenDeleteConversation(true)} color={'error'} sx={{ minWidth: '20px' }}>
-          <DeleteIcon sx={{ minWidth: '20px' }} color={'error'} />
+        <Button variant='outlined' onClick={() => setOpenDeleteConversation(true)} color='error' sx={{ minWidth: '20px' }}>
+          <DeleteIcon sx={{ minWidth: '20px' }} />
         </Button>
       </Tooltip>
       <Dialog open={openNewConversation} onClose={() => setOpenNewConversation(false)} disableRestoreFocus>
@@ -161,7 +169,6 @@ export default function ConversationSelector(): React.JSX.Element {
             onChange={(e) => setNewConversationName(e.target.value)}
             variant='outlined'
             color='info'
-            autoFocus
           />
         </DialogContent>
         <DialogActions>

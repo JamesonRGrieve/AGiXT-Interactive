@@ -12,6 +12,7 @@ const ChatDefault = {
     insightAgentName: '',
     enableMemory: false,
     enableFileUpload: false,
+    enableVoiceInput: true,
     useSelectedAgent: true,
     chainRunConfig: {
       chainArgs: {},

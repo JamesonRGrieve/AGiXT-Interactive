@@ -5,20 +5,23 @@ import { ChatContext } from '../../types/ChatContext';
 import ConversationHistory from './ChatLog';
 import ConversationBar from './ChatBar';
 
+const conversationSWRPath = /conversation/;
 export default function Chat({ mode, showChatThemeToggles, alternateBackground }: ChatProps & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
   const [latestMessage, setLatestMessage] = useState('');
   const state = useContext(ChatContext);
+  console.log(state.openai);
+
   const conversation = useSWR(
-    '/conversation/' + state.chatSettings.conversationName,
+    conversationSWRPath + state.chatSettings.conversationName,
     async () => await state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1),
     {
       fallbackData: [],
     },
   );
 
-  async function chat(message, files) {
+  async function chat(message, files): Promise<string> {
     const messages = [];
     // console.log(message);
     if (typeof message === 'object' && message.type === 'audio_url') {
@@ -27,25 +30,13 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
         content: [message],
       });
     } else {
-      if (files?.length > 0) {
-        const fileContents = await Promise.all(
-          files.map((file) => {
-            return new Promise((resolve, reject) => {
-              const reader = new FileReader();
-              reader.onload = function (event) {
-                const base64Content = Buffer.from(event.target.result as string, 'binary').toString('base64');
-                resolve({
-                  type: `${file.type.split('/')[0]}_url`,
-                  [`${file.type.split('/')[0]}_url`]: {
-                    url: `data:${file.type};base64,${base64Content}`,
-                  },
-                });
-              };
-              reader.onerror = reject;
-              reader.readAsBinaryString(file);
-            });
-          }),
-        );
+      if (Object.keys(files).length > 0) {
+        const fileContents = Object.entries(files).map(([fileName, fileContent]: [string, string]) => ({
+          type: `${fileContent.split(':')[1].split('/')[0]}_url`,
+          [`${fileContent.split(':')[1].split('/')[0]}_url`]: {
+            url: fileContent,
+          },
+        }));
         messages.push({
           role: 'user',
           content: [
@@ -65,9 +56,9 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
     };
     setLoading(true);
     setLatestMessage(message);
-    // console.log('Sending: ', toOpenAI);
+    console.log('Sending: ', state.openai, toOpenAI);
     const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
-    mutate('/conversation/' + state.chatSettings.conversationName);
+    mutate(conversationSWRPath + state.chatSettings.conversationName);
     setLoading(false);
     setLatestMessage('');
     if (chatCompletion?.choices[0]?.message.content.length > 0) {
@@ -78,7 +69,7 @@ export default function Chat({ mode, showChatThemeToggles, alternateBackground }
   }
   useEffect(() => {
     // console.log("Conversation changed, fetching new conversation's messages.", state.chatSettings.conversationName);
-    mutate('/conversation/' + state.chatSettings.conversationName);
+    mutate(conversationSWRPath + state.chatSettings.conversationName);
   }, [state.chatSettings.conversationName]);
   return (
     <>

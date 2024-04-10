@@ -1,5 +1,5 @@
 'use client';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
@@ -14,6 +14,8 @@ import {
   DialogActions,
   IconButton,
   useTheme,
+  Chip,
+  Typography,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { setCookie } from 'cookies-next';
@@ -27,18 +29,20 @@ export default function ConversationBar({
   mode,
   onSend,
   disabled,
+  clearOnSend = true,
   showChatThemeToggles = process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
 }: {
   mode: 'prompt' | 'chain' | 'command';
   onSend: any;
   disabled: boolean;
+  clearOnSend?: boolean;
   showChatThemeToggles: boolean;
 }) {
   const state = useContext(ChatContext);
   const theme = useTheme();
   // console.log('Prop Show Themes', showChatThemeToggles);
   // console.log('Env Show Themes', process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true');
-  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<{ [x: string]: string }>({});
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [alternativeInputActive, setAlternativeInputActive] = useState(false);
@@ -129,156 +133,172 @@ export default function ConversationBar({
     return await state.sdk.promptAgent(state.chatSettings.selectedAgent, promptName, stateArgs);
   };
   */
-
-  const handleUploadFiles = async () => {
-    // Uploaded files will be formatted like [{"file_name": "file_content"}]
-    const newUploadedFiles: { [x: string]: string }[] = [];
-    // Format for state.uploadedFiles should be [{"file_name": "file_content"}]
-    // Iterate through the files and add them to the form data
-    for (const file of uploadedFiles) {
-      const fileContent = await file.text();
-      newUploadedFiles.push({ [file.name]: fileContent });
-      state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, uploadedFiles: newUploadedFiles } }));
-      setFileUploadOpen(false);
+  useEffect(() => {
+    console.log(uploadedFiles);
+  }, [uploadedFiles]);
+  const handleUploadFiles = async (event) => {
+    const newUploadedFiles: { [x: string]: string } = {};
+    for (const file of event.target.files) {
+      const fileContent = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      newUploadedFiles[file.name] = fileContent as string;
     }
+    setUploadedFiles((previous) => ({ ...previous, ...newUploadedFiles }));
+    setFileUploadOpen(false);
   };
 
   return (
-    <Box px='1rem' display='flex' flexDirection='row' justifyContent='space-between' alignItems='center'>
-      <TextField
-        label={`Enter your message to ${state.chatSettings.selectedAgent} here.`}
-        placeholder={`Hello, ${state.chatSettings.selectedAgent}!`}
-        multiline
-        rows={2}
-        fullWidth
-        value={message}
-        onKeyDown={async (event) => {
-          if (event.key === 'Enter' && !event.shiftKey && message) {
-            event.preventDefault();
-            onSend(message, uploadedFiles);
-          }
-        }}
-        onChange={(e) => setMessage(e.target.value)}
-        sx={{ my: 2 }}
-        disabled={disabled}
-        InputProps={{
-          endAdornment: (
-            <InputAdornment position='end'>
-              {state.chatSettings.enableFileUpload && (
-                <>
-                  <IconButton
-                    onClick={() => {
-                      setFileUploadOpen(true);
+    <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
+      <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
+        <TextField
+          label={`Enter your message to ${state.chatSettings.selectedAgent} here.`}
+          placeholder={`Hello, ${state.chatSettings.selectedAgent}!`}
+          multiline
+          rows={2}
+          fullWidth
+          value={message}
+          onKeyDown={async (event) => {
+            if (event.key === 'Enter' && !event.shiftKey && message) {
+              event.preventDefault();
+              onSend(message, uploadedFiles);
+            }
+          }}
+          onChange={(e) => setMessage(e.target.value)}
+          sx={{ my: 2 }}
+          disabled={disabled}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position='end'>
+                {state.chatSettings.enableFileUpload && (
+                  <>
+                    <IconButton
+                      onClick={() => {
+                        setFileUploadOpen(true);
+                        state.mutate((oldState) => ({
+                          ...oldState,
+                          chatState: { ...oldState.chatState, uploadedFiles: [] },
+                        }));
+                      }}
+                      disabled={disabled}
+                      color='primary'
+                      sx={{
+                        height: '56px',
+                      }}
+                    >
+                      <NoteAddOutlinedIcon />
+                    </IconButton>
+                    <Dialog
+                      open={fileUploadOpen}
+                      onClose={() => {
+                        setFileUploadOpen(false);
+                      }}
+                    >
+                      <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
+                      <DialogContent>
+                        <DialogContentText>Please upload the files you would like to send.</DialogContentText>
+                        <input accept='*' id='contained-button-file' multiple type='file' onChange={handleUploadFiles} />
+                      </DialogContent>
+                    </Dialog>
+                  </>
+                )}
+                {!alternativeInputActive && (
+                  <Tooltip title='Send Message'>
+                    <IconButton
+                      onClick={() => {
+                        if (clearOnSend) {
+                          setMessage('');
+                          setUploadedFiles({});
+                        }
+                        onSend(message, uploadedFiles);
+                      }}
+                      disabled={disabled}
+                      color='primary'
+                      sx={{
+                        height: '56px',
+                        padding: '0.5rem',
+                      }}
+                    >
+                      <SendIcon />
+                    </IconButton>
+                  </Tooltip>
+                )}
+                {state.chatSettings.enableVoiceInput && (
+                  <AudioRecorder
+                    mode={mode}
+                    recording={alternativeInputActive}
+                    setRecording={setAlternativeInputActive}
+                    disabled={disabled}
+                    onSend={onSend}
+                  />
+                )}
+              </InputAdornment>
+            ),
+          }}
+        />
+        {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
+          process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && (
+            <Tooltip title='Reset Conversation (Forever)'>
+              <IconButton
+                onClick={() => {
+                  if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid') {
+                    if (confirm('Are you sure you want to reset the conversation? This cannot be undone.')) {
+                      const uuid = crypto.randomUUID();
+                      setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
                       state.mutate((oldState) => ({
                         ...oldState,
-                        chatState: { ...oldState.chatState, uploadedFiles: [] },
+                        chatConfig: { ...oldState.chatConfig, conversationName: uuid },
                       }));
-                    }}
-                    disabled={disabled}
-                    color='primary'
-                    sx={{
-                      height: '56px',
-                    }}
-                  >
-                    <NoteAddOutlinedIcon />
-                  </IconButton>
-                  <Dialog
-                    open={fileUploadOpen}
-                    onClose={() => {
-                      setFileUploadOpen(false);
-                    }}
-                  >
-                    <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
-                    <DialogContent>
-                      <DialogContentText>Please upload the files you would like to send.</DialogContentText>
-                      <input
-                        accept='*'
-                        id='contained-button-file'
-                        multiple
-                        type='file'
-                        onChange={(e) => {
-                          state.mutate((oldState) => ({
-                            ...oldState,
-                            chatState: { ...oldState.chatState, uploadedFiles: Array(e.target.files) },
-                          }));
-                        }}
-                      />
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        onClick={() => {
-                          setFileUploadOpen(false);
-                        }}
-                        color='error'
-                      >
-                        Cancel
-                      </Button>
-                      <Button onClick={handleUploadFiles} disabled={disabled} color='primary'>
-                        Upload
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
-                </>
-              )}
-              {!alternativeInputActive && (
-                <Tooltip title='Send Message'>
-                  <IconButton
-                    onClick={() => onSend(message, uploadedFiles)}
-                    disabled={disabled}
-                    color='primary'
-                    sx={{
-                      height: '56px',
-                      padding: '0.5rem',
-                    }}
-                  >
-                    <SendIcon />
-                  </IconButton>
-                </Tooltip>
-              )}
-              <AudioRecorder
-                mode={mode}
-                recording={alternativeInputActive}
-                setRecording={setAlternativeInputActive}
-                disabled={disabled}
-                onSend={onSend}
-              />
-            </InputAdornment>
-          ),
-        }}
-      />
-      {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
-        process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && (
-          <Tooltip title='Reset Conversation (Forever)'>
-            <IconButton
-              onClick={() => {
-                if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid') {
-                  if (confirm('Are you sure you want to reset the conversation? This cannot be undone.')) {
-                    const uuid = crypto.randomUUID();
-                    setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
-                    state.mutate((oldState) => ({
-                      ...oldState,
-                      chatConfig: { ...oldState.chatConfig, conversationName: uuid },
-                    }));
+                    }
+                  } else {
+                    alert('This feature is not available in this mode.');
                   }
-                } else {
-                  alert('This feature is not available in this mode.');
-                }
-              }}
-              disabled={disabled}
-              color='primary'
-              sx={{
-                height: '56px',
-                padding: '1rem',
-              }}
-            >
-              <DeleteForever />
-            </IconButton>
-          </Tooltip>
+                }}
+                disabled={disabled}
+                color='primary'
+                sx={{
+                  height: '56px',
+                  padding: '1rem',
+                }}
+              >
+                <DeleteForever />
+              </IconButton>
+            </Tooltip>
+          )}
+        {showChatThemeToggles && (
+          <Box display='flex' flexDirection='column' alignItems='center'>
+            <SwitchDark />
+            <SwitchColorblind />
+          </Box>
         )}
-      {showChatThemeToggles && (
-        <Box display='flex' flexDirection='column' alignItems='center'>
-          <SwitchDark />
-          <SwitchColorblind />
+      </Box>
+      {Object.keys(uploadedFiles).length > 0 && (
+        <Box
+          display='flex'
+          flexDirection='row'
+          justifyContent='start'
+          width='100%'
+          mb='1rem'
+          gap='0.5rem'
+          alignItems='center'
+        >
+          <Typography variant='caption'>Uploaded Files: </Typography>
+          {Object.entries(uploadedFiles).map(([fileName, fileContent]) => (
+            <Chip
+              key={fileName}
+              label={fileName}
+              onDelete={() => {
+                setUploadedFiles((prevFiles) => {
+                  const newFiles = { ...prevFiles };
+                  delete newFiles[fileName];
+                  return newFiles;
+                });
+              }}
+            />
+          ))}
         </Box>
       )}
     </Box>

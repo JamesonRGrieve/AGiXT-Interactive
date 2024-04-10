@@ -14,7 +14,6 @@ export default function Login() {
       <Button
         variant='contained'
         onClick={() => {
-          setCookie('apiKey', apiKey);
           setCookie('jwt', apiKey);
           location.reload();
         }}
