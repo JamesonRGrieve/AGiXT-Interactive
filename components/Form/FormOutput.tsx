@@ -19,6 +19,7 @@ export default function FormInput({ results }) {
           overflowY: 'scroll',
           flexGrow: '1',
           mx: '1rem',
+          mb: '1rem',
         }}
       >
         {' '}

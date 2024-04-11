@@ -10,6 +10,7 @@ import {
   TextField,
   DialogActions,
   Tooltip,
+  Box,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -138,24 +139,23 @@ export default function ConversationSelector(): React.JSX.Element {
           </Select>
         </FormControl>
       </Tooltip>
-      &nbsp;
-      <Tooltip title='Add Conversation'>
-        <Button variant='outlined' onClick={() => setOpenNewConversation(true)} color='info' sx={{ minWidth: '20px' }}>
-          <AddIcon sx={{ minWidth: '20px' }} />
-        </Button>
-      </Tooltip>
-      &nbsp;
-      <Tooltip title='Export Conversation'>
-        <Button variant='outlined' onClick={handleExportConversation} color='info' sx={{ minWidth: '20px' }}>
-          <FileDownloadOutlinedIcon sx={{ minWidth: '20px' }} />
-        </Button>
-      </Tooltip>
-      &nbsp;
-      <Tooltip title='Delete Conversation'>
-        <Button variant='outlined' onClick={() => setOpenDeleteConversation(true)} color='error' sx={{ minWidth: '20px' }}>
-          <DeleteIcon sx={{ minWidth: '20px' }} />
-        </Button>
-      </Tooltip>
+      <Box display='flex' justifyContent='space-between'>
+        <Tooltip title='Add Conversation'>
+          <Button variant='outlined' onClick={() => setOpenNewConversation(true)} color='info' sx={{ minWidth: '20px' }}>
+            <AddIcon sx={{ minWidth: '20px' }} />
+          </Button>
+        </Tooltip>
+        <Tooltip title='Export Conversation'>
+          <Button variant='outlined' onClick={handleExportConversation} color='info' sx={{ minWidth: '20px' }}>
+            <FileDownloadOutlinedIcon sx={{ minWidth: '20px' }} />
+          </Button>
+        </Tooltip>
+        <Tooltip title='Delete Conversation'>
+          <Button variant='outlined' onClick={() => setOpenDeleteConversation(true)} color='error' sx={{ minWidth: '20px' }}>
+            <DeleteIcon sx={{ minWidth: '20px' }} />
+          </Button>
+        </Tooltip>
+      </Box>
       <Dialog open={openNewConversation} onClose={() => setOpenNewConversation(false)} disableRestoreFocus>
         <DialogTitle>Create New Conversation</DialogTitle>
         <DialogContent>
