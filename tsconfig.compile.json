@@ -1,15 +1,12 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false, // TODO Make this work.
     "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
     "strictNullChecks": false, // TODO Make this work.
     "esModuleInterop": true,
     "module": "esnext",
@@ -24,23 +21,11 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "incremental": true,
-    "noEmit": true
+    "noEmit": false
   },
-  "include": [
-    "new-types.d.ts",
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
-    "**/*.ts",
-    "**/*.tsx",
-    "**/*.js",
-    "**/*.jsx"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["types/*.ts", "types/*.js", "components/**/*"],
+  "exclude": ["**/*.stories.*", "node_modules"]
 }

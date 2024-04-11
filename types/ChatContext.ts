@@ -1,7 +1,6 @@
 'use client';
 import AGiXTSDK from 'agixt';
 import OpenAI from 'openai';
-import { Chat } from 'openai/resources/index.mjs';
 import { Context, createContext } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires

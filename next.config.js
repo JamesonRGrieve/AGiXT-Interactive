@@ -10,7 +10,7 @@ const nextConfig = {
     NEXT_PUBLIC_THEME_DEFAULT_MODE: process.env.DEFAULT_THEME_MODE || 'dark',
     NEXT_PUBLIC_TZ: process.env.TZ || 'TZ-America/New_York', // Server timezone
     NEXT_PUBLIC_AUTH_WEB: process.env.AUTH_WEB || '',
-    NEXT_PUBLIC_MODE: process.env.NODE_ENV || 'production',
+
     // Monetization Options
     NEXT_PUBLIC_ADSENSE_ACCOUNT: process.env.ADSENSE_ACCOUNT || '',
 
@@ -21,10 +21,10 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_SERVER: process.env.AGIXT_SERVER || 'http://localhost:7437',
 
     // UI Options
-    NEXT_PUBLIC_INTERACTIVE_UI: process.env.INTERACTIVE_MODE || 'chat',
+    NEXT_PUBLIC_INTERACTIVE_UI: process.env.INTERACTIVE_UI || 'chat',
     NEXT_PUBLIC_AGIXT_SHOW_APP_BAR: process.env.AGIXT_SHOW_APP_BAR || 'true',
     NEXT_PUBLIC_AGIXT_SHOW_SELECTION:
-      process.env.AGIXT_SHOW_SELECTION || (process.env.AGIXT_CONVERSATION_MODE === 'select' ? 'conversation' : ''), // '', 'agent', 'conversation' or 'prompt'
+      process.env.AGIXT_SHOW_SELECTION || (process.env.AGIXT_CONVERSATION_MODE === 'select' ? 'conversation' : ''), // csv of: 'agent', 'conversation' and/or 'prompt'
     NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE: process.env.AGIXT_FOOTER_MESSAGE || 'Powered by AGiXT',
     NEXT_PUBLIC_AGIXT_RLHF: process.env.AGIXT_RLHF || 'false',
     NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES:
@@ -52,6 +52,7 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_CHAIN: process.env.AGIXT_CHAIN || ChatDefault.chain,
     NEXT_PUBLIC_AGIXT_CHAIN_ARGS:
       process.env.AGIXT_CHAIN_ARGS || JSON.stringify(ChatDefault.chatSettings.chainRunConfig.chainArgs),
+    NEXT_PUBLIC_ENV: process.env.ENV || process.env.NODE_ENV || 'development',
 
     // Derived Options
     NEXT_PUBLIC_COOKIE_DOMAIN: `.${((process.env.APP_URI ?? 'http://localhost:3100').split('://')[1] ?? '')
@@ -65,11 +66,11 @@ const nextConfig = {
   eslint: {
     // Warning: This allows production builds to successfully complete even if
     // your project has ESLint errors.
-    ignoreDuringBuilds: (process.env.NODE_ENV ?? 'production').toLowerCase() !== 'development',
+    ignoreDuringBuilds: (process.env.ENV || process.env.NODE_ENV || 'production').toLowerCase() !== 'development',
   },
   typescript: {
     // Warning: Dangerously allow production builds to successfully complete even if your project has type errors.
-    ignoreBuildErrors: (process.env.NODE_ENV ?? 'production').toLowerCase() !== 'development',
+    ignoreBuildErrors: (process.env.ENV || process.env.NODE_ENV || 'production').toLowerCase() !== 'development',
   },
 };
 // eslint-disable-next-line @typescript-eslint/no-var-requires

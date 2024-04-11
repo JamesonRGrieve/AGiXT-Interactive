@@ -17,6 +17,7 @@ export default function FormInput({
         if (argType.toLowerCase() === 'text') {
           return (
             <TextField
+              fullWidth
               variant='outlined'
               disabled={disabled}
               label={argName.replace(/([A-Z])/g, ' $1')}

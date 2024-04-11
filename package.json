@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "next dev -p 3100",
     "build": "next build",
-    "compile": "tsc --jsx react-jsx",
+    "compile": "tsc --jsx react-jsx --project tsconfig.compile.json",
     "start": "next start -p 3437",
     "lint": "next lint",
     "lint-fix": "next lint --fix",
