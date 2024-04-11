@@ -109,7 +109,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
     parseCSV(csvData);
   }, [csvData]);
 
-  const getInsights = async (userMessage) => {
+  const getInsights = async (userMessage): Promise<void> => {
     state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, isLoading: true } }));
     const lines = csvData.split('\n');
     lines.shift();

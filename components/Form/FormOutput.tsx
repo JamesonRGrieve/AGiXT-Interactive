@@ -1,9 +1,9 @@
 import { Card, CardContent, IconButton, Tooltip, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, CopyAllOutlined } from '@mui/icons-material';
 import MarkdownBlock from '../MarkdownBlock';
 
-export default function FormInput({ results }) {
+export default function FormInput({ results }): ReactNode {
   const [resultNum, setResultNum] = useState(0);
   // console.log('Results', results);
   useEffect(() => {
@@ -32,7 +32,7 @@ export default function FormInput({ results }) {
           <Tooltip title='Copy this result.'>
             <IconButton
               onClick={() => {
-                navigator.clipboard.writeText(results[resultNum]);
+                navigator.clipboard.writeText(results[String(resultNum)]);
               }}
             >
               <CopyAllOutlined sx={{ fontSize: '3rem' }} />
@@ -60,7 +60,7 @@ export default function FormInput({ results }) {
           </Tooltip>
         </Typography>
         <CardContent>
-          <MarkdownBlock content={results[resultNum]} />
+          <MarkdownBlock content={results[String(resultNum)]} />
         </CardContent>
       </Card>
     )
