@@ -3,7 +3,7 @@ import { getCookie, setCookie } from 'cookies-next';
 import React, { useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, useMediaQuery } from '@mui/material';
 import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
@@ -89,7 +89,7 @@ const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
   if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
-  if (process.env.MODE === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     console.log('Stateful API Key: ', apiKey);
     console.log('Stateful AGiXTChat initialized with server config (server:key): ', agixtServer, apiKey);
     console.log('InteractiveAGiXT Props: ', props);
@@ -130,12 +130,30 @@ const Stateless = (props: ChatProps & UIProps): React.JSX.Element => {
   return <Interactive {...props} />;
 };
 const Interactive = (props: ChatProps & UIProps): React.JSX.Element => {
+  const mobile = useMediaQuery('(max-width: 600px)');
+  console.log(mobile);
   return (
     <AppWrapper
       header={
         process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true' && {
+          height: mobile ? 'unset' : undefined,
           components: {
-            left: selectionBars[process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION_BAR],
+            left: mobile ? undefined : selectionBars[process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION],
+            center: mobile ? (
+              <Box
+                display='flex'
+                flexDirection='column'
+                justifyContent='center'
+                alignItems='center'
+                gap='0.5rem'
+                my='0.5rem'
+              >
+                <Typography variant='h6'>{process.env.NEXT_PUBLIC_APP_NAME}</Typography>
+                <Box display='flex' justifyContent='center' alignItems='center'>
+                  {selectionBars[process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION]}
+                </Box>
+              </Box>
+            ) : undefined,
           },
         }
       }

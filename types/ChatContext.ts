@@ -38,6 +38,7 @@ export type ChatConfig = {
   commandArgs?: object;
   commandMessageArg?: string;
   chain?: string;
+  mode?: 'prompt' | 'chain' | 'command';
   mutate?: (ChatConfig) => void | ((previous: ChatConfig) => ChatConfig);
   sdk?: AGiXTSDK;
   openai?: OpenAI;

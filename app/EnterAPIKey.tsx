@@ -2,7 +2,7 @@
 import { setCookie } from 'cookies-next';
 import React, { useState } from 'react';
 import { Box, Button, TextField, Typography } from '@mui/material';
-export default function Login() {
+export default function EnterAPIKey() {
   const [apiKey, setApiKey] = useState('');
   return (
     <Box
@@ -26,7 +26,9 @@ export default function Login() {
         variant='contained'
         fullWidth
         onClick={() => {
-          setCookie('jwt', apiKey);
+          setCookie('jwt', apiKey, {
+            domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+          });
           location.reload();
         }}
       >
