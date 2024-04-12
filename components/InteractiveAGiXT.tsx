@@ -18,6 +18,13 @@ export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
   opts?: ChatConfig;
 };
+export type FormProps = {
+  fieldsForPrompt?: { [key: string]: ReactNode };
+  formContext?: object;
+  additionalFields?: { [key: string]: ReactNode };
+  additionalOutputButtons: { [key: string]: ReactNode };
+  onSubmit?: (data: object) => void;
+};
 export type UIProps = {
   showAppBar?: boolean;
   showConversationSelector?: boolean;
@@ -30,10 +37,11 @@ export type ServerProps = {
   apiKey: string;
   agixtServer: string;
 };
-export type AGiXTChatProps = {
+export type AGiXTInteractiveProps = {
   uiConfig?: UIProps;
   serverConfig?: ServerProps;
   chatConfig?: ChatProps;
+  formConfig?: FormProps;
 };
 const selectionBars = {
   agent: <AgentSelector />,
@@ -41,7 +49,7 @@ const selectionBars = {
   prompt: <PromptSelector />,
   '': <span>&nbsp;</span>,
 };
-const Stateful = (props: AGiXTChatProps): React.JSX.Element => {
+const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
   const searchParams = useSearchParams();
   const searchParamConfig = {
     mode: ['prompt', 'chain'].includes(searchParams.get('mode'))
@@ -189,7 +197,7 @@ const AGiXTChat = ({
   },
   serverConfig = null,
   uiConfig = {},
-}: AGiXTChatProps & { stateful?: boolean }): React.JSX.Element => {
+}: AGiXTInteractiveProps & { stateful?: boolean }): React.JSX.Element => {
   const uiConfigWithEnv = useMemo(
     () => ({
       showAppBar: process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
