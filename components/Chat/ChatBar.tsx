@@ -70,6 +70,10 @@ export default function ConversationBar({
           onKeyDown={async (event) => {
             if (event.key === 'Enter' && !event.shiftKey && message) {
               event.preventDefault();
+              if (clearOnSend) {
+                setMessage('');
+                setUploadedFiles({});
+              }
               onSend(message, uploadedFiles);
             }
           }}
