@@ -19,7 +19,7 @@ export type ChatProps = {
   opts?: ChatConfig;
 };
 export type FormProps = {
-  fieldsForPrompt?: { [key: string]: ReactNode };
+  fieldOverrides?: { [key: string]: ReactNode };
   formContext?: object;
   additionalFields?: { [key: string]: ReactNode };
   additionalOutputButtons: { [key: string]: ReactNode };
