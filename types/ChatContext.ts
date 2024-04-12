@@ -6,13 +6,13 @@ import { Context, createContext } from 'react';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ChatDefault = require('./ChatDefault');
 
-export type ChainRunConfig = {
+export type ChainConfig = {
   chainArgs: object;
   singleStep: boolean;
   fromStep: number;
   allResponses: boolean;
 };
-export type ChatSettings = {
+export type Overrides = {
   selectedAgent?: string;
   contextResults?: number;
   shots?: number;
@@ -27,10 +27,11 @@ export type ChatSettings = {
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
   useSelectedAgent?: boolean;
-  chainRunConfig?: ChainRunConfig;
+  chainRunConfig?: ChainConfig;
 };
-export type ChatConfig = {
-  chatSettings?: ChatSettings;
+
+export type InteractiveConfig = {
+  chatSettings?: Overrides;
   prompt?: string;
   promptCategory?: string;
   command?: string;
@@ -38,9 +39,11 @@ export type ChatConfig = {
   commandMessageArg?: string;
   chain?: string;
   mode?: 'prompt' | 'chain' | 'command';
-  mutate?: (ChatConfig) => void | ((previous: ChatConfig) => ChatConfig);
+  mutate?: (InteractiveConfig) => void | ((previous: InteractiveConfig) => InteractiveConfig);
   sdk?: AGiXTSDK;
   openai?: OpenAI;
 };
-export const ChatContext: Context<ChatConfig> = createContext<ChatConfig>(ChatDefault as unknown as ChatConfig);
+export const ChatContext: Context<InteractiveConfig> = createContext<InteractiveConfig>(
+  ChatDefault as unknown as InteractiveConfig,
+);
 export const ChatDefaultConfig = ChatDefault;

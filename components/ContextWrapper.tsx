@@ -2,7 +2,7 @@
 import React, { useState, ReactNode, useEffect } from 'react';
 import AGiXTSDK from 'agixt';
 import OpenAI from 'openai';
-import { ChatContext, ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
+import { ChatContext, ChatDefaultConfig, InteractiveConfig } from '../types/ChatContext';
 
 export default function ChatContextWrapper({
   initialState = ChatDefaultConfig,
@@ -13,7 +13,7 @@ export default function ChatContextWrapper({
   requireKey?: boolean;
   apiKey?: string;
   agixtServer?: string;
-  initialState?: ChatConfig;
+  initialState?: InteractiveConfig;
   children: ReactNode;
 }): React.JSX.Element {
   if (process.env.NEXT_PUBLIC_MODE === 'development') {
@@ -36,7 +36,7 @@ export default function ChatContextWrapper({
     dangerouslyAllowBrowser: true,
   });
   // Used to determine whether to render the app or not (populates with any fetch errors from tryFetch calls).
-  const [ChatState, setChatState] = useState<ChatConfig>({
+  const [ChatState, setChatState] = useState<InteractiveConfig>({
     // Default state and initializes the SDK
     ...ChatDefaultConfig,
     ...initialState,
@@ -44,7 +44,7 @@ export default function ChatContextWrapper({
     sdk: sdk,
     openai: openai,
     mutate: null,
-  } as ChatConfig);
+  } as InteractiveConfig);
 
   if (process.env.NEXT_PUBLIC_MODE === 'development') {
     console.log(

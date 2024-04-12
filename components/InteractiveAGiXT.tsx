@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
 import { Menu } from '@mui/icons-material';
 import { Box, Typography, useMediaQuery } from '@mui/material';
-import { ChatDefaultConfig, ChatConfig } from '../types/ChatContext';
+import { ChatDefaultConfig, InteractiveConfig } from '../types/ChatContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Form from './Form/Form';
@@ -16,7 +16,7 @@ import PromptSelector from './Selectors/PromptSelector';
 
 export type ChatProps = {
   mode: 'prompt' | 'chain' | 'command';
-  opts?: ChatConfig;
+  opts?: InteractiveConfig;
 };
 export type FormProps = {
   fieldOverrides?: { [key: string]: ReactNode };
@@ -90,7 +90,7 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
       sdk: undefined,
       openai: undefined,
     },
-  } as ChatConfig;
+  } as InteractiveConfig;
   const apiKey = props.serverConfig?.apiKey || process.env.NEXT_PUBLIC_AGIXT_API_KEY || getCookie('jwt') || '';
   const agixtServer = props.serverConfig?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
 
