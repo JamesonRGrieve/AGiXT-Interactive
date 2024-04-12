@@ -13,7 +13,8 @@ export type ChainConfig = {
   allResponses: boolean;
 };
 export type Overrides = {
-  selectedAgent?: string;
+  prompt?: string;
+  promptCategory?: string;
   contextResults?: number;
   shots?: number;
   websearchDepth?: number;
@@ -26,21 +27,19 @@ export type Overrides = {
   enableMemory?: boolean;
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
-  useSelectedAgent?: boolean;
+  mode?: 'prompt' | 'chain' | 'command';
+  command?: string;
+  commandArgs?: object;
+  commandMessageArg?: string;
+  chain?: string;
   chainRunConfig?: ChainConfig;
 };
 
 export type InteractiveConfig = {
   chatSettings?: Overrides;
-  prompt?: string;
-  promptCategory?: string;
-  command?: string;
-  commandArgs?: object;
-  commandMessageArg?: string;
-  chain?: string;
-  mode?: 'prompt' | 'chain' | 'command';
+  agent: string;
   mutate?: (InteractiveConfig) => void | ((previous: InteractiveConfig) => InteractiveConfig);
-  sdk?: AGiXTSDK;
+  agixt?: AGiXTSDK;
   openai?: OpenAI;
 };
 export const ChatContext: Context<InteractiveConfig> = createContext<InteractiveConfig>(

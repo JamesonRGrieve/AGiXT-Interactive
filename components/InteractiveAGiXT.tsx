@@ -30,6 +30,8 @@ export type UIProps = {
   showConversationSelector?: boolean;
   showChatThemeToggles?: boolean;
   showRLHF?: boolean;
+  enableFileUpload?: boolean;
+  enableVoiceInput?: boolean;
   alternateBackground?: 'primary' | 'secondary';
   footerMessage?: string;
 };
