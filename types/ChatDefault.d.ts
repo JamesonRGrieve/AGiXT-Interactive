@@ -1,5 +1,5 @@
 // ChatDefault.d.ts
-import { ChatConfig } from './ChatContext';
+import { InteractiveConfig } from './ChatContext';
 
-declare const ChatDefault: ChatConfig;
+declare const ChatDefault: InteractiveConfig;
 export = ChatDefault;

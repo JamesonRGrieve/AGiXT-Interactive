@@ -3,7 +3,7 @@ import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextFie
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
 import { useState, useEffect, ReactNode } from 'react';
-import { ChatConfig } from '../types/ChatContext';
+import { InteractiveConfig } from '../types/ChatContext';
 
 const ODD_OPACITY = 1;
 
@@ -32,7 +32,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData: string }): ReactNode => {
+export const DataGridFromCSV = ({ state, csvData }: { state: InteractiveConfig; csvData: string }): ReactNode => {
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
