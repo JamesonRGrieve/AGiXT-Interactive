@@ -179,7 +179,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
       }}
     >
       <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
-      {audio && <AudioPlayer base64audio={audio} />}
+      {/*audio && <AudioPlayer base64audio={audio} />*/}
       {chatItem.timestamp !== '' && (
         <Typography
           variant='caption'
