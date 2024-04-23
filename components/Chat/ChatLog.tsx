@@ -117,8 +117,8 @@ export default function ConversationHistory({
             <ChatMessage
               key={'Please Wait Agent'}
               chatItem={{
-                role: state.chatSettings.selectedAgent,
-                message: state.chatSettings.selectedAgent + ' is typing...',
+                role: state.agent,
+                message: state.agent + ' is typing...',
                 timestamp: '',
               }}
               lastUserMessage={null}
@@ -152,14 +152,23 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
     // if (chatItem.message.includes('#GENERATED_AUDIO:')) console.log('Formatted: ', formatted);
     return formatted;
   }, [chatItem]);
-
   const audio = useMemo(() => {
+    if (chatItem.message.includes('<audio controls><source src=')) {
+      // Replace the html audio control with a link to the audio
+      const match = chatItem.message.match(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/);
+      const audioSrc = match[1];
+      // We can reformat it any way we want for testing like this.
+      return { message: chatItem.message.replace(match[0], ''), src: audioSrc };
+    } else return null;
+
     // console.log('Audio: ', theAudio);
+    /*
     return typeof chatItem.message !== 'string'
       ? 'An audio message'
       : chatItem.message.includes(generatedAudioString)
         ? chatItem.message.split(generatedAudioString)[1]
         : null;
+        */
   }, [chatItem]);
   const [vote, setVote] = useState(0);
   const [open, setOpen] = useState(false);
@@ -178,8 +187,17 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
         color: theme.palette.text.primary,
       }}
     >
-      <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
-      {/*audio && <AudioPlayer base64audio={audio} />*/}
+      {audio ? (
+        <>
+          <MarkdownBlock content={formattedMessage} chatItem={{ ...chatItem, message: audio.message }} />
+          <audio controls>
+            <source src={audio.src} type='audio/wav' />
+          </audio>
+        </>
+      ) : (
+        <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
+      )}
+
       {chatItem.timestamp !== '' && (
         <Typography
           variant='caption'
