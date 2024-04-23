@@ -297,9 +297,9 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
               const messageText = `User Feedback: ${feedback} \n\n Message: ${chatItem.message} \n\n Last User Message: ${lastUserMessage}`;
               setOpen(false);
               if (vote === 1) {
-                state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 2);
+                state.agixt.learnText(chatItem.role, lastUserMessage, messageText, 2);
               } else {
-                state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
+                state.agixt.learnText(chatItem.role, lastUserMessage, messageText, 3);
               }
             }}
             color='info'

@@ -57,9 +57,9 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
     mode: ['prompt', 'chain'].includes(searchParams.get('mode'))
       ? (searchParams.get('mode') as 'prompt' | 'chain')
       : props.chatConfig.mode || 'prompt',
+    agent: searchParams.get('agent') || undefined,
     opts: {
       chatSettings: {
-        selectedAgent: searchParams.get('agent') || undefined,
         contextResults: Number(searchParams.get('contextResults')) || undefined,
         shots: Number(searchParams.get('shots')) || undefined,
         websearchDepth: Number(searchParams.get('websearchDepth')) || undefined,

@@ -23,11 +23,11 @@ export default function ConversationSelector(): React.JSX.Element {
   const state = useContext(ChatContext);
   const { data: conversationData } = useSWR<string[]>(
     `/conversation`,
-    async () => (await state.sdk.getConversations()) as string[],
+    async () => (await state.agixt.getConversations()) as string[],
   );
   const { data: currentConversation } = useSWR(
     '/conversation/' + state.chatSettings.conversationName,
-    async () => await state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1),
+    async () => await state.agixt.getConversation('', state.chatSettings.conversationName, 100, 1),
     {
       fallbackData: [],
     },
@@ -40,7 +40,7 @@ export default function ConversationSelector(): React.JSX.Element {
   const handleAddConversation = async (): Promise<void> => {
     //console.log(state);
     if (newConversationName) {
-      await state.sdk.newConversation(state.chatSettings.selectedAgent, newConversationName);
+      await state.agixt.newConversation(state.agent, newConversationName);
       setNewConversationName('');
       setOpenNewConversation(false);
       mutate('/conversation');
@@ -52,7 +52,7 @@ export default function ConversationSelector(): React.JSX.Element {
   };
   const handleDeleteConversation = async (): Promise<void> => {
     if (state.chatSettings.conversationName) {
-      await state.sdk.deleteConversation(state.chatSettings.selectedAgent, state.chatSettings.conversationName);
+      await state.agixt.deleteConversation(state.agent, state.chatSettings.conversationName);
       await mutate('/conversation');
       state.mutate((oldState) => {
         return {

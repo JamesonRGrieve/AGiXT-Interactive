@@ -6,7 +6,12 @@ import ConversationHistory from './ChatLog';
 import ConversationBar from './ChatBar';
 
 const conversationSWRPath = /conversation/;
-export default function Chat({ showChatThemeToggles, alternateBackground }: ChatProps & UIProps): React.JSX.Element {
+export default function Chat({
+  showChatThemeToggles,
+  alternateBackground,
+  enableFileUpload,
+  enableVoiceInput,
+}: ChatProps & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
   const [latestMessage, setLatestMessage] = useState('');
@@ -15,7 +20,7 @@ export default function Chat({ showChatThemeToggles, alternateBackground }: Chat
 
   const conversation = useSWR(
     conversationSWRPath + state.chatSettings.conversationName,
-    async () => await state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1),
+    async () => await state.agixt.getConversation('', state.chatSettings.conversationName, 100, 1),
     {
       fallbackData: [],
     },
@@ -51,7 +56,7 @@ export default function Chat({ showChatThemeToggles, alternateBackground }: Chat
 
     const toOpenAI = {
       messages: messages,
-      model: state.chatSettings.selectedAgent,
+      model: state.agent,
       user: state.chatSettings.conversationName,
     };
     setLoading(true);
@@ -82,6 +87,8 @@ export default function Chat({ showChatThemeToggles, alternateBackground }: Chat
         onSend={(message, files) => chat(message, files)}
         disabled={loading}
         showChatThemeToggles={showChatThemeToggles}
+        enableFileUpload={enableFileUpload}
+        enableVoiceInput={enableVoiceInput}
       />
     </>
   );

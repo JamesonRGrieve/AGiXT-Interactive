@@ -119,14 +119,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: InteractiveConfig; 
       conversation_name: state.chatSettings.conversationName,
       text: newCSVData,
     };
-    const response = await state.sdk.runChain(
-      'Data Analysis',
-      userMessage,
-      state.chatSettings.selectedAgent,
-      false,
-      1,
-      chainArgs,
-    );
+    const response = await state.agixt.runChain('Data Analysis', userMessage, state.agent, false, 1, chainArgs);
     state.mutate((oldState) => {
       return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
     });
