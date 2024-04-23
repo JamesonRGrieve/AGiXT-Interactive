@@ -64,7 +64,7 @@ export default function ConversationHistory({
   const messagesEndRef = useRef(null);
   const theme = useTheme();
   useEffect(() => {
-    // console.log('Conversation mutated, scrolling to bottom.', state.chatSettings.conversationName, conversation);
+    // console.log('Conversation mutated, scrolling to bottom.', state.overrides.conversationName, conversation);
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
   return (

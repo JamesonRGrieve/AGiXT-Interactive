@@ -33,7 +33,7 @@ export type Overrides = {
   chainRunConfig?: ChainConfig;
 };
 export type InteractiveConfig = {
-  chatSettings?: Overrides;
+  overrides?: Overrides;
   agent: string;
   mutate?: (InteractiveConfig) => void | ((previous: InteractiveConfig) => InteractiveConfig);
   agixt?: AGiXTSDK;

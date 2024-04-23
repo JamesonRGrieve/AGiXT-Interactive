@@ -23,7 +23,7 @@ export default function Form({ showChatThemeToggles }: ChatProps & UIProps): Rea
   const { data: promptArgs } = useSWR(
     '/prompt/args',
     async () =>
-      (await state.agixt.getPromptArgs(state.chatSettings.prompt, state.chatSettings.promptCategory)).filter(
+      (await state.agixt.getPromptArgs(state.overrides.prompt, state.overrides.promptCategory)).filter(
         (arg) => arg !== 'user_input',
       ),
     {

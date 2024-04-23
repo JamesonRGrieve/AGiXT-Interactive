@@ -116,7 +116,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: InteractiveConfig; 
     lines.pop();
     const newCSVData = lines.join('\n');
     const chainArgs = {
-      conversation_name: state.chatSettings.conversationName,
+      conversation_name: state.overrides.conversationName,
       text: newCSVData,
     };
     const response = await state.agixt.runChain('Data Analysis', userMessage, state.agent, false, 1, chainArgs);

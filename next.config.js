@@ -30,18 +30,18 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES:
       process.env.AGIXT_SHOW_CHAT_THEME_TOGGLES || process.env.AGIXT_SHOW_APP_BAR === 'false' ? 'true' : 'false',
     NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED:
-      process.env.AGIXT_FILE_UPLOAD_ENABLED || String(ChatDefault.chatSettings.enableFileUpload),
+      process.env.AGIXT_FILE_UPLOAD_ENABLED || String(ChatDefault.overrides.enableFileUpload),
     NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED:
-      process.env.AGIXT_VOICE_INPUT_ENABLED || String(ChatDefault.chatSettings.enableVoiceInput),
+      process.env.AGIXT_VOICE_INPUT_ENABLED || String(ChatDefault.overrides.enableVoiceInput),
 
     // Override Options
     NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG: process.env.AGIXT_ENABLE_SEARCHPARAM_CONFIG || 'true',
     NEXT_PUBLIC_AGIXT_MODE: process.env.AGIXT_MODE || 'prompt',
     // State Options, Defined in ./types/ChatDefault.js
-    NEXT_PUBLIC_AGIXT_AGENT: process.env.AGIXT_AGENT || ChatDefault.chatSettings.selectedAgent,
-    NEXT_PUBLIC_AGIXT_INSIGHT_AGENT: process.env.AGIXT_INSIGHT_AGENT || ChatDefault.chatSettings.insightAgentName,
+    NEXT_PUBLIC_AGIXT_AGENT: process.env.AGIXT_AGENT || ChatDefault.agent,
+    NEXT_PUBLIC_AGIXT_INSIGHT_AGENT: process.env.AGIXT_INSIGHT_AGENT || ChatDefault.overrides.insightAgentName,
     NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT:
-      process.env.AGIXT_USE_SELECTED_AGENT || String(ChatDefault.chatSettings.chainRunConfig.useSelectedAgent),
+      process.env.AGIXT_USE_SELECTED_AGENT || String(ChatDefault.overrides.chainRunConfig.useSelectedAgent),
     // Prompt Mode Options, Defined in ./types/ChatDefault.js
     NEXT_PUBLIC_AGIXT_PROMPT_NAME: process.env.AGIXT_PROMPT_NAME || ChatDefault.prompt,
     NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY: process.env.AGIXT_PROMPT_CATEGORY || ChatDefault.promptCategory,
@@ -51,7 +51,7 @@ const nextConfig = {
     // Chain Mode Options, Defined in ./types/ChatDefault.js
     NEXT_PUBLIC_AGIXT_CHAIN: process.env.AGIXT_CHAIN || ChatDefault.chain,
     NEXT_PUBLIC_AGIXT_CHAIN_ARGS:
-      process.env.AGIXT_CHAIN_ARGS || JSON.stringify(ChatDefault.chatSettings.chainRunConfig.chainArgs),
+      process.env.AGIXT_CHAIN_ARGS || JSON.stringify(ChatDefault.overrides.chainRunConfig.chainArgs),
     NEXT_PUBLIC_ENV: process.env.ENV || process.env.NODE_ENV || 'development',
 
     // Derived Options

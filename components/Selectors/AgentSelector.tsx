@@ -42,10 +42,7 @@ export default function AgentSelector(): React.JSX.Element {
           onChange={(e) =>
             state.mutate((oldState) => ({
               ...oldState,
-              chatSettings: {
-                ...oldState.chatSettings,
-                selectedAgent: e.target.value,
-              },
+              agent: e.target.value,
             }))
           }
         >

@@ -81,8 +81,8 @@ export default function Home() {
       chatConfig={{
         mode: 'command', // Current non-functional due to completions update, will be implemented into override params in the future.
         opts: {
-          chatSettings: {
-            selectedAgent: 'gpt4free', // Agent to target.
+          agent: 'gpt4free', // Agent to target.
+          overrides: {
             conversationName: 'NurseGPT', // Conversation to target.
           },
         },
