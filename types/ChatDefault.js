@@ -1,6 +1,5 @@
 const ChatDefault = {
-  chatSettings: {
-    selectedAgent: 'gpt4free',
+  overrides: {
     contextResults: 0,
     shots: 0,
     websearchDepth: 0,
@@ -27,6 +26,7 @@ const ChatDefault = {
     uploadedFiles: [],
     isLoading: false,
   },
+  agent: 'gpt4free',
   prompt: 'Chat',
   promptCategory: 'Default',
   chain: '',

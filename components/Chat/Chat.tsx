@@ -19,8 +19,8 @@ export default function Chat({
   console.log(state.openai);
 
   const conversation = useSWR(
-    conversationSWRPath + state.chatSettings.conversationName,
-    async () => await state.agixt.getConversation('', state.chatSettings.conversationName, 100, 1),
+    conversationSWRPath + state.overrides.conversationName,
+    async () => await state.agixt.getConversation('', state.overrides.conversationName, 100, 1),
     {
       fallbackData: [],
     },
@@ -57,13 +57,13 @@ export default function Chat({
     const toOpenAI = {
       messages: messages,
       model: state.agent,
-      user: state.chatSettings.conversationName,
+      user: state.overrides.conversationName,
     };
     setLoading(true);
     setLatestMessage(message);
     console.log('Sending: ', state.openai, toOpenAI);
     const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
-    mutate(conversationSWRPath + state.chatSettings.conversationName);
+    mutate(conversationSWRPath + state.overrides.conversationName);
     setLoading(false);
     setLatestMessage('');
     if (chatCompletion?.choices[0]?.message.content.length > 0) {
@@ -73,9 +73,9 @@ export default function Chat({
     }
   }
   useEffect(() => {
-    // console.log("Conversation changed, fetching new conversation's messages.", state.chatSettings.conversationName);
-    mutate(conversationSWRPath + state.chatSettings.conversationName);
-  }, [state.chatSettings.conversationName]);
+    // console.log("Conversation changed, fetching new conversation's messages.", state.overrides.conversationName);
+    mutate(conversationSWRPath + state.overrides.conversationName);
+  }, [state.overrides.conversationName]);
   return (
     <>
       <ConversationHistory

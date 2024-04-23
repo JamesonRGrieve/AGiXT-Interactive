@@ -8,7 +8,7 @@ export default function PromptSelector(): React.JSX.Element {
   const state = useContext(ChatContext);
   const { data: promptData } = useSWR<string[]>(
     `/prompt`,
-    async () => (await state.agixt.getPrompts(state.chatSettings.promptCategory)) as string[],
+    async () => (await state.agixt.getPrompts(state.overrides.promptCategory)) as string[],
   );
   return (
     <Tooltip title='Select a Prompt'>
@@ -41,7 +41,7 @@ export default function PromptSelector(): React.JSX.Element {
           labelId='conversation-label'
           label='Select a Prompt'
           disabled={promptData?.length === 0}
-          value={state.chatSettings.prompt}
+          value={state.overrides.prompt}
           onChange={(e) =>
             state.mutate((oldState) => ({
               ...oldState,

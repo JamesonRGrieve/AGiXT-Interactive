@@ -59,7 +59,7 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
       : props.chatConfig.mode || 'prompt',
     agent: searchParams.get('agent') || undefined,
     opts: {
-      chatSettings: {
+      overrides: {
         contextResults: Number(searchParams.get('contextResults')) || undefined,
         shots: Number(searchParams.get('shots')) || undefined,
         websearchDepth: Number(searchParams.get('websearchDepth')) || undefined,
@@ -112,23 +112,23 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
       agixtServer={props.serverConfig?.agixtServer || agixtServer}
       initialState={{
         ...ChatDefaultConfig,
-        prompt: process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
-        promptCategory: process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
-        chain: process.env.NEXT_PUBLIC_AGIXT_CHAIN,
-        command: process.env.NEXT_PUBLIC_AGIXT_COMMAND,
-        commandMessageArg: process.env.NEXT_PUBLIC_AGIXT_COMMAND_MESSAGE_ARG,
         mode: process.env.NEXT_PUBLIC_AGIXT_MODE,
+        agent: process.env.NEXT_PUBLIC_AGIXT_AGENT,
         ...props.chatConfig.opts,
-        chatSettings: {
-          ...ChatDefaultConfig.chatSettings,
+        overrides: {
+          ...ChatDefaultConfig.overrides,
+          prompt: process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
+          promptCategory: process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
+          chain: process.env.NEXT_PUBLIC_AGIXT_CHAIN,
+          command: process.env.NEXT_PUBLIC_AGIXT_COMMAND,
+          commandMessageArg: process.env.NEXT_PUBLIC_AGIXT_COMMAND_MESSAGE_ARG,
           enableFileUpload: process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true' ?? true,
           enableVoiceInput: process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true' ?? true,
-          ...(process.env.NEXT_PUBLIC_AGIXT_AGENT && { selectedAgent: process.env.NEXT_PUBLIC_AGIXT_AGENT }),
           conversationName:
             process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
               ? uuid
               : process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME,
-          ...props.chatConfig.opts?.chatSettings,
+          ...props.chatConfig.opts?.overrides,
           ...(process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG === 'true' ? searchParamConfig : {}),
         },
       }}
