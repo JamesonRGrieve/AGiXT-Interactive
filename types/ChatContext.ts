@@ -25,8 +25,6 @@ export type Overrides = {
   webSearch?: boolean;
   insightAgentName?: string;
   enableMemory?: boolean;
-  enableFileUpload?: boolean;
-  enableVoiceInput?: boolean;
   mode?: 'prompt' | 'chain' | 'command';
   command?: string;
   commandArgs?: object;
@@ -34,7 +32,6 @@ export type Overrides = {
   chain?: string;
   chainRunConfig?: ChainConfig;
 };
-
 export type InteractiveConfig = {
   chatSettings?: Overrides;
   agent: string;
