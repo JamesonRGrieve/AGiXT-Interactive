@@ -39,6 +39,7 @@ export default function AudioRecorder({
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
       setRecording(false);
+      mediaRecorder.current.stream.getTracks().forEach((track) => track.stop());
     }
   };
 
@@ -81,6 +82,7 @@ export default function AudioRecorder({
           chatState: { ...oldState.chatState, isLoading: false },
         };
       });
+      mediaRecorder.current.stream.getTracks().forEach((track) => track.stop());
     }
   };
 
