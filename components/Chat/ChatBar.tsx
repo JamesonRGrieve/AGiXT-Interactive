@@ -27,11 +27,15 @@ export default function ConversationBar({
   disabled,
   clearOnSend = true,
   showChatThemeToggles = process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
+  enableFileUpload = false,
+  enableVoiceInput = false,
 }: {
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => void;
   disabled: boolean;
   clearOnSend?: boolean;
   showChatThemeToggles: boolean;
+  enableFileUpload?: boolean;
+  enableVoiceInput?: boolean;
 }): ReactNode {
   const state = useContext(ChatContext);
   const [uploadedFiles, setUploadedFiles] = useState<{ [x: string]: string }>({});
@@ -61,8 +65,8 @@ export default function ConversationBar({
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
       <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
         <TextField
-          label={`Enter your message to ${state.chatSettings.selectedAgent} here.`}
-          placeholder={`Hello, ${state.chatSettings.selectedAgent}!`}
+          label={`Enter your message to ${state.agent} here.`}
+          placeholder={`Hello, ${state.agent}!`}
           multiline
           rows={2}
           fullWidth
@@ -83,7 +87,7 @@ export default function ConversationBar({
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
-                {state.chatSettings.enableFileUpload && (
+                {enableFileUpload && (
                   <>
                     <IconButton
                       onClick={() => {
@@ -136,7 +140,7 @@ export default function ConversationBar({
                     </IconButton>
                   </Tooltip>
                 )}
-                {state.chatSettings.enableVoiceInput && (
+                {enableVoiceInput && (
                   <AudioRecorder
                     recording={alternativeInputActive}
                     setRecording={setAlternativeInputActive}

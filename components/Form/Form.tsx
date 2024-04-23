@@ -15,14 +15,17 @@ export default function Form({ showChatThemeToggles }: ChatProps & UIProps): Rea
   const [loading, setLoading] = useState(false);
   const { data: results } = useSWR(
     '/results',
-    async () => await Promise.all(uuids.map(async (uuid) => (await state.sdk.getConversation('', uuid, 5, 1))[1].message)),
+    async () => await Promise.all(uuids.map(async (uuid) => (await state.agixt.getConversation('', uuid, 5, 1))[1].message)),
     {
       fallbackData: [],
     },
   );
   const { data: promptArgs } = useSWR(
     '/prompt/args',
-    async () => (await state.sdk.getPromptArgs(state.prompt, state.promptCategory)).filter((arg) => arg !== 'user_input'),
+    async () =>
+      (await state.agixt.getPromptArgs(state.chatSettings.prompt, state.chatSettings.promptCategory)).filter(
+        (arg) => arg !== 'user_input',
+      ),
     {
       fallbackData: [],
     },
@@ -68,7 +71,7 @@ export default function Form({ showChatThemeToggles }: ChatProps & UIProps): Rea
     const uuid = uuidv4();
     const toOpenAI = {
       messages: messages,
-      model: state.chatSettings.selectedAgent,
+      model: state.agent,
       user: uuid,
     };
     setLoading(true);

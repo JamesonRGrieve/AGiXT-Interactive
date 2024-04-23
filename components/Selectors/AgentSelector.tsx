@@ -6,7 +6,7 @@ import { ChatContext } from '../../types/ChatContext';
 
 export default function AgentSelector(): React.JSX.Element {
   const state = useContext(ChatContext);
-  const { data: agentData } = useSWR<string[]>(`/agent`, async () => (await state.sdk.getAgents()) as string[]);
+  const { data: agentData } = useSWR<string[]>(`/agent`, async () => (await state.agixt.getAgents()) as string[]);
   return (
     <Tooltip title='Select an Agent'>
       <FormControl
@@ -38,7 +38,7 @@ export default function AgentSelector(): React.JSX.Element {
           labelId='agent-label'
           label='Select an Agent'
           disabled={agentData?.length === 0}
-          value={state.chatSettings.selectedAgent}
+          value={state.agent}
           onChange={(e) =>
             state.mutate((oldState) => ({
               ...oldState,

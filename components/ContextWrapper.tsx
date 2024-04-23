@@ -26,7 +26,7 @@ export default function ChatContextWrapper({
       mutate: null,
     });
   }
-  const sdk: AGiXTSDK = new AGiXTSDK({
+  const agixt: AGiXTSDK = new AGiXTSDK({
     baseUri: agixtServer,
     apiKey: apiKey,
   });
@@ -41,7 +41,7 @@ export default function ChatContextWrapper({
     ...ChatDefaultConfig,
     ...initialState,
     // Overridden in context provider.
-    sdk: sdk,
+    agixt: agixt,
     openai: openai,
     mutate: null,
   } as InteractiveConfig);
@@ -51,7 +51,7 @@ export default function ChatContextWrapper({
       'Context Wrapper initializing AGiXTSDK and OpenAI with baseUri/apiKey: ',
       agixtServer,
       apiKey,
-      sdk,
+      agixt,
       openai,
       ChatState,
     );
@@ -61,7 +61,7 @@ export default function ChatContextWrapper({
     }, [ChatState]);
   }
   return (
-    <ChatContext.Provider value={{ ...ChatState, sdk: sdk, openai: openai, mutate: setChatState }}>
+    <ChatContext.Provider value={{ ...ChatState, agixt: agixt, openai: openai, mutate: setChatState }}>
       {children}
     </ChatContext.Provider>
   );
