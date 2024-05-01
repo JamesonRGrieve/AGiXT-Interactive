@@ -3,12 +3,18 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, CopyAllOutlined } from '@mui/icons-material';
 import MarkdownBlock from '../MarkdownBlock';
 
-export default function FormOutput({ results }): ReactNode {
+export default function FormOutput({ results, showIndex, selectedUUID, setSelectedUUID }): ReactNode {
   const [resultNum, setResultNum] = useState(0);
+  useEffect(() => {
+    setSelectedUUID(Object.keys(results)[resultNum]);
+  }, [resultNum]);
+  useEffect(() => {
+    setResultNum(Object.keys(results).findIndex(selectedUUID));
+  }, [selectedUUID]);
   // console.log('Results', results);
   useEffect(() => {
-    if (results.length > 0) {
-      setResultNum(results.length - 1);
+    if (Object.keys(results).length > 0) {
+      setResultNum(Object.keys(results).length - 1);
     }
   }, [results]);
   return (
@@ -32,7 +38,7 @@ export default function FormOutput({ results }): ReactNode {
           <Tooltip title='Copy this result.'>
             <IconButton
               onClick={() => {
-                navigator.clipboard.writeText(results[String(resultNum)]);
+                navigator.clipboard.writeText(String(results[Object.keys(results)[resultNum]][showIndex].message));
               }}
             >
               <CopyAllOutlined sx={{ fontSize: '3rem' }} />
@@ -42,7 +48,7 @@ export default function FormOutput({ results }): ReactNode {
           <Tooltip title='Previous result.'>
             <IconButton
               onClick={() => {
-                setResultNum((previous) => (previous >= 1 ? previous - 1 : results.length - 1));
+                setResultNum((previous) => (previous >= 1 ? previous - 1 : Object.keys(results).length - 1));
               }}
             >
               <ChevronLeft sx={{ fontSize: '3rem' }} />
@@ -52,7 +58,7 @@ export default function FormOutput({ results }): ReactNode {
           <Tooltip title='Next result.'>
             <IconButton
               onClick={() => {
-                setResultNum((previous) => (previous < results.length - 1 ? previous + 1 : 0));
+                setResultNum((previous) => (previous < Object.keys(results).length - 1 ? previous + 1 : 0));
               }}
             >
               <ChevronRight sx={{ fontSize: '3rem' }} />
@@ -60,7 +66,7 @@ export default function FormOutput({ results }): ReactNode {
           </Tooltip>
         </Typography>
         <CardContent>
-          <MarkdownBlock content={results[String(resultNum)]} />
+          <MarkdownBlock content={String(results[Object.keys(results)[resultNum]][showIndex].message)} />
         </CardContent>
       </Card>
     )

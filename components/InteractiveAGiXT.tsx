@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
 import { Menu } from '@mui/icons-material';
 import { Box, Typography, useMediaQuery } from '@mui/material';
-import { ChatDefaultConfig, InteractiveConfig } from '../types/ChatContext';
+import { InteractiveConfigDefault, InteractiveConfig, Overrides } from '../types/InteractiveConfigContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Form from './Form/Form';
@@ -14,10 +14,6 @@ import ConversationSelector from './Selectors/ConversationSelector';
 import AgentSelector from './Selectors/AgentSelector';
 import PromptSelector from './Selectors/PromptSelector';
 
-export type ChatProps = {
-  mode: 'prompt' | 'chain' | 'command';
-  opts?: InteractiveConfig;
-};
 export type FormProps = {
   fieldOverrides?: { [key: string]: ReactNode };
   formContext?: object;
@@ -40,9 +36,10 @@ export type ServerProps = {
   agixtServer: string;
 };
 export type AGiXTInteractiveProps = {
+  agent?: string;
+  overrides?: Overrides;
   uiConfig?: UIProps;
   serverConfig?: ServerProps;
-  chatConfig?: ChatProps;
   formConfig?: FormProps;
 };
 const selectionBars = {
@@ -51,70 +48,69 @@ const selectionBars = {
   prompt: <PromptSelector />,
   '': <span>&nbsp;</span>,
 };
+function removeUndefined(obj: any) {
+  return Object.keys(obj).reduce((acc: any, key: string) => {
+    if (obj[key] && typeof obj[key] === 'object') {
+      const childObject = removeUndefined(obj[key]);
+      if (Object.keys(childObject).length > 0) {
+        acc[key] = childObject;
+      }
+    } else if (obj[key] !== undefined) {
+      acc[key] = obj[key];
+    }
+    return acc;
+  }, {});
+}
 const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
   const searchParams = useSearchParams();
-  const searchParamConfig = {
-    mode: ['prompt', 'chain'].includes(searchParams.get('mode'))
-      ? (searchParams.get('mode') as 'prompt' | 'chain')
-      : props.chatConfig.mode || 'prompt',
+  const searchParamConfig = removeUndefined({
     agent: searchParams.get('agent') || undefined,
-    opts: {
-      overrides: {
-        contextResults: Number(searchParams.get('contextResults')) || undefined,
-        shots: Number(searchParams.get('shots')) || undefined,
-        websearchDepth: Number(searchParams.get('websearchDepth')) || undefined,
-        injectMemoriesFromCollectionNumber: Number(searchParams.get('injectMemoriesFromCollectionNumber')) || undefined,
-        conversationResults: Number(searchParams.get('results')) || undefined,
-        conversationName: searchParams.get('conversation') || undefined,
-        browseLinks: Boolean(searchParams.get('browseLinks')) || undefined,
-        webSearch: Boolean(searchParams.get('webSearch')) || undefined,
-        insightAgentName: searchParams.get('insightAgent') || undefined,
-        enableMemory: Boolean(searchParams.get('memory')) || undefined,
-        useSelectedAgent: Boolean(searchParams.get('useSelectedAgent')) || undefined,
-        chainRunConfig: {
-          chainArgs: JSON.parse(searchParams.get('chainArgs')) || undefined,
-          singleStep: Boolean(searchParams.get('singleStep')) || undefined,
-          fromStep: Number(searchParams.get('fromStep')) || undefined,
-          allResponses: Boolean(searchParams.get('allResponses')) || undefined,
-        },
-      },
+    agixt: undefined,
+    openai: undefined,
+    overrides: {
+      mode: (searchParams.get('mode') as 'prompt' | 'chain' | 'command') || undefined,
       prompt: searchParams.get('prompt') || undefined,
       promptCategory: searchParams.get('promptCategory') || undefined,
       command: searchParams.get('command') || undefined,
       commandArgs: JSON.parse(searchParams.get('commandArgs')) || undefined,
       commandMessageArg: searchParams.get('commandMessageArg') || undefined,
       chain: searchParams.get('chain') || undefined,
-      conversations: undefined,
-      mode: searchParams.get('mode') || undefined,
-      mutate: undefined,
-      sdk: undefined,
-      openai: undefined,
+      chainRunConfig: {
+        chainArgs: JSON.parse(searchParams.get('chainArgs')) || undefined,
+        singleStep: Boolean(searchParams.get('singleStep')) || undefined,
+        fromStep: Number(searchParams.get('fromStep')) || undefined,
+        allResponses: Boolean(searchParams.get('allResponses')) || undefined,
+      },
+      contextResults: Number(searchParams.get('contextResults')) || undefined,
+      shots: Number(searchParams.get('shots')) || undefined,
+      websearchDepth: Number(searchParams.get('websearchDepth')) || undefined,
+      injectMemoriesFromCollectionNumber: Number(searchParams.get('injectMemoriesFromCollectionNumber')) || undefined,
+      conversationResults: Number(searchParams.get('results')) || undefined,
+      conversationName: searchParams.get('conversation') || undefined,
+      browseLinks: Boolean(searchParams.get('browseLinks')) || undefined,
+      webSearch: Boolean(searchParams.get('webSearch')) || undefined,
+      insightAgentName: searchParams.get('insightAgent') || undefined,
+      enableMemory: Boolean(searchParams.get('memory')) || undefined,
     },
-  } as InteractiveConfig;
-  const apiKey = props.serverConfig?.apiKey || process.env.NEXT_PUBLIC_AGIXT_API_KEY || getCookie('jwt') || '';
-  const agixtServer = props.serverConfig?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437';
+    mutate: undefined,
+  } as InteractiveConfig);
 
   const uuid = getCookie('uuid');
   if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
-  if (process.env.NEXT_PUBLIC_ENV === 'development') {
-    console.log('Stateful API Key: ', apiKey);
-    console.log('Stateful AGiXTChat initialized with server config (server:key): ', agixtServer, apiKey);
-    console.log('InteractiveAGiXT Props: ', props);
-  }
+  console.log(props.overrides);
 
   return (
     <ContextWrapper
-      apiKey={props.serverConfig?.apiKey || apiKey}
-      agixtServer={props.serverConfig?.agixtServer || agixtServer}
+      apiKey={props.serverConfig?.apiKey || process.env.NEXT_PUBLIC_AGIXT_API_KEY || getCookie('jwt') || ''}
+      agixtServer={props.serverConfig?.agixtServer || process.env.NEXT_PUBLIC_AGIXT_SERVER || 'http://localhost:7437'}
       initialState={{
-        ...ChatDefaultConfig,
-        mode: process.env.NEXT_PUBLIC_AGIXT_MODE,
-        agent: process.env.NEXT_PUBLIC_AGIXT_AGENT,
-        ...props.chatConfig.opts,
+        ...InteractiveConfigDefault,
+        agent: props.agent ?? process.env.NEXT_PUBLIC_AGIXT_AGENT ?? InteractiveConfigDefault.agent,
         overrides: {
-          ...ChatDefaultConfig.overrides,
+          ...InteractiveConfigDefault.overrides,
+          mode: process.env.NEXT_PUBLIC_AGIXT_MODE,
           prompt: process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME,
           promptCategory: process.env.NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY,
           chain: process.env.NEXT_PUBLIC_AGIXT_CHAIN,
@@ -124,13 +120,13 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
             process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
               ? uuid
               : process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME,
-          ...props.chatConfig.opts?.overrides,
-          ...(process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG === 'true' ? searchParamConfig : {}),
+          ...props.overrides,
         },
+        ...(process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG === 'true' ? searchParamConfig : {}),
       }}
     >
       <Interactive
-        {...props.chatConfig}
+        {...props.overrides}
         {...props.uiConfig}
         enableVoiceInput={
           process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true' ??
@@ -144,10 +140,7 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
     </ContextWrapper>
   );
 };
-const Stateless = (props: ChatProps & UIProps): React.JSX.Element => {
-  return <Interactive {...props} />;
-};
-const Interactive = (props: ChatProps & UIProps): React.JSX.Element => {
+const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
   const mobile = useMediaQuery('(max-width: 600px)');
   const menuItem = (): ReactNode => (
     <Box p='0.5rem' display='flex' flexDirection='column' gap='0.5rem'>
@@ -204,9 +197,9 @@ const Interactive = (props: ChatProps & UIProps): React.JSX.Element => {
     </AppWrapper>
   );
 };
-const AGiXTChat = ({
+const InteractiveAGiXT = ({
   stateful = true,
-  chatConfig = {
+  overrides = {
     mode: (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
       ? process.env.NEXT_PUBLIC_AGIXT_MODE
       : 'prompt') as 'chain' | 'prompt',
@@ -229,15 +222,15 @@ const AGiXTChat = ({
   console.log(
     `InteractiveAGiXT initialized as ${stateful ? '' : 'not '}stateful. ${
       stateful
-        ? 'InteractiveAGiXT will provide its own ChatContext Provider and state.'
-        : 'Assuming a ChatContext Provider encloses this instance.'
+        ? 'InteractiveAGiXT will provide its own InteractiveConfigContext Provider and state.'
+        : 'Assuming a InteractiveConfigContext Provider encloses this instance.'
     }`,
   );
   // console.log('Configuration Provided From Server: ', chatConfig, serverConfig, uiConfig);
   return stateful ? (
-    <Stateful chatConfig={chatConfig} serverConfig={serverConfig} uiConfig={uiConfigWithEnv} />
+    <Stateful overrides={overrides} serverConfig={serverConfig} uiConfig={uiConfigWithEnv} />
   ) : (
-    <Stateless {...uiConfigWithEnv} {...chatConfig} />
+    <Interactive {...uiConfigWithEnv} {...overrides} />
   );
 };
-export default AGiXTChat;
+export default InteractiveAGiXT;

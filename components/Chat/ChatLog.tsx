@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, ThumbDown } from '@mui/icons-material';
 import clipboardCopy from 'clipboard-copy';
-import { ChatContext } from '../../types/ChatContext';
+import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 import MarkdownBlock from '../MarkdownBlock';
 
 function formatDate(timestamp: string): string {
@@ -60,7 +60,7 @@ export default function ChatLog({
   alternateBackground?: string;
 }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
   const messagesEndRef = useRef(null);
   const theme = useTheme();
   useEffect(() => {
@@ -141,7 +141,7 @@ export default function ChatLog({
 
 const generatedAudioString = '#GENERATED_AUDIO:';
 const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary' }): React.JSX.Element => {
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
   const formattedMessage = useMemo(() => {
     const toFormat =
       typeof chatItem.message !== 'string'

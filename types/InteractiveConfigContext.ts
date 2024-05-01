@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 import { Context, createContext } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const ChatDefault = require('./ChatDefault');
+const ConfigDefault = require('./InteractiveConfigDefault');
 
 export type ChainConfig = {
   chainArgs: object;
@@ -13,8 +13,14 @@ export type ChainConfig = {
   allResponses: boolean;
 };
 export type Overrides = {
+  mode?: 'prompt' | 'chain' | 'command';
   prompt?: string;
   promptCategory?: string;
+  command?: string;
+  commandArgs?: object;
+  commandMessageArg?: string;
+  chain?: string;
+  chainRunConfig?: ChainConfig;
   contextResults?: number;
   shots?: number;
   websearchDepth?: number;
@@ -25,21 +31,15 @@ export type Overrides = {
   webSearch?: boolean;
   insightAgentName?: string;
   enableMemory?: boolean;
-  mode?: 'prompt' | 'chain' | 'command';
-  command?: string;
-  commandArgs?: object;
-  commandMessageArg?: string;
-  chain?: string;
-  chainRunConfig?: ChainConfig;
 };
 export type InteractiveConfig = {
-  overrides?: Overrides;
   agent: string;
-  mutate?: (InteractiveConfig) => void | ((previous: InteractiveConfig) => InteractiveConfig);
   agixt?: AGiXTSDK;
   openai?: OpenAI;
+  overrides?: Overrides;
+  mutate?: (InteractiveConfig) => void | ((previous: InteractiveConfig) => InteractiveConfig);
 };
-export const ChatContext: Context<InteractiveConfig> = createContext<InteractiveConfig>(
-  ChatDefault as unknown as InteractiveConfig,
+export const InteractiveConfigContext: Context<InteractiveConfig> = createContext<InteractiveConfig>(
+  ConfigDefault as unknown as InteractiveConfig,
 );
-export const ChatDefaultConfig = ChatDefault;
+export const InteractiveConfigDefault = ConfigDefault;
