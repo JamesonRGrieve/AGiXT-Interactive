@@ -129,7 +129,7 @@ export default function ConversationBar({
                         }
                         onSend(message, uploadedFiles);
                       }}
-                      disabled={disabled}
+                      disabled={message.trim().length === 0 || disabled}
                       color='primary'
                       sx={{
                         height: '56px',
