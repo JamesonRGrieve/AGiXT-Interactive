@@ -16,7 +16,6 @@ export default function Chat({
   const [loading, setLoading] = useState(false);
   const [latestMessage, setLatestMessage] = useState('');
   const state = useContext(ChatContext);
-  console.log(state.openai);
 
   const conversation = useSWR(
     conversationSWRPath + state.overrides.conversationName,
@@ -25,6 +24,7 @@ export default function Chat({
       fallbackData: [],
     },
   );
+  console.log(conversation);
 
   async function chat(message, files): Promise<string> {
     const messages = [];
