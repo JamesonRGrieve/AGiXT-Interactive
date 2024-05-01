@@ -1,5 +1,5 @@
 'use client';
-import React, { ReactNode, use, useCallback, useContext, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
@@ -147,6 +147,7 @@ export default function ConversationBar({
                 )}
                 {!alternativeInputActive && (
                   <Tooltip title='Send Message'>
+                    <span>
                     <IconButton
                       onClick={() => {
                         handleSend(event);
@@ -160,6 +161,7 @@ export default function ConversationBar({
                     >
                       <SendIcon />
                     </IconButton>
+                    </span>
                   </Tooltip>
                 )}
                 {enableVoiceInput && (
