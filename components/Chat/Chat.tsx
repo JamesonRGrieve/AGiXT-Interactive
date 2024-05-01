@@ -24,8 +24,6 @@ export default function Chat({
       fallbackData: [],
     },
   );
-  console.log(conversation);
-
   async function chat(message, files): Promise<string> {
     const messages = [];
     // console.log(message);

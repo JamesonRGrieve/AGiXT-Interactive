@@ -148,19 +148,19 @@ export default function ConversationBar({
                 {!alternativeInputActive && (
                   <Tooltip title='Send Message'>
                     <span>
-                    <IconButton
-                      onClick={() => {
-                        handleSend(event);
-                      }}
-                      disabled={message.trim().length === 0 || disabled}
-                      color='primary'
-                      sx={{
-                        height: '56px',
-                        padding: '0.5rem',
-                      }}
-                    >
-                      <SendIcon />
-                    </IconButton>
+                      <IconButton
+                        onClick={() => {
+                          handleSend(event);
+                        }}
+                        disabled={message.trim().length === 0 || disabled}
+                        color='primary'
+                        sx={{
+                          height: '56px',
+                          padding: '0.5rem',
+                        }}
+                      >
+                        <SendIcon />
+                      </IconButton>
                     </span>
                   </Tooltip>
                 )}

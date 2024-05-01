@@ -86,7 +86,13 @@ export default function ConversationHistory({
               lastUserMessage = chatItem.message;
             }
             // TODO Fix this so the timestamp works. It's not granular enough rn and we get duplicates.
-            return <ChatMessage key={chatItem.timestamp+"-"+chatItem.message} chatItem={chatItem} lastUserMessage={lastUserMessage} />;
+            return (
+              <ChatMessage
+                key={chatItem.timestamp + '-' + chatItem.message}
+                chatItem={chatItem}
+                lastUserMessage={lastUserMessage}
+              />
+            );
           })
         ) : (
           <Box pt='2rem' pb='3rem'>
@@ -157,10 +163,12 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
     if (chatItem.message.includes('<audio controls><source src=')) {
       // Replace the html audio control with a link to the audio
       const matches = [...chatItem.message.matchAll(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/g)];
-      const audioSrcs = matches.map(match => match[1]);
+      const audioSrcs = matches.map((match) => match[1]);
       // We can reformat it any way we want for testing like this.
-      console.log(audioSrcs);
-      return { message: chatItem.message.replaceAll(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/g, ''), srcs: audioSrcs };
+      return {
+        message: chatItem.message.replaceAll(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/g, ''),
+        srcs: audioSrcs,
+      };
     } else return null;
 
     // console.log('Audio: ', theAudio);
@@ -192,13 +200,11 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
       {audios?.srcs?.length > 0 ? (
         <>
           <MarkdownBlock content={formattedMessage} chatItem={{ ...chatItem, message: audios.message }} />
-          {
-            audios.srcs.map(src => (
- <audio controls key={src}>
-            <source src={src} type='audio/wav' />
-          </audio>
+          {audios.srcs.map((src) => (
+            <audio controls key={src}>
+              <source src={src} type='audio/wav' />
+            </audio>
           ))}
-         
         </>
       ) : (
         <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
