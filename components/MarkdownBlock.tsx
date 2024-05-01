@@ -97,7 +97,7 @@ export default function MarkdownBlock({
       const match = message.match(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/);
       const audioSrc = match[1];
       // We can reformat it any way we want for testing like this.
-      return message.replace(match[0], `[Click here for the audio response](${audioSrc})`);
+      return message.replace(match[0], '');
     }
     return content;
   };
