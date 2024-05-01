@@ -2,7 +2,7 @@ name: NPM Build Test
 
 on:
   push:
-    branches: [ '*' ]
+    branches: ['*']
 
 jobs:
   build:
