@@ -1,5 +1,5 @@
 'use client';
-import React, { ReactNode, useContext, useEffect, useState } from 'react';
+import React, { ReactNode, use, useCallback, useContext, useEffect, useState } from 'react';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { setCookie } from 'cookies-next';
-import { DeleteForever } from '@mui/icons-material';
+import { CheckCircle, DeleteForever, Pending } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
 import { ChatContext } from '../../types/ChatContext';
@@ -30,7 +30,7 @@ export default function ConversationBar({
   enableFileUpload = false,
   enableVoiceInput = false,
 }: {
-  onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => void;
+  onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<void>;
   disabled: boolean;
   clearOnSend?: boolean;
   showChatThemeToggles: boolean;
@@ -38,6 +38,8 @@ export default function ConversationBar({
   enableVoiceInput?: boolean;
 }): ReactNode {
   const state = useContext(ChatContext);
+  const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState<number>(-1);
   const [uploadedFiles, setUploadedFiles] = useState<{ [x: string]: string }>({});
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -60,7 +62,30 @@ export default function ConversationBar({
     setUploadedFiles((previous) => ({ ...previous, ...newUploadedFiles }));
     setFileUploadOpen(false);
   };
-
+  const handleSend = useCallback(
+    (event) => {
+      setTimer(0);
+      setLoading(true);
+      event.preventDefault();
+      if (clearOnSend) {
+        setMessage('');
+        setUploadedFiles({});
+      }
+      const interval = setInterval(() => {
+        setTimer((prev) => prev + 1);
+      }, 100);
+      onSend(message, uploadedFiles)
+        .then(() => {
+          clearInterval(interval);
+          setLoading(false);
+          return true;
+        })
+        .catch(() => {
+          return false;
+        });
+    },
+    [clearOnSend, message, onSend, uploadedFiles],
+  );
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
       <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
@@ -73,12 +98,7 @@ export default function ConversationBar({
           value={message}
           onKeyDown={async (event) => {
             if (event.key === 'Enter' && !event.shiftKey && message) {
-              event.preventDefault();
-              if (clearOnSend) {
-                setMessage('');
-                setUploadedFiles({});
-              }
-              onSend(message, uploadedFiles);
+              handleSend(event);
             }
           }}
           onChange={(e) => setMessage(e.target.value)}
@@ -87,6 +107,12 @@ export default function ConversationBar({
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
+                {timer > -1 && (
+                  <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
+                    <Typography variant='caption'>{(timer / 10).toFixed(1)}s</Typography>
+                    {loading ? <Pending /> : <CheckCircle />}
+                  </Box>
+                )}
                 {enableFileUpload && (
                   <>
                     <IconButton
@@ -123,11 +149,7 @@ export default function ConversationBar({
                   <Tooltip title='Send Message'>
                     <IconButton
                       onClick={() => {
-                        if (clearOnSend) {
-                          setMessage('');
-                          setUploadedFiles({});
-                        }
-                        onSend(message, uploadedFiles);
+                        handleSend(event);
                       }}
                       disabled={message.trim().length === 0 || disabled}
                       color='primary'
