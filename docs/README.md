@@ -63,26 +63,26 @@ Access at <http://localhost:3437>
 ## React Component
 
 ```javascript
-import AGiXTChat from 'agixtchat';
+import InteractiveAGiXT from 'agixtchat';
 export default function Home() {
   return (
-    <AGiXTChat
+    <InteractiveAGiXT
       uiConfig={{
         showAppBar: false, // Hides the app bar for scenarios where the component is wrapped by an enclosing application.
         showChatThemeToggles: false, // Allows theme toggling if wrapped by jrgcomponents/ThemeWrapper. Do not enable if it is not.
         showRLHF: false, // Display RLHF in messages.
         footerMessage: '', // Leave blank to hide footer.
-        alternateBackground: 'primary', // Ties to the MUI palette to indicate the alternating background color. 
+        alternateBackground: 'primary', // Ties to the MUI palette to indicate the alternating background color.
       }}
       serverConfig={{
         agixtServer: process.env.NEXT_PUBLIC_AGIXT_SERVER || '', // Base URI for AGiXT requests.
-        apiKey: getCookie('jwt') || '', // apiKey for AGiXT requests. 
+        apiKey: getCookie('jwt') || '', // apiKey for AGiXT requests.
       }}
       chatConfig={{
         mode: 'command', // Current non-functional due to completions update, will be implemented into override params in the future.
         opts: {
-          chatSettings: {
-            selectedAgent: 'gpt4free', // Agent to target.
+          agent: 'gpt4free', // Agent to target.
+          overrides: {
             conversationName: 'NurseGPT', // Conversation to target.
           },
         },

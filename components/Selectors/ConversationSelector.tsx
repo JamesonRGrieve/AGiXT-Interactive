@@ -17,17 +17,17 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import React, { useContext, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { ChatContext } from '../../types/ChatContext';
+import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 
 export default function ConversationSelector(): React.JSX.Element {
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
   const { data: conversationData } = useSWR<string[]>(
     `/conversation`,
-    async () => (await state.sdk.getConversations()) as string[],
+    async () => (await state.agixt.getConversations()) as string[],
   );
   const { data: currentConversation } = useSWR(
-    '/conversation/' + state.chatSettings.conversationName,
-    async () => await state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1),
+    '/conversation/' + state.overrides.conversationName,
+    async () => await state.agixt.getConversation('', state.overrides.conversationName, 100, 1),
     {
       fallbackData: [],
     },
@@ -40,25 +40,25 @@ export default function ConversationSelector(): React.JSX.Element {
   const handleAddConversation = async (): Promise<void> => {
     //console.log(state);
     if (newConversationName) {
-      await state.sdk.newConversation(state.chatSettings.selectedAgent, newConversationName);
+      await state.agixt.newConversation(state.agent, newConversationName);
       setNewConversationName('');
       setOpenNewConversation(false);
       mutate('/conversation');
       state.mutate((oldState) => ({
         ...oldState,
-        chatSettings: { ...oldState.chatSettings, conversationName: newConversationName },
+        overrides: { ...oldState.overrides, conversationName: newConversationName },
       }));
     }
   };
   const handleDeleteConversation = async (): Promise<void> => {
-    if (state.chatSettings.conversationName) {
-      await state.sdk.deleteConversation(state.chatSettings.selectedAgent, state.chatSettings.conversationName);
+    if (state.overrides.conversationName) {
+      await state.agixt.deleteConversation(state.agent, state.overrides.conversationName);
       await mutate('/conversation');
       state.mutate((oldState) => {
         return {
           ...oldState,
-          chatSettings: {
-            ...oldState.chatSettings,
+          overrides: {
+            ...oldState.overrides,
             conversationName: conversationData[0],
           },
         };
@@ -68,13 +68,13 @@ export default function ConversationSelector(): React.JSX.Element {
   };
 
   const handleExportConversation = async (): Promise<void> => {
-    if (state.chatSettings.conversationName) {
+    if (state.overrides.conversationName) {
       const element = document.createElement('a');
       const file = new Blob([JSON.stringify(currentConversation)], {
         type: 'application/json',
       });
       element.href = URL.createObjectURL(file);
-      element.download = `${state.chatSettings.conversationName}.json`;
+      element.download = `${state.overrides.conversationName}.json`;
       document.body.appendChild(element); // Required for this to work in FireFox
       element.click();
     }
@@ -112,11 +112,11 @@ export default function ConversationSelector(): React.JSX.Element {
             labelId='conversation-label'
             label='Select a Conversation'
             disabled={conversationData?.length === 0}
-            value={state.chatSettings.conversationName}
+            value={state.overrides.conversationName}
             onChange={(e) =>
               state.mutate((oldState) => ({
                 ...oldState,
-                chatSettings: { ...oldState.chatSettings, conversationName: e.target.value },
+                overrides: { ...oldState.overrides, conversationName: e.target.value },
               }))
             }
           >
@@ -131,9 +131,9 @@ export default function ConversationSelector(): React.JSX.Element {
               Workaround of a backend limitation - files only created (and rendered in conversation list) once they have messages.
               Thanks, I hate it too.
             */}
-            {!conversationData?.includes(state.chatSettings.conversationName) && (
-              <MenuItem key={state.chatSettings.conversationName} value={state.chatSettings.conversationName}>
-                {state.chatSettings.conversationName}
+            {!conversationData?.includes(state.overrides.conversationName) && (
+              <MenuItem key={state.overrides.conversationName} value={state.overrides.conversationName}>
+                {state.overrides.conversationName}
               </MenuItem>
             )}
           </Select>

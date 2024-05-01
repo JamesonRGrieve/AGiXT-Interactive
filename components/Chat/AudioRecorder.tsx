@@ -1,7 +1,7 @@
 import { useState, useRef, useContext, useEffect, useCallback } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
-import { ChatContext } from '../../types/ChatContext';
+import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 
 export default function AudioRecorder({
   recording,
@@ -14,7 +14,7 @@ export default function AudioRecorder({
   disabled: boolean;
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => void;
 }): React.JSX.Element {
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
   const startRecording = (): void => {
@@ -39,6 +39,7 @@ export default function AudioRecorder({
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
       setRecording(false);
+      mediaRecorder.current.stream.getTracks().forEach((track) => track.stop());
     }
   };
 
@@ -75,12 +76,7 @@ export default function AudioRecorder({
       mediaRecorder.current.stop();
       setRecording(false);
       setAudioData(null);
-      state.mutate((oldState) => {
-        return {
-          ...oldState,
-          chatState: { ...oldState.chatState, isLoading: false },
-        };
-      });
+      mediaRecorder.current.stream.getTracks().forEach((track) => track.stop());
     }
   };
 

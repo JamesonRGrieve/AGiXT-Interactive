@@ -2,11 +2,11 @@
 import { Select, MenuItem, FormControl, Tooltip } from '@mui/material';
 import React, { useContext } from 'react';
 import useSWR from 'swr';
-import { ChatContext } from '../../types/ChatContext';
+import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 
 export default function AgentSelector(): React.JSX.Element {
-  const state = useContext(ChatContext);
-  const { data: agentData } = useSWR<string[]>(`/agent`, async () => (await state.sdk.getAgents()) as string[]);
+  const state = useContext(InteractiveConfigContext);
+  const { data: agentData } = useSWR<string[]>(`/agent`, async () => (await state.agixt.getAgents()) as string[]);
   return (
     <Tooltip title='Select an Agent'>
       <FormControl
@@ -38,14 +38,11 @@ export default function AgentSelector(): React.JSX.Element {
           labelId='agent-label'
           label='Select an Agent'
           disabled={agentData?.length === 0}
-          value={state.chatSettings.selectedAgent}
+          value={state.agent}
           onChange={(e) =>
             state.mutate((oldState) => ({
               ...oldState,
-              chatSettings: {
-                ...oldState.chatSettings,
-                selectedAgent: e.target.value,
-              },
+              agent: e.target.value,
             }))
           }
         >

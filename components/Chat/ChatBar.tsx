@@ -1,5 +1,5 @@
 'use client';
-import React, { ReactNode, useContext, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react';
 import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
 import Box from '@mui/material/Box';
 import Tooltip from '@mui/material/Tooltip';
@@ -16,24 +16,30 @@ import {
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { setCookie } from 'cookies-next';
-import { DeleteForever } from '@mui/icons-material';
+import { CheckCircle, DeleteForever, Pending } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
-import { ChatContext } from '../../types/ChatContext';
+import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 import AudioRecorder from './AudioRecorder';
 
-export default function ConversationBar({
+export default function ChatBar({
   onSend,
   disabled,
   clearOnSend = true,
   showChatThemeToggles = process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
+  enableFileUpload = false,
+  enableVoiceInput = false,
 }: {
-  onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => void;
+  onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
   disabled: boolean;
   clearOnSend?: boolean;
   showChatThemeToggles: boolean;
+  enableFileUpload?: boolean;
+  enableVoiceInput?: boolean;
 }): ReactNode {
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
+  const [loading, setLoading] = useState(false);
+  const [timer, setTimer] = useState<number>(-1);
   const [uploadedFiles, setUploadedFiles] = useState<{ [x: string]: string }>({});
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
@@ -56,13 +62,36 @@ export default function ConversationBar({
     setUploadedFiles((previous) => ({ ...previous, ...newUploadedFiles }));
     setFileUploadOpen(false);
   };
-
+  const handleSend = useCallback(
+    (message, uploadedFiles) => {
+      setTimer(0);
+      setLoading(true);
+      event.preventDefault();
+      if (clearOnSend) {
+        setMessage('');
+        setUploadedFiles({});
+      }
+      const interval = setInterval(() => {
+        setTimer((prev) => prev + 1);
+      }, 100);
+      onSend(message, uploadedFiles)
+        .then(() => {
+          clearInterval(interval);
+          setLoading(false);
+          return true;
+        })
+        .catch(() => {
+          return false;
+        });
+    },
+    [clearOnSend, onSend],
+  );
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
       <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
         <TextField
-          label={`Enter your message to ${state.chatSettings.selectedAgent} here.`}
-          placeholder={`Hello, ${state.chatSettings.selectedAgent}!`}
+          label={`Enter your message to ${state.agent} here.`}
+          placeholder={`Hello, ${state.agent}!`}
           multiline
           rows={2}
           fullWidth
@@ -70,11 +99,7 @@ export default function ConversationBar({
           onKeyDown={async (event) => {
             if (event.key === 'Enter' && !event.shiftKey && message) {
               event.preventDefault();
-              if (clearOnSend) {
-                setMessage('');
-                setUploadedFiles({});
-              }
-              onSend(message, uploadedFiles);
+              handleSend(message, uploadedFiles);
             }
           }}
           onChange={(e) => setMessage(e.target.value)}
@@ -83,15 +108,17 @@ export default function ConversationBar({
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
-                {state.chatSettings.enableFileUpload && (
+                {timer > -1 && (
+                  <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
+                    <Typography variant='caption'>{(timer / 10).toFixed(1)}s</Typography>
+                    {loading ? <Pending /> : <CheckCircle />}
+                  </Box>
+                )}
+                {enableFileUpload && (
                   <>
                     <IconButton
                       onClick={() => {
                         setFileUploadOpen(true);
-                        state.mutate((oldState) => ({
-                          ...oldState,
-                          chatState: { ...oldState.chatState, uploadedFiles: [] },
-                        }));
                       }}
                       disabled={disabled}
                       color='primary'
@@ -115,34 +142,33 @@ export default function ConversationBar({
                     </Dialog>
                   </>
                 )}
-                {!alternativeInputActive && (
-                  <Tooltip title='Send Message'>
-                    <IconButton
-                      onClick={() => {
-                        if (clearOnSend) {
-                          setMessage('');
-                          setUploadedFiles({});
-                        }
-                        onSend(message, uploadedFiles);
-                      }}
-                      disabled={disabled}
-                      color='primary'
-                      sx={{
-                        height: '56px',
-                        padding: '0.5rem',
-                      }}
-                    >
-                      <SendIcon />
-                    </IconButton>
-                  </Tooltip>
-                )}
-                {state.chatSettings.enableVoiceInput && (
+                {enableVoiceInput && (
                   <AudioRecorder
                     recording={alternativeInputActive}
                     setRecording={setAlternativeInputActive}
                     disabled={disabled}
-                    onSend={onSend}
+                    onSend={handleSend}
                   />
+                )}
+                {!alternativeInputActive && (
+                  <Tooltip title='Send Message'>
+                    <span>
+                      <IconButton
+                        onClick={(event) => {
+                          event.preventDefault();
+                          handleSend(message, uploadedFiles);
+                        }}
+                        disabled={message.trim().length === 0 || disabled}
+                        color='primary'
+                        sx={{
+                          height: '56px',
+                          padding: '0.5rem',
+                        }}
+                      >
+                        <SendIcon />
+                      </IconButton>
+                    </span>
+                  </Tooltip>
                 )}
               </InputAdornment>
             ),

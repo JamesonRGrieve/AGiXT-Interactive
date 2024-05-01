@@ -18,7 +18,7 @@ import {
 } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, ThumbDown } from '@mui/icons-material';
 import clipboardCopy from 'clipboard-copy';
-import { ChatContext } from '../../types/ChatContext';
+import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 import MarkdownBlock from '../MarkdownBlock';
 
 function formatDate(timestamp: string): string {
@@ -50,7 +50,7 @@ function formatDate(timestamp: string): string {
   return localDate.toLocaleString('en-US', options);
 }
 
-export default function ConversationHistory({
+export default function ChatLog({
   conversation,
   latestMessage,
   alternateBackground,
@@ -60,11 +60,11 @@ export default function ConversationHistory({
   alternateBackground?: string;
 }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
   const messagesEndRef = useRef(null);
   const theme = useTheme();
   useEffect(() => {
-    // console.log('Conversation mutated, scrolling to bottom.', state.chatSettings.conversationName, conversation);
+    // console.log('Conversation mutated, scrolling to bottom.', state.overrides.conversationName, conversation);
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
   return (
@@ -85,7 +85,14 @@ export default function ConversationHistory({
             if (chatItem.role === 'USER') {
               lastUserMessage = chatItem.message;
             }
-            return <ChatMessage key={chatItem.timestamp} chatItem={chatItem} lastUserMessage={lastUserMessage} />;
+            // TODO Fix this so the timestamp works. It's not granular enough rn and we get duplicates.
+            return (
+              <ChatMessage
+                key={chatItem.timestamp + '-' + chatItem.message}
+                chatItem={chatItem}
+                lastUserMessage={lastUserMessage}
+              />
+            );
           })
         ) : (
           <Box pt='2rem' pb='3rem'>
@@ -117,8 +124,8 @@ export default function ConversationHistory({
             <ChatMessage
               key={'Please Wait Agent'}
               chatItem={{
-                role: state.chatSettings.selectedAgent,
-                message: state.chatSettings.selectedAgent + ' is typing...',
+                role: state.agent,
+                message: state.agent + ' is typing...',
                 timestamp: '',
               }}
               lastUserMessage={null}
@@ -134,11 +141,11 @@ export default function ConversationHistory({
 
 const generatedAudioString = '#GENERATED_AUDIO:';
 const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary' }): React.JSX.Element => {
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
   const formattedMessage = useMemo(() => {
     const toFormat =
       typeof chatItem.message !== 'string'
-        ? 'An audio message'
+        ? '*An audio message.*'
         : chatItem.message.includes(generatedAudioString)
           ? chatItem.message.split(generatedAudioString)[0]
           : chatItem.message;
@@ -152,14 +159,30 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
     // if (chatItem.message.includes('#GENERATED_AUDIO:')) console.log('Formatted: ', formatted);
     return formatted;
   }, [chatItem]);
+  const audios = useMemo(() => {
+    if (
+      chatItem?.message &&
+      typeof chatItem.message === 'string' &&
+      chatItem.message.includes('<audio controls><source src=')
+    ) {
+      // Replace the html audio control with a link to the audio
+      const matches = [...chatItem.message.matchAll(/<audio controls><source src="(.*?)" type="audio\/wav"><\/audio>/g)];
+      const audioSrcs = matches.map((match) => match[1]);
+      // We can reformat it any way we want for testing like this.
+      return {
+        message: chatItem.message.replaceAll(/<audio controls><source src="(.*?)" type="audio\/wav"><\/audio>/g, ''),
+        srcs: audioSrcs,
+      };
+    } else return null;
 
-  const audio = useMemo(() => {
     // console.log('Audio: ', theAudio);
+    /*
     return typeof chatItem.message !== 'string'
       ? 'An audio message'
       : chatItem.message.includes(generatedAudioString)
         ? chatItem.message.split(generatedAudioString)[1]
         : null;
+        */
   }, [chatItem]);
   const [vote, setVote] = useState(0);
   const [open, setOpen] = useState(false);
@@ -178,8 +201,19 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
         color: theme.palette.text.primary,
       }}
     >
-      <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
-      {/*audio && <AudioPlayer base64audio={audio} />*/}
+      {audios?.srcs?.length > 0 ? (
+        <>
+          <MarkdownBlock content={formattedMessage} chatItem={{ ...chatItem, message: audios.message }} />
+          {audios.srcs.map((src) => (
+            <audio controls key={src}>
+              <source src={src} type='audio/wav' />
+            </audio>
+          ))}
+        </>
+      ) : (
+        <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
+      )}
+
       {chatItem.timestamp !== '' && (
         <Typography
           variant='caption'
@@ -279,9 +313,9 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
               const messageText = `User Feedback: ${feedback} \n\n Message: ${chatItem.message} \n\n Last User Message: ${lastUserMessage}`;
               setOpen(false);
               if (vote === 1) {
-                state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 2);
+                state.agixt.learnText(chatItem.role, lastUserMessage, messageText, 2);
               } else {
-                state.sdk.learnText(chatItem.role, lastUserMessage, messageText, 3);
+                state.agixt.learnText(chatItem.role, lastUserMessage, messageText, 3);
               }
             }}
             color='info'

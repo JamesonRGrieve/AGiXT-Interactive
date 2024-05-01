@@ -2,13 +2,13 @@
 import { Select, MenuItem, FormControl, Tooltip } from '@mui/material';
 import React, { useContext } from 'react';
 import useSWR from 'swr';
-import { ChatContext } from '../../types/ChatContext';
+import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 
 export default function PromptSelector(): React.JSX.Element {
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
   const { data: promptData } = useSWR<string[]>(
     `/prompt`,
-    async () => (await state.sdk.getPrompts(state.promptCategory)) as string[],
+    async () => (await state.agixt.getPrompts(state.overrides.promptCategory)) as string[],
   );
   return (
     <Tooltip title='Select a Prompt'>
@@ -41,7 +41,7 @@ export default function PromptSelector(): React.JSX.Element {
           labelId='conversation-label'
           label='Select a Prompt'
           disabled={promptData?.length === 0}
-          value={state.prompt}
+          value={state.overrides.prompt}
           onChange={(e) =>
             state.mutate((oldState) => ({
               ...oldState,

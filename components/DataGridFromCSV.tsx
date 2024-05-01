@@ -3,7 +3,7 @@ import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextFie
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
 import { useState, useEffect, ReactNode } from 'react';
-import { ChatConfig } from '../types/ChatContext';
+import { InteractiveConfig } from '@/types/InteractiveConfigContext';
 
 const ODD_OPACITY = 1;
 
@@ -32,7 +32,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData: string }): ReactNode => {
+export const DataGridFromCSV = ({ state, csvData }: { state: InteractiveConfig; csvData: string }): ReactNode => {
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
@@ -110,26 +110,19 @@ export const DataGridFromCSV = ({ state, csvData }: { state: ChatConfig; csvData
   }, [csvData]);
 
   const getInsights = async (userMessage): Promise<void> => {
-    state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, isLoading: true } }));
+    //state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, isLoading: true } }));
     const lines = csvData.split('\n');
     lines.shift();
     lines.pop();
     const newCSVData = lines.join('\n');
     const chainArgs = {
-      conversation_name: state.chatSettings.conversationName,
+      conversation_name: state.overrides.conversationName,
       text: newCSVData,
     };
-    const response = await state.sdk.runChain(
-      'Data Analysis',
-      userMessage,
-      state.chatSettings.selectedAgent,
-      false,
-      1,
-      chainArgs,
-    );
-    state.mutate((oldState) => {
-      return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
-    });
+    const response = await state.agixt.runChain('Data Analysis', userMessage, state.agent, false, 1, chainArgs);
+    // state.mutate((oldState) => {
+    //   return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
+    // });
   };
   return rows.length > 1 ? (
     <>

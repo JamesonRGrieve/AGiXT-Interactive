@@ -1,26 +1,29 @@
 import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { ChatProps, UIProps } from '../InteractiveAGiXT';
-import { ChatContext } from '../../types/ChatContext';
+import { UIProps } from '../InteractiveAGiXT';
+import { InteractiveConfigContext, Overrides } from '../../types/InteractiveConfigContext';
 import ConversationHistory from './ChatLog';
 import ConversationBar from './ChatBar';
 
 const conversationSWRPath = /conversation/;
-export default function Chat({ showChatThemeToggles, alternateBackground }: ChatProps & UIProps): React.JSX.Element {
+export default function Chat({
+  showChatThemeToggles,
+  alternateBackground,
+  enableFileUpload,
+  enableVoiceInput,
+}: Overrides & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
   const [latestMessage, setLatestMessage] = useState('');
-  const state = useContext(ChatContext);
-  console.log(state.openai);
+  const state = useContext(InteractiveConfigContext);
 
   const conversation = useSWR(
-    conversationSWRPath + state.chatSettings.conversationName,
-    async () => await state.sdk.getConversation('', state.chatSettings.conversationName, 100, 1),
+    conversationSWRPath + state.overrides.conversationName,
+    async () => await state.agixt.getConversation('', state.overrides.conversationName, 100, 1),
     {
       fallbackData: [],
     },
   );
-
   async function chat(message, files): Promise<string> {
     const messages = [];
     // console.log(message);
@@ -51,14 +54,14 @@ export default function Chat({ showChatThemeToggles, alternateBackground }: Chat
 
     const toOpenAI = {
       messages: messages,
-      model: state.chatSettings.selectedAgent,
-      user: state.chatSettings.conversationName,
+      model: state.agent,
+      user: state.overrides.conversationName,
     };
     setLoading(true);
     setLatestMessage(message);
     console.log('Sending: ', state.openai, toOpenAI);
     const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
-    mutate(conversationSWRPath + state.chatSettings.conversationName);
+    mutate(conversationSWRPath + state.overrides.conversationName);
     setLoading(false);
     setLatestMessage('');
     if (chatCompletion?.choices[0]?.message.content.length > 0) {
@@ -68,9 +71,9 @@ export default function Chat({ showChatThemeToggles, alternateBackground }: Chat
     }
   }
   useEffect(() => {
-    // console.log("Conversation changed, fetching new conversation's messages.", state.chatSettings.conversationName);
-    mutate(conversationSWRPath + state.chatSettings.conversationName);
-  }, [state.chatSettings.conversationName]);
+    // console.log("Conversation changed, fetching new conversation's messages.", state.overrides.conversationName);
+    mutate(conversationSWRPath + state.overrides.conversationName);
+  }, [state.overrides.conversationName]);
   return (
     <>
       <ConversationHistory
@@ -82,6 +85,8 @@ export default function Chat({ showChatThemeToggles, alternateBackground }: Chat
         onSend={(message, files) => chat(message, files)}
         disabled={loading}
         showChatThemeToggles={showChatThemeToggles}
+        enableFileUpload={enableFileUpload}
+        enableVoiceInput={enableVoiceInput}
       />
     </>
   );

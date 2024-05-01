@@ -5,7 +5,7 @@ import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import clipboardCopy from 'clipboard-copy';
 import { IconButton } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
-import { ChatContext } from '../types/ChatContext';
+import { InteractiveConfigContext } from '../types/InteractiveConfigContext';
 import { DataGridFromCSV } from './DataGridFromCSV';
 
 const langMap = {
@@ -71,7 +71,7 @@ export default function MarkdownBlock({
   content: string;
   chatItem?: { role: string; timestamp: string };
 }): ReactNode {
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
   const renderMessage = (): ReactNode => {
     const message = content.toString();
     const match = message.match(/#(.*?)(?=\n|$)/);
@@ -97,7 +97,7 @@ export default function MarkdownBlock({
       const match = message.match(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/);
       const audioSrc = match[1];
       // We can reformat it any way we want for testing like this.
-      return message.replace(match[0], `[Click here for the audio response](${audioSrc})`);
+      return message.replace(match[0], '');
     }
     return content;
   };
