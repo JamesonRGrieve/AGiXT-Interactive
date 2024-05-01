@@ -70,8 +70,6 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
         webSearch: Boolean(searchParams.get('webSearch')) || undefined,
         insightAgentName: searchParams.get('insightAgent') || undefined,
         enableMemory: Boolean(searchParams.get('memory')) || undefined,
-        enableFileUpload: Boolean(searchParams.get('fileUpload')) || undefined,
-        enableVoiceInput: Boolean(searchParams.get('voiceInput')) || undefined,
         useSelectedAgent: Boolean(searchParams.get('useSelectedAgent')) || undefined,
         chainRunConfig: {
           chainArgs: JSON.parse(searchParams.get('chainArgs')) || undefined,
@@ -122,8 +120,6 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
           chain: process.env.NEXT_PUBLIC_AGIXT_CHAIN,
           command: process.env.NEXT_PUBLIC_AGIXT_COMMAND,
           commandMessageArg: process.env.NEXT_PUBLIC_AGIXT_COMMAND_MESSAGE_ARG,
-          enableFileUpload: process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true' ?? true,
-          enableVoiceInput: process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true' ?? true,
           conversationName:
             process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
               ? uuid
@@ -133,7 +129,18 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
         },
       }}
     >
-      <Interactive {...props.chatConfig} {...props.uiConfig} />
+      <Interactive
+        {...props.chatConfig}
+        {...props.uiConfig}
+        enableVoiceInput={
+          process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true' ??
+          (Boolean(searchParams.get('voiceInput')) || undefined)
+        }
+        enableFileUpload={
+          process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true' ??
+          (Boolean(searchParams.get('fileUpload')) || undefined)
+        }
+      />
     </ContextWrapper>
   );
 };
@@ -179,12 +186,19 @@ const Interactive = (props: ChatProps & UIProps): React.JSX.Element => {
       }
     >
       {process.env.NEXT_PUBLIC_INTERACTIVE_UI === 'form' ? (
-        <Form mode={props.mode} showChatThemeToggles={props.showChatThemeToggles} />
+        <Form
+          mode={props.mode}
+          showChatThemeToggles={props.showChatThemeToggles}
+          enableFileUpload={props.enableFileUpload}
+          enableVoiceInput={props.enableVoiceInput}
+        />
       ) : (
         <Chat
           mode={props.mode}
           showChatThemeToggles={props.showChatThemeToggles}
           alternateBackground={props.alternateBackground}
+          enableFileUpload={props.enableFileUpload}
+          enableVoiceInput={props.enableVoiceInput}
         />
       )}
     </AppWrapper>
