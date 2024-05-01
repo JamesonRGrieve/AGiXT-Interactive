@@ -3,7 +3,7 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, CopyAllOutlined } from '@mui/icons-material';
 import MarkdownBlock from '../MarkdownBlock';
 
-export default function FormInput({ results }): ReactNode {
+export default function FormOutput({ results }): ReactNode {
   const [resultNum, setResultNum] = useState(0);
   // console.log('Results', results);
   useEffect(() => {

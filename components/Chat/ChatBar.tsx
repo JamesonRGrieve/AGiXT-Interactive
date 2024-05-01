@@ -22,7 +22,7 @@ import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
 import { ChatContext } from '../../types/ChatContext';
 import AudioRecorder from './AudioRecorder';
 
-export default function ConversationBar({
+export default function ChatBar({
   onSend,
   disabled,
   clearOnSend = true,

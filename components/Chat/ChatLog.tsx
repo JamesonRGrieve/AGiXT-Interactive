@@ -50,7 +50,7 @@ function formatDate(timestamp: string): string {
   return localDate.toLocaleString('en-US', options);
 }
 
-export default function ConversationHistory({
+export default function ChatLog({
   conversation,
   latestMessage,
   alternateBackground,
