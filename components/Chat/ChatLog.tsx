@@ -160,13 +160,13 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
     return formatted;
   }, [chatItem]);
   const audios = useMemo(() => {
-    if (chatItem.message.includes('<audio controls><source src=')) {
+    if (chatItem?.message && typeof chatItem.message === "string" && chatItem.message.includes('<audio controls><source src=')) {
       // Replace the html audio control with a link to the audio
-      const matches = [...chatItem.message.matchAll(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/g)];
+      const matches = [...chatItem.message.matchAll(/<audio controls><source src="(.*?)" type="audio\/wav"><\/audio>/g)];
       const audioSrcs = matches.map((match) => match[1]);
       // We can reformat it any way we want for testing like this.
       return {
-        message: chatItem.message.replaceAll(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/g, ''),
+        message: chatItem.message.replaceAll(/<audio controls><source src="(.*?)" type="audio\/wav"><\/audio>/g, ''),
         srcs: audioSrcs,
       };
     } else return null;
