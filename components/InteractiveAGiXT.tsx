@@ -147,7 +147,7 @@ const Interactive = (props: ChatProps & UIProps): React.JSX.Element => {
       {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.split(',').map((selector) => selectionBars[String(selector)])}
     </Box>
   );
-  console.log(mobile);
+  //console.log(mobile);
   return (
     <AppWrapper
       header={
