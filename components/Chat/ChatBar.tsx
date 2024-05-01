@@ -146,6 +146,14 @@ export default function ConversationBar({
                     </Dialog>
                   </>
                 )}
+                {enableVoiceInput && (
+                  <AudioRecorder
+                    recording={alternativeInputActive}
+                    setRecording={setAlternativeInputActive}
+                    disabled={disabled}
+                    onSend={handleSend}
+                  />
+                )}
                 {!alternativeInputActive && (
                   <Tooltip title='Send Message'>
                     <span>
@@ -165,14 +173,6 @@ export default function ConversationBar({
                       </IconButton>
                     </span>
                   </Tooltip>
-                )}
-                {enableVoiceInput && (
-                  <AudioRecorder
-                    recording={alternativeInputActive}
-                    setRecording={setAlternativeInputActive}
-                    disabled={disabled}
-                    onSend={handleSend}
-                  />
                 )}
               </InputAdornment>
             ),
