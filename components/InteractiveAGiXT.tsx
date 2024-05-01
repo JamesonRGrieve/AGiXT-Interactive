@@ -199,6 +199,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
 };
 const InteractiveAGiXT = ({
   stateful = true,
+  agent = '',
   overrides = {
     mode: (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
       ? process.env.NEXT_PUBLIC_AGIXT_MODE
@@ -206,7 +207,7 @@ const InteractiveAGiXT = ({
   },
   serverConfig = null,
   uiConfig = {},
-}: AGiXTInteractiveProps & { stateful?: boolean }): React.JSX.Element => {
+}: AGiXTInteractiveProps & { stateful?: boolean; agent?: string }): React.JSX.Element => {
   const uiConfigWithEnv = useMemo(
     () => ({
       showAppBar: process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
@@ -228,7 +229,7 @@ const InteractiveAGiXT = ({
   );
   // console.log('Configuration Provided From Server: ', chatConfig, serverConfig, uiConfig);
   return stateful ? (
-    <Stateful overrides={overrides} serverConfig={serverConfig} uiConfig={uiConfigWithEnv} />
+    <Stateful overrides={overrides} serverConfig={serverConfig} uiConfig={uiConfigWithEnv} agent={agent} />
   ) : (
     <Interactive {...uiConfigWithEnv} {...overrides} />
   );
