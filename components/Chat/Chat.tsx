@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { ChatProps, UIProps } from '../InteractiveAGiXT';
-import { ChatContext } from '../../types/ChatContext';
+import { UIProps } from '../InteractiveAGiXT';
+import { InteractiveConfigContext, Overrides } from '../../types/InteractiveConfigContext';
 import ConversationHistory from './ChatLog';
 import ConversationBar from './ChatBar';
 
@@ -11,11 +11,11 @@ export default function Chat({
   alternateBackground,
   enableFileUpload,
   enableVoiceInput,
-}: ChatProps & UIProps): React.JSX.Element {
+}: Overrides & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
   const [latestMessage, setLatestMessage] = useState('');
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
 
   const conversation = useSWR(
     conversationSWRPath + state.overrides.conversationName,

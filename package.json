@@ -28,7 +28,7 @@
     "./ConversationSelector": "./dist/components/Selectors/ConversationSelector.js",
     "./PromptSelector": "./dist/components/Selectors/PromptSelector.js",
     "./AgentSelector": "./dist/components/Selectors/AgentSelector.js",
-    "./Context": "./dist/types/ChatContext.js"
+    "./Context": "./dist/types/InteractiveConfigContext.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",

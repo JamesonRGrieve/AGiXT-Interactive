@@ -2,10 +2,10 @@
 import { Select, MenuItem, FormControl, Tooltip } from '@mui/material';
 import React, { useContext } from 'react';
 import useSWR from 'swr';
-import { ChatContext } from '../../types/ChatContext';
+import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 
 export default function PromptSelector(): React.JSX.Element {
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
   const { data: promptData } = useSWR<string[]>(
     `/prompt`,
     async () => (await state.agixt.getPrompts(state.overrides.promptCategory)) as string[],

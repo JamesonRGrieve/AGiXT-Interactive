@@ -19,7 +19,7 @@ import { setCookie } from 'cookies-next';
 import { CheckCircle, DeleteForever, Pending } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
-import { ChatContext } from '../../types/ChatContext';
+import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 import AudioRecorder from './AudioRecorder';
 
 export default function ChatBar({
@@ -30,14 +30,14 @@ export default function ChatBar({
   enableFileUpload = false,
   enableVoiceInput = false,
 }: {
-  onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<void>;
+  onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
   disabled: boolean;
   clearOnSend?: boolean;
   showChatThemeToggles: boolean;
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
 }): ReactNode {
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
   const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState<number>(-1);
   const [uploadedFiles, setUploadedFiles] = useState<{ [x: string]: string }>({});
@@ -119,10 +119,6 @@ export default function ChatBar({
                     <IconButton
                       onClick={() => {
                         setFileUploadOpen(true);
-                        state.mutate((oldState) => ({
-                          ...oldState,
-                          chatState: { ...oldState.chatState, uploadedFiles: [] },
-                        }));
                       }}
                       disabled={disabled}
                       color='primary'

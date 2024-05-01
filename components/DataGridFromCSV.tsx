@@ -3,7 +3,7 @@ import { Button, Box, Dialog, DialogTitle, DialogContent, DialogActions, TextFie
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
 import { useState, useEffect, ReactNode } from 'react';
-import { InteractiveConfig } from '../types/ChatContext';
+import { InteractiveConfig } from '@/types/InteractiveConfigContext';
 
 const ODD_OPACITY = 1;
 
@@ -110,7 +110,7 @@ export const DataGridFromCSV = ({ state, csvData }: { state: InteractiveConfig; 
   }, [csvData]);
 
   const getInsights = async (userMessage): Promise<void> => {
-    state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, isLoading: true } }));
+    //state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, isLoading: true } }));
     const lines = csvData.split('\n');
     lines.shift();
     lines.pop();
@@ -120,9 +120,9 @@ export const DataGridFromCSV = ({ state, csvData }: { state: InteractiveConfig; 
       text: newCSVData,
     };
     const response = await state.agixt.runChain('Data Analysis', userMessage, state.agent, false, 1, chainArgs);
-    state.mutate((oldState) => {
-      return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
-    });
+    // state.mutate((oldState) => {
+    //   return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
+    // });
   };
   return rows.length > 1 ? (
     <>

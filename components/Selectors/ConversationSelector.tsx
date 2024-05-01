@@ -17,10 +17,10 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import React, { useContext, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { ChatContext } from '../../types/ChatContext';
+import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 
 export default function ConversationSelector(): React.JSX.Element {
-  const state = useContext(ChatContext);
+  const state = useContext(InteractiveConfigContext);
   const { data: conversationData } = useSWR<string[]>(
     `/conversation`,
     async () => (await state.agixt.getConversations()) as string[],

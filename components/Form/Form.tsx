@@ -1,23 +1,33 @@
 import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { Alert } from '@mui/material';
+import { Alert, Typography } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
-import { ChatProps, UIProps } from '../InteractiveAGiXT';
-import { ChatContext } from '../../types/ChatContext';
+import { UIProps } from '../InteractiveAGiXT';
+import { InteractiveConfigContext, Overrides } from '../../types/InteractiveConfigContext';
 import ConversationBar from '../Chat/ChatBar';
 import FormInput from './FormInput';
 import FormOutput from './FormOutput';
 
-export default function Form({ showChatThemeToggles }: ChatProps & UIProps): React.JSX.Element {
-  const state = useContext(ChatContext);
+export default function Form({
+  showChatThemeToggles,
+  followUp = false,
+}: Overrides & UIProps & { followUp?: boolean }): React.JSX.Element {
+  const state = useContext(InteractiveConfigContext);
   const [argValues, setArgValues] = useState({});
   const [uuids, setUUIDs] = useState([]);
+  const [uuid, setUUID] = useState('');
   const [loading, setLoading] = useState(false);
   const { data: results } = useSWR(
     '/results',
-    async () => await Promise.all(uuids.map(async (uuid) => (await state.agixt.getConversation('', uuid, 5, 1))[1].message)),
+    async () => {
+      const conversations = await Promise.all(uuids.map(async (uuid) => await state.agixt.getConversation('', uuid, 5, 1)));
+      return conversations.reduce((obj, conversation, index) => {
+        obj[uuids[index]] = conversation;
+        return obj;
+      }, {});
+    },
     {
-      fallbackData: [],
+      fallbackData: {},
     },
   );
   const { data: promptArgs } = useSWR(
@@ -79,6 +89,7 @@ export default function Form({ showChatThemeToggles }: ChatProps & UIProps): Rea
     const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
     setLoading(false);
     setUUIDs((previous) => [...previous, uuid]);
+    setUUID(uuid);
     if (chatCompletion?.choices[0]?.message.content.length > 0) {
       return chatCompletion.choices[0].message.content;
     } else {
@@ -100,7 +111,16 @@ export default function Form({ showChatThemeToggles }: ChatProps & UIProps): Rea
           Fetching response...
         </Alert>
       )}
-      <FormOutput results={results} />
+      <FormOutput results={results} showIndex={1} selectedUUID={uuid} setSelectedUUID={setUUID} />
+      {followUp && results[uuid].length < 3 && (
+        <FormInput disabled={loading} argValues={argValues} setArgValues={setArgValues} />
+      )}
+      {followUp && results[uuid].length >= 3 && (
+        <>
+          <Typography variant='h6'>{results[uuid][2].message}</Typography>
+          <FormOutput results={results} showIndex={3} selectedUUID={uuid} setSelectedUUID={setUUID} />
+        </>
+      )}
     </>
   );
 }
