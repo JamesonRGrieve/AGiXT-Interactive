@@ -145,7 +145,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
   const formattedMessage = useMemo(() => {
     const toFormat =
       typeof chatItem.message !== 'string'
-        ? 'An audio message'
+        ? '*An audio message.*'
         : chatItem.message.includes(generatedAudioString)
           ? chatItem.message.split(generatedAudioString)[0]
           : chatItem.message;

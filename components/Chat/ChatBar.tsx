@@ -63,7 +63,7 @@ export default function ConversationBar({
     setFileUploadOpen(false);
   };
   const handleSend = useCallback(
-    (event) => {
+    (message, uploadedFiles) => {
       setTimer(0);
       setLoading(true);
       event.preventDefault();
@@ -84,7 +84,7 @@ export default function ConversationBar({
           return false;
         });
     },
-    [clearOnSend, message, onSend, uploadedFiles],
+    [clearOnSend, onSend],
   );
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
@@ -98,7 +98,8 @@ export default function ConversationBar({
           value={message}
           onKeyDown={async (event) => {
             if (event.key === 'Enter' && !event.shiftKey && message) {
-              handleSend(event);
+              event.preventDefault();
+              handleSend(message, uploadedFiles);
             }
           }}
           onChange={(e) => setMessage(e.target.value)}
@@ -149,8 +150,9 @@ export default function ConversationBar({
                   <Tooltip title='Send Message'>
                     <span>
                       <IconButton
-                        onClick={() => {
-                          handleSend(event);
+                        onClick={(event) => {
+                          event.preventDefault();
+                          handleSend(message, uploadedFiles);
                         }}
                         disabled={message.trim().length === 0 || disabled}
                         color='primary'
@@ -169,7 +171,7 @@ export default function ConversationBar({
                     recording={alternativeInputActive}
                     setRecording={setAlternativeInputActive}
                     disabled={disabled}
-                    onSend={onSend}
+                    onSend={handleSend}
                   />
                 )}
               </InputAdornment>
