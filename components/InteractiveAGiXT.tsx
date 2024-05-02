@@ -55,7 +55,7 @@ function removeUndefined(obj: any) {
       if (Object.keys(childObject).length > 0) {
         acc[key] = childObject;
       }
-    } else if (obj[key] !== undefined) {
+    } else if (![undefined, null, ''].includes(obj[key])) {
       acc[key] = obj[key];
     }
     return acc;
@@ -199,7 +199,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
 };
 const InteractiveAGiXT = ({
   stateful = true,
-  agent = '',
+  agent,
   overrides = {
     mode: (process.env.NEXT_PUBLIC_AGIXT_MODE && ['chain', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_MODE)
       ? process.env.NEXT_PUBLIC_AGIXT_MODE
