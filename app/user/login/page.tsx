@@ -12,10 +12,12 @@ export default function Login({ searchParams }: { searchParams: any }): ReactNod
     try {
       setResponseMessage(
         (
-          await axios.post(`${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/login`, {
-            ...formData,
-          })
-        ).data.message,
+          await axios
+            .post(`${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/login`, {
+              ...formData,
+            })
+            .catch((exception: any) => exception.response)
+        ).data.detail,
       );
     } catch (exception) {
       console.error(exception);

@@ -10,6 +10,13 @@ export default async function Middleware(req: NextRequest) {
           .map((param) => ({ [param.split('=')[0]]: param.split('=')[1] })),
       )
     : {};
+  console.log(queryParams);
+  if (queryParams.token) {
+    headers['Set-Cookie'] =
+      `jwt=${queryParams.token}; Domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN}; Path=/; SameSite=Strict;`;
+    const urlWithoutParams = req.url.split('?')[0];
+    return NextResponse.redirect(urlWithoutParams, { headers });
+  }
   if (req.nextUrl.pathname.startsWith('/_next/') || req.nextUrl.pathname === '/favicon.ico') {
     return NextResponse.next();
   } else if (process.env.AUTH_WEB) {
@@ -20,7 +27,7 @@ export default async function Middleware(req: NextRequest) {
         const response = await fetch(`${process.env.AUTH_SERVER}/v1/user`, {
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `${jwt.startsWith('Bearer ') ? jwt : 'Bearer ' + jwt}`,
+            Authorization: jwt,
           },
         });
         if (response.status !== 200) throw new Error('Invalid token response, status ' + response.status + '.');
@@ -31,8 +38,12 @@ export default async function Middleware(req: NextRequest) {
         return NextResponse.redirect(new URL(process.env.AUTH_WEB), { headers });
       }
     }
-    if (req.nextUrl.href.startsWith(process.env.AUTH_WEB) && jwt && req.nextUrl.pathname !== '/user/manage') {
-      return NextResponse.redirect(new URL(process.env.AUTH_WEB + '/manage'));
+    if (req.nextUrl.href.startsWith(process.env.AUTH_WEB)) {
+      if (jwt && req.nextUrl.pathname !== '/user/manage') {
+        return NextResponse.redirect(new URL(process.env.AUTH_WEB + '/manage'));
+      } else {
+        return NextResponse.next();
+      }
     } else {
       console.log(`${req.nextUrl.href} does not start with ${process.env.AUTH_WEB}`);
       if (!jwt) {
@@ -41,14 +52,6 @@ export default async function Middleware(req: NextRequest) {
     }
   } else if (req.nextUrl.pathname.startsWith('/api/')) {
     return NextResponse.next();
-  } else if (queryParams.email && queryParams.token) {
-    headers['Set-Cookie'] = [
-      // Both of these are not getting set at once, email is getting set then the next attempt jwt is getting set.
-      `email=${queryParams.email}; Domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN}; Path=/; SameSite=Strict;`,
-      `jwt=${queryParams.token}; Domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN}; Path=/; SameSite=Strict;`,
-    ];
-    const urlWithoutParams = req.url.split('?')[0];
-    return NextResponse.redirect(urlWithoutParams, { headers });
   } else if (req.nextUrl.pathname !== req.nextUrl.pathname.toLowerCase()) {
     return NextResponse.redirect(new URL(req.nextUrl.origin + req.nextUrl.pathname.toLowerCase()));
   } else {

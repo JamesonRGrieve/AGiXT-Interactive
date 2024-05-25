@@ -3,7 +3,7 @@ import { Box, Button, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import React, { FormEvent, ReactNode, useState } from 'react';
-import useSWR from 'swr';
+import useSWR, { mutate } from 'swr';
 
 export default function Manage(): ReactNode {
   const integration = getCookie('integration');
@@ -12,11 +12,23 @@ export default function Manage(): ReactNode {
     event.preventDefault();
     const formData = Object.fromEntries(new FormData((event.currentTarget as HTMLFormElement) ?? undefined));
     const updateResponse = (
-      await axios.put(`${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/user`, {
-        ...formData,
-      })
+      await axios
+        .put(
+          `${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/user`,
+          {
+            ...formData,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: getCookie('jwt'),
+            },
+          },
+        )
+        .catch((exception: any) => exception.response)
     ).data;
-    setResponseMessage(updateResponse.message);
+    setResponseMessage(updateResponse.detail);
+    mutate('/user');
   };
   type User = {
     first_name: string;
@@ -25,15 +37,22 @@ export default function Manage(): ReactNode {
   };
 
   const { data, isLoading } = useSWR<User, any, '/user'>('/user', async () => {
-    return (await axios.get(`${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/user`)).data;
+    return (
+      await axios.get(`${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/user`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: getCookie('jwt'),
+        },
+      })
+    ).data;
   });
   return isLoading ? (
     <Typography>Loading Current Data...</Typography>
   ) : (
     <Box component='form' onSubmit={submitForm} display='flex' flexDirection='column' gap='1rem'>
       <input type='hidden' id='email' name='email' value={getCookie('email')} />
-      <TextField id='first_name' label='First Name' variant='outlined' name='first_name' value={data?.first_name} />
-      <TextField id='last_name' label='Last Name' variant='outlined' name='last_name' value={data?.last_name} />
+      <TextField id='first_name' label='First Name' variant='outlined' name='first_name' defaultValue={data?.first_name} />
+      <TextField id='last_name' label='Last Name' variant='outlined' name='last_name' defaultValue={data?.last_name} />
       {integration && (
         <>
           <TextField
@@ -41,7 +60,7 @@ export default function Manage(): ReactNode {
             label={`${integration} Username`}
             variant='outlined'
             name='username'
-            value={data?.username}
+            defaultValue={data?.username}
           />
           <TextField
             id='password'

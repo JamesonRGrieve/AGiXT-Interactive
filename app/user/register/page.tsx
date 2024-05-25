@@ -1,23 +1,30 @@
 'use client';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
-import React, { FormEvent, ReactNode } from 'react';
+import React, { FormEvent, ReactNode, useState } from 'react';
 const ehrs = {
   pointclickcare: 'PointClickCare',
 };
 export default function Register(): ReactNode {
   const router = useRouter();
+  const [responseMessage, setResponseMessage] = useState('');
+
   const submitForm = async (event: FormEvent<HTMLFormElement>): Promise<void> => {
     event.preventDefault();
     const formData = Object.fromEntries(new FormData((event.currentTarget as HTMLFormElement) ?? undefined));
     const registerResponse = (
-      await axios.post(`${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/user`, {
-        ...formData,
-      })
+      await axios
+        .post(`${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/user`, {
+          ...formData,
+        })
+        .catch((exception: any) => exception.response)
     ).data;
-    router.push(`/user/login?otp_uri=${registerResponse.otp_uri}`);
+    setResponseMessage(registerResponse.detail);
+    if (registerResponse.otp_uri) {
+      router.push(`/user/login?otp_uri=${registerResponse.otp_uri}`);
+    }
   };
 
   return (
@@ -43,6 +50,7 @@ export default function Register(): ReactNode {
         </>
       )}
       <Button type='submit'>Register</Button>
+      {responseMessage && <Typography>{responseMessage}</Typography>}
     </Box>
   );
 }
