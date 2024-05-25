@@ -13,7 +13,7 @@ export default function Login({ searchParams }: { searchParams: any }): ReactNod
       setResponseMessage(
         (
           await axios
-            .post(`${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/login`, {
+            .post(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/login`, {
               ...formData,
             })
             .catch((exception: any) => exception.response)

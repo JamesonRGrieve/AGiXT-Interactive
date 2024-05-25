@@ -11,7 +11,7 @@ export default function Identify(): ReactNode {
     const formData = Object.fromEntries(new FormData((event.currentTarget as HTMLFormElement) ?? undefined));
     const existsResponse = (
       await axios
-        .get(`${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/user/exists?email=${formData.email.toString()}`)
+        .get(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/user/exists?email=${formData.email.toString()}`)
         .catch((exception: any) => exception.response)
     ).data;
     console.log(existsResponse);

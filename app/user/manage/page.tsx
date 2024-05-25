@@ -14,7 +14,7 @@ export default function Manage(): ReactNode {
     const updateResponse = (
       await axios
         .put(
-          `${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/user`,
+          `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/user`,
           {
             ...formData,
           },
@@ -38,7 +38,7 @@ export default function Manage(): ReactNode {
 
   const { data, isLoading } = useSWR<User, any, '/user'>('/user', async () => {
     return (
-      await axios.get(`${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/user`, {
+      await axios.get(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/user`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: getCookie('jwt'),

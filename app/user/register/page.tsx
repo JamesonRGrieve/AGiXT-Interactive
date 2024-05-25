@@ -16,7 +16,7 @@ export default function Register(): ReactNode {
     const formData = Object.fromEntries(new FormData((event.currentTarget as HTMLFormElement) ?? undefined));
     const registerResponse = (
       await axios
-        .post(`${process.env.NEXT_PUBLIC_NOTES_SERVER}/v1/user`, {
+        .post(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/user`, {
           ...formData,
         })
         .catch((exception: any) => exception.response)
