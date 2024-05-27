@@ -1,5 +1,11 @@
 import { NextResponse, NextRequest } from 'next/server';
 export default async function Middleware(req: NextRequest) {
+  if (
+    process.env.AUTH_WEB?.startsWith(process.env.APP_URI ?? 'App URI Not Found') &&
+    !process.env.AUTH_WEB.endsWith('/user')
+  ) {
+    throw new Error('Invalid AUTH_WEB. For Magical Auth implementations, AUTH_WEB must point to /user.');
+  }
   const headers: any = {};
   const queryParams = req.url.includes('?')
     ? Object.assign(
