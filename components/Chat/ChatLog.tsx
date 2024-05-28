@@ -20,6 +20,7 @@ import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, Thum
 import clipboardCopy from 'clipboard-copy';
 import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 import MarkdownBlock from '../MarkdownBlock';
+import ChatActivity from './ChatActivity';
 
 function formatDate(timestamp: string): string {
   // Create a date object from the timestamp
@@ -63,6 +64,7 @@ export default function ChatLog({
   const state = useContext(InteractiveConfigContext);
   const messagesEndRef = useRef(null);
   const theme = useTheme();
+  console.log(conversation);
   useEffect(() => {
     // console.log('Conversation mutated, scrolling to bottom.', state.overrides.conversationName, conversation);
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -85,8 +87,16 @@ export default function ChatLog({
             if (chatItem.role === 'USER') {
               lastUserMessage = chatItem.message;
             }
+            const messageType = chatItem.message.split(' ')[0];
             // TODO Fix this so the timestamp works. It's not granular enough rn and we get duplicates.
-            return (
+            return ['[ACTIVITY_START]', '[ACTIVITY_END]'].includes(messageType) ? (
+              <ChatActivity
+                key={chatItem.timestamp + '-' + chatItem.message}
+                inProgress={messageType === '[ACTIVITY_START]'}
+                message={chatItem.message}
+                alternateBackground={alternateBackground}
+              />
+            ) : (
               <ChatMessage
                 key={chatItem.timestamp + '-' + chatItem.message}
                 chatItem={chatItem}
