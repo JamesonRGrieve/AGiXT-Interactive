@@ -1,6 +1,5 @@
 'use client';
 import React, { useContext, useEffect, useState, useRef, useMemo } from 'react';
-import AudioPlayer from 'jrgcomponents/Media/AudioPlayer';
 import {
   Paper,
   Box,
