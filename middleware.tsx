@@ -6,6 +6,7 @@ export default async function Middleware(req: NextRequest) {
   ) {
     throw new Error('Invalid AUTH_WEB. For Magical Auth implementations, AUTH_WEB must point to /user.');
   }
+  const reqURI = req.nextUrl.href.replace('https://localhost:3437', process.env.APP_URI);
   const headers: any = {};
   const queryParams = req.url.includes('?')
     ? Object.assign(
@@ -44,7 +45,7 @@ export default async function Middleware(req: NextRequest) {
         return NextResponse.redirect(new URL(process.env.AUTH_WEB), { headers });
       }
     }
-    if (req.nextUrl.href.startsWith(process.env.AUTH_WEB)) {
+    if (reqURI.startsWith(process.env.AUTH_WEB)) {
       if (jwt && req.nextUrl.pathname !== '/user/manage') {
         return NextResponse.redirect(new URL(process.env.AUTH_WEB + '/manage'));
       } else {
@@ -52,10 +53,10 @@ export default async function Middleware(req: NextRequest) {
       }
     } else {
       if (!jwt) {
-        console.log(`${req.nextUrl.href} does not start with ${process.env.AUTH_WEB} and no valid JWT, redirecting...`);
+        console.log(`${reqURI} does not start with ${process.env.AUTH_WEB} and no valid JWT, redirecting...`);
         headers['Set-Cookie'] =
-          `href=${req.nextUrl.href}; Domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN}; Path=/; SameSite=Strict; Max-Age=0;`;
-        console.log('href cookie set to: ', req.nextUrl.href);
+          `href=${reqURI}; Domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN}; Path=/; SameSite=Strict; Max-Age=0;`;
+        console.log('href cookie set to: ', reqURI);
         return NextResponse.redirect(new URL(process.env.AUTH_WEB), { headers });
       }
     }
