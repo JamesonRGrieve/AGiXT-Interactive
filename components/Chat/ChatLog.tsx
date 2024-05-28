@@ -88,17 +88,20 @@ export default function ChatLog({
               lastUserMessage = chatItem.message;
             }
             const messageType = chatItem.message.split(' ')[0];
+            const messageBody = ['[ACTIVITY_START]', '[ACTIVITY_END]'].includes(messageType)
+              ? chatItem.message.split(' ')[1]
+              : chatItem.message;
             // TODO Fix this so the timestamp works. It's not granular enough rn and we get duplicates.
             return ['[ACTIVITY_START]', '[ACTIVITY_END]'].includes(messageType) ? (
               <ChatActivity
-                key={chatItem.timestamp + '-' + chatItem.message}
+                key={chatItem.timestamp + '-' + messageBody}
                 inProgress={messageType === '[ACTIVITY_START]'}
-                message={chatItem.message}
+                message={messageBody}
                 alternateBackground={alternateBackground}
               />
             ) : (
               <ChatMessage
-                key={chatItem.timestamp + '-' + chatItem.message}
+                key={chatItem.timestamp + '-' + messageBody}
                 chatItem={chatItem}
                 lastUserMessage={lastUserMessage}
               />
