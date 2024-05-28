@@ -22,6 +22,7 @@ export default function Chat({
     async () => await state.agixt.getConversation('', state.overrides.conversationName, 100, 1),
     {
       fallbackData: [],
+      refreshInterval: 1000,
     },
   );
   async function chat(message, files): Promise<string> {
