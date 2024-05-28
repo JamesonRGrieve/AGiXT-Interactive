@@ -15,6 +15,7 @@ export default function Login({ searchParams }: { searchParams: any }): ReactNod
           await axios
             .post(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/login`, {
               ...formData,
+              referrer: getCookie('href') ?? '',
             })
             .catch((exception: any) => exception.response)
         ).data.detail,

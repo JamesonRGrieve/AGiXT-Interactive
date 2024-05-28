@@ -51,9 +51,12 @@ export default async function Middleware(req: NextRequest) {
         return NextResponse.next();
       }
     } else {
-      console.log(`${req.nextUrl.href} does not start with ${process.env.AUTH_WEB}`);
       if (!jwt) {
-        return NextResponse.redirect(new URL(process.env.AUTH_WEB));
+        console.log(`${req.nextUrl.href} does not start with ${process.env.AUTH_WEB} and no valid JWT, redirecting...`);
+        headers['Set-Cookie'] =
+          `href=${req.nextUrl.href}; Domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN}; Path=/; SameSite=Strict; Max-Age=0;`;
+        console.log('href cookie set to: ', req.nextUrl.href);
+        return NextResponse.redirect(new URL(process.env.AUTH_WEB), { headers });
       }
     }
   } else if (req.nextUrl.pathname.startsWith('/api/')) {
