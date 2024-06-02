@@ -19,6 +19,7 @@ export default async function Middleware(req: NextRequest) {
     : {};
   console.log(queryParams);
   if (queryParams.token) {
+    console.log('Line 22');
     headers['Set-Cookie'] =
       `jwt=${queryParams.token}; Domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN}; Path=/; SameSite=Strict;`;
     const urlWithoutParams = req.url.split('?')[0];
@@ -27,8 +28,10 @@ export default async function Middleware(req: NextRequest) {
   if (req.nextUrl.pathname.startsWith('/_next/') || req.nextUrl.pathname === '/favicon.ico') {
     return NextResponse.next();
   } else if (process.env.AUTH_WEB) {
+    console.log('Line 31');
     let jwt = req.cookies.get('jwt')?.value;
     if (jwt) {
+      console.log('Line 34');
       try {
         console.log('Sending', `${jwt.startsWith('Bearer ') ? jwt : 'Bearer ' + jwt} to ${process.env.AUTH_SERVER}/v1/user`);
         const response = await fetch(`${process.env.AUTH_SERVER}/v1/user`, {
@@ -39,6 +42,7 @@ export default async function Middleware(req: NextRequest) {
         });
         if (response.status !== 200) throw new Error('Invalid token response, status ' + response.status + '.');
       } catch (exception) {
+        console.log('Line 45');
         console.error('Invalid token. Logging out.', exception);
         headers['Set-Cookie'] = `jwt=; Domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN}; Path=/; SameSite=Strict; Max-Age=0;`;
         jwt = '';
@@ -47,12 +51,16 @@ export default async function Middleware(req: NextRequest) {
     }
     if (reqURI.startsWith(process.env.AUTH_WEB)) {
       if (jwt && req.nextUrl.pathname !== '/user/manage') {
+        console.log('Line 54');
         return NextResponse.redirect(new URL(process.env.AUTH_WEB + '/manage'));
       } else {
+        console.log('Line 57');
         return NextResponse.next();
       }
     } else {
+      console.log('Line 61');
       if (!jwt) {
+        console.log('Line 63');
         console.log(`${reqURI} does not start with ${process.env.AUTH_WEB} and no valid JWT, redirecting...`);
         headers['Set-Cookie'] =
           `href=${reqURI}; Domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN}; Path=/; SameSite=Strict; Max-Age=0;`;
