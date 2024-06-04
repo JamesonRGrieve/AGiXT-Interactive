@@ -56,13 +56,11 @@ const nextConfig = {
     NEXT_PUBLIC_ENV: process.env.ENV || process.env.NODE_ENV || 'development',
 
     // Derived Options
-    NEXT_PUBLIC_COOKIE_DOMAIN: `.${((process.env.APP_URI ?? 'http://localhost:3100').split('://')[1] ?? '')
-      .split(':')[0]
-      .split('.')
-      .reverse()
-      .slice(0, 2)
-      .reverse()
-      .join('.')}`,
+    NEXT_PUBLIC_COOKIE_DOMAIN: (() => {
+      const domain = ((process.env.APP_URI ?? process.env.NEXT_PUBLIC_APP_URI ?? '').split('://')[1] ?? '').split(':')[0];
+      const ipPattern = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/;
+      return ipPattern.test(domain) ? domain : domain.split('.').reverse().slice(0, 2).reverse().join('.');
+    })(),
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
