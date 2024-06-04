@@ -29,7 +29,7 @@ export default async function Middleware(req: NextRequest): Promise<NextResponse
   }
   console.log('Authentication Mode:', authMode);
   console.log(req);
-  const requestedURI = req.url.replace('localhost', '127.0.0.1').split('?')[0];
+  const requestedURI = req.url.split('?')[0];
   console.log('Requested URI:', requestedURI);
   const headers: HeadersInit = {};
   // Middleware doesn't have a great method for pulling query parameters (yet).
@@ -73,6 +73,7 @@ export default async function Middleware(req: NextRequest): Promise<NextResponse
         if (response.status !== 200) {
           throw new Error(`Invalid token response, status ${response.status}, detail ${(await response.json()).detail}.`);
         }
+        console.log('JWT is valid.');
       } catch (exception) {
         console.error(`Invalid token. Logging out and redirecting to AUTH_WEB at ${process.env.AUTH_WEB}.`, exception);
         const response = NextResponse.redirect(new URL(process.env.AUTH_WEB), { headers });
