@@ -144,7 +144,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
   const mobile = useMediaQuery('(max-width: 600px)');
   const menuItem = (): ReactNode => (
     <Box p='0.5rem' display='flex' flexDirection='column' gap='0.5rem'>
-      {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.split(',').map((selector) => selectionBars[String(selector)])}
+      {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION?.split(',').map((selector) => selectionBars[String(selector)])}
     </Box>
   );
   //console.log(mobile);
