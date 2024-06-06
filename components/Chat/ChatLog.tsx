@@ -82,19 +82,17 @@ export default function ChatLog({
     >
       <Box display='flex' minHeight='min-content' flexDirection='column'>
         {conversation.length > 0 && conversation.map ? (
-          conversation.map((chatItem) => {
+          conversation.map((chatItem, index: number) => {
             if (chatItem.role === 'USER') {
               lastUserMessage = chatItem.message;
             }
             const messageType = chatItem.message.split(' ')[0];
-            const messageBody = ['[ACTIVITY_START]', '[ACTIVITY_END]'].includes(messageType)
-              ? chatItem.message.split(' ')[1]
-              : chatItem.message;
+            const messageBody = ['[ACTIVITY]'].includes(messageType) ? chatItem.message.split(' ')[1] : chatItem.message;
             // TODO Fix this so the timestamp works. It's not granular enough rn and we get duplicates.
-            return ['[ACTIVITY_START]', '[ACTIVITY_END]'].includes(messageType) ? (
+            return ['[ACTIVITY]'].includes(messageType) ? (
               <ChatActivity
                 key={chatItem.timestamp + '-' + messageBody}
-                inProgress={messageType === '[ACTIVITY_START]'}
+                inProgress={index === conversation.length - 1}
                 message={messageBody}
                 alternateBackground={alternateBackground}
               />
