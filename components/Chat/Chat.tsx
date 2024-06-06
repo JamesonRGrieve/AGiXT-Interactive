@@ -59,10 +59,11 @@ export default function Chat({
       user: state.overrides.conversationName,
     };
     setLoading(true);
-    setLatestMessage(message);
     console.log('Sending: ', state.openai, toOpenAI);
-    const chatCompletion = await state.openai.chat.completions.create(toOpenAI);
+    const req = state.openai.chat.completions.create(toOpenAI);
+    await new Promise((resolve) => setTimeout(resolve, 300));
     mutate(conversationSWRPath + state.overrides.conversationName);
+    const chatCompletion = await req;
     setLoading(false);
     setLatestMessage('');
     if (chatCompletion?.choices[0]?.message.content.length > 0) {
