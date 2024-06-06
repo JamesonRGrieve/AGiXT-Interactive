@@ -93,7 +93,7 @@ export default function ChatLog({
               <ChatActivity
                 key={chatItem.timestamp + '-' + messageBody}
                 inProgress={index === conversation.length - 1}
-                message={messageBody}
+                message={index === conversation.length - 1 ? messageBody + '...' : messageBody}
                 alternateBackground={alternateBackground}
               />
             ) : (
