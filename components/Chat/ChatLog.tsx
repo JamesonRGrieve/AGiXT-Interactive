@@ -52,7 +52,6 @@ function formatDate(timestamp: string): string {
 
 export default function ChatLog({
   conversation,
-  latestMessage,
   alternateBackground,
 }: {
   conversation: { role: string; message: string; timestamp: string }[];
@@ -60,7 +59,6 @@ export default function ChatLog({
   alternateBackground?: string;
 }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
-  const state = useContext(InteractiveConfigContext);
   const messagesEndRef = useRef(null);
   const theme = useTheme();
   console.log(conversation);
