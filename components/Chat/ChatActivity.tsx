@@ -1,6 +1,7 @@
+'use client';
 import { CheckCircle, Pending } from '@mui/icons-material';
 import { Box, Typography, useTheme } from '@mui/material';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 
 export default function ChatActivity({
   inProgress,
@@ -12,6 +13,13 @@ export default function ChatActivity({
   alternateBackground: string;
 }): ReactNode {
   const theme = useTheme();
+  const [dots, setDots] = useState<string>('');
+  useEffect(() => {
+    if (inProgress) {
+      const interval = setInterval(() => setDots((dots) => (dots.length < 2 ? dots + '.' : '')), 500);
+      return () => clearInterval(interval);
+    }
+  }, [inProgress]);
   return (
     <Box
       sx={{
@@ -26,7 +34,7 @@ export default function ChatActivity({
       }}
     >
       {inProgress ? <Pending color='info' /> : <CheckCircle color='success' />}
-      {message}
+      {message + dots}
     </Box>
   );
 }
