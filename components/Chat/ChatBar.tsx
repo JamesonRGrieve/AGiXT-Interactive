@@ -184,7 +184,7 @@ export default function ChatBar({
                     setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
                     state.mutate((oldState) => ({
                       ...oldState,
-                      chatConfig: { ...oldState.chatConfig, conversationName: uuid },
+                      overrides: { ...oldState.overrides, conversationName: uuid },
                     }));
                   }
                 }}

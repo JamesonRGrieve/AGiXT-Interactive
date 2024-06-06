@@ -119,30 +119,7 @@ export default function ChatLog({
             </Typography>
           </Box>
         )}
-        {latestMessage && (
-          <>
-            <ChatMessage
-              key={'Please Wait User'}
-              chatItem={{
-                role: 'USER',
-                message: latestMessage,
-                timestamp: undefined,
-              }}
-              lastUserMessage={null}
-              alternateBackground={alternateBackground}
-            />
-            <ChatMessage
-              key={'Please Wait Agent'}
-              chatItem={{
-                role: state.agent,
-                message: state.agent + ' is typing...',
-                timestamp: '',
-              }}
-              lastUserMessage={null}
-              alternateBackground={alternateBackground}
-            />
-          </>
-        )}
+
         <div ref={messagesEndRef} />
       </Box>
     </Paper>
