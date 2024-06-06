@@ -1,7 +1,6 @@
-import { useState, useRef, useContext, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
-import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 
 export default function AudioRecorder({
   recording,
@@ -14,7 +13,6 @@ export default function AudioRecorder({
   disabled: boolean;
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => void;
 }): React.JSX.Element {
-  const state = useContext(InteractiveConfigContext);
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
   const startRecording = (): void => {

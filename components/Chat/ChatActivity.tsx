@@ -1,6 +1,6 @@
 'use client';
 import { CheckCircle, Pending } from '@mui/icons-material';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import React, { ReactNode, useEffect, useState } from 'react';
 
 export default function ChatActivity({
