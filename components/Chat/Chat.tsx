@@ -61,7 +61,7 @@ export default function Chat({
     setLoading(true);
     console.log('Sending: ', state.openai, toOpenAI);
     const req = state.openai.chat.completions.create(toOpenAI);
-    await new Promise((resolve) => setTimeout(resolve, 300));
+    await new Promise((resolve) => setTimeout(resolve, 100));
     mutate(conversationSWRPath + state.overrides.conversationName);
     const chatCompletion = await req;
     setLoading(false);
