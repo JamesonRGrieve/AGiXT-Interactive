@@ -25,7 +25,7 @@ export default function ChatActivity({
         gap: '0.5rem',
       }}
     >
-      {inProgress ? <Pending /> : <CheckCircle />}
+      {inProgress ? <Pending color='info' /> : <CheckCircle color='success' />}
       {message}
     </Box>
   );
