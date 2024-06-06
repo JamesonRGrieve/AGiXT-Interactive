@@ -112,7 +112,7 @@ export default function ChatLog({
             <Typography variant='subtitle1' align='center' mb='2rem'>
               {process.env.NEXT_PUBLIC_APP_DESCRIPTION}
             </Typography>
-            <Typography variant='body1' align='center'>
+            <Typography variant='body1' align='center' px='2rem'>
               {process.env.NEXT_PUBLIC_APP_NAME} may provide inaccurate or inappropriate responses, may break character and
               comes with no warranty of any kind. By using this software you agree to hold harmless the developers of{' '}
               {process.env.NEXT_PUBLIC_APP_NAME} for any damages caused by the use of this software.
