@@ -37,9 +37,9 @@ export default function Chat({
       if (Object.keys(files).length > 0) {
         const fileContents = Object.entries(files).map(([fileName, fileContent]: [string, string]) => ({
           type: `${fileContent.split(':')[1].split('/')[0]}_url`,
+          file_name: fileName,
           [`${fileContent.split(':')[1].split('/')[0]}_url`]: {
             url: fileContent,
-            file_name: fileName,
           },
         }));
         messages.push({
