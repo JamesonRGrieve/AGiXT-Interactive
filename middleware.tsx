@@ -1,46 +1,18 @@
 import { NextResponse, NextRequest } from 'next/server';
+import { generateCookieString, useNextAPIBypass, AuthMode, getAuthMode, getQueryParams } from 'jrgcomponents/Middleware';
 
-const AuthMode = {
-  None: 0,
-  GTAuth: 1,
-  MagicalAuth: 2,
-};
-const generateCookieString = (key: string, value: string, age: string): string =>
-  `${key}=${value}; Domain=${process.env.NEXT_PUBLIC_COOKIE_DOMAIN}; Path=/; Max-Age=${age}; Same-Site: strict;`;
 export default async function Middleware(req: NextRequest): Promise<NextResponse> {
-  if (
-    req.nextUrl.pathname.startsWith('/_next/') ||
-    req.nextUrl.pathname.startsWith('/api/') ||
-    req.nextUrl.pathname === '/favicon.ico'
-  ) {
-    return NextResponse.next();
+  const nextAPIBypass = useNextAPIBypass(req);
+  if (nextAPIBypass.activated) {
+    return nextAPIBypass.response;
   }
-
-  let authMode = AuthMode.None;
-  if (process.env.AUTH_WEB && process.env.AUTH_SERVER) {
-    if (process.env.APP_URI && process.env.AUTH_WEB.startsWith(process.env.APP_URI)) {
-      authMode = AuthMode.MagicalAuth;
-      if (!process.env.AUTH_WEB.endsWith('/user')) {
-        throw new Error('Invalid AUTH_WEB. For Magical Auth implementations, AUTH_WEB must point to APP_URI/user.');
-      }
-    } else {
-      authMode = AuthMode.GTAuth;
-    }
-  }
+  const authMode = getAuthMode();
   console.log('Authentication Mode:', authMode);
   const requestedURI = req.url.split('?')[0].replace('https://localhost:3437', process.env.APP_URI);
   console.log('Requested URI:', requestedURI);
   const headers: HeadersInit = {};
   // Middleware doesn't have a great method for pulling query parameters (yet).
-  const queryParams = req.url.includes('?')
-    ? Object.assign(
-        {},
-        ...req.url
-          .split('?')[1]
-          .split('&')
-          .map((param) => ({ [param.split('=')[0]]: param.split('=')[1] })),
-      )
-    : {};
+  const queryParams = getQueryParams(req);
   console.log('Query Parameters:', queryParams);
   if (queryParams.token || queryParams.jwt) {
     // This should set the cookie and then re-run the middleware (without query params).
