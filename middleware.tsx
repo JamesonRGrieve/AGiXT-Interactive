@@ -8,7 +8,9 @@ export default async function Middleware(req: NextRequest): Promise<NextResponse
   }
   const authMode = getAuthMode();
   console.log('Authentication Mode:', authMode);
-  const requestedURI = req.url.split('?')[0].replace('https://localhost:3437', process.env.APP_URI);
+  const requestedURI = req.url
+    .split('?')[0]
+    .replace('localhost:3437', process.env.APP_URI.replace('https://', '').replace('http://', ''));
   console.log('Requested URI:', requestedURI);
   const headers: HeadersInit = {};
   // Middleware doesn't have a great method for pulling query parameters (yet).
@@ -56,6 +58,9 @@ export default async function Middleware(req: NextRequest): Promise<NextResponse
         return response;
       }
     } else {
+      console.log(
+        `${requestedURI} does ${requestedURI.startsWith(process.env.AUTH_WEB) ? '' : 'not '}start with ${process.env.AUTH_WEB}.`,
+      );
       if (authMode === AuthMode.MagicalAuth && requestedURI.startsWith(process.env.AUTH_WEB)) {
         // Don't let users visit Identify, Register or Login pages if they're already logged in.
         if (jwt.length > 0 && req.nextUrl.pathname !== '/user/manage') {
