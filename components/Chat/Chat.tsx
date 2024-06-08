@@ -14,7 +14,6 @@ export default function Chat({
 }: Overrides & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
-  const [latestMessage, setLatestMessage] = useState('');
   const state = useContext(InteractiveConfigContext);
 
   const conversation = useSWR(
@@ -22,7 +21,7 @@ export default function Chat({
     async () => await state.agixt.getConversation('', state.overrides.conversationName, 100, 1),
     {
       fallbackData: [],
-      refreshInterval: 1000,
+      refreshInterval: loading ? 1000 : 0,
     },
   );
   async function chat(message, files): Promise<string> {
@@ -66,7 +65,7 @@ export default function Chat({
     mutate(conversationSWRPath + state.overrides.conversationName);
     const chatCompletion = await req;
     setLoading(false);
-    setLatestMessage('');
+    mutate(conversationSWRPath + state.overrides.conversationName);
     if (chatCompletion?.choices[0]?.message.content.length > 0) {
       return chatCompletion.choices[0].message.content;
     } else {
@@ -79,11 +78,7 @@ export default function Chat({
   }, [state.overrides.conversationName]);
   return (
     <>
-      <ConversationHistory
-        conversation={conversation.data}
-        latestMessage={latestMessage}
-        alternateBackground={alternateBackground}
-      />
+      <ConversationHistory conversation={conversation.data} alternateBackground={alternateBackground} />
       <ConversationBar
         onSend={(message, files) => chat(message, files)}
         disabled={loading}
