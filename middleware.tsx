@@ -29,7 +29,7 @@ export default async function Middleware(req: NextRequest): Promise<NextResponse
   }
   console.log('Authentication Mode:', authMode);
   console.log(req);
-  const requestedURI = req.url.split('?')[0];
+  const requestedURI = req.url.split('?')[0].replace('https://localhost:3437',process.env.APP_URI);
   console.log('Requested URI:', requestedURI);
   const headers: HeadersInit = {};
   // Middleware doesn't have a great method for pulling query parameters (yet).
