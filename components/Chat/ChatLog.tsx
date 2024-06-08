@@ -55,7 +55,6 @@ export default function ChatLog({
   alternateBackground,
 }: {
   conversation: { role: string; message: string; timestamp: string }[];
-  latestMessage: string;
   alternateBackground?: string;
 }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
@@ -94,7 +93,7 @@ export default function ChatLog({
                 key={chatItem.timestamp + '-' + messageBody}
                 error={messageType === '[ACTIVITY][ERROR]'}
                 inProgress={index === conversation.length - 1}
-                message={index === conversation.length - 1 ? messageBody + '...' : messageBody}
+                message={messageBody}
                 alternateBackground={alternateBackground}
               />
             ) : (
