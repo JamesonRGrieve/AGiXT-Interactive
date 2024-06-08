@@ -213,7 +213,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
           {chatItem.timestamp === undefined ? 'Just Now...' : formatDate(chatItem.timestamp)}
         </Typography>
       )}
-      {chatItem.role !== 'USER' && !lastUserMessage && (
+      {chatItem.role !== 'USER' && (
         <>
           {process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
             <>
