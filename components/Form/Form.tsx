@@ -22,7 +22,7 @@ export default function Form({
     async () => {
       const conversations = await Promise.all(uuids.map(async (uuid) => await state.agixt.getConversation('', uuid, 5, 1)));
       return conversations.reduce((obj, conversation, index) => {
-        obj[uuids[index]] = conversation;
+        obj[uuids[index.toString()]] = conversation;
         return obj;
       }, {});
     },
@@ -105,6 +105,8 @@ export default function Form({
         disabled={loading}
         clearOnSend={false}
         showChatThemeToggles={showChatThemeToggles}
+        loading={loading}
+        setLoading={setLoading}
       />
       {loading && (
         <Alert sx={{ my: '1rem' }} severity='info'>
@@ -112,12 +114,12 @@ export default function Form({
         </Alert>
       )}
       <FormOutput results={results} showIndex={1} selectedUUID={uuid} setSelectedUUID={setUUID} />
-      {followUp && results[uuid].length < 3 && (
+      {followUp && results[uuid.toString()].length < 3 && (
         <FormInput disabled={loading} argValues={argValues} setArgValues={setArgValues} />
       )}
-      {followUp && results[uuid].length >= 3 && (
+      {followUp && results[uuid.toString()].length >= 3 && (
         <>
-          <Typography variant='h6'>{results[uuid][2].message}</Typography>
+          <Typography variant='h6'>{results[uuid.toString()][2].message}</Typography>
           <FormOutput results={results} showIndex={3} selectedUUID={uuid} setSelectedUUID={setUUID} />
         </>
       )}

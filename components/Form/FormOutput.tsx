@@ -3,14 +3,24 @@ import React, { ReactNode, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, CopyAllOutlined } from '@mui/icons-material';
 import MarkdownBlock from '../MarkdownBlock';
 
-export default function FormOutput({ results, showIndex, selectedUUID, setSelectedUUID }): ReactNode {
+export default function FormOutput({
+  results,
+  showIndex,
+  selectedUUID,
+  setSelectedUUID,
+}: {
+  results: string[];
+  showIndex: number;
+  selectedUUID: string;
+  setSelectedUUID: (uuid: string) => void;
+}): ReactNode {
   const [resultNum, setResultNum] = useState(0);
   useEffect(() => {
-    setSelectedUUID(Object.keys(results)[resultNum]);
-  }, [resultNum]);
+    setSelectedUUID(Object.keys(results)[resultNum.toString()]);
+  }, [resultNum, setSelectedUUID, results]);
   useEffect(() => {
-    setResultNum(Object.keys(results).findIndex(selectedUUID));
-  }, [selectedUUID]);
+    setResultNum(Object.keys(results).findIndex((item) => item === selectedUUID));
+  }, [selectedUUID, results]);
   // console.log('Results', results);
   useEffect(() => {
     if (Object.keys(results).length > 0) {
@@ -38,7 +48,9 @@ export default function FormOutput({ results, showIndex, selectedUUID, setSelect
           <Tooltip title='Copy this result.'>
             <IconButton
               onClick={() => {
-                navigator.clipboard.writeText(String(results[Object.keys(results)[resultNum]][showIndex].message));
+                navigator.clipboard.writeText(
+                  String(results[Object.keys(results)[resultNum.toString()]][showIndex.toString()].message),
+                );
               }}
             >
               <CopyAllOutlined sx={{ fontSize: '3rem' }} />
@@ -66,7 +78,10 @@ export default function FormOutput({ results, showIndex, selectedUUID, setSelect
           </Tooltip>
         </Typography>
         <CardContent>
-          <MarkdownBlock content={String(results[Object.keys(results)[resultNum]][showIndex].message)} />
+          <MarkdownBlock
+            content={String(results[Object.keys(results)[resultNum.toString()]][showIndex.toString()].message)}
+            setLoading={null}
+          />
         </CardContent>
       </Card>
     )

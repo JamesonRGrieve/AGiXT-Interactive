@@ -53,8 +53,10 @@ function formatDate(timestamp: string): string {
 export default function ChatLog({
   conversation,
   alternateBackground,
+  setLoading,
 }: {
   conversation: { role: string; message: string; timestamp: string }[];
+  setLoading: (loading: boolean) => void;
   alternateBackground?: string;
 }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
@@ -83,12 +85,13 @@ export default function ChatLog({
             if (chatItem.role === 'USER') {
               lastUserMessage = chatItem.message;
             }
+            const validTypes = ['[ACTIVITY]', '[ACTIVITY][ERROR]'];
             const messageType = chatItem.message.split(' ')[0];
-            const messageBody = ['[ACTIVITY]', '[ACTIVITY][ERROR]'].includes(messageType)
+            const messageBody = validTypes.includes(messageType)
               ? chatItem.message.substring(chatItem.message.indexOf(' '))
               : chatItem.message;
             // TODO Fix this so the timestamp works. It's not granular enough rn and we get duplicates.
-            return ['[ACTIVITY]', '[ACTIVITY][ERROR]'].includes(messageType) ? (
+            return validTypes.includes(messageType) ? (
               <ChatActivity
                 key={chatItem.timestamp + '-' + messageBody}
                 error={messageType === '[ACTIVITY][ERROR]'}
@@ -101,6 +104,7 @@ export default function ChatLog({
                 key={chatItem.timestamp + '-' + messageBody}
                 chatItem={chatItem}
                 lastUserMessage={lastUserMessage}
+                setLoading={setLoading}
               />
             );
           })
@@ -127,7 +131,7 @@ export default function ChatLog({
 }
 
 const generatedAudioString = '#GENERATED_AUDIO:';
-const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary' }): React.JSX.Element => {
+const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary', setLoading }): React.JSX.Element => {
   const state = useContext(InteractiveConfigContext);
   const formattedMessage = useMemo(() => {
     const toFormat =
@@ -154,13 +158,15 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
     ) {
       // Replace the html audio control with a link to the audio
       const matches = [...chatItem.message.matchAll(/<audio controls><source src="(.*?)" type="audio\/wav"><\/audio>/g)];
-      const audioSrcs = matches.map((match) => match[1]);
+      const audioSources = matches.map((match) => match[1]);
       // We can reformat it any way we want for testing like this.
       return {
         message: chatItem.message.replaceAll(/<audio controls><source src="(.*?)" type="audio\/wav"><\/audio>/g, ''),
-        srcs: audioSrcs,
+        sources: audioSources,
       };
-    } else return null;
+    } else {
+      return null;
+    }
 
     // console.log('Audio: ', theAudio);
     /*
@@ -188,17 +194,21 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
         color: theme.palette.text.primary,
       }}
     >
-      {audios?.srcs?.length > 0 ? (
+      {audios?.sources?.length > 0 ? (
         <>
-          <MarkdownBlock content={formattedMessage} chatItem={{ ...chatItem, message: audios.message }} />
-          {audios.srcs.map((src) => (
+          <MarkdownBlock
+            content={formattedMessage}
+            chatItem={{ ...chatItem, message: audios.message }}
+            setLoading={setLoading}
+          />
+          {audios.sources.map((src) => (
             <audio controls key={src}>
               <source src={src} type='audio/wav' />
             </audio>
           ))}
         </>
       ) : (
-        <MarkdownBlock content={formattedMessage} chatItem={chatItem} />
+        <MarkdownBlock content={formattedMessage} chatItem={chatItem} setLoading={setLoading} />
       )}
 
       {chatItem.timestamp !== '' && (

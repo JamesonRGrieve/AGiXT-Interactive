@@ -48,15 +48,15 @@ const selectionBars = {
   prompt: <PromptSelector />,
   '': <span>&nbsp;</span>,
 };
-function removeUndefined(obj: any) {
-  return Object.keys(obj).reduce((acc: any, key: string) => {
-    if (obj[key] && typeof obj[key] === 'object') {
-      const childObject = removeUndefined(obj[key]);
+function removeUndefined(obj: object): object {
+  return Object.keys(obj).reduce((acc: object, key: string) => {
+    if (obj[key.toString()] && typeof obj[key.toString()] === 'object') {
+      const childObject = removeUndefined(obj[key.toString()]);
       if (Object.keys(childObject).length > 0) {
-        acc[key] = childObject;
+        acc[key.toString()] = childObject;
       }
-    } else if (![undefined, null, ''].includes(obj[key])) {
-      acc[key] = obj[key];
+    } else if (![undefined, null, ''].includes(obj[key.toString()])) {
+      acc[key.toString()] = obj[key.toString()];
     }
     return acc;
   }, {});
@@ -156,7 +156,9 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
             left: mobile
               ? {
                   icon: <Menu />,
-                  swr: () => {},
+                  swr: (): object => {
+                    return {};
+                  },
                   menu: menuItem,
                   width: '12rem',
                 }

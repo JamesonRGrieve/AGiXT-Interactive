@@ -67,9 +67,11 @@ const langMap = {
 export default function MarkdownBlock({
   content,
   chatItem,
+  setLoading,
 }: {
   content: string;
   chatItem?: { role: string; timestamp: string };
+  setLoading: (loading: boolean) => void;
 }): ReactNode {
   const state = useContext(InteractiveConfigContext);
   const renderMessage = (): ReactNode => {
@@ -89,15 +91,20 @@ export default function MarkdownBlock({
     }
     if (message.includes('```csv')) {
       // Get the csv data between ```csv and ```
-      const csvData = message
-        .split('```csv')[1]
-        .split('```')[0]
-        .split(/[ \t]+\n/g);
+      const splitMessage = message.split('```csv');
+      let csvData = splitMessage[1].split('```')[0].split(/[ \t]+\n/g);
+      csvData = csvData.splice(1, csvData.length - (csvData[csvData.length - 1].trim() === '' ? 2 : 1));
+      console.log('```\n' + csvData.join('\n') + '\n```');
       return (
-        <DataGridFromCSV
-          state={state}
-          csvData={csvData.splice(1, csvData.length - (csvData[csvData.length - 1].trim() === '' ? 2 : 1))}
-        />
+        <>
+          <MarkdownBlock content={splitMessage[0]?.split('```markdown')[0]} chatItem={chatItem} setLoading={setLoading} />
+
+          <DataGridFromCSV state={state} csvData={csvData} setLoading={setLoading} />
+
+          {splitMessage.length > 2 && splitMessage[2].trim() && (
+            <MarkdownBlock content={splitMessage[2]} chatItem={chatItem} setLoading={setLoading} />
+          )}
+        </>
       );
     }
     if (message.includes('<audio controls><source src=')) {
@@ -141,7 +148,6 @@ export default function MarkdownBlock({
   const renderLink = ({ children, ...props }): ReactNode => {
     const isExternal = props.href && !props.href.startsWith('#');
     return (
-      // eslint-disable-next-line jsx-a11y/click-events-have-key-events
       <Link
         {...props}
         target={isExternal ? '_blank' : undefined}
@@ -152,7 +158,102 @@ export default function MarkdownBlock({
       </Link>
     );
   };
+  const renderList = (children, ordered = true): ReactNode => {
+    return ordered ? <ol style={{ paddingLeft: '2em' }}>{children}</ol> : <ul>{children}</ul>;
+  };
+  const renderListItem = ({ children }): ReactNode => {
+    return <li style={{ marginBottom: '0.5em' }}>{children}</li>;
+  };
+  const renderCode = ({
+    inline,
+    children,
+    className,
+    ...props
+  }: {
+    inline?: boolean;
+    children: ReactNode;
+    className?: string;
+  }): ReactNode => {
+    if (inline) {
+      return (
+        <span
+          style={{
+            backgroundColor: 'darkgray',
+            borderRadius: '3px',
+            padding: '0.2em',
+            fontFamily: 'monospace',
+          }}
+        >
+          {children}
+        </span>
+      );
+    }
+    // eslint-disable-next-line react-hooks/rules-of-hooks
+    const codeBlockRef = React.useRef(null);
+    const language = className?.replace(/language-/, '') || 'markdown';
+    const fileExtension = langMap[String(language)] || 'md';
+    const ts = chatItem
+      ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
+      : new Date().toLocaleString().replace(/\D/g, '');
 
+    const fileName = chatItem ? `${chatItem.role}-${ts}.${fileExtension}` : `${ts}.${fileExtension}`;
+    return (
+      <>
+        <br />
+        <div className='code-block' ref={codeBlockRef}>
+          <div className='code-title'>
+            <IconButton
+              onClick={() => {
+                if (codeBlockRef.current) {
+                  const actualCode = codeBlockRef.current.querySelector('code');
+                  clipboardCopy(actualCode.innerText);
+                }
+              }}
+            >
+              <ContentCopyIcon />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                if (codeBlockRef.current) {
+                  const actualCode = codeBlockRef.current.querySelector('code');
+
+                  const element = document.createElement('a');
+                  const file = new Blob([actualCode.innerText], {
+                    type: 'text/plain;charset=utf-8',
+                  });
+                  element.href = URL.createObjectURL(file);
+
+                  element.download = fileName;
+                  document.body.appendChild(element);
+                  element.click();
+                }
+              }}
+            >
+              <DownloadIcon />
+            </IconButton>
+            {fileName} | {language}
+          </div>
+          <div className='code-container'>
+            {language in langMap ? (
+              <SyntaxHighlighter
+                {...props}
+                // eslint-disable-next-line react/no-children-prop
+                children={children}
+                language={language}
+                PreTag='div'
+                style={a11yDark}
+              />
+            ) : (
+              <code className={'code-block'} {...props}>
+                {children}
+              </code>
+            )}
+          </div>
+        </div>
+        <br />
+      </>
+    );
+  };
   return content.includes('```csv') ? (
     renderMessage()
   ) : (
@@ -172,93 +273,9 @@ export default function MarkdownBlock({
         h4({ children }) {
           return renderHeader('h4', children);
         },
-        ol({ children }) {
-          return <ol style={{ paddingLeft: '2em' }}>{children}</ol>;
-        },
-        li({ children }) {
-          return <li style={{ marginBottom: '0.5em' }}>{children}</li>;
-        },
-        code({ inline, children, ...props }) {
-          if (inline) {
-            return (
-              <span
-                style={{
-                  backgroundColor: 'darkgray',
-                  borderRadius: '3px',
-                  padding: '0.2em',
-                  fontFamily: 'monospace',
-                }}
-              >
-                {children}
-              </span>
-            );
-          }
-          // eslint-disable-next-line react-hooks/rules-of-hooks
-          const codeBlockRef = React.useRef(null);
-          const language = props.className?.replace(/language-/, '') || 'markdown';
-          const fileExtension = langMap[String(language)] || 'md';
-          const ts = chatItem
-            ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
-            : new Date().toLocaleString().replace(/\D/g, '');
-
-          const fileName = chatItem ? `${chatItem.role}-${ts}.${fileExtension}` : `${ts}.${fileExtension}`;
-          return (
-            <>
-              <br />
-              <div className='code-block' ref={codeBlockRef}>
-                <div className='code-title'>
-                  <IconButton
-                    onClick={() => {
-                      if (codeBlockRef.current) {
-                        const actualCode = codeBlockRef.current.querySelector('code');
-                        clipboardCopy(actualCode.innerText);
-                      }
-                    }}
-                  >
-                    <ContentCopyIcon />
-                  </IconButton>
-                  <IconButton
-                    onClick={() => {
-                      if (codeBlockRef.current) {
-                        const actualCode = codeBlockRef.current.querySelector('code');
-
-                        const element = document.createElement('a');
-                        const file = new Blob([actualCode.innerText], {
-                          type: 'text/plain;charset=utf-8',
-                        });
-                        element.href = URL.createObjectURL(file);
-
-                        element.download = fileName;
-                        document.body.appendChild(element);
-                        element.click();
-                      }
-                    }}
-                  >
-                    <DownloadIcon />
-                  </IconButton>
-                  {fileName} | {language}
-                </div>
-                <div className='code-container'>
-                  {language in langMap ? (
-                    <SyntaxHighlighter
-                      {...props}
-                      // eslint-disable-next-line react/no-children-prop
-                      children={children}
-                      language={language}
-                      PreTag='div'
-                      style={a11yDark}
-                    />
-                  ) : (
-                    <code className={'code-block'} {...props}>
-                      {children}
-                    </code>
-                  )}
-                </div>
-              </div>
-              <br />
-            </>
-          );
-        },
+        ol: renderList,
+        li: renderListItem,
+        code: renderCode,
       }}
     >
       {renderMessage().toString()}

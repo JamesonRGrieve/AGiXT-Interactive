@@ -14,6 +14,7 @@ export default function Chat({
 }: Overrides & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
+
   const state = useContext(InteractiveConfigContext);
 
   const conversation = useSWR(
@@ -78,13 +79,19 @@ export default function Chat({
   }, [state.overrides.conversationName]);
   return (
     <>
-      <ConversationHistory conversation={conversation.data} alternateBackground={alternateBackground} />
+      <ConversationHistory
+        conversation={conversation.data}
+        alternateBackground={alternateBackground}
+        setLoading={setLoading}
+      />
       <ConversationBar
         onSend={(message, files) => chat(message, files)}
         disabled={loading}
         showChatThemeToggles={showChatThemeToggles}
         enableFileUpload={enableFileUpload}
         enableVoiceInput={enableVoiceInput}
+        loading={loading}
+        setLoading={setLoading}
       />
     </>
   );
