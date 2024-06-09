@@ -34,7 +34,6 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
 }));
 
 export const DataGridFromCSV = ({ state, csvData }: { state: InteractiveConfig; csvData: string[] }): ReactNode => {
-  console.log('Raw Data', csvData);
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
@@ -81,18 +80,17 @@ export const DataGridFromCSV = ({ state, csvData }: { state: InteractiveConfig; 
     setFilteredColumns(columns);
   }, columns);
   const getInsights = async (userMessage): Promise<void> => {
-    const stringifiedColumns = ['id', ...filteredColumns.map((header) => header.field)].join(',');
-    const stringifiedRows = filteredRows.map((row) => columns.map((header) => row[header.field]).join(','));
-    console.log('Data Analysis', [stringifiedColumns, ...stringifiedRows]);
-    console.log(
-      await state.agixt.runChain('Data Analysis', userMessage, state.agent, false, 1, {
-        conversation_name: state.overrides.conversationName,
-        text: [stringifiedColumns, ...stringifiedRows].join('\n'),
-      }),
+    const stringifiedColumns = filteredColumns.map((header) => header.field);
+    const stringifiedRows = filteredRows.map((row) =>
+      [row.id, ...filteredColumns.map((header) => row[header.field])].join(','),
     );
+
+    await state.agixt.runChain('Data Analysis', userMessage, state.agent, false, 1, {
+      conversation_name: state.overrides.conversationName,
+      text: [['id', ...stringifiedColumns].join(','), ...stringifiedRows].join('\n'),
+    });
   };
   const gridChange = (state) => {
-    console.log(state);
     setFilteredRows(
       rows.filter((row) =>
         Object.keys(state.filter.filteredRowsLookup)

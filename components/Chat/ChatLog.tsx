@@ -171,7 +171,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
         : null;
         */
   }, [chatItem]);
-  const [vote, setVote] = useState(0);
+  const [vote, setVote] = useState(chatItem.rlhf ? (chatItem.rlhf.positive ? 1 : -1) : 0);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
   const theme = useTheme();
@@ -264,6 +264,11 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
               <DownloadIcon />
             </IconButton>
           </Tooltip>
+          {chatItem.rlhf && (
+            <Typography variant='caption' color={chatItem.rlhf.positive ? 'success' : 'error'}>
+              {chatItem.rlhf.feedback}
+            </Typography>
+          )}
         </>
       )}
       <Dialog
@@ -297,22 +302,23 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
           </Button>
           <Button
             onClick={() => {
-              const messageText = `User Feedback: ${feedback} \n\n Message: ${chatItem.message} \n\n Last User Message: ${lastUserMessage}`;
               setOpen(false);
               if (vote === 1) {
                 state.agixt.addConversationFeedback(
                   true,
                   chatItem.role,
+                  chatItem.message,
                   lastUserMessage,
-                  messageText,
+                  feedback,
                   state.overrides.conversationName,
                 );
               } else {
                 state.agixt.addConversationFeedback(
                   false,
                   chatItem.role,
+                  chatItem.message,
                   lastUserMessage,
-                  messageText,
+                  feedback,
                   state.overrides.conversationName,
                 );
               }

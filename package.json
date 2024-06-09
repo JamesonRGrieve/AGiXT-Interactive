@@ -52,7 +52,7 @@
     "@mui/material": "^5.15.19",
     "@mui/system": "^5.15.15",
     "@mui/x-data-grid": "^6.20.1",
-    "agixt": "1.0.51",
+    "agixt": "1.0.52",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.2.1",
     "jrgcomponents": "^0.0.119",
