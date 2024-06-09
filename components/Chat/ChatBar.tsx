@@ -25,6 +25,8 @@ import AudioRecorder from './AudioRecorder';
 export default function ChatBar({
   onSend,
   disabled,
+  loading,
+  setLoading,
   clearOnSend = true,
   showChatThemeToggles = process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
   enableFileUpload = false,
@@ -32,19 +34,20 @@ export default function ChatBar({
 }: {
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
   disabled: boolean;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
   clearOnSend?: boolean;
   showChatThemeToggles: boolean;
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
 }): ReactNode {
   const state = useContext(InteractiveConfigContext);
-  const [loading, setLoading] = useState(false);
   const [timer, setTimer] = useState<number>(-1);
   const [uploadedFiles, setUploadedFiles] = useState<{ [x: string]: string }>({});
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [alternativeInputActive, setAlternativeInputActive] = useState(false);
-
+  const [intervalID, setIntervalID] = useState<number>(-1);
   useEffect(() => {
     console.log(uploadedFiles);
   }, [uploadedFiles]);
@@ -64,19 +67,15 @@ export default function ChatBar({
   };
   const handleSend = useCallback(
     (message, uploadedFiles) => {
-      setTimer(0);
       setLoading(true);
       event.preventDefault();
       if (clearOnSend) {
         setMessage('');
         setUploadedFiles({});
       }
-      const interval = setInterval(() => {
-        setTimer((prev) => prev + 1);
-      }, 100);
+
       onSend(message, uploadedFiles)
         .then(() => {
-          clearInterval(interval);
           setLoading(false);
           return true;
         })
@@ -84,8 +83,27 @@ export default function ChatBar({
           return false;
         });
     },
-    [clearOnSend, onSend],
+    [clearOnSend, onSend, setLoading],
   );
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+
+    if (loading) {
+      setTimer(0);
+      interval = setInterval(() => {
+        setTimer((prev) => prev + 1);
+      }, 100);
+      setIntervalID(interval as unknown as number);
+    } else {
+      clearInterval(intervalID);
+      setIntervalID(-1);
+    }
+
+    // Cleanup function
+    return () => {
+      clearInterval(interval);
+    };
+  }, [loading, intervalID]);
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
       <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
