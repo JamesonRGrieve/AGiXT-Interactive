@@ -2,7 +2,7 @@
   "name": "@agixt/interactive",
   "version": "0.0.1",
   "scripts": {
-    "dev": "next dev -p 3100",
+    "dev": "next dev -p 3437",
     "build": "next build",
     "compile": "tsc --jsx react-jsx --project tsconfig.compile.json",
     "start": "next start -p 3437",
@@ -39,7 +39,7 @@
     "agixt": "1.0.50",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.2.1",
-    "jrgcomponents": "^0.0.117",
+    "jrgcomponents": "^0.0.118",
     "next": "^14.2.3",
     "openai": "^4.49.1",
     "react": "^18.3.1",
