@@ -6,7 +6,7 @@ import Tooltip from '@mui/material/Tooltip';
 import {
   TextField,
   InputAdornment,
-  Dialog,
+  Dialog as MUIDialog,
   DialogTitle,
   DialogContent,
   DialogContentText,
@@ -19,6 +19,7 @@ import { setCookie } from 'cookies-next';
 import { CheckCircle, DeleteForever, Pending } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
+import Dialog from 'jrgcomponents/Dialog';
 import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 import AudioRecorder from './AudioRecorder';
 
@@ -146,7 +147,7 @@ export default function ChatBar({
                     >
                       <NoteAddOutlinedIcon />
                     </IconButton>
-                    <Dialog
+                    <MUIDialog
                       open={fileUploadOpen}
                       onClose={() => {
                         setFileUploadOpen(false);
@@ -157,7 +158,7 @@ export default function ChatBar({
                         <DialogContentText>Please upload the files you would like to send.</DialogContentText>
                         <input accept='*' id='contained-button-file' multiple type='file' onChange={handleUploadFiles} />
                       </DialogContent>
-                    </Dialog>
+                    </MUIDialog>
                   </>
                 )}
                 {enableVoiceInput && (
@@ -195,26 +196,29 @@ export default function ChatBar({
         {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
           process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && (
             <Tooltip title='Reset Conversation (Forever)'>
-              <IconButton
-                onClick={() => {
-                  if (confirm('Are you sure you want to reset the conversation? This cannot be undone.')) {
-                    const uuid = crypto.randomUUID();
-                    setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
-                    state.mutate((oldState) => ({
-                      ...oldState,
-                      overrides: { ...oldState.overrides, conversationName: uuid },
-                    }));
-                  }
+              <Dialog
+                ButtonComponent={
+                  <IconButton
+                    disabled={disabled}
+                    color='primary'
+                    sx={{
+                      height: '56px',
+                      padding: '1rem',
+                    }}
+                  >
+                    <DeleteForever />
+                  </IconButton>
+                }
+                title='Are you sure you want to reset the conversation? This cannot be undone.'
+                onConfirm={() => {
+                  const uuid = crypto.randomUUID();
+                  setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+                  state.mutate((oldState) => ({
+                    ...oldState,
+                    overrides: { ...oldState.overrides, conversationName: uuid },
+                  }));
                 }}
-                disabled={disabled}
-                color='primary'
-                sx={{
-                  height: '56px',
-                  padding: '1rem',
-                }}
-              >
-                <DeleteForever />
-              </IconButton>
+              />
             </Tooltip>
           )}
         {showChatThemeToggles && (

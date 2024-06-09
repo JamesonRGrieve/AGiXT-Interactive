@@ -63,7 +63,159 @@ const langMap = {
   matlab: 'm',
   nim: 'nim',
 };
+const generateId = (text): string => {
+  return text ? text.toLowerCase().replace(/\W+/g, '-') : '';
+};
+const handleAnchorClick = (e): void => {
+  const href = e.target.getAttribute('href');
+  if (href.startsWith('#')) {
+    e.preventDefault();
+    const id = href.slice(1);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  } else {
+    e.preventDefault();
+    window.open(href, '_blank');
+  }
+};
 
+const renderHeader = (Tag, children): ReactNode => {
+  let text = '';
+  if (children && children[0]) {
+    text = children[0];
+  }
+  const id = generateId(text);
+  return (
+    <Typography component={Tag} id={id}>
+      {children}
+    </Typography>
+  );
+};
+const renderLink = ({ children, ...props }): ReactNode => {
+  const isExternal = props.href && !props.href.startsWith('#');
+  return (
+    <Link
+      {...props}
+      target={isExternal ? '_blank' : undefined}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      onClick={isExternal ? undefined : handleAnchorClick}
+    >
+      {children}
+    </Link>
+  );
+};
+const renderList = (children, ordered = true): ReactNode => {
+  return ordered ? <ol style={{ paddingLeft: '2em' }}>{children}</ol> : <ul>{children}</ul>;
+};
+const renderListItem = ({ children }): ReactNode => {
+  return <li style={{ marginBottom: '0.5em' }}>{children}</li>;
+};
+const renderCode = ({
+  inline,
+  children,
+  className,
+  fileName,
+  ...props
+}: {
+  inline?: boolean;
+  children: ReactNode;
+  className?: string;
+  fileName?: string;
+}): ReactNode => {
+  if (inline) {
+    return (
+      <span
+        style={{
+          backgroundColor: 'darkgray',
+          borderRadius: '3px',
+          padding: '0.2em',
+          fontFamily: 'monospace',
+        }}
+      >
+        {children}
+      </span>
+    );
+  }
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const codeBlockRef = React.useRef(null);
+  const language = className?.replace(/language-/, '') || 'markdown';
+  const fileNameWithExtension = `${fileName || 'code'}.${langMap[String(language)] || 'md'}`;
+
+  return (
+    <>
+      <br />
+      <div className='code-block' ref={codeBlockRef}>
+        <div className='code-title'>
+          <IconButton
+            onClick={() => {
+              if (codeBlockRef.current) {
+                const actualCode = codeBlockRef.current.querySelector('code');
+                clipboardCopy(actualCode.innerText);
+              }
+            }}
+          >
+            <ContentCopyIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => {
+              if (codeBlockRef.current) {
+                const actualCode = codeBlockRef.current.querySelector('code');
+
+                const element = document.createElement('a');
+                const file = new Blob([actualCode.innerText], {
+                  type: 'text/plain;charset=utf-8',
+                });
+                element.href = URL.createObjectURL(file);
+
+                element.download = fileNameWithExtension;
+                document.body.appendChild(element);
+                element.click();
+              }
+            }}
+          >
+            <DownloadIcon />
+          </IconButton>
+          {fileNameWithExtension} | {language}
+        </div>
+        <div className='code-container'>
+          {language in langMap ? (
+            <SyntaxHighlighter
+              {...props}
+              // eslint-disable-next-line react/no-children-prop
+              children={children}
+              language={language}
+              PreTag='div'
+              style={a11yDark}
+            />
+          ) : (
+            <code className={'code-block'} {...props}>
+              {children}
+            </code>
+          )}
+        </div>
+      </div>
+      <br />
+    </>
+  );
+};
+function extractImageOrAudio(message: string): string {
+  const match = message.match(/#(.*?)(?=\n|$)/);
+  if (match) {
+    if (message.includes('GENERATED_IMAGE:')) {
+      const base64Image = match[1].replace('GENERATED_IMAGE:', '').trim();
+      const formattedImage = base64Image.toString();
+      return message.replace(match[0], `![Generated Image](data:image/png;base64,${formattedImage})`);
+    }
+    if (message.includes('GENERATED_AUDIO:')) {
+      const base64Audio = match[1].replace('GENERATED_AUDIO:', '').trim();
+      const formattedAudio = base64Audio.toString();
+      return message.replace(match[0], `![Generated Audio](data:audio/wav;base64,${formattedAudio})`);
+    }
+  }
+  return message;
+}
 export default function MarkdownBlock({
   content,
   chatItem,
@@ -75,20 +227,8 @@ export default function MarkdownBlock({
 }): ReactNode {
   const state = useContext(InteractiveConfigContext);
   const renderMessage = (): ReactNode => {
-    const message = content.toString();
-    const match = message.match(/#(.*?)(?=\n|$)/);
-    if (match) {
-      if (message.includes('GENERATED_IMAGE:')) {
-        const base64Image = match[1].replace('GENERATED_IMAGE:', '').trim();
-        const formattedImage = base64Image.toString();
-        return message.replace(match[0], `![Generated Image](data:image/png;base64,${formattedImage})`);
-      }
-      if (message.includes('GENERATED_AUDIO:')) {
-        const base64Audio = match[1].replace('GENERATED_AUDIO:', '').trim();
-        const formattedAudio = base64Audio.toString();
-        return message.replace(match[0], `![Generated Audio](data:audio/wav;base64,${formattedAudio})`);
-      }
-    }
+    const message = extractImageOrAudio(content.toString());
+
     if (message.includes('```csv')) {
       // Get the csv data between ```csv and ```
       const splitMessage = message.split('```csv');
@@ -115,145 +255,12 @@ export default function MarkdownBlock({
     }
     return content;
   };
-  const generateId = (text): string => {
-    return text ? text.toLowerCase().replace(/\W+/g, '-') : '';
-  };
-  const handleAnchorClick = (e): void => {
-    const href = e.target.getAttribute('href');
-    if (href.startsWith('#')) {
-      e.preventDefault();
-      const id = href.slice(1);
-      const element = document.getElementById(id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    } else {
-      e.preventDefault();
-      window.open(href, '_blank');
-    }
-  };
 
-  const renderHeader = (Tag, children): ReactNode => {
-    let text = '';
-    if (children && children[0]) {
-      text = children[0];
-    }
-    const id = generateId(text);
-    return (
-      <Typography component={Tag} id={id}>
-        {children}
-      </Typography>
-    );
-  };
-  const renderLink = ({ children, ...props }): ReactNode => {
-    const isExternal = props.href && !props.href.startsWith('#');
-    return (
-      <Link
-        {...props}
-        target={isExternal ? '_blank' : undefined}
-        rel={isExternal ? 'noopener noreferrer' : undefined}
-        onClick={isExternal ? undefined : handleAnchorClick}
-      >
-        {children}
-      </Link>
-    );
-  };
-  const renderList = (children, ordered = true): ReactNode => {
-    return ordered ? <ol style={{ paddingLeft: '2em' }}>{children}</ol> : <ul>{children}</ul>;
-  };
-  const renderListItem = ({ children }): ReactNode => {
-    return <li style={{ marginBottom: '0.5em' }}>{children}</li>;
-  };
-  const renderCode = ({
-    inline,
-    children,
-    className,
-    ...props
-  }: {
-    inline?: boolean;
-    children: ReactNode;
-    className?: string;
-  }): ReactNode => {
-    if (inline) {
-      return (
-        <span
-          style={{
-            backgroundColor: 'darkgray',
-            borderRadius: '3px',
-            padding: '0.2em',
-            fontFamily: 'monospace',
-          }}
-        >
-          {children}
-        </span>
-      );
-    }
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    const codeBlockRef = React.useRef(null);
-    const language = className?.replace(/language-/, '') || 'markdown';
-    const fileExtension = langMap[String(language)] || 'md';
-    const ts = chatItem
-      ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
-      : new Date().toLocaleString().replace(/\D/g, '');
+  const timestamp = chatItem
+    ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
+    : new Date().toLocaleString().replace(/\D/g, '');
+  const fileName = chatItem ? `${chatItem.role}-${timestamp}` : `${timestamp}`;
 
-    const fileName = chatItem ? `${chatItem.role}-${ts}.${fileExtension}` : `${ts}.${fileExtension}`;
-    return (
-      <>
-        <br />
-        <div className='code-block' ref={codeBlockRef}>
-          <div className='code-title'>
-            <IconButton
-              onClick={() => {
-                if (codeBlockRef.current) {
-                  const actualCode = codeBlockRef.current.querySelector('code');
-                  clipboardCopy(actualCode.innerText);
-                }
-              }}
-            >
-              <ContentCopyIcon />
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                if (codeBlockRef.current) {
-                  const actualCode = codeBlockRef.current.querySelector('code');
-
-                  const element = document.createElement('a');
-                  const file = new Blob([actualCode.innerText], {
-                    type: 'text/plain;charset=utf-8',
-                  });
-                  element.href = URL.createObjectURL(file);
-
-                  element.download = fileName;
-                  document.body.appendChild(element);
-                  element.click();
-                }
-              }}
-            >
-              <DownloadIcon />
-            </IconButton>
-            {fileName} | {language}
-          </div>
-          <div className='code-container'>
-            {language in langMap ? (
-              <SyntaxHighlighter
-                {...props}
-                // eslint-disable-next-line react/no-children-prop
-                children={children}
-                language={language}
-                PreTag='div'
-                style={a11yDark}
-              />
-            ) : (
-              <code className={'code-block'} {...props}>
-                {children}
-              </code>
-            )}
-          </div>
-        </div>
-        <br />
-      </>
-    );
-  };
   return content.includes('```csv') ? (
     renderMessage()
   ) : (
@@ -275,7 +282,7 @@ export default function MarkdownBlock({
         },
         ol: renderList,
         li: renderListItem,
-        code: renderCode,
+        code: (props) => renderCode({ ...props, fileName: fileName }),
       }}
     >
       {renderMessage().toString()}
