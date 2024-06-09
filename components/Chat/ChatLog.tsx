@@ -204,6 +204,7 @@ const ChatMessage = ({ chatItem, lastUserMessage, alternateBackground = 'primary
           {audios.sources.map((src) => (
             <audio controls key={src}>
               <source src={src} type='audio/wav' />
+              <track kind='captions' />
             </audio>
           ))}
         </>

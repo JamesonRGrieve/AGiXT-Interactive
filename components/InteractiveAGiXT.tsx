@@ -61,9 +61,9 @@ function removeUndefined(obj: object): object {
     return acc;
   }, {});
 }
-const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
-  const searchParams = useSearchParams();
-  const searchParamConfig = removeUndefined({
+// eslint-disable-next-line sonarjs/cognitive-complexity -- Can't be simplified past this without being less maintainable.
+const generateSearchParamConfig = (searchParams: URLSearchParams): InteractiveConfig =>
+  removeUndefined({
     agent: searchParams.get('agent') || undefined,
     agixt: undefined,
     openai: undefined,
@@ -93,7 +93,10 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
       enableMemory: Boolean(searchParams.get('memory')) || undefined,
     },
     mutate: undefined,
-  } as InteractiveConfig);
+  }) as InteractiveConfig;
+const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
+  const searchParams = useSearchParams();
+  const searchParamConfig = generateSearchParamConfig(searchParams);
 
   const uuid = getCookie('uuid');
   if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
