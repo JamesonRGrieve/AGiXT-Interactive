@@ -90,7 +90,6 @@ export const DataGridFromCSV = ({ state, csvData }: { state: InteractiveConfig; 
           },
         },
       }));
-    // If none of the rows have a value, don't show the column
     headers = headers.filter((header) => {
       for (const row of newRows) {
         if (row[header.field]) {
@@ -101,28 +100,21 @@ export const DataGridFromCSV = ({ state, csvData }: { state: InteractiveConfig; 
     });
     setColumns(headers);
     setRows(newRows);
-    // console.log('newRows', newRows);
-    // console.log('headers', headers);
   };
   useEffect(() => {
-    // console.log('Parsing CSV');
     parseCSV(csvData);
   }, [csvData]);
 
   const getInsights = async (userMessage): Promise<void> => {
-    //state.mutate((oldState) => ({ ...oldState, chatState: { ...oldState.chatState, isLoading: true } }));
     const lines = csvData.split('\n');
     lines.shift();
     lines.pop();
-    const newCSVData = lines.join('\n');
-    const chainArgs = {
-      conversation_name: state.overrides.conversationName,
-      text: newCSVData,
-    };
-    const response = await state.agixt.runChain('Data Analysis', userMessage, state.agent, false, 1, chainArgs);
-    // state.mutate((oldState) => {
-    //   return { ...oldState, chatState: { ...oldState.chatState, isLoading: false, lastResponse: response } };
-    // });
+    console.log(
+      await state.agixt.runChain('Data Analysis', userMessage, state.agent, false, 1, {
+        conversation_name: state.overrides.conversationName,
+        text: lines.join('\n'),
+      }),
+    );
   };
   return rows.length > 1 ? (
     <>
