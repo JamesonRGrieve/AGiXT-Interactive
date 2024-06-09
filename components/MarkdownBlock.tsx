@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import clipboardCopy from 'clipboard-copy';
-import { IconButton } from '@mui/material';
+import { IconButton, Link, Typography } from '@mui/material';
 import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
 import { InteractiveConfigContext } from '../types/InteractiveConfigContext';
 import { DataGridFromCSV } from './DataGridFromCSV';
@@ -89,13 +89,20 @@ export default function MarkdownBlock({
     }
     if (message.includes('```csv')) {
       // Get the csv data between ```csv and ```
-      const csvData = message.split('```csv')[1].split('```')[0].replace(/\n/g, '\r\n');
-      return <DataGridFromCSV state={state} csvData={csvData} />;
+      const csvData = message
+        .split('```csv')[1]
+        .split('```')[0]
+        .split(/[ \t]+\n/g);
+      return (
+        <DataGridFromCSV
+          state={state}
+          csvData={csvData.splice(1, csvData.length - (csvData[csvData.length - 1].trim() === '' ? 2 : 1))}
+        />
+      );
     }
     if (message.includes('<audio controls><source src=')) {
       // Replace the html audio control with a link to the audio
       const match = message.match(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/);
-      const audioSrc = match[1];
       // We can reformat it any way we want for testing like this.
       return message.replace(match[0], '');
     }
@@ -125,22 +132,27 @@ export default function MarkdownBlock({
       text = children[0];
     }
     const id = generateId(text);
-    return <Tag id={id}>{children}</Tag>;
+    return (
+      <Typography component={Tag} id={id}>
+        {children}
+      </Typography>
+    );
   };
   const renderLink = ({ children, ...props }): ReactNode => {
     const isExternal = props.href && !props.href.startsWith('#');
     return (
       // eslint-disable-next-line jsx-a11y/click-events-have-key-events
-      <a
+      <Link
         {...props}
         target={isExternal ? '_blank' : undefined}
         rel={isExternal ? 'noopener noreferrer' : undefined}
         onClick={isExternal ? undefined : handleAnchorClick}
       >
         {children}
-      </a>
+      </Link>
     );
   };
+
   return content.includes('```csv') ? (
     renderMessage()
   ) : (
