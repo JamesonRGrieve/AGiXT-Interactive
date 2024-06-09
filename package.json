@@ -12,8 +12,24 @@
     "prettier-fix": "prettier --write .",
     "fix": "prettier --write . && next lint --fix",
     "storybook": "storybook dev -p 6009",
-    "storybook-build": "storybook build"
+    "storybook-build": "storybook build",
+    "storybook-deploy": "storybook build && gh-pages -d storybook-static"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JamesonRGrieve/AGiXT-Interactive"
+  },
+  "keywords": [
+    "agixt",
+    "react",
+    "nextjs",
+    "components"
+  ],
+  "author": "Jameson R Grieve",
+  "bugs": {
+    "url": "https://github.com/JamesonRGrieve/AGiXT-Interactive/issues"
+  },
+  "homepage": "http://jamesonrgrieve.github.io/AGiXT-Interactive",
   "files": [
     "dist"
   ],
@@ -39,7 +55,7 @@
     "agixt": "1.0.50",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.2.1",
-    "jrgcomponents": "^0.0.118",
+    "jrgcomponents": "^0.0.119",
     "next": "^14.2.3",
     "openai": "^4.49.1",
     "react": "^18.3.1",

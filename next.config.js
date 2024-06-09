@@ -8,7 +8,7 @@ const nextConfig = {
     NEXT_PUBLIC_APP_DESCRIPTION: process.env.APP_DESCRIPTION || 'An AGiXT application.',
     NEXT_PUBLIC_APP_URI: process.env.APP_URI ?? 'http://localhost:3100',
     NEXT_PUBLIC_THEME_DEFAULT_MODE: process.env.DEFAULT_THEME_MODE || 'dark',
-    NEXT_PUBLIC_TZ: process.env.TZ || 'TZ-America/New_York', // Server timezone
+    NEXT_PUBLIC_TZ: process.env.TZ || 'TZ-Etc/GMT', // Server timezone
     NEXT_PUBLIC_AUTH_WEB: process.env.AUTH_WEB || '',
     AUTH_SERVER: process.env.AUTH_SERVER || process.env.AGIXT_SERVER || '',
     // Monetization Options
