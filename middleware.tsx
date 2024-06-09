@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { generateCookieString, useNextAPIBypass, AuthMode, getAuthMode, getQueryParams } from 'jrgcomponents/Middleware';
-
+import { useNextAPIBypass, useJWTValidation } from 'jrgcomponents/Middleware/Hooks';
+import { getRequestedURI, AuthMode, getAuthMode, getQueryParams, generateCookieString } from 'jrgcomponents/Middleware';
 export default async function Middleware(req: NextRequest): Promise<NextResponse> {
   const nextAPIBypass = useNextAPIBypass(req);
   if (nextAPIBypass.activated) {
@@ -8,26 +8,17 @@ export default async function Middleware(req: NextRequest): Promise<NextResponse
   }
   const authMode = getAuthMode();
   console.log('Authentication Mode:', authMode);
-  const requestedURI = req.url
-    .split('?')[0]
-    .replace('localhost:3437', process.env.APP_URI.replace('https://', '').replace('http://', ''));
+  const requestedURI = getRequestedURI(req);
   console.log('Requested URI:', requestedURI);
-  const headers: HeadersInit = {};
-  // Middleware doesn't have a great method for pulling query parameters (yet).
   const queryParams = getQueryParams(req);
   console.log('Query Parameters:', queryParams);
-  if (queryParams.token || queryParams.jwt) {
-    // This should set the cookie and then re-run the middleware (without query params).
-    return NextResponse.redirect(req.cookies.get('href')?.value ?? requestedURI, {
-      headers: {
-        // @ts-expect-error NextJS' types are wrong.
-        'Set-Cookie': [
-          generateCookieString('jwt', queryParams.token ?? queryParams.jwt, (86400 * 7).toString()),
-          generateCookieString('href', '', (0).toString()),
-        ],
-      },
-    });
+
+  const jwtValidation = useJWTValidation(req);
+  if (jwtValidation.activated) {
+    return jwtValidation.response;
   }
+
+  const headers: HeadersInit = {};
   if (authMode) {
     const rawJWT = req.cookies.get('jwt')?.value;
     // Strip any and all 'Bearer 's off of JWT.
