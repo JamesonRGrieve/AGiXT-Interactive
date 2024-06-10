@@ -10,6 +10,7 @@ import {
   TextFieldProps,
   Tabs,
   Tab,
+  Typography,
 } from '@mui/material';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
@@ -78,11 +79,23 @@ export const DataGridFromCSV = ({
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
   const [rows, setRows] = useState([]);
+  const [error, setError] = useState('');
   const [filteredRows, setFilteredRows] = useState([]);
   const [filteredColumns, setFilteredColumns] = useState([]);
   const [columns, setColumns] = useState([]);
   useEffect(() => {
+    setError('');
     const rawData = csvData.map((row) => row.split(',').map((cell) => cell.trim().replaceAll('"', '')));
+    if (
+      !rawData.every((row) => row.length === rawData[0].length) ||
+      !rawData[0] ||
+      rawData.some((row) => [0, 1].includes(row.length))
+    ) {
+      // TODO: This doesn't seem to work, it produces a blank placeholder instead of the raw code and an error in the data grid.
+      setError('CSV data is not valid.');
+      return;
+    }
+
     setColumns(
       (rawData[0][0].toLowerCase().includes('id') ? rawData[0].slice(1) : rawData[0]).map((header) => ({
         field: header,
@@ -159,84 +172,90 @@ export const DataGridFromCSV = ({
       </Tabs>
       <CustomTabPanel value={tab} index={0}>
         <Box display='flex' flexDirection='column' gap='1rem'>
-          <StripedDataGrid
-            density='compact'
-            rows={rows}
-            columns={columns}
-            components={{ Toolbar: GridToolbar }}
-            pageSizeOptions={[5, 10, 20]}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
-              },
-            }}
-            getRowClassName={(params) => (params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd')}
-            onStateChange={gridChange}
-          />
-          <Box
-            sx={{
-              display: 'flex',
-            }}
-          >
-            <Button
-              color='info'
-              variant='outlined'
-              onClick={() => {
-                setOpen(true);
-              }}
-            >
-              <TipsAndUpdatesOutlinedIcon />
-              Get Insights
-            </Button>
-          </Box>
-          <Dialog
-            open={open}
-            onClose={() => {
-              setOpen(false);
-            }}
-          >
-            <DialogTitle>Get Insights</DialogTitle>
-            <DialogContent>
-              <TextField
-                margin='dense'
-                id='name'
-                label='What would you like insights on?'
-                fullWidth
-                value={userMessage}
-                onChange={(event) => {
-                  setUserMessage(event.target.value);
+          {error ? (
+            <Typography color='error'>{error}</Typography>
+          ) : (
+            <>
+              <StripedDataGrid
+                density='compact'
+                rows={rows}
+                columns={columns}
+                components={{ Toolbar: GridToolbar }}
+                pageSizeOptions={[5, 10, 20]}
+                initialState={{
+                  pagination: {
+                    paginationModel: {
+                      pageSize: 5,
+                    },
+                  },
                 }}
-                onClick={(e) => {
-                  if ((e.target as TextFieldProps).value === 'Surprise me!') {
-                    setUserMessage('');
-                  }
-                }}
-                variant='outlined'
-                color='info'
+                getRowClassName={(params) => (params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd')}
+                onStateChange={gridChange}
               />
-            </DialogContent>
-            <DialogActions>
-              <Button
-                color='error'
-                onClick={() => {
+              <Box
+                sx={{
+                  display: 'flex',
+                }}
+              >
+                <Button
+                  color='info'
+                  variant='outlined'
+                  onClick={() => {
+                    setOpen(true);
+                  }}
+                >
+                  <TipsAndUpdatesOutlinedIcon />
+                  Get Insights
+                </Button>
+              </Box>
+              <Dialog
+                open={open}
+                onClose={() => {
                   setOpen(false);
                 }}
               >
-                Cancel
-              </Button>
-              <Button
-                color='info'
-                onClick={() => {
-                  getInsights(userMessage);
-                  setOpen(false);
-                }}
-              >
-                Get Insights
-              </Button>
-            </DialogActions>
-          </Dialog>
+                <DialogTitle>Get Insights</DialogTitle>
+                <DialogContent>
+                  <TextField
+                    margin='dense'
+                    id='name'
+                    label='What would you like insights on?'
+                    fullWidth
+                    value={userMessage}
+                    onChange={(event) => {
+                      setUserMessage(event.target.value);
+                    }}
+                    onClick={(e) => {
+                      if ((e.target as TextFieldProps).value === 'Surprise me!') {
+                        setUserMessage('');
+                      }
+                    }}
+                    variant='outlined'
+                    color='info'
+                  />
+                </DialogContent>
+                <DialogActions>
+                  <Button
+                    color='error'
+                    onClick={() => {
+                      setOpen(false);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    color='info'
+                    onClick={() => {
+                      getInsights(userMessage);
+                      setOpen(false);
+                    }}
+                  >
+                    Get Insights
+                  </Button>
+                </DialogActions>
+              </Dialog>
+            </>
+          )}
         </Box>
       </CustomTabPanel>
       <CustomTabPanel value={tab} index={1}>

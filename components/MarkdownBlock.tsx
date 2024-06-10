@@ -229,7 +229,7 @@ export default function MarkdownBlock({
   const renderMessage = (): ReactNode => {
     const message = extractImageOrAudio(content.toString());
 
-    if (message.includes('```csv')) {
+    if (message.match(/[^\\]```csv/)) {
       // Get the csv data between ```csv and ```
       const splitMessage = message.split('```csv');
       let csvData = splitMessage[1].split('```')[0].split(/[ \t]+\n/g);
