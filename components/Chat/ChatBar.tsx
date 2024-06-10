@@ -88,24 +88,17 @@ export default function ChatBar({
   );
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    /*
     if (loading) {
       setTimer(0);
       interval = setInterval(() => {
         setTimer((prev) => prev + 1);
       }, 100);
-      setIntervalID(interval as unknown as number);
-    } else {
-      clearInterval(intervalID);
-      setIntervalID(-1);
     }
-
     // Cleanup function
     return () => {
       clearInterval(interval);
     };
-    */
-  }, [loading, intervalID]);
+  }, [loading]);
 
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
