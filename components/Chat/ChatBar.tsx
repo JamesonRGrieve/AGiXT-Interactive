@@ -106,18 +106,7 @@ export default function ChatBar({
     };
     */
   }, [loading, intervalID]);
-  const deleteButton = (): ReactNode => (
-    <IconButton
-      disabled={disabled}
-      color='primary'
-      sx={{
-        height: '56px',
-        padding: '1rem',
-      }}
-    >
-      <DeleteForever />
-    </IconButton>
-  );
+
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
       <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
@@ -208,22 +197,27 @@ export default function ChatBar({
         />
         {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
           process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && (
-            <Tooltip title='Reset Conversation (Forever)'>
-              <Box>
-                <Dialog
-                  ButtonComponent={deleteButton}
-                  title='Are you sure you want to reset the conversation? This cannot be undone.'
-                  onConfirm={() => {
-                    const uuid = crypto.randomUUID();
-                    setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
-                    state.mutate((oldState) => ({
-                      ...oldState,
-                      overrides: { ...oldState.overrides, conversationName: uuid },
-                    }));
-                  }}
-                />
-              </Box>
-            </Tooltip>
+            <Dialog
+              ButtonComponent={IconButton}
+              ButtonProps={{
+                children: <DeleteForever />,
+                disabled: false,
+                color: 'primary',
+                sx: {
+                  height: '56px',
+                  padding: '1rem',
+                },
+              }}
+              title='Are you sure you want to reset the conversation? This cannot be undone.'
+              onConfirm={() => {
+                const uuid = crypto.randomUUID();
+                setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+                state.mutate((oldState) => ({
+                  ...oldState,
+                  overrides: { ...oldState.overrides, conversationName: uuid },
+                }));
+              }}
+            />
           )}
         {showChatThemeToggles && (
           <Box display='flex' flexDirection='column' alignItems='center'>
