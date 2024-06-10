@@ -88,7 +88,7 @@ export default function ChatBar({
   );
   useEffect(() => {
     let interval: NodeJS.Timeout;
-
+    /*
     if (loading) {
       setTimer(0);
       interval = setInterval(() => {
@@ -104,7 +104,20 @@ export default function ChatBar({
     return () => {
       clearInterval(interval);
     };
+    */
   }, [loading, intervalID]);
+  const deleteButton = (): ReactNode => (
+    <IconButton
+      disabled={disabled}
+      color='primary'
+      sx={{
+        height: '56px',
+        padding: '1rem',
+      }}
+    >
+      <DeleteForever />
+    </IconButton>
+  );
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
       <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
@@ -196,29 +209,20 @@ export default function ChatBar({
         {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
           process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && (
             <Tooltip title='Reset Conversation (Forever)'>
-              <Dialog
-                ButtonComponent={
-                  <IconButton
-                    disabled={disabled}
-                    color='primary'
-                    sx={{
-                      height: '56px',
-                      padding: '1rem',
-                    }}
-                  >
-                    <DeleteForever />
-                  </IconButton>
-                }
-                title='Are you sure you want to reset the conversation? This cannot be undone.'
-                onConfirm={() => {
-                  const uuid = crypto.randomUUID();
-                  setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
-                  state.mutate((oldState) => ({
-                    ...oldState,
-                    overrides: { ...oldState.overrides, conversationName: uuid },
-                  }));
-                }}
-              />
+              <Box>
+                <Dialog
+                  ButtonComponent={deleteButton}
+                  title='Are you sure you want to reset the conversation? This cannot be undone.'
+                  onConfirm={() => {
+                    const uuid = crypto.randomUUID();
+                    setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+                    state.mutate((oldState) => ({
+                      ...oldState,
+                      overrides: { ...oldState.overrides, conversationName: uuid },
+                    }));
+                  }}
+                />
+              </Box>
             </Tooltip>
           )}
         {showChatThemeToggles && (
