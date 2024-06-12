@@ -10,7 +10,7 @@ const nextConfig = {
     NEXT_PUBLIC_THEME_DEFAULT_MODE: process.env.DEFAULT_THEME_MODE || 'dark',
     NEXT_PUBLIC_TZ: process.env.TZ || 'TZ-Etc/GMT', // Server timezone
     NEXT_PUBLIC_AUTH_WEB: process.env.AUTH_WEB || '',
-    AUTH_SERVER: process.env.AUTH_SERVER || process.env.AGIXT_SERVER || '',
+    NEXT_PUBLIC_AUTH_SERVER: process.env.AUTH_SERVER || process.env.AGIXT_SERVER || '',
     // Monetization Options
     NEXT_PUBLIC_ADSENSE_ACCOUNT: process.env.ADSENSE_ACCOUNT || '',
 
@@ -54,6 +54,8 @@ const nextConfig = {
     NEXT_PUBLIC_AGIXT_CHAIN_ARGS:
       process.env.AGIXT_CHAIN_ARGS || JSON.stringify(InteractiveConfigDefault.overrides.chainRunConfig.chainArgs),
     NEXT_PUBLIC_ENV: process.env.ENV || process.env.NODE_ENV || 'development',
+
+    NEXT_PUBLIC_GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID || '',
 
     // Derived Options
     NEXT_PUBLIC_COOKIE_DOMAIN: (() => {
