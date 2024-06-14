@@ -1,5 +1,5 @@
 'use client';
-import { Select, MenuItem, FormControl, Tooltip } from '@mui/material';
+import { Select, MenuItem, FormControl, Tooltip, useTheme } from '@mui/material';
 import React, { useContext } from 'react';
 import useSWR from 'swr';
 import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
@@ -7,6 +7,8 @@ import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 export default function AgentSelector(): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);
   const { data: agentData } = useSWR<string[]>(`/agent`, async () => (await state.agixt.getAgents()) as string[]);
+  const theme = useTheme();
+
   return (
     <Tooltip title='Select an Agent'>
       <FormControl
@@ -20,16 +22,18 @@ export default function AgentSelector(): React.JSX.Element {
       >
         <Select
           sx={{
-            color: 'white',
-            '.MuiOutlinedInput-notchedOutline': { borderColor: '#CCC' },
-            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+            color: theme.palette.mode === 'dark' ? 'white' : 'black',
+            '.MuiOutlinedInput-notchedOutline': { borderColor: theme.palette.mode === 'dark' ? '#CCC' : '#333' },
+            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: theme.palette.mode === 'dark' ? 'white' : 'black' },
+            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+              borderColor: theme.palette.mode === 'dark' ? 'white' : 'black',
+            },
             '.MuiSvgIcon-root ': {
-              fill: 'white !important',
+              fill: (theme.palette.mode === 'dark' ? 'white' : 'black') + ' !important',
             },
             '.MuiOutlinedInput-notchedOutline legend span': {
               // Targeting the floating label specifically
-              color: 'white',
+              color: theme.palette.mode === 'dark' ? 'white' : 'black',
               opacity: '1',
             },
             fontSize: '12px',
