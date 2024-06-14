@@ -52,9 +52,9 @@ export default function AgentSelector(): React.JSX.Element {
         >
           {agentData &&
             agentData.map &&
-            agentData?.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
+            agentData?.map((c: any) => (
+              <MenuItem key={c.id} value={c.name}>
+                {c.name}
               </MenuItem>
             ))}
         </Select>

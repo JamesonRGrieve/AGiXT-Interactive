@@ -144,7 +144,7 @@ export default function ConversationSelector(): React.JSX.Element {
           </Select>
         </FormControl>
       </Tooltip>
-      <Box display='flex' justifyContent='space-between' gap='0.5rem' mx='0.5rem'>
+      <Box display='flex' justifyContent='center' gap='0.5rem' mx='0.5rem'>
         <Tooltip title='Add Conversation'>
           <Button variant='outlined' onClick={() => setOpenNewConversation(true)} color='info' sx={{ minWidth: '20px' }}>
             <AddIcon sx={{ minWidth: '20px' }} />

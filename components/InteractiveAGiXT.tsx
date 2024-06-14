@@ -156,16 +156,17 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
       header={
         process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true' && {
           components: {
-            left: mobile
-              ? {
-                  icon: <Menu />,
-                  swr: (): object => {
-                    return {};
-                  },
-                  menu: menuItem,
-                  width: '12rem',
-                }
-              : selectionBars[process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION],
+            left:
+              mobile || !['agent', 'conversation', 'prompt'].includes(process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION)
+                ? {
+                    icon: <Menu />,
+                    swr: (): object => {
+                      return {};
+                    },
+                    menu: menuItem,
+                    width: mobile ? '12rem' : '30rem',
+                  }
+                : selectionBars[process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION],
           },
         }
       }
