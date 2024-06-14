@@ -1,0 +1,32 @@
+services:
+  agixtinteractive:
+    image: ghcr.io/jamesonrgrieve/agixt-interactive:main
+    init: true
+    environment:
+      NEXT_TELEMETRY_DISABLED: 1
+      AGIXT_AGENT: ${AGIXT_AGENT-gpt4free}
+      AGIXT_FILE_UPLOAD_ENABLED: ${AGIXT_FILE_UPLOAD_ENABLED-true}
+      AGIXT_VOICE_INPUT_ENABLED: ${AGIXT_VOICE_INPUT_ENABLED-true}
+      AGIXT_FOOTER_MESSAGE: ${AGIXT_FOOTER_MESSAGE-Powered by AGiXT}
+      AGIXT_REQUIRE_API_KEY: ${AGIXT_REQUIRE_API_KEY-false}
+      AGIXT_RLHF: ${AGIXT_RLHF-true}
+      AGIXT_SERVER: ${AGIXT_URI-http://agixt:7437}
+      AGIXT_SHOW_AGENT_BAR: ${AGIXT_SHOW_AGENT_BAR-true}
+      AGIXT_SHOW_APP_BAR: ${AGIXT_SHOW_APP_BAR-true}
+      AGIXT_SHOW_CONVERSATION_BAR: ${AGIXT_SHOW_CONVERSATION_BAR-true} 
+      AGIXT_CONVERSATION_MODE: ${AGIXT_CONVERSATION_MODE-select}
+      APP_DESCRIPTION: ${APP_DESCRIPTION-A chat powered by AGiXT.}
+      INTERACTIVE_MODE: ${INTERACTIVE_MODE-chat}
+      APP_NAME: ${APP_NAME-AGiXT}
+      APP_URI: ${APP_URI-http://agixtinteractive:3437}
+      AUTH_WEB: ${AUTH_WEB-http://agixtinteractive:3437/user}
+      LOG_VERBOSITY_SERVER: 3
+      THEME_NAME: ${THEME_NAME-doom}
+      ALLOW_EMAIL_SIGN_IN: ${ALLOW_EMAIL_SIGN_IN-false}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      TZ: ${TZ-America/New_York}
+    ports:
+      - 3437:3437
+    restart: unless-stopped
+    volumes:
+      - ./node_modules:/app/node_modules
