@@ -55,7 +55,7 @@ const nextConfig = {
       process.env.AGIXT_CHAIN_ARGS || JSON.stringify(InteractiveConfigDefault.overrides.chainRunConfig.chainArgs),
     NEXT_PUBLIC_ENV: process.env.ENV || process.env.NODE_ENV || 'development',
 
-    NEXT_PUBLIC_ALLOW_EMAIL_SIGNIN: process.env.ALLOW_EMAIL_SIGN_IN || 'true',
+    NEXT_PUBLIC_ALLOW_EMAIL_SIGN_IN: process.env.ALLOW_EMAIL_SIGN_IN || 'true',
 
     NEXT_PUBLIC_AOL_CLIENT_ID: process.env.AOL_CLIENT_ID || '',
     NEXT_PUBLIC_AMAZON_CLIENT_ID: process.env.AMAZON_CLIENT_ID || '',
