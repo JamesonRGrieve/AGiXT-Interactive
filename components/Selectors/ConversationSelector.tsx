@@ -11,6 +11,7 @@ import {
   DialogActions,
   Tooltip,
   Box,
+  useTheme,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
@@ -21,6 +22,7 @@ import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 
 export default function ConversationSelector(): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);
+  const theme = useTheme();
   const { data: conversationData } = useSWR<string[]>(
     `/conversation`,
     async () => (await state.agixt.getConversations()) as string[],
@@ -94,20 +96,23 @@ export default function ConversationSelector(): React.JSX.Element {
         >
           <Select
             sx={{
-              color: 'white',
-              '.MuiOutlinedInput-notchedOutline': { borderColor: '#CCC' },
-              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
-              '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'white' },
+              color: theme.palette.mode === 'dark' ? 'white' : 'black',
+              '.MuiOutlinedInput-notchedOutline': { borderColor: theme.palette.mode === 'dark' ? '#CCC' : '#333' },
+              '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: theme.palette.mode === 'dark' ? 'white' : 'black' },
+              '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                borderColor: theme.palette.mode === 'dark' ? 'white' : 'black',
+              },
               '.MuiSvgIcon-root ': {
-                fill: 'white !important',
+                fill: (theme.palette.mode === 'dark' ? 'white' : 'black') + ' !important',
               },
               '.MuiOutlinedInput-notchedOutline legend span': {
                 // Targeting the floating label specifically
-                color: 'white',
+                color: theme.palette.mode === 'dark' ? 'white' : 'black',
                 opacity: '1',
               },
               fontSize: '12px',
             }}
+            variant='outlined'
             fullWidth
             labelId='conversation-label'
             label='Select a Conversation'
@@ -139,7 +144,7 @@ export default function ConversationSelector(): React.JSX.Element {
           </Select>
         </FormControl>
       </Tooltip>
-      <Box display='flex' justifyContent='space-between'>
+      <Box display='flex' justifyContent='space-between' gap='0.5rem' mx='0.5rem'>
         <Tooltip title='Add Conversation'>
           <Button variant='outlined' onClick={() => setOpenNewConversation(true)} color='info' sx={{ minWidth: '20px' }}>
             <AddIcon sx={{ minWidth: '20px' }} />
