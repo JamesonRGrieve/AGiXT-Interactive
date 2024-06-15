@@ -8,7 +8,6 @@ export default function AgentSelector(): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);
   const { data: agentData } = useSWR<string[]>(`/agent`, async () => (await state.agixt.getAgents()) as string[]);
   const theme = useTheme();
-
   return (
     <Tooltip title='Select an Agent'>
       <FormControl

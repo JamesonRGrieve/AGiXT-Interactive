@@ -3,7 +3,7 @@ import { Cancel, CheckCircle, Pending } from '@mui/icons-material';
 import { Box, useTheme } from '@mui/material';
 import React, { ReactNode, useEffect, useState } from 'react';
 
-export default function ChatActivity({
+export default function Activity({
   inProgress,
   message,
   error,

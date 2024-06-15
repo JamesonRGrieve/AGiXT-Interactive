@@ -33,6 +33,9 @@
   "files": [
     "dist"
   ],
+  "_moduleAliases": {
+    "@": "."
+  },
   "exports": {
     ".": "./dist/components/InteractiveAGiXT.js",
     "./MarkdownBlock": "./dist/components/MarkdownBlock.js",
@@ -55,9 +58,9 @@
     "agixt": "1.0.52",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.2.1",
-    "jrgcomponents": "^0.0.139",
+    "jrgcomponents": "^0.0.141",
     "next": "^14.2.4",
-    "openai": "^4.50.0",
+    "openai": "^4.51.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-markdown": "^8.0.7",
@@ -69,14 +72,14 @@
     "@next/bundle-analyzer": "^14.2.4",
     "@storybook/addon-actions": "^8.1.4",
     "@storybook/addon-docs": "^8.1.4",
-    "@storybook/addon-essentials": "^8.1.7",
-    "@storybook/addon-interactions": "^8.1.7",
-    "@storybook/addon-links": "^8.1.7",
+    "@storybook/addon-essentials": "^8.1.9",
+    "@storybook/addon-interactions": "^8.1.9",
+    "@storybook/addon-links": "^8.1.9",
     "@storybook/addon-styling-webpack": "^1.0.0",
-    "@storybook/addon-themes": "^8.1.7",
+    "@storybook/addon-themes": "^8.1.9",
     "@storybook/blocks": "^8.1.4",
     "@storybook/manager-api": "^8.1.4",
-    "@storybook/nextjs": "^8.1.7",
+    "@storybook/nextjs": "^8.1.9",
     "@storybook/react": "^8.1.4",
     "@storybook/test": "^8.1.4",
     "@types/node": "^20.14.2",
@@ -99,8 +102,9 @@
     "eslint-plugin-sonarjs": "^0.23.0",
     "eslint-plugin-storybook": "^0.6.15",
     "eslint-plugin-unused-imports": "^3.2.0",
+    "gh-pages": "^6.1.1",
     "prettier": "^3.3.2",
-    "storybook": "^8.1.7",
+    "storybook": "^8.1.9",
     "typescript": "^5.4.5"
   }
 }

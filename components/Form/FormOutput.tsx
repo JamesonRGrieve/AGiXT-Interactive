@@ -1,7 +1,7 @@
 import { Card, CardContent, IconButton, Tooltip, Typography } from '@mui/material';
 import React, { ReactNode, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight, CopyAllOutlined } from '@mui/icons-material';
-import MarkdownBlock from '../MarkdownBlock';
+import MarkdownBlock from '../Chat/Message/MarkdownBlock';
 
 export default function FormOutput({
   results,

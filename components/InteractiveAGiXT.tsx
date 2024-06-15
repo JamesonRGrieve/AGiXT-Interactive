@@ -43,9 +43,9 @@ export type AGiXTInteractiveProps = {
   formConfig?: FormProps;
 };
 const selectionBars = {
-  agent: <AgentSelector />,
-  conversation: <ConversationSelector />,
-  prompt: <PromptSelector />,
+  agent: <AgentSelector key='agent' />,
+  conversation: <ConversationSelector key='conversation' />,
+  prompt: <PromptSelector key='prompt' />,
   '': <span>&nbsp;</span>,
 };
 function removeUndefined(obj: object): object {
