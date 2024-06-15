@@ -1,68 +1,10 @@
 import React, { ReactNode, useContext } from 'react';
 import ReactMarkdown from 'react-markdown';
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-import clipboardCopy from 'clipboard-copy';
-import { IconButton, Link, Typography } from '@mui/material';
-import { ContentCopy as ContentCopyIcon, Download as DownloadIcon } from '@mui/icons-material';
-import { InteractiveConfigContext } from '../types/InteractiveConfigContext';
+import { Link, Typography } from '@mui/material';
+import { InteractiveConfigContext } from '../../../types/InteractiveConfigContext';
 import { DataGridFromCSV } from './DataGridFromCSV';
+import CodeBlock from './CodeBlock';
 
-const langMap = {
-  '': 'txt',
-  python: 'py',
-  javascript: 'js',
-  typescript: 'ts',
-  html: 'html',
-  css: 'css',
-  json: 'json',
-  yaml: 'yaml',
-  markdown: 'md',
-  shell: 'sh',
-  bash: 'sh',
-  sql: 'sql',
-  java: 'java',
-  c: 'c',
-  cpp: 'cpp',
-  csharp: 'cs',
-  go: 'go',
-  rust: 'rs',
-  php: 'php',
-  ruby: 'rb',
-  perl: 'pl',
-  lua: 'lua',
-  r: 'r',
-  swift: 'swift',
-  kotlin: 'kt',
-  scala: 'scala',
-  clojure: 'clj',
-  elixir: 'ex',
-  erlang: 'erl',
-  haskell: 'hs',
-  ocaml: 'ml',
-  pascal: 'pas',
-  scheme: 'scm',
-  coffeescript: 'coffee',
-  fortran: 'f',
-  julia: 'jl',
-  lisp: 'lisp',
-  prolog: 'pro',
-  vbnet: 'vb',
-  dart: 'dart',
-  fsharp: 'fs',
-  groovy: 'groovy',
-  perl6: 'pl',
-  powershell: 'ps1',
-  puppet: 'pp',
-  qml: 'qml',
-  racket: 'rkt',
-  sas: 'sas',
-  verilog: 'v',
-  vhdl: 'vhd',
-  apex: 'cls',
-  matlab: 'm',
-  nim: 'nim',
-};
 const generateId = (text): string => {
   return text ? text.toLowerCase().replace(/\W+/g, '-') : '';
 };
@@ -112,94 +54,6 @@ const renderList = (children, ordered = true): ReactNode => {
 const renderListItem = ({ children }): ReactNode => {
   return <li style={{ marginBottom: '0.5em' }}>{children}</li>;
 };
-const renderCode = ({
-  inline,
-  children,
-  className,
-  fileName,
-  ...props
-}: {
-  inline?: boolean;
-  children: ReactNode;
-  className?: string;
-  fileName?: string;
-}): ReactNode => {
-  if (inline) {
-    return (
-      <span
-        style={{
-          backgroundColor: 'darkgray',
-          borderRadius: '3px',
-          padding: '0.2em',
-          fontFamily: 'monospace',
-        }}
-      >
-        {children}
-      </span>
-    );
-  }
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const codeBlockRef = React.useRef(null);
-  const language = className?.replace(/language-/, '') || 'markdown';
-  const fileNameWithExtension = `${fileName || 'code'}.${langMap[String(language)] || 'md'}`;
-
-  return (
-    <>
-      <br />
-      <div className='code-block' ref={codeBlockRef}>
-        <div className='code-title'>
-          <IconButton
-            onClick={() => {
-              if (codeBlockRef.current) {
-                const actualCode = codeBlockRef.current.querySelector('code');
-                clipboardCopy(actualCode.innerText);
-              }
-            }}
-          >
-            <ContentCopyIcon />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              if (codeBlockRef.current) {
-                const actualCode = codeBlockRef.current.querySelector('code');
-
-                const element = document.createElement('a');
-                const file = new Blob([actualCode.innerText], {
-                  type: 'text/plain;charset=utf-8',
-                });
-                element.href = URL.createObjectURL(file);
-
-                element.download = fileNameWithExtension;
-                document.body.appendChild(element);
-                element.click();
-              }
-            }}
-          >
-            <DownloadIcon />
-          </IconButton>
-          {fileNameWithExtension} | {language}
-        </div>
-        <div className='code-container'>
-          {language in langMap ? (
-            <SyntaxHighlighter
-              {...props}
-              // eslint-disable-next-line react/no-children-prop
-              children={children}
-              language={language}
-              PreTag='div'
-              style={a11yDark}
-            />
-          ) : (
-            <code className={'code-block'} {...props}>
-              {children}
-            </code>
-          )}
-        </div>
-      </div>
-      <br />
-    </>
-  );
-};
 function extractImageOrAudio(message: string): string {
   const match = message.match(/#(.*?)(?=\n|$)/);
   if (match) {
@@ -216,15 +70,12 @@ function extractImageOrAudio(message: string): string {
   }
   return message;
 }
-export default function MarkdownBlock({
-  content,
-  chatItem,
-  setLoading,
-}: {
+export type MarkdownBlockProps = {
   content: string;
-  chatItem?: { role: string; timestamp: string };
+  chatItem?: { role: string; timestamp: string; message: string };
   setLoading: (loading: boolean) => void;
-}): ReactNode {
+};
+export default function MarkdownBlock({ content, chatItem, setLoading }: MarkdownBlockProps): ReactNode {
   const state = useContext(InteractiveConfigContext);
   const renderMessage = (): ReactNode => {
     const message = extractImageOrAudio(content.toString());
@@ -282,7 +133,7 @@ export default function MarkdownBlock({
         },
         ol: renderList,
         li: renderListItem,
-        code: (props) => renderCode({ ...props, fileName: fileName }),
+        code: (props) => CodeBlock({ ...props, fileName: fileName }),
       }}
     >
       {renderMessage().toString()}
