@@ -1,7 +1,7 @@
 version: '3.7'
 services:
-  agixtchat:
-    image: ghcr.io/gt-umbrella/interactive_web:main
+  agixt-interactive:
+    image: ghcr.io/jamesonrgrieve/agixt-interactive:main
     init: true
     environment:
       - NEXT_TELEMETRY_DISABLED=1
