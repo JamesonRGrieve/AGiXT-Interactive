@@ -4,7 +4,7 @@ const InteractiveConfigDefault = {
   openai: null,
   overrides: {
     mode: 'prompt',
-    prompt: 'Chat',
+    prompt: undefined,
     promptCategory: 'Default',
     command: '',
     commandArgs: {},

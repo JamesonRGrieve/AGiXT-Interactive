@@ -1,6 +1,7 @@
 const InteractiveConfigDefault = require('./types/InteractiveConfigDefault');
 // THIS FILE ONLY APPLIES TO RELEASES DONE USING THIS REPOSITORY AS A NEXTJS APP, IT DOES NOT APPLY WHEN THIS REPOSITORY IS USED AS A PACKAGE/COMPONENT.
 // TODO: Add validation.
+console.log('In Next Config', InteractiveConfigDefault);
 const nextConfig = {
   env: {
     // App Options
@@ -36,21 +37,22 @@ const nextConfig = {
 
     // Override Options
     NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG: process.env.AGIXT_ENABLE_SEARCHPARAM_CONFIG || 'true',
-    NEXT_PUBLIC_AGIXT_MODE: process.env.AGIXT_MODE || 'prompt',
+    NEXT_PUBLIC_AGIXT_MODE: process.env.AGIXT_MODE || InteractiveConfigDefault.overrides.mode,
     // State Options, Defined in ./types/InteractiveConfigDefault.js
     NEXT_PUBLIC_AGIXT_AGENT: process.env.AGIXT_AGENT || InteractiveConfigDefault.agent,
     NEXT_PUBLIC_AGIXT_INSIGHT_AGENT: process.env.AGIXT_INSIGHT_AGENT || InteractiveConfigDefault.overrides.insightAgentName,
     NEXT_PUBLIC_AGIXT_USE_SELECTED_AGENT:
       process.env.AGIXT_USE_SELECTED_AGENT || String(InteractiveConfigDefault.overrides.chainRunConfig.useSelectedAgent),
     // Prompt Mode Options, Defined in ./types/InteractiveConfigDefault.js
-    NEXT_PUBLIC_AGIXT_PROMPT_NAME: process.env.AGIXT_PROMPT_NAME || InteractiveConfigDefault.prompt,
-    NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY: process.env.AGIXT_PROMPT_CATEGORY || InteractiveConfigDefault.promptCategory,
+    NEXT_PUBLIC_AGIXT_PROMPT_NAME: process.env.AGIXT_PROMPT_NAME || InteractiveConfigDefault.overrides.prompt,
+    NEXT_PUBLIC_AGIXT_PROMPT_CATEGORY:
+      process.env.AGIXT_PROMPT_CATEGORY || InteractiveConfigDefault.overrides.promptCategory,
     // Command Mode Options, Defined in ./types/InteractiveConfigDefault.js
-    NEXT_PUBLIC_AGIXT_COMMAND: process.env.AGIXT_COMMAND || InteractiveConfigDefault.command,
+    NEXT_PUBLIC_AGIXT_COMMAND: process.env.AGIXT_COMMAND || InteractiveConfigDefault.overrides.command,
     NEXT_PUBLIC_AGIXT_COMMAND_MESSAGE_ARG:
-      process.env.AGIXT_COMMAND_MESSAGE_ARG || InteractiveConfigDefault.commandMessageArg,
+      process.env.AGIXT_COMMAND_MESSAGE_ARG || InteractiveConfigDefault.overrides.commandMessageArg,
     // Chain Mode Options, Defined in ./types/InteractiveConfigDefault.js
-    NEXT_PUBLIC_AGIXT_CHAIN: process.env.AGIXT_CHAIN || InteractiveConfigDefault.chain,
+    NEXT_PUBLIC_AGIXT_CHAIN: process.env.AGIXT_CHAIN || InteractiveConfigDefault.overrides.chain,
     NEXT_PUBLIC_AGIXT_CHAIN_ARGS:
       process.env.AGIXT_CHAIN_ARGS || JSON.stringify(InteractiveConfigDefault.overrides.chainRunConfig.chainArgs),
     NEXT_PUBLIC_ENV: process.env.ENV || process.env.NODE_ENV || 'development',
