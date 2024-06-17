@@ -1,6 +1,6 @@
 {
   "name": "@agixt/interactive",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "scripts": {
     "dev": "next dev -p 3437",
     "build": "next build",
@@ -38,8 +38,8 @@
   },
   "exports": {
     ".": "./dist/components/InteractiveAGiXT.js",
-    "./MarkdownBlock": "./dist/components/MarkdownBlock.js",
-    "./CSVDataGrid": "./dist/components/DataGridFromCSV.js",
+    "./MarkdownBlock": "./dist/components/Chat/Message/MarkdownBlock.js",
+    "./CSVDataGrid": "./dist/components/Chat/Message/DataGridFromCSV.js",
     "./AudioRecorder": "./dist/components/Chat/AudioRecorder.js",
     "./ConversationBar": "./dist/components/Chat/ChatBar.js",
     "./ConversationLog": "./dist/components/Chat/ChatLog.js",
