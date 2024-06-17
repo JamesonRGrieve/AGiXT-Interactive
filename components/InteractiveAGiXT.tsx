@@ -103,7 +103,7 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
   console.log(props.overrides);
-
+  console.log(process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME);
   return (
     <ContextWrapper
       apiKey={props.serverConfig?.apiKey || process.env.NEXT_PUBLIC_AGIXT_API_KEY || getCookie('jwt') || ''}

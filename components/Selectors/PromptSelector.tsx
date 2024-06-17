@@ -11,7 +11,7 @@ export default function PromptSelector(): React.JSX.Element {
     async () => (await state.agixt.getPrompts(state.overrides.promptCategory)) as string[],
   );
   const theme = useTheme();
-
+  console.log(state.overrides);
   return (
     <Tooltip title='Select a Prompt'>
       <FormControl
@@ -45,19 +45,22 @@ export default function PromptSelector(): React.JSX.Element {
           labelId='conversation-label'
           label='Select a Prompt'
           disabled={promptData?.length === 0}
-          value={state.overrides.prompt}
+          value={state.overrides.prompt === undefined ? '/' : state.overrides.prompt}
           onChange={(e) =>
             state.mutate((oldState) => ({
               ...oldState,
-              prompt: e.target.value,
+              overrides: { ...oldState.overrides, prompt: e.target.value === '/' ? undefined : e.target.value },
             }))
           }
         >
+          <MenuItem key='/' value='/'>
+            - Use Agent Default -
+          </MenuItem>
           {promptData &&
             promptData.map &&
-            promptData?.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
+            promptData?.map((promptName, index) => (
+              <MenuItem key={index.toString() + '-' + promptName} value={promptName}>
+                {promptName}
               </MenuItem>
             ))}
         </Select>
