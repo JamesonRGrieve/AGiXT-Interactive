@@ -48,7 +48,7 @@ const renderLink = ({ children, ...props }): ReactNode => {
     </Link>
   );
 };
-const renderList = (children, ordered = true): ReactNode => {
+const renderList = ({ children, ordered = true }): ReactNode => {
   return ordered ? <ol style={{ paddingLeft: '2em' }}>{children}</ol> : <ul>{children}</ul>;
 };
 const renderListItem = ({ children }): ReactNode => {
