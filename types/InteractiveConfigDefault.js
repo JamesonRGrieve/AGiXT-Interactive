@@ -21,7 +21,7 @@ const InteractiveConfigDefault = {
     websearchDepth: 0,
     injectMemoriesFromCollectionNumber: 0,
     conversationResults: 5,
-    conversationName: 'Default',
+    conversationName: new Date().toLocaleDateString('en-CA'),
     browseLinks: false,
     webSearch: false,
     insightAgentName: '',
