@@ -1,16 +1,23 @@
 'use client';
-import { Cancel, CheckCircle, Pending } from '@mui/icons-material';
+import { Cancel, CheckCircle, Info, Pending, Warning } from '@mui/icons-material';
 import { Box, useTheme } from '@mui/material';
 import React, { ReactNode, useEffect, useState } from 'react';
+
+const severities = {
+  error: <Cancel color='error' />,
+  info: <Info color='info' />,
+  success: <CheckCircle color='success' />,
+  warn: <Warning color='warning' />,
+};
 
 export default function Activity({
   inProgress,
   message,
-  error,
+  severity,
   alternateBackground,
 }: {
   inProgress: boolean;
-  error: boolean;
+  severity: 'error' | 'info' | 'success' | 'warn';
   message: string;
   alternateBackground: string;
 }): ReactNode {
@@ -35,7 +42,7 @@ export default function Activity({
         gap: '0.5rem',
       }}
     >
-      {error ? <Cancel color='error' /> : inProgress ? <Pending color='info' /> : <CheckCircle color='success' />}
+      {severities[severity.toString()]}
       {message + dots}
     </Box>
   );

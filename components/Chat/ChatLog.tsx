@@ -38,7 +38,7 @@ export default function ChatLog({
             if (chatItem.role === 'USER') {
               lastUserMessage = chatItem.message;
             }
-            const validTypes = ['[ACTIVITY]', '[ACTIVITY][ERROR]'];
+            const validTypes = ['[ACTIVITY]', '[ACTIVITY][ERROR]', '[ACTIVITY][WARN]', '[ACTIVITY][INFO]'];
             const messageType = chatItem.message.split(' ')[0];
             const messageBody = validTypes.includes(messageType)
               ? chatItem.message.substring(chatItem.message.indexOf(' '))
@@ -47,7 +47,11 @@ export default function ChatLog({
             return validTypes.includes(messageType) ? (
               <ChatActivity
                 key={chatItem.timestamp + '-' + messageBody}
-                error={messageType === '[ACTIVITY][ERROR]'}
+                severity={
+                  messageType === '[ACTIVITY]'
+                    ? 'success'
+                    : (messageType.split('[')[2].split(']')[0].toLowerCase() as 'error' | 'info' | 'success' | 'warn')
+                }
                 inProgress={index === conversation.length - 1}
                 message={messageBody}
                 alternateBackground={alternateBackground}
