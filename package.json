@@ -43,10 +43,14 @@
     "./AudioRecorder": "./dist/components/Chat/AudioRecorder.js",
     "./ConversationBar": "./dist/components/Chat/ChatBar.js",
     "./ConversationLog": "./dist/components/Chat/ChatLog.js",
-    "./ConversationSelector": "./dist/components/Selectors/ConversationSelector.js",
-    "./PromptSelector": "./dist/components/Selectors/PromptSelector.js",
-    "./AgentSelector": "./dist/components/Selectors/AgentSelector.js",
-    "./Context": "./dist/types/InteractiveConfigContext.js"
+    "./Selector/Conversation": "./dist/components/Selectors/ConversationSelector.js",
+    "./Selector/Prompt": "./dist/components/Selectors/PromptSelector.js",
+    "./Selector/PromptCategory": "./dist/components/Selectors/PromptCategorySelector.js",
+    "./Selector/Agent": "./dist/components/Selectors/AgentSelector.js",
+    "./Selector/Chain": "./dist/components/Selectors/ChainSelector.js",
+    "./Selector/Command": "./dist/components/Selectors/CommandSelector.js",
+    "./Context": "./dist/types/InteractiveConfigContext.js",
+    "./Context/Wrapper": "./dist/components/ContextWrapper.js"
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",

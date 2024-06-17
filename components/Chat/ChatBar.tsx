@@ -123,25 +123,34 @@ export default function ChatBar({
             endAdornment: (
               <InputAdornment position='end'>
                 {timer > -1 && (
-                  <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
-                    <Typography variant='caption'>{(timer / 10).toFixed(1)}s</Typography>
-                    {loading ? <Pending /> : <CheckCircle />}
-                  </Box>
+                  <Tooltip
+                    title={
+                      loading
+                        ? `Your most recent interation has been underway (including all activities) for ${(timer / 10).toFixed(1)} seconds.`
+                        : `Your last interaction took ${(timer / 10).toFixed(1)} seconds to completely resolve.`
+                    }
+                  >
+                    <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
+                      <Typography variant='caption' display='flex' position='relative' top='0.15rem'>
+                        {(timer / 10).toFixed(1)}s
+                      </Typography>
+                      {loading ? <Pending color='info' /> : <CheckCircle color='success' />}
+                    </Box>
+                  </Tooltip>
                 )}
                 {enableFileUpload && (
                   <>
-                    <IconButton
-                      onClick={() => {
-                        setFileUploadOpen(true);
-                      }}
-                      disabled={disabled}
-                      color='primary'
-                      sx={{
-                        height: '56px',
-                      }}
-                    >
-                      <NoteAddOutlinedIcon />
-                    </IconButton>
+                    <Tooltip title='Upload File(s)'>
+                      <IconButton
+                        onClick={() => {
+                          setFileUploadOpen(true);
+                        }}
+                        disabled={disabled}
+                        color='primary'
+                      >
+                        <NoteAddOutlinedIcon />
+                      </IconButton>
+                    </Tooltip>
                     <MUIDialog
                       open={fileUploadOpen}
                       onClose={() => {

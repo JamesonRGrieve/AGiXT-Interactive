@@ -100,21 +100,23 @@ export default function Form({
     <>
       <FormInput disabled={loading} argValues={argValues} setArgValues={setArgValues} />
 
-      <ConversationBar
-        onSend={(message, files) => submit(message, files)}
-        disabled={loading}
-        clearOnSend={false}
-        showChatThemeToggles={showChatThemeToggles}
-        loading={loading}
-        setLoading={setLoading}
-      />
+      {results[uuid.toString()].length === 0 && (
+        <ConversationBar
+          onSend={(message, files) => submit(message, files)}
+          disabled={loading}
+          clearOnSend={false}
+          showChatThemeToggles={showChatThemeToggles}
+          loading={loading}
+          setLoading={setLoading}
+        />
+      )}
       {loading && (
         <Alert sx={{ my: '1rem' }} severity='info'>
           Fetching response...
         </Alert>
       )}
       <FormOutput results={results} showIndex={1} selectedUUID={uuid} setSelectedUUID={setUUID} />
-      {followUp && results[uuid.toString()].length < 3 && (
+      {followUp && results[uuid.toString()].length < 3 && results[uuid.toString()].length > 1 && (
         <FormInput disabled={loading} argValues={argValues} setArgValues={setArgValues} />
       )}
       {followUp && results[uuid.toString()].length >= 3 && (

@@ -34,7 +34,7 @@ export type Overrides = {
 };
 export type InteractiveConfig = {
   agent: string;
-  agixt?: AGiXTSDK;
+  agixt: AGiXTSDK;
   openai?: OpenAI;
   overrides?: Overrides;
   mutate?: (InteractiveConfig) => void | ((previous: InteractiveConfig) => InteractiveConfig);
