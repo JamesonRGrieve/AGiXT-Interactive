@@ -156,32 +156,35 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
       header={
         process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true' && {
           components: {
-            left: mobile ? (
-              {
-                icon: <Menu />,
-                swr: (): object => {
-                  return {};
-                },
-                menu: menuItem,
-                width: mobile ? '12rem' : '30rem',
-              }
-            ) : (
-              <Box display='flex' gap='1rem' width='100%' maxWidth='32rem'>
-                {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.split(',').map((selector) =>
-                  selector === 'conversation' && process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.split(',').length > 1
-                    ? null
-                    : selectionBars[selector],
-                )}
-              </Box>
-            ),
+            left:
+              process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION &&
+              (mobile ? (
+                {
+                  icon: <Menu />,
+                  swr: (): object => {
+                    return {};
+                  },
+                  menu: menuItem,
+                  width: mobile ? '12rem' : '30rem',
+                }
+              ) : (
+                <Box display='flex' gap='1rem' width='100%' maxWidth='32rem'>
+                  {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.split(',').map((selector) =>
+                    selector === 'conversation' && process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.split(',').length > 1
+                      ? null
+                      : selectionBars[selector],
+                  )}
+                </Box>
+              )),
             right:
-              !mobile &&
+              process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION &&
+              (!mobile &&
               process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.includes('conversation') &&
               process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.includes(',') ? (
                 <Box minWidth='12rem' width='100%' display='flex'>
                   {selectionBars['conversation']}
                 </Box>
-              ) : undefined,
+              ) : undefined),
           },
         }
       }
