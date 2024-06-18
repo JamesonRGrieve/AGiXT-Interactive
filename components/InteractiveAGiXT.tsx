@@ -168,7 +168,9 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
             ) : (
               <Box display='flex' gap='1rem' width='100%' maxWidth='32rem'>
                 {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.split(',').map((selector) =>
-                  selector === 'conversation' ? null : selectionBars[selector],
+                  selector === 'conversation' && process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.split(',').length > 1
+                    ? null
+                    : selectionBars[selector],
                 )}
               </Box>
             ),
