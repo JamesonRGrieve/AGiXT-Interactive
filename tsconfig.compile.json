@@ -26,6 +26,6 @@
     "incremental": true,
     "noEmit": false
   },
-  "include": ["types/*.ts", "types/*.js", "components/**/*"],
+  "include": ["types/*.ts", "types/*.js", "components/**/*", "config/**/*"],
   "exclude": ["**/*.stories.*", "node_modules"]
 }
