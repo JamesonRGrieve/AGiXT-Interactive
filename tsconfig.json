@@ -25,6 +25,6 @@
     "incremental": true,
     "noEmit": true
   },
-  "include": ["new-types.d.ts", "next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", ".storybook/**/*.ts", ".storybook/**/*.tsx", ".storybook/**/*.js", ".storybook/**/*.jsx", "next.config.js", "jest.config.js"],
+  "include": ["new-types.d.ts", "next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", ".storybook/**/*.ts", ".storybook/**/*.tsx", ".storybook/**/*.js", ".storybook/**/*.jsx", "next.config.js", "jest.config.js", "config/Hooks.js"],
   "exclude": ["node_modules"]
 }
