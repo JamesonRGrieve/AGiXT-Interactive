@@ -154,28 +154,26 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
   return (
     <AppWrapper
       header={
-        process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true' && {
+        props.showAppBar && {
           components: {
-            left:
-              process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION &&
-              (mobile ? (
-                {
-                  icon: <Menu />,
-                  swr: (): object => {
-                    return {};
-                  },
-                  menu: menuItem,
-                  width: mobile ? '12rem' : '30rem',
-                }
-              ) : (
-                <Box display='flex' gap='1rem' width='100%' maxWidth='32rem'>
-                  {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.split(',').map((selector) =>
-                    selector === 'conversation' && process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.split(',').length > 1
-                      ? null
-                      : selectionBars[selector],
-                  )}
-                </Box>
-              )),
+            left: mobile ? (
+              {
+                icon: <Menu />,
+                swr: (): object => {
+                  return {};
+                },
+                menu: menuItem,
+                width: mobile ? '12rem' : '30rem',
+              }
+            ) : (
+              <Box display='flex' gap='1rem' width='100%' maxWidth='32rem'>
+                {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION?.split(',').map((selector) =>
+                  selector === 'conversation' && process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION?.split(',').length > 1
+                    ? null
+                    : selectionBars[selector],
+                )}
+              </Box>
+            ),
             right:
               process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION &&
               (!mobile &&

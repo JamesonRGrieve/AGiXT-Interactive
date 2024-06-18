@@ -1,3 +1,4 @@
+/** @type {import('next').NextConfig} */
 const { useAGiXTConfig } = require('./config/Hooks.js');
 const {
   mergeConfigs,
@@ -10,7 +11,14 @@ const {
 
 // THIS FILE ONLY APPLIES TO RELEASES DONE USING THIS REPOSITORY AS A NEXTJS APP, IT DOES NOT APPLY WHEN THIS REPOSITORY IS USED AS A PACKAGE/COMPONENT.
 
-configs = [useBasicConfig, useAuthConfig, useOAuth2Config, useCookiesConfig, useAGiXTConfig, useProductionSkipLintingConfig];
+const configs = [
+  useBasicConfig,
+  useAuthConfig,
+  useOAuth2Config,
+  useCookiesConfig,
+  useAGiXTConfig,
+  useProductionSkipLintingConfig,
+];
 
 const nextConfig = configs.reduce((accumulator, config) => mergeConfigs(accumulator, config()), {});
 
