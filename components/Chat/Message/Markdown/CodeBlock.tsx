@@ -66,7 +66,7 @@ const fileExtensions = {
 };
 const languageRenders = {
   markdown: (content) => <MarkdownBlock content={content} />,
-  csv: (content) => <CSV csvData={content.split('\n')} />,
+  csv: (content, setLoading) => <CSV csvData={content.split('\n')} setLoading={setLoading} />,
 };
 
 export type CodeBlockProps = {
@@ -74,8 +74,16 @@ export type CodeBlockProps = {
   children: ReactNode;
   className?: string;
   fileName?: string;
+  setLoading?: (loading: boolean) => void;
 };
-export default function CodeBlock({ inline = false, children, className, fileName, ...props }: CodeBlockProps): ReactNode {
+export default function CodeBlock({
+  inline = false,
+  children,
+  className,
+  fileName,
+  setLoading,
+  ...props
+}: CodeBlockProps): ReactNode {
   const theme = useTheme();
   if (inline) {
     return (
@@ -143,7 +151,7 @@ export default function CodeBlock({ inline = false, children, className, fileNam
 
       {Object.keys(languageRenders).includes(language) && (
         <TabPanel value={tab} index={0} className='code-block' ref={codeBlockRef}>
-          <Box className='code-container'>{languageRenders[language.toString()](children)}</Box>
+          <Box className='code-container'>{languageRenders[language.toString()](children, setLoading)}</Box>
         </TabPanel>
       )}
 

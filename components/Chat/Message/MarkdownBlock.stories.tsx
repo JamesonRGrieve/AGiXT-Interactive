@@ -44,3 +44,13 @@ export const MarkdownInlineCode: Story = (args: MarkdownBlockProps) => <Markdown
 MarkdownInlineCode.args = {
   content: 'Here is some `inline code` for an example.',
 };
+
+export const MarkdownCodeBlock: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
+MarkdownCodeBlock.args = {
+  content: 'Here is a code block:\n\n```javascript\nconsole.log("Hello, World!");\n```',
+};
+
+export const MarkdownEscapedCodeBlock: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
+MarkdownEscapedCodeBlock.args = {
+  content: 'Here is an escaped code block:\n\n\\```javascript\nconsole.log("Hello, World!");\n```',
+};
