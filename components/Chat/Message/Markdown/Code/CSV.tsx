@@ -8,16 +8,12 @@ import {
   DialogActions,
   TextField,
   TextFieldProps,
-  Tabs,
-  Tab,
   Typography,
 } from '@mui/material';
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import { alpha, styled } from '@mui/material/styles';
-import React, { useState, useEffect, ReactNode } from 'react';
-import MarkdownBlock from './MarkdownBlock';
-import { InteractiveConfig } from '@/types/InteractiveConfigContext';
-
+import React, { useState, useEffect, ReactNode, useContext } from 'react';
+import { InteractiveConfigContext } from '../../../../../types/InteractiveConfigContext';
 const ODD_OPACITY = 1;
 
 const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
@@ -47,34 +43,13 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
     },
   },
 }));
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-function CustomTabPanel(props: TabPanelProps): ReactNode {
-  const { children, value, index, ...other } = props;
 
-  return (
-    <div
-      role='tabpanel'
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
-    </div>
-  );
-}
 export const DataGridFromCSV = ({
-  state,
   csvData,
   setLoading,
 }: {
-  state: InteractiveConfig;
   csvData: string[];
-  setLoading: (loading: boolean) => void;
+  setLoading?: (loading: boolean) => void;
 }): ReactNode => {
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
@@ -126,8 +101,7 @@ export const DataGridFromCSV = ({
       ),
     );
   }, [csvData]);
-  const [tab, setTab] = React.useState(0);
-
+  const context = useContext(InteractiveConfigContext);
   useEffect(() => {
     setFilteredRows(rows);
   }, [rows]);
@@ -141,8 +115,8 @@ export const DataGridFromCSV = ({
       [row.id, ...filteredColumns.map((header) => row[header.field])].join(','),
     );
 
-    await state.agixt.runChain('Data Analysis', userMessage, state.agent, false, 1, {
-      conversation_name: state.overrides.conversationName,
+    await context.agixt.runChain('Data Analysis', userMessage, context.agent, false, 1, {
+      conversation_name: context.overrides.conversationName,
       text: [['id', ...stringifiedColumns].join(','), ...stringifiedRows].join('\n'),
     });
     setLoading(false);
@@ -165,33 +139,29 @@ export const DataGridFromCSV = ({
     );
   };
   return rows.length > 1 ? (
-    <>
-      <Tabs value={tab} onChange={(event, newValue) => setTab(newValue)}>
-        <Tab label='Data Grid' />
-        <Tab label='Raw Data' />
-      </Tabs>
-      <CustomTabPanel value={tab} index={0}>
-        <Box display='flex' flexDirection='column' gap='1rem'>
-          {error ? (
-            <Typography color='error'>{error}</Typography>
-          ) : (
+    <Box display='flex' flexDirection='column' gap='1rem'>
+      {error ? (
+        <Typography color='error'>{error}</Typography>
+      ) : (
+        <>
+          <StripedDataGrid
+            density='compact'
+            rows={rows}
+            columns={columns}
+            components={{ Toolbar: GridToolbar }}
+            pageSizeOptions={[5, 10, 20]}
+            initialState={{
+              pagination: {
+                paginationModel: {
+                  pageSize: 5,
+                },
+              },
+            }}
+            getRowClassName={(params) => (params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd')}
+            onStateChange={gridChange}
+          />
+          {setLoading && (
             <>
-              <StripedDataGrid
-                density='compact'
-                rows={rows}
-                columns={columns}
-                components={{ Toolbar: GridToolbar }}
-                pageSizeOptions={[5, 10, 20]}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 5,
-                    },
-                  },
-                }}
-                getRowClassName={(params) => (params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd')}
-                onStateChange={gridChange}
-              />
               <Box
                 sx={{
                   display: 'flex',
@@ -256,12 +226,9 @@ export const DataGridFromCSV = ({
               </Dialog>
             </>
           )}
-        </Box>
-      </CustomTabPanel>
-      <CustomTabPanel value={tab} index={1}>
-        <MarkdownBlock content={'```\n' + csvData.join('\n') + '\n```'} setLoading={setLoading} />
-      </CustomTabPanel>
-    </>
+        </>
+      )}
+    </Box>
   ) : (
     csvData
   );
