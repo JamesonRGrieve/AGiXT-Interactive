@@ -48,19 +48,19 @@ function formatDate(timestamp: string): string {
   };
   return localDate.toLocaleString('en-US', options);
 }
-
+export type MessageProps = {
+  chatItem: { role: string; message: string; timestamp: string; rlhf?: { positive: boolean; feedback: string } };
+  lastUserMessage: string;
+  alternateBackground?: string;
+  setLoading: (loading: boolean) => void;
+};
 const generatedAudioString = '#GENERATED_AUDIO:';
 export default function Message({
   chatItem,
   lastUserMessage,
   alternateBackground = 'primary',
   setLoading,
-}: {
-  chatItem: { role: string; message: string; timestamp: string; rlhf?: { positive: boolean; feedback: string } };
-  lastUserMessage: string;
-  alternateBackground?: string;
-  setLoading: (loading: boolean) => void;
-}): React.JSX.Element {
+}: MessageProps): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);
   const formattedMessage = useMemo(() => {
     const toFormat =

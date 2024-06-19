@@ -39,3 +39,8 @@ MarkdownList.args = {
   content:
     '- Unordered List Item 1\n- Unordered List Item 2\n- Unordered List Item 3\n\n1. Ordered List Item 1\n2. Ordered List Item 2\n3. Ordered List Item 3',
 };
+
+export const MarkdownInlineCode: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
+MarkdownInlineCode.args = {
+  content: 'Here is some `inline code` for an example.',
+};

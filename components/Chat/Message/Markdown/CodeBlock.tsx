@@ -1,9 +1,9 @@
 import { ContentCopy, Download } from '@mui/icons-material';
-import { Box, IconButton, Tab, Tabs } from '@mui/material';
+import { Box, IconButton, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import clipboardCopy from 'clipboard-copy';
 import React, { ReactNode } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+import { a11yLight, a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import TabPanel from 'jrgcomponents/Tabs/Panel';
 import MarkdownBlock from '../MarkdownBlock';
 import CSV from './Code/CSV';
@@ -76,22 +76,25 @@ export type CodeBlockProps = {
   fileName?: string;
 };
 export default function CodeBlock({ inline = false, children, className, fileName, ...props }: CodeBlockProps): ReactNode {
+  const theme = useTheme();
   if (inline) {
     return (
-      <span
-        style={{
-          backgroundColor: 'darkgray',
-          borderRadius: '3px',
-          padding: '0.2em',
+      <Typography
+        component='span'
+        sx={{
+          backgroundColor: theme.palette.divider,
+          borderRadius: '0.5rem',
+          padding: '0.1rem 0.25rem',
           fontFamily: 'monospace',
         }}
       >
         {children}
-      </span>
+      </Typography>
     );
   }
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const codeBlockRef = React.useRef(null);
+
   const language = className?.replace(/language-/, '') || 'Text';
   const fileNameWithExtension = `${fileName || 'code'}.${fileExtensions[String(language.toLowerCase())] || 'txt'}`;
   const [tab, setTab] = React.useState(0);
@@ -158,7 +161,7 @@ export default function CodeBlock({ inline = false, children, className, fileNam
               children={children}
               language={language.toLowerCase()}
               PreTag='div'
-              style={a11yDark}
+              style={theme.palette.mode === 'dark' ? a11yDark : a11yLight}
             />
           ) : (
             <code className={'code-block'} {...props}>
