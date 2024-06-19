@@ -1,10 +1,10 @@
 'use client';
-import { getCookie, setCookie } from 'cookies-next';
+import { deleteCookie, getCookie, setCookie } from 'cookies-next';
 import React, { ReactNode, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
-import { Menu } from '@mui/icons-material';
-import { Box, Typography, useMediaQuery } from '@mui/material';
+import { Logout, Menu } from '@mui/icons-material';
+import { Box, IconButton, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import { InteractiveConfigDefault, InteractiveConfig, Overrides } from '../types/InteractiveConfigContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
@@ -174,15 +174,28 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                 )}
               </Box>
             ),
-            right:
-              process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION &&
-              (!mobile &&
-              process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.includes('conversation') &&
-              process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.includes(',') ? (
-                <Box minWidth='12rem' width='100%' display='flex'>
-                  {selectionBars['conversation']}
-                </Box>
-              ) : undefined),
+            right: (
+              <>
+                {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION &&
+                  (!mobile &&
+                  process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.includes('conversation') &&
+                  process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.includes(',') ? (
+                    <Box minWidth='12rem' width='100%' display='flex'>
+                      {selectionBars['conversation']}
+                    </Box>
+                  ) : undefined)}
+                <Tooltip title='Logout'>
+                  <IconButton
+                    onClick={() => {
+                      deleteCookie('jwt');
+                      window.location.reload();
+                    }}
+                  >
+                    <Logout />
+                  </IconButton>
+                </Tooltip>
+              </>
+            ),
           },
         }
       }

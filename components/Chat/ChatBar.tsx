@@ -26,6 +26,7 @@ import AudioRecorder from './AudioRecorder';
 export default function ChatBar({
   onSend,
   disabled,
+  resize = false,
   loading,
   setLoading,
   clearOnSend = true,
@@ -35,6 +36,7 @@ export default function ChatBar({
 }: {
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
   disabled: boolean;
+  resize: boolean;
   loading: boolean;
   setLoading: (loading: boolean) => void;
   clearOnSend?: boolean;
@@ -107,7 +109,7 @@ export default function ChatBar({
           label={`Enter your message to ${state.agent} here.`}
           placeholder={`Hello, ${state.agent}!`}
           multiline
-          rows={2}
+          maxRows={12}
           fullWidth
           value={message}
           onKeyDown={async (event) => {
