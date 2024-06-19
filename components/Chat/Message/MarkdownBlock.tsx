@@ -7,22 +7,6 @@ import renderLink from './Markdown/Link';
 import renderList from './Markdown/List';
 import renderListItem from './Markdown/ListItem';
 
-function extractImageOrAudio(message: string): string {
-  const match = message.match(/#(.*?)(?=\n|$)/);
-  if (match) {
-    if (message.includes('GENERATED_IMAGE:')) {
-      const base64Image = match[1].replace('GENERATED_IMAGE:', '').trim();
-      const formattedImage = base64Image.toString();
-      return message.replace(match[0], `![Generated Image](data:image/png;base64,${formattedImage})`);
-    }
-    if (message.includes('GENERATED_AUDIO:')) {
-      const base64Audio = match[1].replace('GENERATED_AUDIO:', '').trim();
-      const formattedAudio = base64Audio.toString();
-      return message.replace(match[0], `![Generated Audio](data:audio/wav;base64,${formattedAudio})`);
-    }
-  }
-  return message;
-}
 export type MarkdownBlockProps = {
   content: string;
   chatItem?: { role: string; timestamp: string; message: string };
@@ -30,25 +14,20 @@ export type MarkdownBlockProps = {
 };
 export default function MarkdownBlock({ content, chatItem, setLoading }: MarkdownBlockProps): ReactNode {
   const renderMessage = (): ReactNode => {
-    const message = extractImageOrAudio(content.toString());
-
-    if (message.match(/[^\\]```csv/)) {
-      // Get the csv data between ```csv and ```
-      const splitMessage = message.split('```csv');
-      let csvData = splitMessage[1].split('```')[0].split(/[ \t]+\n/g);
-      csvData = csvData.splice(1, csvData.length - (csvData[csvData.length - 1].trim() === '' ? 2 : 1));
-      console.log('```\n' + csvData.join('\n') + '\n```');
-      return (
-        <>
-          <MarkdownBlock content={splitMessage[0]?.split('```markdown')[0]} chatItem={chatItem} setLoading={setLoading} />
-
-          <DataGridFromCSV csvData={csvData} setLoading={setLoading} />
-
-          {splitMessage.length > 2 && splitMessage[2].trim() && (
-            <MarkdownBlock content={splitMessage[2]} chatItem={chatItem} setLoading={setLoading} />
-          )}
-        </>
-      );
+    let message = content.toString();
+    const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
+    console.log(matches);
+    if (matches.length > 0) {
+      //replace the triple backticks of those matches with the strings "(start escaped codeblock)" and "(end escaped codeblock)"
+      matches.forEach((match) => {
+        console.log(match);
+        message = message.replace(
+          match[0],
+          match[0].replaceAll('\\```', '´´´').replaceAll('```', '´´´').replaceAll('\n', '\n\n'),
+        );
+        console.log(message);
+      });
+      return message;
     }
     if (message.includes('<audio controls><source src=')) {
       // Replace the html audio control with a link to the audio
@@ -85,7 +64,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
         },
         ol: renderList,
         li: renderListItem,
-        code: (props) => CodeBlock({ ...props, fileName: fileName }),
+        code: (props) => CodeBlock({ ...props, fileName: fileName, setLoading: setLoading }),
       }}
     >
       {renderMessage().toString()}

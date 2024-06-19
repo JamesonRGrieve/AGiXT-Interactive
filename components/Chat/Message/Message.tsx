@@ -54,7 +54,6 @@ export type MessageProps = {
   alternateBackground?: string;
   setLoading: (loading: boolean) => void;
 };
-const generatedAudioString = '#GENERATED_AUDIO:';
 export default function Message({
   chatItem,
   lastUserMessage,
@@ -63,18 +62,12 @@ export default function Message({
 }: MessageProps): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);
   const formattedMessage = useMemo(() => {
-    const toFormat =
-      typeof chatItem.message !== 'string'
-        ? '*An audio message.*'
-        : chatItem.message.includes(generatedAudioString)
-          ? chatItem.message.split(generatedAudioString)[0]
-          : chatItem.message;
-    let formatted = toFormat;
+    let formatted = chatItem.message;
     try {
-      const parsed = JSON.parse(toFormat);
-      formatted = parsed.text || toFormat;
+      const parsed = JSON.parse(chatItem.message);
+      formatted = (parsed.text || chatItem.message).replace('\\n', '\n');
     } catch (e) {
-      formatted = toFormat.replace(/\\n/g, '  \n').replace(/\n/g, '  \n');
+      formatted = chatItem.message.replace(/\\n/g, '  \n').replace(/\n/g, '  \n');
     }
     // if (chatItem.message.includes('#GENERATED_AUDIO:')) console.log('Formatted: ', formatted);
     return formatted;
@@ -96,15 +89,6 @@ export default function Message({
     } else {
       return null;
     }
-
-    // console.log('Audio: ', theAudio);
-    /*
-    return typeof chatItem.message !== 'string'
-      ? 'An audio message'
-      : chatItem.message.includes(generatedAudioString)
-        ? chatItem.message.split(generatedAudioString)[1]
-        : null;
-        */
   }, [chatItem]);
   const [vote, setVote] = useState(chatItem.rlhf ? (chatItem.rlhf.positive ? 1 : -1) : 0);
   const [open, setOpen] = useState(false);
@@ -125,11 +109,13 @@ export default function Message({
     >
       {audios?.sources?.length > 0 ? (
         <>
-          <MarkdownBlock
-            content={formattedMessage}
-            chatItem={{ ...chatItem, message: audios.message }}
-            setLoading={setLoading}
-          />
+          {audios.message.trim() && (
+            <MarkdownBlock
+              content={formattedMessage}
+              chatItem={{ ...chatItem, message: audios.message }}
+              setLoading={setLoading}
+            />
+          )}
           {audios.sources.map((src) => (
             <audio controls key={src}>
               <source src={src} type='audio/wav' />
@@ -153,122 +139,126 @@ export default function Message({
           {chatItem.timestamp === undefined ? 'Just Now...' : formatDate(chatItem.timestamp)}
         </Typography>
       )}
-      {chatItem.role !== 'USER' && (
+      {audios.message.trim() && (
         <>
-          {process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
+          {chatItem.role !== 'USER' && (
             <>
-              <Tooltip title='Provide Positive Feedback'>
+              {process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
+                <>
+                  <Tooltip title='Provide Positive Feedback'>
+                    <IconButton
+                      onClick={() => {
+                        setVote(1);
+                        setOpen(true);
+                      }}
+                    >
+                      <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
+                    </IconButton>
+                  </Tooltip>
+                  <Tooltip title='Provide Negative Feedback'>
+                    <IconButton
+                      onClick={() => {
+                        setVote(-1);
+                        setOpen(true);
+                      }}
+                    >
+                      <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
+                    </IconButton>
+                  </Tooltip>
+                </>
+              )}
+              <Tooltip title='Copy Message'>
                 <IconButton
                   onClick={() => {
-                    setVote(1);
-                    setOpen(true);
+                    clipboardCopy(formattedMessage);
                   }}
                 >
-                  <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
+                  <ContentCopyIcon />
                 </IconButton>
               </Tooltip>
-              <Tooltip title='Provide Negative Feedback'>
+              <Tooltip title='Download Message'>
                 <IconButton
                   onClick={() => {
-                    setVote(-1);
-                    setOpen(true);
+                    const element = document.createElement('a');
+                    const file = new Blob([formattedMessage], {
+                      type: 'text/plain;charset=utf-8',
+                    });
+                    element.href = URL.createObjectURL(file);
+                    element.download = `${chatItem.role}-${chatItem.timestamp}.txt`;
+                    document.body.appendChild(element);
+                    element.click();
                   }}
                 >
-                  <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
+                  <DownloadIcon />
                 </IconButton>
               </Tooltip>
+              {chatItem.rlhf && (
+                <Typography variant='caption' color={chatItem.rlhf.positive ? 'success' : 'error'}>
+                  {chatItem.rlhf.feedback}
+                </Typography>
+              )}
             </>
           )}
-          <Tooltip title='Copy Message'>
-            <IconButton
-              onClick={() => {
-                clipboardCopy(formattedMessage);
-              }}
-            >
-              <ContentCopyIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title='Download Message'>
-            <IconButton
-              onClick={() => {
-                const element = document.createElement('a');
-                const file = new Blob([formattedMessage], {
-                  type: 'text/plain;charset=utf-8',
-                });
-                element.href = URL.createObjectURL(file);
-                element.download = `${chatItem.role}-${chatItem.timestamp}.txt`;
-                document.body.appendChild(element);
-                element.click();
-              }}
-            >
-              <DownloadIcon />
-            </IconButton>
-          </Tooltip>
-          {chatItem.rlhf && (
-            <Typography variant='caption' color={chatItem.rlhf.positive ? 'success' : 'error'}>
-              {chatItem.rlhf.feedback}
-            </Typography>
-          )}
+          <Dialog
+            open={open}
+            onClose={() => {
+              setOpen(false);
+            }}
+            aria-labelledby='form-dialog-title'
+          >
+            <DialogTitle id='form-dialog-title'>Provide Feedback</DialogTitle>
+            <DialogContent>
+              <DialogContentText>Please provide some feedback regarding the message.</DialogContentText>
+              <TextField
+                margin='dense'
+                id='name'
+                label='Feedback'
+                type='text'
+                fullWidth
+                value={feedback}
+                onChange={(e) => setFeedback(e.target.value)}
+              />
+            </DialogContent>
+            <DialogActions>
+              <Button
+                onClick={() => {
+                  setOpen(false);
+                }}
+                color='error'
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  setOpen(false);
+                  if (vote === 1) {
+                    state.agixt.addConversationFeedback(
+                      true,
+                      chatItem.role,
+                      chatItem.message,
+                      lastUserMessage,
+                      feedback,
+                      state.overrides.conversationName,
+                    );
+                  } else {
+                    state.agixt.addConversationFeedback(
+                      false,
+                      chatItem.role,
+                      chatItem.message,
+                      lastUserMessage,
+                      feedback,
+                      state.overrides.conversationName,
+                    );
+                  }
+                }}
+                color='info'
+              >
+                Submit
+              </Button>
+            </DialogActions>
+          </Dialog>
         </>
       )}
-      <Dialog
-        open={open}
-        onClose={() => {
-          setOpen(false);
-        }}
-        aria-labelledby='form-dialog-title'
-      >
-        <DialogTitle id='form-dialog-title'>Provide Feedback</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Please provide some feedback regarding the message.</DialogContentText>
-          <TextField
-            margin='dense'
-            id='name'
-            label='Feedback'
-            type='text'
-            fullWidth
-            value={feedback}
-            onChange={(e) => setFeedback(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setOpen(false);
-            }}
-            color='error'
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              setOpen(false);
-              if (vote === 1) {
-                state.agixt.addConversationFeedback(
-                  true,
-                  chatItem.role,
-                  chatItem.message,
-                  lastUserMessage,
-                  feedback,
-                  state.overrides.conversationName,
-                );
-              } else {
-                state.agixt.addConversationFeedback(
-                  false,
-                  chatItem.role,
-                  chatItem.message,
-                  lastUserMessage,
-                  feedback,
-                  state.overrides.conversationName,
-                );
-              }
-            }}
-            color='info'
-          >
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 }

@@ -38,10 +38,45 @@ const theme = {
   typography: {
     fontFamily: 'Arial, sans-serif',
     h1: {
-      fontSize: '1.5rem',
+      fontSize: '1.8rem',
       fontWeight: 'bold',
       '@media (min-width:600px)': {
         fontSize: '2rem',
+      },
+    },
+    h2: {
+      fontSize: '1.5rem',
+      fontWeight: 'bold',
+      '@media (min-width:600px)': {
+        fontSize: '1.8rem',
+      },
+    },
+    h3: {
+      fontSize: '1.3rem',
+      fontWeight: 'bold',
+      '@media (min-width:600px)': {
+        fontSize: '1.5rem',
+      },
+    },
+    h4: {
+      fontSize: '1.2rem',
+      fontWeight: 'bold',
+      '@media (min-width:600px)': {
+        fontSize: '1.3rem',
+      },
+    },
+    h5: {
+      fontSize: '1.1rem',
+      fontWeight: 'bold',
+      '@media (min-width:600px)': {
+        fontSize: '1.2rem',
+      },
+    },
+    h6: {
+      fontSize: '1rem',
+      fontWeight: 'bold',
+      '@media (min-width:600px)': {
+        fontSize: '1.1rem',
       },
     },
     body1: {

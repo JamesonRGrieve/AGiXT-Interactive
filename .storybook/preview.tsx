@@ -1,7 +1,7 @@
 import type { Preview } from '@storybook/react';
 import React, { useCallback } from 'react';
 import ThemeWrapper from 'jrgcomponents/Theming/ThemeWrapper';
-import theme from 'jrgcomponents/Theming/Sample';
+import theme from '../app/theme';
 import { Title, Subtitle, Description, Primary, Controls, Stories } from '@storybook/blocks';
 import ReferenceGrid from 'jrgcomponents/Storybook/ReferenceGrid';
 import ComparisonGrid from 'jrgcomponents/Storybook/ComparisonGrid';
