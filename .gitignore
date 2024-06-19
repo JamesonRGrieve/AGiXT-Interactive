@@ -6,6 +6,8 @@ dist
 /.pnp
 .pnp.js
 
+/storybook-static/
+
 # testing
 /coverage
 
