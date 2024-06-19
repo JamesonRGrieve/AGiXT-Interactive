@@ -1,7 +1,8 @@
 'use client';
 import { AutorenewOutlined, Cancel, CheckCircle, Info, Warning } from '@mui/icons-material';
-import { Box, keyframes, styled, useTheme } from '@mui/material';
+import { Box, keyframes, styled, useTheme, Tooltip, Typography } from '@mui/material';
 import React, { ReactNode, useEffect, useState } from 'react';
+import formatDate from './formatDate';
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -21,12 +22,14 @@ export type ActivityProps = {
   severity: 'error' | 'info' | 'success' | 'warn';
   message: string;
   alternateBackground?: string;
+  timestamp: string;
 };
 export default function Activity({
   inProgress,
   message,
   severity,
   alternateBackground = 'primary',
+  timestamp,
 }: ActivityProps): ReactNode {
   const theme = useTheme();
   const [dots, setDots] = useState<string>('');
@@ -50,7 +53,11 @@ export default function Activity({
       }}
     >
       {inProgress ? <SpinningIcon /> : severities[severity.toString()]}
-      {message + dots}
+      <Tooltip title={formatDate(timestamp, false)}>
+        <Typography variant='body1' display='flex' alignItems='center' margin='0'>
+          {message + dots}
+        </Typography>
+      </Tooltip>
     </Box>
   );
 }
