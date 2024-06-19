@@ -39,7 +39,7 @@
   "exports": {
     ".": "./dist/components/InteractiveAGiXT.js",
     "./MarkdownBlock": "./dist/components/Chat/Message/MarkdownBlock.js",
-    "./CSVDataGrid": "./dist/components/Chat/Message/DataGridFromCSV.js",
+    "./CSVDataGrid": "./dist/components/Chat/Message/Markdown/Code/CSV.js",
     "./AudioRecorder": "./dist/components/Chat/AudioRecorder.js",
     "./ConversationBar": "./dist/components/Chat/ChatBar.js",
     "./ConversationLog": "./dist/components/Chat/ChatLog.js",

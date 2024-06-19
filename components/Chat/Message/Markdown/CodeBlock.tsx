@@ -1,12 +1,15 @@
 import { ContentCopy, Download } from '@mui/icons-material';
-import { IconButton } from '@mui/material';
+import { Box, IconButton, Tab, Tabs } from '@mui/material';
 import clipboardCopy from 'clipboard-copy';
 import React, { ReactNode } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-
-const langMap = {
+import TabPanel from 'jrgcomponents/Tabs/Panel';
+import MarkdownBlock from '../MarkdownBlock';
+import CSV from './Code/CSV';
+const fileExtensions = {
   '': 'txt',
+  text: 'txt',
   python: 'py',
   javascript: 'js',
   typescript: 'ts',
@@ -59,20 +62,20 @@ const langMap = {
   apex: 'cls',
   matlab: 'm',
   nim: 'nim',
+  csv: 'csv',
+};
+const languageRenders = {
+  markdown: (content) => <MarkdownBlock content={content} />,
+  csv: (content) => <CSV csvData={content.split('\n')} />,
 };
 
-export default function CodeBlock({
-  inline,
-  children,
-  className,
-  fileName,
-  ...props
-}: {
+export type CodeBlockProps = {
   inline?: boolean;
   children: ReactNode;
   className?: string;
   fileName?: string;
-}): ReactNode {
+};
+export default function CodeBlock({ inline = false, children, className, fileName, ...props }: CodeBlockProps): ReactNode {
   if (inline) {
     return (
       <span
@@ -89,14 +92,19 @@ export default function CodeBlock({
   }
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const codeBlockRef = React.useRef(null);
-  const language = className?.replace(/language-/, '') || 'markdown';
-  const fileNameWithExtension = `${fileName || 'code'}.${langMap[String(language)] || 'md'}`;
-
+  const language = className?.replace(/language-/, '') || 'Text';
+  const fileNameWithExtension = `${fileName || 'code'}.${fileExtensions[String(language.toLowerCase())] || 'txt'}`;
+  const [tab, setTab] = React.useState(0);
   return (
     <>
-      <br />
-      <div className='code-block' ref={codeBlockRef}>
-        <div className='code-title'>
+      <Box position='relative' display='flex' alignItems='center' justifyContent='space-between' pr='1rem'>
+        {Object.keys(languageRenders).includes(language) && (
+          <Tabs value={tab} onChange={(event, newValue) => setTab(newValue)}>
+            {Object.keys(languageRenders).includes(language) && <Tab label='Rendered' />}
+            <Tab label='Source' />
+          </Tabs>
+        )}
+        <Box>
           <IconButton
             onClick={() => {
               if (codeBlockRef.current) {
@@ -127,14 +135,28 @@ export default function CodeBlock({
             <Download />
           </IconButton>
           {fileNameWithExtension} | {language}
-        </div>
-        <div className='code-container'>
-          {language in langMap ? (
+        </Box>
+      </Box>
+
+      {Object.keys(languageRenders).includes(language) && (
+        <TabPanel value={tab} index={0} className='code-block' ref={codeBlockRef}>
+          <Box className='code-container'>{languageRenders[language.toString()](children)}</Box>
+        </TabPanel>
+      )}
+
+      <TabPanel
+        value={tab}
+        index={Object.keys(languageRenders).includes(language) ? 1 : 0}
+        className='code-block'
+        ref={codeBlockRef}
+      >
+        <Box className='code-container'>
+          {language.toLowerCase() in fileExtensions ? (
             <SyntaxHighlighter
               {...props}
               // eslint-disable-next-line react/no-children-prop
               children={children}
-              language={language}
+              language={language.toLowerCase()}
               PreTag='div'
               style={a11yDark}
             />
@@ -143,9 +165,8 @@ export default function CodeBlock({
               {children}
             </code>
           )}
-        </div>
-      </div>
-      <br />
+        </Box>
+      </TabPanel>
     </>
   );
 }

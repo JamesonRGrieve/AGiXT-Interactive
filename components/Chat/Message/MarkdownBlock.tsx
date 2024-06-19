@@ -1,59 +1,12 @@
-import React, { ReactNode, useContext } from 'react';
+import React, { ReactNode } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Link, Typography } from '@mui/material';
-import { InteractiveConfigContext } from '../../../types/InteractiveConfigContext';
-import { DataGridFromCSV } from './DataGridFromCSV';
-import CodeBlock from './CodeBlock';
+import { DataGridFromCSV } from './Markdown/Code/CSV';
+import CodeBlock from './Markdown/CodeBlock';
+import renderHeading from './Markdown/Heading';
+import renderLink from './Markdown/Link';
+import renderList from './Markdown/List';
+import renderListItem from './Markdown/ListItem';
 
-const generateId = (text): string => {
-  return text ? text.toLowerCase().replace(/\W+/g, '-') : '';
-};
-const handleAnchorClick = (e): void => {
-  const href = e.target.getAttribute('href');
-  if (href.startsWith('#')) {
-    e.preventDefault();
-    const id = href.slice(1);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  } else {
-    e.preventDefault();
-    window.open(href, '_blank');
-  }
-};
-
-const renderHeader = (Tag, children): ReactNode => {
-  let text = '';
-  if (children && children[0]) {
-    text = children[0];
-  }
-  const id = generateId(text);
-  return (
-    <Typography component={Tag} id={id}>
-      {children}
-    </Typography>
-  );
-};
-const renderLink = ({ children, ...props }): ReactNode => {
-  const isExternal = props.href && !props.href.startsWith('#');
-  return (
-    <Link
-      {...props}
-      target={isExternal ? '_blank' : undefined}
-      rel={isExternal ? 'noopener noreferrer' : undefined}
-      onClick={isExternal ? undefined : handleAnchorClick}
-    >
-      {children}
-    </Link>
-  );
-};
-const renderList = ({ children, ordered = true }): ReactNode => {
-  return ordered ? <ol style={{ paddingLeft: '2em' }}>{children}</ol> : <ul>{children}</ul>;
-};
-const renderListItem = ({ children }): ReactNode => {
-  return <li style={{ marginBottom: '0.5em' }}>{children}</li>;
-};
 function extractImageOrAudio(message: string): string {
   const match = message.match(/#(.*?)(?=\n|$)/);
   if (match) {
@@ -73,10 +26,9 @@ function extractImageOrAudio(message: string): string {
 export type MarkdownBlockProps = {
   content: string;
   chatItem?: { role: string; timestamp: string; message: string };
-  setLoading: (loading: boolean) => void;
+  setLoading?: (loading: boolean) => void;
 };
 export default function MarkdownBlock({ content, chatItem, setLoading }: MarkdownBlockProps): ReactNode {
-  const state = useContext(InteractiveConfigContext);
   const renderMessage = (): ReactNode => {
     const message = extractImageOrAudio(content.toString());
 
@@ -90,7 +42,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
         <>
           <MarkdownBlock content={splitMessage[0]?.split('```markdown')[0]} chatItem={chatItem} setLoading={setLoading} />
 
-          <DataGridFromCSV state={state} csvData={csvData} setLoading={setLoading} />
+          <DataGridFromCSV csvData={csvData} setLoading={setLoading} />
 
           {splitMessage.length > 2 && splitMessage[2].trim() && (
             <MarkdownBlock content={splitMessage[2]} chatItem={chatItem} setLoading={setLoading} />
@@ -120,16 +72,16 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
       components={{
         a: renderLink,
         h1({ children }) {
-          return renderHeader('h1', children);
+          return renderHeading('h1', children);
         },
         h2({ children }) {
-          return renderHeader('h2', children);
+          return renderHeading('h2', children);
         },
         h3({ children }) {
-          return renderHeader('h3', children);
+          return renderHeading('h3', children);
         },
         h4({ children }) {
-          return renderHeader('h4', children);
+          return renderHeading('h4', children);
         },
         ol: renderList,
         li: renderListItem,

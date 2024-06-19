@@ -4,8 +4,6 @@ import { action } from '@storybook/addon-actions';
 // Import Component and related types.
 import MarkdownBlockComponent, { MarkdownBlockProps } from './MarkdownBlock';
 import React from 'react';
-import { Button, IconButton } from '@mui/material';
-import { DeleteForever } from '@mui/icons-material';
 // Configure Metadata.
 const meta: Meta = {
   title: 'Markdown Rendering/Markdown Block',
@@ -18,6 +16,7 @@ const meta: Meta = {
         component: 'This component is meant to illustrate how to effectively document components.',
       },
     },
+    layout: 'centered',
     references: [],
   },
 };
@@ -25,30 +24,18 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 // Configure Component Stories.
-export const MarkdownBlock: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
-MarkdownBlock.args = {
-  onClose: action('onClose'),
-  onConfirm: action('onConfirm'),
-  title: 'MarkdownBlock Title',
-  content: 'MarkdownBlock Content',
-  ButtonComponent: Button,
-  ButtonProps: {
-    children: 'Open MarkdownBlock',
-  },
+export const MarkdownHeading: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
+MarkdownHeading.args = {
+  content: '# Heading 1\n## Heading 2\n### Heading 3\n#### Heading 4\n##### Heading 5\n###### Heading 6',
 };
 
-export const TestMarkdownBlock: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
-TestMarkdownBlock.args = {
-  onConfirm: action('onConfirm'),
-  title: 'MarkdownBlock Title',
-  ButtonComponent: IconButton,
-  ButtonProps: {
-    children: <DeleteForever />,
-    disabled: false,
-    color: 'primary',
-    sx: {
-      height: '56px',
-      padding: '1rem',
-    },
-  },
+export const MarkdownLink: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
+MarkdownLink.args = {
+  content: '[This is a link to an example website.](https://www.example.com)',
+};
+
+export const MarkdownList: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
+MarkdownList.args = {
+  content:
+    '- Unordered List Item 1\n- Unordered List Item 2\n- Unordered List Item 3\n\n1. Ordered List Item 1\n2. Ordered List Item 2\n3. Ordered List Item 3',
 };
