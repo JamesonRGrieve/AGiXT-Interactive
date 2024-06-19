@@ -26,7 +26,6 @@ import AudioRecorder from './AudioRecorder';
 export default function ChatBar({
   onSend,
   disabled,
-  resize = false,
   loading,
   setLoading,
   clearOnSend = true,
@@ -36,7 +35,6 @@ export default function ChatBar({
 }: {
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
   disabled: boolean;
-  resize: boolean;
   loading: boolean;
   setLoading: (loading: boolean) => void;
   clearOnSend?: boolean;

@@ -1,6 +1,6 @@
 {
   "name": "@agixt/interactive",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "scripts": {
     "dev": "next dev -p 3437",
     "build": "next build",
@@ -63,7 +63,7 @@
     "agixt": "1.0.52",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.2.1",
-    "jrgcomponents": "^0.0.146",
+    "jrgcomponents": "^0.0.147",
     "next": "^14.2.4",
     "openai": "^4.51.0",
     "react": "^18.3.1",
