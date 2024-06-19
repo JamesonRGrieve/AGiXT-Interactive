@@ -20,7 +20,7 @@ import clipboardCopy from 'clipboard-copy';
 import { InteractiveConfigContext } from '../../../types/InteractiveConfigContext';
 import MarkdownBlock from './MarkdownBlock';
 
-function formatDate(timestamp: string): string {
+function formatDate(timestamp: string, short: boolean = true): string {
   // Create a date object from the timestamp
   const date = new Date(timestamp);
 
@@ -40,10 +40,11 @@ function formatDate(timestamp: string): string {
   // Format the local date
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
-    month: 'short',
+    month: short ? 'short' : 'long',
     day: '2-digit',
-    hour: '2-digit',
+    hour: short ? 'numeric' : '2-digit',
     minute: '2-digit',
+    second: short ? undefined : '2-digit',
     hour12: true,
   };
   return localDate.toLocaleString('en-US', options);
@@ -109,7 +110,7 @@ export default function Message({
     >
       {audios?.sources?.length > 0 ? (
         <>
-          {audios.message.trim() && (
+          {audios?.message?.trim() && (
             <MarkdownBlock
               content={formattedMessage}
               chatItem={{ ...chatItem, message: audios.message }}
@@ -136,10 +137,12 @@ export default function Message({
           }}
         >
           <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> •{' '}
-          {chatItem.timestamp === undefined ? 'Just Now...' : formatDate(chatItem.timestamp)}
+          <Tooltip title={formatDate(chatItem.timestamp, false)}>
+            <span>{chatItem.timestamp === undefined ? 'Just Now...' : formatDate(chatItem.timestamp)}</span>
+          </Tooltip>
         </Typography>
       )}
-      {audios.message.trim() && (
+      {audios?.message?.trim() && (
         <>
           {chatItem.role !== 'USER' && (
             <>

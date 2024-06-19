@@ -54,6 +54,7 @@ export default function ChatLog({
                 }
                 inProgress={index === conversation.length - 1}
                 message={messageBody}
+                timestamp={chatItem.timestamp}
                 alternateBackground={alternateBackground}
               />
             ) : (
