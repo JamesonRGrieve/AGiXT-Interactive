@@ -128,9 +128,15 @@ export default function CodeBlock({
         <Box>
           <IconButton
             onClick={() => {
+              console.log(codeBlockRef.current);
               if (codeBlockRef.current) {
-                const actualCode = codeBlockRef.current.querySelector('code');
+                const actualCode = codeBlockRef.current.querySelector('code').cloneNode(true);
+                for (const lineNumber of actualCode.querySelectorAll('.react-syntax-highlighter-line-number')) {
+                  lineNumber.remove();
+                }
+                console.log(actualCode.innerText);
                 clipboardCopy(actualCode.innerText);
+                actualCode.remove();
               }
             }}
           >
@@ -138,9 +144,13 @@ export default function CodeBlock({
           </IconButton>
           <IconButton
             onClick={() => {
+              console.log(codeBlockRef.current);
               if (codeBlockRef.current) {
-                const actualCode = codeBlockRef.current.querySelector('code');
-
+                const actualCode = codeBlockRef.current.querySelector('code').cloneNode(true);
+                for (const lineNumber of actualCode.querySelectorAll('.react-syntax-highlighter-line-number')) {
+                  lineNumber.remove();
+                }
+                console.log(actualCode.innerText);
                 const element = document.createElement('a');
                 const file = new Blob([actualCode.innerText], {
                   type: 'text/plain;charset=utf-8',
@@ -150,6 +160,7 @@ export default function CodeBlock({
                 element.download = fileNameWithExtension;
                 document.body.appendChild(element);
                 element.click();
+                actualCode.remove();
               }
             }}
           >
@@ -160,18 +171,13 @@ export default function CodeBlock({
       </Box>
 
       {Object.keys(languageRenders).includes(language) && (
-        <TabPanel value={tab} index={0} className='code-block' ref={codeBlockRef}>
+        <TabPanel value={tab} index={0} className='code-block'>
           <Box className='code-container'>{languageRenders[language.toString()](children, setLoading)}</Box>
         </TabPanel>
       )}
 
-      <TabPanel
-        value={tab}
-        index={Object.keys(languageRenders).includes(language) ? 1 : 0}
-        className='code-block'
-        ref={codeBlockRef}
-      >
-        <Box className='code-container'>
+      <TabPanel value={tab} index={Object.keys(languageRenders).includes(language) ? 1 : 0} className='code-block'>
+        <Box className='code-container' ref={codeBlockRef}>
           {language.toLowerCase() in fileExtensions ? (
             <SyntaxHighlighter
               {...props}
