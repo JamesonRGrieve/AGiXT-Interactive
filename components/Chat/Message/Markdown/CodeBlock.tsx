@@ -102,13 +102,23 @@ export default function CodeBlock({
   }
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const codeBlockRef = React.useRef(null);
-
   const language = className?.replace(/language-/, '') || 'Text';
   const fileNameWithExtension = `${fileName || 'code'}.${fileExtensions[String(language.toLowerCase())] || 'txt'}`;
   const [tab, setTab] = React.useState(0);
+  console.log(theme.palette.mode === 'dark' ? a11yDark.hljs.background : a11yLight.hljs.background);
+  console.log(a11yLight);
+  console.log(a11yDark);
   return (
-    <>
-      <Box position='relative' display='flex' alignItems='center' justifyContent='space-between' pr='1rem'>
+    <Box pr='1rem' my='0.5rem'>
+      <Box
+        position='relative'
+        display='flex'
+        alignItems='center'
+        justifyContent='space-between'
+        sx={{
+          backgroundColor: theme.palette.mode === 'dark' ? a11yDark.hljs.background : a11yLight.hljs.background,
+        }}
+      >
         {Object.keys(languageRenders).includes(language) && (
           <Tabs value={tab} onChange={(event, newValue) => setTab(newValue)}>
             {Object.keys(languageRenders).includes(language) && <Tab label='Rendered' />}
@@ -170,6 +180,8 @@ export default function CodeBlock({
               language={language.toLowerCase()}
               PreTag='div'
               style={theme.palette.mode === 'dark' ? a11yDark : a11yLight}
+              showLineNumbers
+              wrapLongLines
             />
           ) : (
             <code className={'code-block'} {...props}>
@@ -178,6 +190,6 @@ export default function CodeBlock({
           )}
         </Box>
       </TabPanel>
-    </>
+    </Box>
   );
 }
