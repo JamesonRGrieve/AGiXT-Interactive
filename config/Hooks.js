@@ -39,4 +39,14 @@ exports.useAGiXTConfig = () => ({
     NEXT_PUBLIC_AGIXT_CHAIN_ARGS:
       process.env.AGIXT_CHAIN_ARGS || JSON.stringify(InteractiveConfigDefault.overrides.chainRunConfig.chainArgs),
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: process.env.AGIXT_SERVER.split('://')[1].split(':')[0].split('/')[0],
+        port: '',
+        pathname: '/outputs/**',
+      },
+    ],
+  },
 });

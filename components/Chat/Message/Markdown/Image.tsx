@@ -8,5 +8,6 @@ export type ImageProps = {
 };
 
 export default function renderImage({ src, alt }: ImageProps): ReactNode {
+  console.log('Image:', src, alt);
   return <ImageDialog imageSrc={src} title={alt} />;
 }
