@@ -48,7 +48,6 @@ export default function ChatBar({
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [alternativeInputActive, setAlternativeInputActive] = useState(false);
-  const [intervalID, setIntervalID] = useState<number>(-1);
   useEffect(() => {
     console.log(uploadedFiles);
   }, [uploadedFiles]);
@@ -138,7 +137,7 @@ export default function ChatBar({
                     </Box>
                   </Tooltip>
                 )}
-                {enableFileUpload && (
+                {enableFileUpload && !alternativeInputActive && (
                   <>
                     <Tooltip title='Upload File(s)'>
                       <IconButton

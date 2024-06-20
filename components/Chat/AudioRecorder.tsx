@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
 import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
 
@@ -39,6 +39,7 @@ export default function AudioRecorder({
       setRecording(false);
       mediaRecorder.current.stream.getTracks().forEach((track) => track.stop());
     }
+    sendAudio();
   };
 
   const sendAudio = useCallback(() => {
