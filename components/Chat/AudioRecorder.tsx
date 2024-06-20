@@ -60,15 +60,6 @@ export default function AudioRecorder({
     }
   }, [audioData, onSend]);
 
-  useEffect(() => {
-    if (audioData) {
-      if (process.env.NEXT_PUBLIC_MODE === 'development') {
-        console.log('Audio: ', audioData);
-      }
-      sendAudio();
-    }
-  }, [audioData, sendAudio]);
-
   const cancelRecording = (): void => {
     if (mediaRecorder.current) {
       mediaRecorder.current.stop();
