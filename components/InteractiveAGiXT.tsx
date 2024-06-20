@@ -187,7 +187,9 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                 <Tooltip title='Logout'>
                   <IconButton
                     onClick={() => {
-                      deleteCookie('jwt');
+                      deleteCookie('jwt', {
+                        domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+                      });
                       window.location.reload();
                     }}
                   >

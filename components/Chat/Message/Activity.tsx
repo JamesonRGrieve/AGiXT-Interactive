@@ -3,6 +3,7 @@ import { AutorenewOutlined, Cancel, CheckCircle, Info, Warning } from '@mui/icon
 import { Box, keyframes, styled, useTheme, Tooltip, Typography } from '@mui/material';
 import React, { ReactNode, useEffect, useState } from 'react';
 import formatDate from './formatDate';
+import MarkdownBlock from './MarkdownBlock';
 const spin = keyframes`
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -55,7 +56,8 @@ export default function Activity({
       {inProgress ? <SpinningIcon /> : severities[severity.toString()]}
       <Tooltip title={formatDate(timestamp, false)}>
         <Typography variant='body1' display='flex' alignItems='center' margin='0'>
-          {message + dots}
+          <MarkdownBlock content={message} />
+          {dots}
         </Typography>
       </Tooltip>
     </Box>

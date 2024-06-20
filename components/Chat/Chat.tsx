@@ -2,8 +2,8 @@ import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { UIProps } from '../InteractiveAGiXT';
 import { InteractiveConfigContext, Overrides } from '../../types/InteractiveConfigContext';
-import ConversationHistory from './ChatLog';
-import ConversationBar from './ChatBar';
+import ChatLog from './ChatLog';
+import ChatBar from './ChatBar';
 
 const conversationSWRPath = /conversation/;
 export default function Chat({
@@ -79,12 +79,8 @@ export default function Chat({
   }, [state.overrides.conversationName]);
   return (
     <>
-      <ConversationHistory
-        conversation={conversation.data}
-        alternateBackground={alternateBackground}
-        setLoading={setLoading}
-      />
-      <ConversationBar
+      <ChatLog conversation={conversation.data} alternateBackground={alternateBackground} setLoading={setLoading} />
+      <ChatBar
         onSend={(message, files) => chat(message, files)}
         disabled={loading}
         showChatThemeToggles={showChatThemeToggles}
