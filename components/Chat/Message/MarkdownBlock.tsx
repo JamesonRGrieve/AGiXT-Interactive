@@ -6,6 +6,8 @@ import renderHeading from './Markdown/Heading';
 import renderLink from './Markdown/Link';
 import renderList from './Markdown/List';
 import renderListItem from './Markdown/ListItem';
+import Image from 'next/image';
+import renderImage from './Markdown/Image';
 
 export type MarkdownBlockProps = {
   content: string;
@@ -65,6 +67,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
         ol: renderList,
         li: renderListItem,
         code: (props) => CodeBlock({ ...props, fileName: fileName, setLoading: setLoading }),
+        img: renderImage,
       }}
     >
       {renderMessage().toString()}
