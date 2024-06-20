@@ -1,5 +1,6 @@
+import { ListItem } from '@mui/material';
 import { ReactNode } from 'react';
 
 export default function renderListItem({ children }): ReactNode {
-  return <li style={{ marginLeft: '1.2rem', marginBottom: '0.3rem' }}>{children}</li>;
+  return <ListItem sx={{ display: 'list-item', paddingY: '0.2rem' }}>{children}</ListItem>;
 }

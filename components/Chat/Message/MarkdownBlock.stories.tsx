@@ -37,12 +37,17 @@ MarkdownLink.args = {
 export const MarkdownList: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
 MarkdownList.args = {
   content:
-    '- Unordered List Item 1\n- Unordered List Item 2\n- Unordered List Item 3\n\n1. Ordered List Item 1\n2. Ordered List Item 2\n3. Ordered List Item 3',
+    '### Unordered List\nBody text here.\n- Unordered List Item 1\n- Unordered List Item 2\n- Unordered List Item 3\n\n### Ordered List\nBody text here.\n1. Ordered List Item 1\n2. Ordered List Item 2\n3. Ordered List Item 3\n4. Ordered List Item 4\n5. Ordered List Item 5\n6. Ordered List Item 6\n7. Ordered List Item 7\n8. Ordered List Item 8\n9. Ordered List Item 9\n10. Ordered List Item 10',
 };
 
 export const MarkdownInlineCode: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
 MarkdownInlineCode.args = {
   content: 'Here is some `inline code` for an example.',
+};
+
+export const MarkdownImage: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
+MarkdownImage.args = {
+  content: '![This is an example image.](https://via.placeholder.com/150)',
 };
 
 export const MarkdownCodeBlock: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
