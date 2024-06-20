@@ -5,6 +5,7 @@ const {
   useBasicConfig,
   useAuthConfig,
   useOAuth2Config,
+  useStripeConfig,
   useProductionSkipLintingConfig,
   useCookiesConfig,
 } = require('jrgcomponents/Config/Hooks');
@@ -16,13 +17,13 @@ const configs = [
   useAuthConfig,
   useOAuth2Config,
   useCookiesConfig,
+  useStripeConfig,
   useAGiXTConfig,
   useProductionSkipLintingConfig,
 ];
 
 const nextConfig = configs.reduce((accumulator, config) => mergeConfigs(accumulator, config()), {});
 
-console.log(nextConfig);
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
   enabled: true,
