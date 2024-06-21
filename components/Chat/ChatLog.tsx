@@ -8,7 +8,7 @@ export default function ChatLog({
   alternateBackground,
   setLoading,
 }: {
-  conversation: { role: string; message: string; timestamp: string }[];
+  conversation: { role: string; message: string; timestamp: string; children: any[] }[];
   setLoading: (loading: boolean) => void;
   alternateBackground?: string;
 }): React.JSX.Element {
@@ -56,6 +56,7 @@ export default function ChatLog({
                 message={messageBody}
                 timestamp={chatItem.timestamp}
                 alternateBackground={alternateBackground}
+                children={chatItem.children}
               />
             ) : (
               <Message
