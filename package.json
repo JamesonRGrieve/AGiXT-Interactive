@@ -1,6 +1,6 @@
 {
   "name": "@agixt/interactive",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "scripts": {
     "dev": "next dev -p 3437",
     "build": "next build",
@@ -60,10 +60,11 @@
     "@mui/material": "^5.15.20",
     "@mui/system": "^5.15.20",
     "@mui/x-data-grid": "^6.20.1",
-    "agixt": "1.0.52",
+    "agixt": "1.0.53",
+    "axios": "^1.7.2",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.2.1",
-    "jrgcomponents": "^0.0.151",
+    "jrgcomponents": "^0.0.152",
     "next": "^14.2.4",
     "openai": "^4.51.0",
     "react": "^18.3.1",

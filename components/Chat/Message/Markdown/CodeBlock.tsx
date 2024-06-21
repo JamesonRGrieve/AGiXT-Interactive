@@ -118,6 +118,7 @@ export default function CodeBlock({
         justifyContent='space-between'
         sx={{
           backgroundColor: theme.palette.mode === 'dark' ? a11yDark.hljs.background : a11yLight.hljs.background,
+          borderBottom: '2px solid ' + theme.palette.divider,
         }}
       >
         {Object.keys(languageRenders).includes(language) && (

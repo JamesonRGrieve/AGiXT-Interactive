@@ -20,7 +20,7 @@ export default function Form({
   const { data: results } = useSWR(
     '/results',
     async () => {
-      const conversations = await Promise.all(uuids.map(async (uuid) => await state.agixt.getConversation('', uuid, 5, 1)));
+      const conversations = await Promise.all(uuids.map(async (uuid) => await state.agixt.getConversation(uuid, 5, 1)));
       return conversations.reduce((obj, conversation, index) => {
         obj[uuids[index.toString()]] = conversation;
         return obj;

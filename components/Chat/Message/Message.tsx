@@ -15,7 +15,14 @@ import {
   Tooltip,
   useTheme,
 } from '@mui/material';
-import { ContentCopy as ContentCopyIcon, Download as DownloadIcon, ThumbUp, ThumbDown } from '@mui/icons-material';
+import {
+  ContentCopy as ContentCopyIcon,
+  Download as DownloadIcon,
+  ThumbUp,
+  ThumbDown,
+  EditNote,
+  DeleteForever,
+} from '@mui/icons-material';
 import clipboardCopy from 'clipboard-copy';
 import { InteractiveConfigContext } from '../../../types/InteractiveConfigContext';
 import MarkdownBlock from './MarkdownBlock';
@@ -143,38 +150,50 @@ export default function Message({
                   </Tooltip>
                 </>
               )}
-              <Tooltip title='Copy Message'>
-                <IconButton
-                  onClick={() => {
-                    clipboardCopy(formattedMessage);
-                  }}
-                >
-                  <ContentCopyIcon />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title='Download Message'>
-                <IconButton
-                  onClick={() => {
-                    const element = document.createElement('a');
-                    const file = new Blob([formattedMessage], {
-                      type: 'text/plain;charset=utf-8',
-                    });
-                    element.href = URL.createObjectURL(file);
-                    element.download = `${chatItem.role}-${chatItem.timestamp}.txt`;
-                    document.body.appendChild(element);
-                    element.click();
-                  }}
-                >
-                  <DownloadIcon />
-                </IconButton>
-              </Tooltip>
-              {chatItem.rlhf && (
-                <Typography variant='caption' color={chatItem.rlhf.positive ? 'success' : 'error'}>
-                  {chatItem.rlhf.feedback}
-                </Typography>
-              )}
             </>
           )}
+
+          <Tooltip title='Copy Message'>
+            <IconButton
+              onClick={() => {
+                clipboardCopy(formattedMessage);
+              }}
+            >
+              <ContentCopyIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Download Message'>
+            <IconButton
+              onClick={() => {
+                const element = document.createElement('a');
+                const file = new Blob([formattedMessage], {
+                  type: 'text/plain;charset=utf-8',
+                });
+                element.href = URL.createObjectURL(file);
+                element.download = `${chatItem.role}-${chatItem.timestamp}.txt`;
+                document.body.appendChild(element);
+                element.click();
+              }}
+            >
+              <DownloadIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Edit Message'>
+            <IconButton disabled>
+              <EditNote />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title='Delete Message'>
+            <IconButton disabled>
+              <DeleteForever />
+            </IconButton>
+          </Tooltip>
+          {chatItem.rlhf && (
+            <Typography variant='caption' color={chatItem.rlhf.positive ? 'success' : 'error'}>
+              {chatItem.rlhf.feedback}
+            </Typography>
+          )}
+
           <Dialog
             open={open}
             onClose={() => {
