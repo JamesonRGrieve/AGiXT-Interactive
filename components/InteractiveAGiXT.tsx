@@ -4,7 +4,18 @@ import React, { ReactNode, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
 import { Logout, Menu, Settings } from '@mui/icons-material';
-import { Box, IconButton, Popover, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import {
+  Box,
+  IconButton,
+  ListItemIcon,
+  ListItemText,
+  MenuItem,
+  MenuList,
+  Popover,
+  Tooltip,
+  Typography,
+  useMediaQuery,
+} from '@mui/material';
 import { InteractiveConfigDefault, InteractiveConfig, Overrides } from '../types/InteractiveConfigContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
@@ -227,50 +238,46 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                     horizontal: 'left',
                   }}
                 >
-                  <Box display='flex' flexDirection='column' p='0.8rem' gap='0.5rem'>
-                    <Tooltip title='Settings'>
-                      <EditDialog
-                        onConfirm={(data) => {
-                          console.log(data);
-                          return data;
-                        }}
-                        toUpdate={user}
-                        title={`Settings for ${user?.email ?? 'User'}`}
-                        excludeFields={['subscription', 'email']}
-                        ButtonComponent={IconButton}
-                        ButtonProps={{
-                          sx: {
-                            p: 0,
-                            '& .MuiSvgIcon-root': {
-                              fontSize: '2rem',
-                            },
-                          },
-                          children: <Settings />,
-                        }}
-                      />
-                    </Tooltip>
+                  <MenuList dense>
+                    <EditDialog
+                      onConfirm={(data) => {
+                        console.log(data);
+                        return data;
+                      }}
+                      toUpdate={user}
+                      title={`Settings for ${user?.email ?? 'User'}`}
+                      excludeFields={['subscription', 'email']}
+                      ButtonComponent={MenuItem}
+                      ButtonProps={{
+                        children: (
+                          <>
+                            <ListItemIcon>
+                              <Settings />
+                            </ListItemIcon>
+                            <ListItemText>Settings</ListItemText>
+                          </>
+                        ),
+                      }}
+                    />
 
-                    <SwitchDark />
-                    <SwitchColorblind />
-                    <Tooltip title='Logout'>
-                      <IconButton
-                        sx={{
-                          p: 0,
-                          '& .MuiSvgIcon-root': {
-                            fontSize: '2rem',
-                          },
-                        }}
-                        onClick={() => {
-                          deleteCookie('jwt', {
-                            domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-                          });
-                          window.location.reload();
-                        }}
-                      >
+                    <MenuItem
+                      onClick={() => {
+                        deleteCookie('jwt', {
+                          domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+                        });
+                        window.location.reload();
+                      }}
+                    >
+                      <ListItemIcon>
                         <Logout />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
+                      </ListItemIcon>
+                      <ListItemText>Logout</ListItemText>
+                    </MenuItem>
+                    <MenuItem>
+                      <SwitchDark />
+                      <SwitchColorblind />
+                    </MenuItem>
+                  </MenuList>
                 </Popover>
               </>
             ),
