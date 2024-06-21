@@ -18,6 +18,8 @@ exports.useAGiXTConfig = () => ({
       process.env.AGIXT_SHOW_CHAT_THEME_TOGGLES || process.env.AGIXT_SHOW_APP_BAR === 'false' ? 'true' : 'false',
     NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED: process.env.AGIXT_FILE_UPLOAD_ENABLED, //|| String(InteractiveConfigDefault.overrides.enableFileUpload),
     NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED: process.env.AGIXT_VOICE_INPUT_ENABLED, //|| String(InteractiveConfigDefault.overrides.enableVoiceInput),
+    NEXT_PUBLIC_AGIXT_ALLOW_MESSAGE_EDITING: process.env.AGIXT_ALLOW_MESSAGE_EDITING, //|| String(InteractiveConfigDefault.overrides.allowMessageEditing),
+    NEXT_PUBLIC_AGIXT_ALLOW_MESSAGE_DELETION: process.env.AGIXT_ALLOW_MESSAGE_DELETION, //|| String(InteractiveConfigDefault.overrides.allowMessageEditing),
 
     // Override Options
     NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG: process.env.AGIXT_ENABLE_SEARCHPARAM_CONFIG || 'true',

@@ -43,7 +43,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
   const timestamp = chatItem
     ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
     : new Date().toLocaleString().replace(/\D/g, '');
-  const fileName = chatItem ? `${chatItem.role}-${timestamp}` : `${timestamp}`;
+  const fileName = chatItem ? `${chatItem.role}-${timestamp.split('.')[0]}` : `${timestamp.split('.')[0]}`;
 
   return content.includes('```csv') ? (
     renderMessage()

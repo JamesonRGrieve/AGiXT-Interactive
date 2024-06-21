@@ -3,8 +3,8 @@ import { deleteCookie, getCookie, setCookie } from 'cookies-next';
 import React, { ReactNode, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
-import { Logout, Menu } from '@mui/icons-material';
-import { Box, IconButton, Tooltip, Typography, useMediaQuery } from '@mui/material';
+import { Logout, Menu, Settings } from '@mui/icons-material';
+import { Box, IconButton, Popover, Tooltip, Typography, useMediaQuery } from '@mui/material';
 import { InteractiveConfigDefault, InteractiveConfig, Overrides } from '../types/InteractiveConfigContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
@@ -13,6 +13,11 @@ import ConversationSelector from './Selectors/ConversationSelector';
 
 import AgentSelector from './Selectors/AgentSelector';
 import PromptSelector from './Selectors/PromptSelector';
+import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
+import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
+import EditDialog from 'jrgcomponents/EditDialog';
+import useSWR from 'swr';
+import axios from 'axios';
 
 export type FormProps = {
   fieldOverrides?: { [key: string]: ReactNode };
@@ -126,6 +131,11 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
           ...props.overrides,
         },
         ...(process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG === 'true' ? searchParamConfig : {}),
+        ...(getCookie('conversation') && {
+          overrides: {
+            conversationName: getCookie('conversation'),
+          },
+        }),
       }}
     >
       <Interactive
@@ -150,6 +160,21 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
       {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION?.split(',').map((selector) => selectionBars[String(selector)])}
     </Box>
   );
+  const {
+    data: user,
+    isLoading,
+    error,
+  } = useSWR('/user', async () => {
+    return (
+      await axios.get(`${process.env.NEXT_PUBLIC_AUTH_SERVER}/v1/user`, {
+        headers: {
+          Authorization: `${getCookie('jwt')}`,
+        },
+      })
+    ).data;
+  });
+  console.log(user);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   //console.log(mobile);
   return (
     <AppWrapper
@@ -184,18 +209,69 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                       {selectionBars['conversation']}
                     </Box>
                   ) : undefined)}
-                <Tooltip title='Logout'>
+                <Tooltip title='Menu'>
                   <IconButton
-                    onClick={() => {
-                      deleteCookie('jwt', {
-                        domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-                      });
-                      window.location.reload();
+                    onClick={(event) => {
+                      setAnchorEl(event.currentTarget);
                     }}
                   >
-                    <Logout />
+                    <Menu />
                   </IconButton>
                 </Tooltip>
+                <Popover
+                  open={Boolean(anchorEl)}
+                  anchorEl={anchorEl}
+                  onClose={() => setAnchorEl(null)}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                >
+                  <Box display='flex' flexDirection='column' p='0.8rem' gap='0.5rem'>
+                    <Tooltip title='Settings'>
+                      <EditDialog
+                        onConfirm={(data) => {
+                          console.log(data);
+                          return data;
+                        }}
+                        toUpdate={user}
+                        title={`Settings for ${user?.email ?? 'User'}`}
+                        excludeFields={['subscription', 'email']}
+                        ButtonComponent={IconButton}
+                        ButtonProps={{
+                          sx: {
+                            p: 0,
+                            '& .MuiSvgIcon-root': {
+                              fontSize: '2rem',
+                            },
+                          },
+                          children: <Settings />,
+                        }}
+                      />
+                    </Tooltip>
+
+                    <SwitchDark />
+                    <SwitchColorblind />
+                    <Tooltip title='Logout'>
+                      <IconButton
+                        sx={{
+                          p: 0,
+                          '& .MuiSvgIcon-root': {
+                            fontSize: '2rem',
+                          },
+                        }}
+                        onClick={() => {
+                          deleteCookie('jwt', {
+                            domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+                          });
+                          window.location.reload();
+                        }}
+                      >
+                        <Logout />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                </Popover>
               </>
             ),
           },

@@ -19,7 +19,7 @@ export default function Chat({
 
   const conversation = useSWR(
     conversationSWRPath + state.overrides.conversationName,
-    async () => await state.agixt.getConversation('', state.overrides.conversationName, 100, 1),
+    async () => await state.agixt.getConversation(state.overrides.conversationName, 100, 1),
     {
       fallbackData: [],
       refreshInterval: loading ? 1000 : 0,
