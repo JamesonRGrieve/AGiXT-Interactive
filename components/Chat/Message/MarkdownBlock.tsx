@@ -1,12 +1,10 @@
 import React, { ReactNode } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { DataGridFromCSV } from './Markdown/Code/CSV';
 import CodeBlock from './Markdown/CodeBlock';
 import renderHeading from './Markdown/Heading';
 import renderLink from './Markdown/Link';
 import renderList from './Markdown/List';
 import renderListItem from './Markdown/ListItem';
-import Image from 'next/image';
 import renderImage from './Markdown/Image';
 
 export type MarkdownBlockProps = {
@@ -18,7 +16,6 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
   const renderMessage = (): ReactNode => {
     let message = content.toString();
     const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
-    console.log(matches);
     if (matches.length > 0) {
       //replace the triple backticks of those matches with the strings "(start escaped codeblock)" and "(end escaped codeblock)"
       matches.forEach((match) => {
