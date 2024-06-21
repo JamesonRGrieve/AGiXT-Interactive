@@ -70,7 +70,6 @@ export default function Message({
       return null;
     }
   }, [chatItem]);
-  console.log('Audios', audios);
   const [vote, setVote] = useState(chatItem.rlhf ? (chatItem.rlhf.positive ? 1 : -1) : 0);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState('');

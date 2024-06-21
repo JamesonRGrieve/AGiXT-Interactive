@@ -22,6 +22,7 @@ import useSWR, { mutate } from 'swr';
 import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 import { Add, DriveFileRenameOutline } from '@mui/icons-material';
 import { setCookie } from 'cookies-next';
+import { getAndFormatConversastion } from '../Chat/Chat';
 
 export default function ConversationSelector(): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);
@@ -31,7 +32,7 @@ export default function ConversationSelector(): React.JSX.Element {
   );
   const { data: currentConversation } = useSWR(
     '/conversation/' + state.overrides.conversationName,
-    async () => await state.agixt.getConversation(state.overrides.conversationName, 100, 1),
+    async () => await getAndFormatConversastion(state),
     {
       fallbackData: [],
     },
