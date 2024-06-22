@@ -59,6 +59,7 @@ export const DataGridFromCSV = ({
   const [filteredColumns, setFilteredColumns] = useState([]);
   const [columns, setColumns] = useState([]);
   useEffect(() => {
+    if (!csvData) return;
     setError('');
     const rawData = csvData.map((row) => row.split(',').map((cell) => cell.trim().replaceAll('"', '')));
     if (

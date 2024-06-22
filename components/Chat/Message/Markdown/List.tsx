@@ -7,7 +7,8 @@ export default function renderList({ children, ordered = true }): ReactNode {
       dense
       sx={{
         listStyle: ordered ? 'decimal' : 'disc',
-        paddingLeft: ordered ? '3rem' : undefined,
+        ml: '2rem',
+        padding: '0',
       }}
     >
       {children}

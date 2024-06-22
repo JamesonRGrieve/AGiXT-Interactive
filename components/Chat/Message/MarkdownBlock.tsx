@@ -42,9 +42,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
     : new Date().toLocaleString().replace(/\D/g, '');
   const fileName = chatItem ? `${chatItem.role}-${timestamp.split('.')[0]}` : `${timestamp.split('.')[0]}`;
 
-  return content.includes('```csv') ? (
-    renderMessage()
-  ) : (
+  return (
     <ReactMarkdown
       className='react-markdown'
       components={{
@@ -61,6 +59,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
         h4({ children }) {
           return renderHeading('h4', children);
         },
+        ul: renderList,
         ol: renderList,
         li: renderListItem,
         code: (props) => CodeBlock({ ...props, fileName: fileName, setLoading: setLoading }),

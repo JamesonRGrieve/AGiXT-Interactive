@@ -26,7 +26,8 @@ type Story = StoryObj<typeof meta>;
 // Configure Component Stories.
 export const MarkdownHeading: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
 MarkdownHeading.args = {
-  content: '# Heading 1\n## Heading 2\n### Heading 3\n#### Heading 4\n##### Heading 5\n###### Heading 6',
+  content:
+    '# Heading 1\n## Heading 2\n### Heading 3\n#### Heading 4\n##### Heading 5\n###### Heading 6\n\\\n\\\n\\\nHere is a paragraph after 4 new lines.',
 };
 
 export const MarkdownLink: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
@@ -52,7 +53,8 @@ MarkdownImage.args = {
 
 export const MarkdownCodeBlock: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
 MarkdownCodeBlock.args = {
-  content: 'Here is a code block:\n\n```javascript\nconsole.log("Hello, World!");\n```',
+  content:
+    'Here is a code block:\n\n```javascript\nconsole.log("Hello, World!");\n```\n```csv\nFirstName, LastName, Age\nJohn, Doe, 30\nJane, Doe, 28\nAlice, Smith, 35\n```',
 };
 
 export const MarkdownEscapedCodeBlock: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
