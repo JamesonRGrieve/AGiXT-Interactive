@@ -67,7 +67,7 @@ const fileExtensions = {
 };
 const languageRenders = {
   markdown: (content) => <MarkdownBlock content={content} />,
-  csv: (content, setLoading) => <CSV csvData={content.split('\n')} setLoading={setLoading} />,
+  csv: (content, setLoading) => <CSV csvData={content.split && content.split('\n')} setLoading={setLoading} />,
 };
 
 export type CodeBlockProps = {

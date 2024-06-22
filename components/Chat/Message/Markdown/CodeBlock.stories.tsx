@@ -45,7 +45,7 @@ MarkdownCode.args = {
 
 export const CSVCode: Story = (args: CodeBlockProps) => <CodeBlockComponent {...args} />;
 CSVCode.args = {
-  children: 'FirstName, LastName, Age\nJohn, Doe, 30\nJane, Doe, 28\nAlice, Smith, 35',
+  children: 'CSV code block:\n```csv\nHeader 1, Header 2\nValue 1, Value 2\n```',
   className: 'language-csv',
 };
 
