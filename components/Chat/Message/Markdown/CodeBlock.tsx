@@ -67,7 +67,11 @@ const fileExtensions = {
 };
 const languageRenders = {
   markdown: (content) => <MarkdownBlock content={content} />,
-  csv: (content, setLoading) => <CSV csvData={content.split && content.split('\n')} setLoading={setLoading} />,
+  csv: (content, setLoading) => {
+    console.log('Content: ', content[0].split('\n'));
+    // TODO Figure out why the [0] is necessary, this should come in as a string.
+    return <CSV csvData={content[0].split && content[0].split('\n').filter((row) => row.trim())} setLoading={setLoading} />;
+  },
 };
 
 export type CodeBlockProps = {
