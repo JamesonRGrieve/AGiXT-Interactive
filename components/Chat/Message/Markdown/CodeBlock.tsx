@@ -70,7 +70,20 @@ const languageRenders = {
   csv: (content, setLoading) => {
     console.log('Content: ', content[0].split('\n'));
     // TODO Figure out why the [0] is necessary, this should come in as a string.
-    return <CSV csvData={content[0].split && content[0].split('\n').filter((row) => row.trim())} setLoading={setLoading} />;
+    return (
+      <CSV
+        csvData={
+          content.length === 1
+            ? content[0].split &&
+              content[0]
+                .split('\n')
+                .filter((row) => row.trim())
+                .map((row) => row.trim())
+            : content.filter((row) => row.trim()).map((row) => row.trim())
+        }
+        setLoading={setLoading}
+      />
+    );
   },
 };
 
