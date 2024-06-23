@@ -44,7 +44,7 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-export const DataGridFromCSV = ({
+export const RendererCSV = ({
   csvData,
   setLoading,
 }: {
@@ -58,6 +58,7 @@ export const DataGridFromCSV = ({
   const [filteredRows, setFilteredRows] = useState([]);
   const [filteredColumns, setFilteredColumns] = useState([]);
   const [columns, setColumns] = useState([]);
+  console.log('Rendering CSV', csvData);
   useEffect(() => {
     if (!csvData) return;
     setError('');
@@ -234,4 +235,4 @@ export const DataGridFromCSV = ({
     csvData
   );
 };
-export default DataGridFromCSV;
+export default RendererCSV;
