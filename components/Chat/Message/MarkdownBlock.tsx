@@ -6,6 +6,7 @@ import renderLink from './Markdown/Link';
 import renderList from './Markdown/List';
 import renderListItem from './Markdown/ListItem';
 import renderImage from './Markdown/Image';
+import remarkGfm from 'remark-gfm';
 
 export type MarkdownBlockProps = {
   content: string;
@@ -34,39 +35,47 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
       // We can reformat it any way we want for testing like this.
       return message.replace(match[0], '');
     }
-    return content;
+    while (message.includes('\n\n')) {
+      message = message.replace('\n\n', '\n\\\n');
+    }
+    return message;
   };
 
   const timestamp = chatItem
     ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
     : new Date().toLocaleString().replace(/\D/g, '');
   const fileName = chatItem ? `${chatItem.role}-${timestamp.split('.')[0]}` : `${timestamp.split('.')[0]}`;
-
-  return (
-    <ReactMarkdown
-      className='react-markdown'
-      components={{
-        a: renderLink,
-        h1({ children }) {
-          return renderHeading('h1', children);
-        },
-        h2({ children }) {
-          return renderHeading('h2', children);
-        },
-        h3({ children }) {
-          return renderHeading('h3', children);
-        },
-        h4({ children }) {
-          return renderHeading('h4', children);
-        },
-        ul: renderList,
-        ol: renderList,
-        li: renderListItem,
-        code: (props) => CodeBlock({ ...props, fileName: fileName, setLoading: setLoading }),
-        img: renderImage,
-      }}
-    >
-      {renderMessage().toString()}
-    </ReactMarkdown>
-  );
+  try {
+    return (
+      <ReactMarkdown
+        //remarkPlugins={[[remarkGfm]]}
+        className='react-markdown'
+        components={{
+          a: renderLink,
+          h1({ children }) {
+            return renderHeading('h1', children);
+          },
+          h2({ children }) {
+            return renderHeading('h2', children);
+          },
+          h3({ children }) {
+            return renderHeading('h3', children);
+          },
+          h4({ children }) {
+            return renderHeading('h4', children);
+          },
+          ul: renderList,
+          ol: renderList,
+          li: renderListItem,
+          code: (props) => CodeBlock({ ...props, fileName: fileName, setLoading: setLoading }),
+          img: renderImage,
+        }}
+      >
+        {renderMessage().toString()}
+      </ReactMarkdown>
+    );
+  } catch (e) {
+    console.log(e);
+    return renderMessage().toString();
+  }
 }

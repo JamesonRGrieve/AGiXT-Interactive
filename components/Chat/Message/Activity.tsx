@@ -117,7 +117,7 @@ export default function Activity({
                   ? 'success'
                   : (messageType.split('[')[2].split(']')[0].toLowerCase() as 'error' | 'info' | 'success' | 'warn')
               }
-              inProgress={false}
+              inProgress={inProgress}
               message={messageBody}
               timestamp={child.timestamp}
               alternateBackground={alternateBackground}

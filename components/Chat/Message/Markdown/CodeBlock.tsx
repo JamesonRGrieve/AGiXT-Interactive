@@ -7,7 +7,8 @@ import { a11yLight, a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hl
 import TabPanel from 'jrgcomponents/Tabs/Panel';
 import MarkdownBlock from '../MarkdownBlock';
 import CSV from './Code/CSV';
-
+import Mermaid from './Code/Mermaid';
+import Latex from 'react-latex';
 const fileExtensions = {
   '': 'txt',
   text: 'txt',
@@ -67,6 +68,7 @@ const fileExtensions = {
 };
 const languageRenders = {
   markdown: (content) => <MarkdownBlock content={content} />,
+  html: (content) => <div dangerouslySetInnerHTML={{ __html: content }} />,
   csv: (content, setLoading) => {
     console.log('Content: ', content[0].split('\n'));
     // TODO Figure out why the [0] is necessary, this should come in as a string.
@@ -85,6 +87,11 @@ const languageRenders = {
       />
     );
   },
+  gantt: (content) => <Mermaid chart={'gantt\n' + content} />,
+  sequence: (content) => <Mermaid chart={'sequenceDiagram\n' + content} />,
+  flow: (content) => <Mermaid chart={'flowchart TD\n' + content} />,
+  mermaid: (content) => <Mermaid chart={content} />,
+  latex: (content) => <Latex>{content[0]}</Latex>,
 };
 
 export type CodeBlockProps = {
@@ -123,18 +130,22 @@ export default function CodeBlock({
   const language = className?.replace(/language-/, '') || 'Text';
   const fileNameWithExtension = `${fileName || 'code'}.${fileExtensions[String(language.toLowerCase())] || 'txt'}`;
   const [tab, setTab] = React.useState(0);
-  console.log(theme.palette.mode === 'dark' ? a11yDark.hljs.background : a11yLight.hljs.background);
-  console.log(a11yLight);
-  console.log(a11yDark);
+
   return (
-    <Box pr='1rem' my='0.5rem'>
+    <Box
+      my='0.5rem'
+      sx={{
+        border: '1px solid ' + theme.palette.divider,
+        backgroundColor: theme.palette.mode === 'dark' ? a11yDark.hljs.background : a11yLight.hljs.background,
+      }}
+    >
       <Box
         position='relative'
         display='flex'
         alignItems='center'
         justifyContent='space-between'
+        pr='1rem'
         sx={{
-          backgroundColor: theme.palette.mode === 'dark' ? a11yDark.hljs.background : a11yLight.hljs.background,
           borderBottom: '2px solid ' + theme.palette.divider,
         }}
       >
