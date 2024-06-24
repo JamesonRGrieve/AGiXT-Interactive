@@ -273,7 +273,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                       </ListItemIcon>
                       <ListItemText>Logout</ListItemText>
                     </MenuItem>
-                    <MenuItem>
+                    <MenuItem sx={{ py: '0.5rem' }}>
                       <SwitchDark />
                       <SwitchColorblind />
                     </MenuItem>
