@@ -6,7 +6,7 @@ import renderLink from './Markdown/Link';
 import renderList from './Markdown/List';
 import renderListItem from './Markdown/ListItem';
 import renderImage from './Markdown/Image';
-import remarkGfm from 'remark-gfm';
+//import remarkGfm from 'remark-gfm';
 
 export type MarkdownBlockProps = {
   content: string;
