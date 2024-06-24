@@ -1,10 +1,11 @@
 #!/bin/sh
-echo "" > /app/.env
+echo "" >/app/.env
 env | while IFS='=' read -r name value; do
-  printf '%s="%s"\n' "$name" "$value" >> /app/.env
+  printf '%s="%s"\n' "$name" "$value" >>/app/.env
 done
 # Show full env
 cat /app/.env
+if [ -d "/app/themes" ]; then rm -rf /app/themes; fi
 git clone https://github.com/JamesonRGrieve/jrgcomponents-themes /app/themes
 set -a
 . /app/.env
