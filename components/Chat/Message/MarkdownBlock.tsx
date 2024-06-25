@@ -17,6 +17,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
   const renderMessage = (): ReactNode => {
     let message = content
       .toString()
+      .replace(/\n/g, ' \n') // Add a space before each newline character
       .split('\n')
       .map((line) => (line.trim() ? line : '\\'))
       .join('\n')
@@ -24,14 +25,11 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
 
     const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
     if (matches.length > 0) {
-      //replace the triple backticks of those matches with the strings "(start escaped codeblock)" and "(end escaped codeblock)"
       matches.forEach((match) => {
-        //console.log(match);
         message = message.replace(
           match[0],
           match[0].replaceAll('\\```', '´´´').replaceAll('```', '´´´').replaceAll('\n', '\n\n'),
         );
-        //console.log(message);
       });
       return message;
     }
