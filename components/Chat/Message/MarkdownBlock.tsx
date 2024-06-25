@@ -15,7 +15,13 @@ export type MarkdownBlockProps = {
 };
 export default function MarkdownBlock({ content, chatItem, setLoading }: MarkdownBlockProps): ReactNode {
   const renderMessage = (): ReactNode => {
+    console.log('Content:', content);
     let message = content.toString();
+    console.log('Message:', message);
+    while (message.includes('\n\n')) {
+      console.log('Contains double line break.');
+      message = message.replace('\n\n', '\n\\\n');
+    }
     const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
     if (matches.length > 0) {
       //replace the triple backticks of those matches with the strings "(start escaped codeblock)" and "(end escaped codeblock)"
@@ -29,15 +35,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
       });
       return message;
     }
-    if (message.includes('<audio controls><source src=')) {
-      // Replace the html audio control with a link to the audio
-      const match = message.match(/<audio controls><source src="(.*)" type="audio\/wav"><\/audio>/);
-      // We can reformat it any way we want for testing like this.
-      return message.replace(match[0], '');
-    }
-    while (message.includes('\n\n')) {
-      message = message.replace('\n\n', '\n\\\n');
-    }
+    console.log('Message:', message);
     return message;
   };
 
@@ -75,7 +73,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
       </ReactMarkdown>
     );
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return renderMessage().toString();
   }
 }
