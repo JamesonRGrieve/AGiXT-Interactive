@@ -31,7 +31,7 @@ MarkdownHeading.args = {
 
 export const MarkdownSpacing: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
 MarkdownSpacing.args = {
-  content: 'Lets build some markdown examples. \n\n\n\nStart with 4 line breaks in a row, then a list of bullet points.',
+  content: '# Here is Spacing\n\n\n\n\n\n\n\nHello',
 };
 
 export const MarkdownLink: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
