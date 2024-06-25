@@ -18,10 +18,12 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
     console.log('Content:', content);
     let message = content.toString();
     console.log('Message:', message);
-    while (message.includes('\n\n\n')) {
+    /*
+    while (message.includes('\n\n')) {
       console.log('Contains double line break.');
-      message = message.replace('\n\n\n', '\n\n\\\n');
+      message = message.replace('\n\n', '\n\\\n');
     }
+      */
     const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
     if (matches.length > 0) {
       //replace the triple backticks of those matches with the strings "(start escaped codeblock)" and "(end escaped codeblock)"

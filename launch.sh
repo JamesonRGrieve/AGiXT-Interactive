@@ -15,6 +15,4 @@ theme=$(echo $theme | tr -d '"')
 cp -r /app/themes/$theme/* /app
 npm install -g npm@latest
 npm install
-npm run build
-rm /app/.env
-npm start
+npm run build && rm /app/.env && npm start
