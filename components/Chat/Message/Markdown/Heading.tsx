@@ -9,7 +9,7 @@ export default function renderHeading(Tag, children): ReactNode {
   }
   const id = generateId(text);
   return (
-    <Typography component={Tag} variant={Tag} id={id}>
+    <Typography component={Tag} variant={Tag} id={id} my='0.25rem'>
       {children}
     </Typography>
   );
