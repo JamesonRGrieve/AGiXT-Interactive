@@ -178,7 +178,7 @@ export default function ConversationSelector(): React.JSX.Element {
           <MenuItem key='-' value='-'>
             - New Conversation -
           </MenuItem>
-          {state.overrides.conversationName !== '-' && !conversationData.includes(state.overrides.conversationName) && (
+          {state.overrides.conversationName !== '-' && !conversationData?.includes(state.overrides.conversationName) && (
             <MenuItem key={state.overrides.conversationName} value={state.overrides.conversationName}>
               {state.overrides.conversationName}
             </MenuItem>
