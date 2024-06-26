@@ -70,7 +70,7 @@ const languageRenders = {
   markdown: (content) => <MarkdownBlock content={content} />,
   html: (content) => <div dangerouslySetInnerHTML={{ __html: content }} />,
   csv: (content, setLoading) => {
-    console.log('Content: ', content[0].split('\n'));
+    //console.log('Content: ', content[0].split('\n'));
     // TODO Figure out why the [0] is necessary, this should come in as a string.
     return (
       <CSV
@@ -158,13 +158,13 @@ export default function CodeBlock({
         <Box>
           <IconButton
             onClick={() => {
-              console.log(codeBlockRef.current);
+              //console.log(codeBlockRef.current);
               if (codeBlockRef.current) {
                 const actualCode = codeBlockRef.current.querySelector('code').cloneNode(true);
                 for (const lineNumber of actualCode.querySelectorAll('.react-syntax-highlighter-line-number')) {
                   lineNumber.remove();
                 }
-                console.log(actualCode.innerText);
+                //console.log(actualCode.innerText);
                 clipboardCopy(actualCode.innerText);
                 actualCode.remove();
               }
@@ -174,13 +174,13 @@ export default function CodeBlock({
           </IconButton>
           <IconButton
             onClick={() => {
-              console.log(codeBlockRef.current);
+              //console.log(codeBlockRef.current);
               if (codeBlockRef.current) {
                 const actualCode = codeBlockRef.current.querySelector('code').cloneNode(true);
                 for (const lineNumber of actualCode.querySelectorAll('.react-syntax-highlighter-line-number')) {
                   lineNumber.remove();
                 }
-                console.log(actualCode.innerText);
+                //console.log(actualCode.innerText);
                 const element = document.createElement('a');
                 const file = new Blob([actualCode.innerText], {
                   type: 'text/plain;charset=utf-8',
