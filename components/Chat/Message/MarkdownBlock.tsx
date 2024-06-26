@@ -15,15 +15,13 @@ export type MarkdownBlockProps = {
 };
 export default function MarkdownBlock({ content, chatItem, setLoading }: MarkdownBlockProps): ReactNode {
   const renderMessage = (): ReactNode => {
-    console.log('Content:', content);
-    let message = content.toString();
-    console.log('Message:', message);
-    /*
-    while (message.includes('\n\n')) {
-      console.log('Contains double line break.');
-      message = message.replace('\n\n', '\n\\\n');
-    }
-      */
+    let message = content
+      .toString()
+      .split('\n')
+      .map((line) => (line.trim() ? line : '\\'))
+      .join('\n')
+      .replaceAll(/[^\\\n]\n\\\n/g, '\n\n');
+
     const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
     if (matches.length > 0) {
       //replace the triple backticks of those matches with the strings "(start escaped codeblock)" and "(end escaped codeblock)"
@@ -38,7 +36,6 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
       return message;
     }
 
-    console.log('Message:', message);
     return message;
   };
 

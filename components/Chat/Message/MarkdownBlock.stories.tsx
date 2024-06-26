@@ -31,7 +31,8 @@ MarkdownHeading.args = {
 
 export const MarkdownSpacing: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
 MarkdownSpacing.args = {
-  content: '# Here is Spacing\n\n\n\n\n\n\n\nHello',
+  content:
+    '# Here is Spacing\nFollowed by 5 line breaks.\n\n\n\n\nFollowed by 4 line breaks.\n\n\n\nFollowed by 3 line breaks.\n\n\nFollowed by 2 line breaks.\n\nFollowed by 1 line break.\nDone.',
 };
 
 export const MarkdownLink: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
