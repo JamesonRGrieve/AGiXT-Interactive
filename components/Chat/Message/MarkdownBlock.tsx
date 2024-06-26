@@ -1,12 +1,12 @@
 import React, { ReactNode } from 'react';
 import ReactMarkdown from 'react-markdown';
 import CodeBlock from './Markdown/CodeBlock';
-import renderHeading from './Markdown/Heading';
-import renderLink from './Markdown/Link';
-import renderList from './Markdown/List';
-import renderListItem from './Markdown/ListItem';
-import renderImage from './Markdown/Image';
 import remarkGfm from 'remark-gfm';
+import ListItem from '@mui/material/ListItem';
+import { List } from '@mui/material';
+import MarkdownHeading from './Markdown/Heading';
+import MarkdownLink from './Markdown/Link';
+import MarkdownImage from './Markdown/Image';
 export type MarkdownBlockProps = {
   content: string;
   chatItem?: { role: string; timestamp: string; message: string };
@@ -25,6 +25,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
       .replace(/^[\n\\]+/, ''); // Remove any newlines or backslashes at the beginning of the message.
 
     const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
+    // Replace escaped backticks with forward ticks.
     if (matches.length > 0) {
       matches.forEach((match) => {
         message = message.replace(
@@ -49,34 +50,65 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
         remarkPlugins={[[remarkGfm]]}
         className='react-markdown'
         components={{
-          // @ts-ignore
-          a: renderLink,
-          // @ts-ignore
+          li({ children }) {
+            return <ListItem sx={{ display: 'list-item', paddingY: '0.2rem' }}>{children}</ListItem>;
+          },
+
+          a({ children, ...props }) {
+            return <MarkdownLink {...props}>{children}</MarkdownLink>;
+          },
           h1({ children }) {
-            return renderHeading('h1', children);
+            return <MarkdownHeading tag='h1'>{children}</MarkdownHeading>;
           },
-          // @ts-ignore
           h2({ children }) {
-            return renderHeading('h2', children);
+            return <MarkdownHeading tag='h2'>{children}</MarkdownHeading>;
           },
-          // @ts-ignore
           h3({ children }) {
-            return renderHeading('h3', children);
+            return <MarkdownHeading tag='h3'>{children}</MarkdownHeading>;
           },
-          // @ts-ignore
           h4({ children }) {
-            return renderHeading('h4', children);
+            return <MarkdownHeading tag='h4'>{children}</MarkdownHeading>;
           },
-          // @ts-ignore
-          ul: renderList,
-          // @ts-ignore
-          ol: renderList,
-          // @ts-ignore
-          li: renderListItem,
-          // @ts-ignore
-          code: (props) => CodeBlock({ ...props, fileName: fileName, setLoading: setLoading }),
-          // @ts-ignore
-          img: renderImage,
+          h5({ children }) {
+            return <MarkdownHeading tag='h5'>{children}</MarkdownHeading>;
+          },
+          h6({ children }) {
+            return <MarkdownHeading tag='h6'>{children}</MarkdownHeading>;
+          },
+          ul({ children }) {
+            return (
+              <List
+                dense
+                sx={{
+                  listStyle: 'disc',
+                  ml: '2rem',
+                  padding: '0',
+                }}
+              >
+                {children}
+              </List>
+            );
+          },
+          ol({ children }) {
+            return (
+              <List
+                dense
+                sx={{
+                  listStyle: 'decimal',
+                  ml: '2rem',
+                  padding: '0',
+                }}
+              >
+                {children}
+              </List>
+            );
+          },
+          code({ ...props }) {
+            return <CodeBlock {...props} fileName={fileName} setLoading={setLoading} />;
+          },
+          img({ src, alt }) {
+            return <MarkdownImage src={src} alt={alt} />;
+          },
         }}
       >
         {renderMessage().toString()}

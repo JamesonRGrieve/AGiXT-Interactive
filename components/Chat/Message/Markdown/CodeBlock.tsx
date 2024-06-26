@@ -101,7 +101,7 @@ const languageRenders = {
 
 export type CodeBlockProps = {
   inline?: boolean;
-  children: ReactNode;
+  children?: ReactNode;
   className?: string;
   fileName?: string;
   setLoading?: (loading: boolean) => void;
@@ -114,29 +114,20 @@ export default function CodeBlock({
   setLoading,
   ...props
 }: CodeBlockProps): ReactNode {
+  console.log(props);
+  console.log(children);
+  console.log(className);
+  console.log(fileName);
+  console.log(inline);
   const theme = useTheme();
-  if (inline) {
-    return (
-      <Typography
-        component='span'
-        sx={{
-          backgroundColor: theme.palette.divider,
-          borderRadius: '0.5rem',
-          padding: '0.1rem 0.25rem',
-          fontFamily: 'monospace',
-        }}
-      >
-        {children}
-      </Typography>
-    );
-  }
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const codeBlockRef = React.useRef(null);
   const language = className?.replace(/language-/, '') || 'Text';
   const fileNameWithExtension = `${fileName || 'code'}.${fileExtensions[String(language.toLowerCase())] || 'txt'}`;
   const [tab, setTab] = React.useState(0);
-  if (!children) return null;
-  return (
+  console.log(language);
+  return className || children.toString().includes('\n') ? (
     <Box
       my='0.5rem'
       sx={{
@@ -232,5 +223,17 @@ export default function CodeBlock({
         </Box>
       </TabPanel>
     </Box>
+  ) : (
+    <Typography
+      component='span'
+      sx={{
+        backgroundColor: theme.palette.divider,
+        borderRadius: '0.5rem',
+        padding: '0.1rem 0.25rem',
+        fontFamily: 'monospace',
+      }}
+    >
+      {children}
+    </Typography>
   );
 }
