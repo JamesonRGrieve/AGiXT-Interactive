@@ -11,7 +11,7 @@ export default function PromptSelector(): React.JSX.Element {
     async () => (await state.agixt.getPrompts(state.overrides.promptCategory)) as string[],
   );
   const theme = useTheme();
-  console.log(state.overrides);
+  //console.log(state.overrides);
   return (
     <Tooltip title='Select a Prompt'>
       <FormControl

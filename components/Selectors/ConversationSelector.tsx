@@ -62,7 +62,7 @@ export default function ConversationSelector(): React.JSX.Element {
         magic ? '-' : changedConversationName,
       );
       await mutate('/conversation');
-      console.log(response);
+      //console.log(response);
       if (!response.startsWith('Error')) {
         state.mutate((oldState) => {
           return {

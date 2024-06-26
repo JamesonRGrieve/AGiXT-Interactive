@@ -58,7 +58,7 @@ export const RendererCSV = ({
   const [filteredRows, setFilteredRows] = useState([]);
   const [filteredColumns, setFilteredColumns] = useState([]);
   const [columns, setColumns] = useState([]);
-  console.log('Rendering CSV', csvData);
+  // console.log('Rendering CSV', csvData);
   useEffect(() => {
     if (!csvData) throw 'No CSV data provided.';
     setError('');
@@ -68,7 +68,7 @@ export const RendererCSV = ({
         .map((cell) => cell.trim().replaceAll('"', ''))
         .filter((cell) => cell),
     );
-    console.log('rawData', rawData);
+    // console.log('rawData', rawData);
     if (
       !rawData.every((row) => row.length === rawData[0].length) ||
       !rawData[0] ||

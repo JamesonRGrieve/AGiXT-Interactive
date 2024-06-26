@@ -9,7 +9,7 @@ import { get } from 'http';
 
 export async function getAndFormatConversastion(state): Promise<any[]> {
   const rawConversation = await state.agixt.getConversation(state.overrides.conversationName, 100, 1);
-  console.log('Raw conversation: ', rawConversation);
+  //console.log('Raw conversation: ', rawConversation);
   return rawConversation.reduce((accumulator, currentMessage: { id: string; message: string }) => {
     const messageType = currentMessage.message.split(' ')[0];
     // console.log('Message type: ', messageType);
@@ -21,7 +21,7 @@ export async function getAndFormatConversastion(state): Promise<any[]> {
       // console.log('Current message: ', currentMessage);
       // console.log('Accumulator at 0', accumulator[0]);
       const parentIndex = accumulator.findIndex((message) => {
-        console.log('Checking message', message);
+        //console.log('Checking message', message);
         return message.id === parent || message.children.some((child) => child.id === parent);
       });
       if (parentIndex !== -1) {
@@ -67,7 +67,7 @@ export default function Chat({
       refreshInterval: loading ? 1000 : 0,
     },
   );
-  console.log(conversation.data);
+  //console.log(conversation.data);
   async function chat(message, files): Promise<string> {
     const messages = [];
     // console.log(message);
