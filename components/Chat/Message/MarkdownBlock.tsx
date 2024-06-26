@@ -15,17 +15,21 @@ export type MarkdownBlockProps = {
 };
 export default function MarkdownBlock({ content, chatItem, setLoading }: MarkdownBlockProps): ReactNode {
   const renderMessage = (): ReactNode => {
-  let placeholder = '&nbsp;';
-  let message = content
-    .toString()
-    .split('\n')
-    .map((line) => (line.trim() ? line : placeholder))
-    .join('\n')
-    .replace(/([^\\])\n\\\n/g, '$1\n\n');
-  
-  message = message.split('\n')
-    .map(line => line === placeholder ? '' : line)
-    .join('\n');
+    let placeholder = '&nbsp;';
+    let message = content
+      .toString()
+      .split('\n')
+      .map((line) => (line.trim() ? line : placeholder))
+      .join('\n')
+      .replace(/([^\\])\n\\\n/g, '$1\n\n')
+      .replace(/\n\\\n/g, '\n\n'); // Handle cases where lines are only backslashes
+    
+    // Restore placeholders to ensure empty lines are rendered as intended
+    message = message.split('\n')
+      .map(line => line === placeholder ? '' : line)
+      .join('\n');
+    
+    console.log(message);    
 
     const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
     if (matches.length > 0) {
