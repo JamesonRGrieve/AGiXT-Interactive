@@ -14,27 +14,30 @@ export type MarkdownBlockProps = {
   setLoading?: (loading: boolean) => void;
 };
 export default function MarkdownBlock({ content, chatItem, setLoading }: MarkdownBlockProps): ReactNode {
-  const renderMessage = (): ReactNode => {
-    let message = content
-      .toString()
-      .split('\n')
-      .map((line) => (line.trim() ? line : '\\'))
-      .join('\n')
-      .replaceAll(/([^\\\n])\n\\\n/g, '$1\n\n');
+  const renderMessage = (): string => {
+    let message = content.toString();
 
-    const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
-    if (matches.length > 0) {
-      //replace the triple backticks of those matches with the strings "(start escaped codeblock)" and "(end escaped codeblock)"
-      matches.forEach((match) => {
-        //console.log(match);
-        message = message.replace(
-          match[0],
-          match[0].replaceAll('\\```', '´´´').replaceAll('```', '´´´').replaceAll('\n', '\n\n'),
-        );
-        //console.log(message);
-      });
-      return message;
-    }
+    // Step 1: Handle code blocks
+    const codeBlockRegex = /```[\s\S]*?```/g;
+    const codeBlocks = message.match(codeBlockRegex) || [];
+    const placeholders = codeBlocks.map((_, i) => `__CODE_BLOCK_${i}__`);
+
+    codeBlocks.forEach((block, i) => {
+      message = message.replace(block, placeholders[i]);
+    });
+
+    // Step 2: Process line breaks and backslashes
+    message = message
+      .split('\n')
+      .map(line => line.trim() || '\\')
+      .join('\n')
+      .replace(/\\\n/g, '\n')  // Remove backslashes at the end of lines
+      .replace(/\n{2,}/g, match => '\n'.repeat(match.length * 2));  // Double the number of line breaks
+
+    // Step 3: Restore code blocks
+    placeholders.forEach((placeholder, i) => {
+      message = message.replace(placeholder, codeBlocks[i]);
+    });
 
     return message;
   };
@@ -69,11 +72,11 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
           img: renderImage,
         }}
       >
-        {renderMessage().toString()}
+        {renderMessage()}
       </ReactMarkdown>
     );
   } catch (e) {
     console.error(e);
-    return renderMessage().toString();
+    return renderMessage();
   }
 }
