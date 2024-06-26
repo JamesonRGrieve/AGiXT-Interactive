@@ -18,20 +18,9 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
   let message = content
     .toString()
     .split('\n')
-    .map((line, index, array) => {
-      if (line.trim()) {
-        // If this line is not empty
-        return line;
-      } else if (index > 0 && !array[index - 1].trim()) {
-        // If this line is empty and the previous line was also empty
-        return '';
-      } else {
-        // If this line is empty but the previous line wasn't
-        return '\\';
-      }
-    })
+    .map((line) => (line.trim() ? line : '\\'))
     .join('\n')
-    .replace(/\\\n(?=\S)/g, '\n\n');  // Replace backslash-newline with double newline if followed by non-whitespace
+    .replaceAll(/(?<!\\)\n\\\n/g, '\n\n');
 
     const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
     if (matches.length > 0) {
