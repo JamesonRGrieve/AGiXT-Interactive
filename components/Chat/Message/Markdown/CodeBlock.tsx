@@ -6,9 +6,10 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yLight, a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import TabPanel from 'jrgcomponents/Tabs/Panel';
 import MarkdownBlock from '../MarkdownBlock';
-import CSV from './Code/CSV';
+import 'katex/dist/katex.min.css';
+import XSV from './Code/XSV';
 import Mermaid from './Code/Mermaid';
-import Latex from 'react-latex';
+import Latex from 'react-latex-next';
 const fileExtensions = {
   '': 'txt',
   text: 'txt',
@@ -70,22 +71,26 @@ const languageRenders = {
   markdown: (content) => <MarkdownBlock content={content} />,
   html: (content) => <div dangerouslySetInnerHTML={{ __html: content }} />,
   csv: (content, setLoading) => {
-    //console.log('Content: ', content[0].split('\n'));
-    // TODO Figure out why the [0] is necessary, this should come in as a string.
-    return (
-      <CSV
-        csvData={
-          content.length === 1
-            ? content[0].split &&
-              content[0]
-                .split('\n')
-                .filter((row) => row.trim())
-                .map((row) => row.trim())
-            : content.filter((row) => row.trim()).map((row) => row.trim())
-        }
-        setLoading={setLoading}
-      />
-    );
+    const csvData = (
+      content.constructor === Array
+        ? content.length > 1
+          ? content
+          : content[0]
+        : content
+            .split('\n')
+            .filter((row) => row.trim())
+            .map((row) => row.trim())
+    )
+      .filter((row) => row.trim())
+      .map((row) => row.trim());
+    return <XSV xsvData={csvData} setLoading={setLoading} />;
+  },
+  tsv: (content, setLoading) => {
+    const tsvData = (content.constructor === Array ? (content.length > 1 ? content : content[0]) : content.split('\n'))
+      .filter((row) => row.trim())
+      .map((row) => row.trim());
+    console.log(tsvData);
+    return <XSV xsvData={tsvData} setLoading={setLoading} separator={/\t/} />;
   },
   gantt: (content) => <Mermaid chart={'gantt\n' + content} />,
   sequence: (content) => <Mermaid chart={'sequenceDiagram\n' + content} />,
@@ -130,7 +135,7 @@ export default function CodeBlock({
   const language = className?.replace(/language-/, '') || 'Text';
   const fileNameWithExtension = `${fileName || 'code'}.${fileExtensions[String(language.toLowerCase())] || 'txt'}`;
   const [tab, setTab] = React.useState(0);
-
+  if (!children) return null;
   return (
     <Box
       my='0.5rem'

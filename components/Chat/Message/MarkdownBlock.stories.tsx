@@ -66,3 +66,14 @@ export const MarkdownEscapedCodeBlock: Story = (args: MarkdownBlockProps) => <Ma
 MarkdownEscapedCodeBlock.args = {
   content: 'Here is an escaped code block:\n\n\\```javascript\nconsole.log("Hello, World!");\n```',
 };
+
+export const MarkdownTable: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
+MarkdownTable.args = {
+  content:
+    '| Feature    | Support              |\n| ---------: | :------------------- |\n| CommonMark | 100%                 |\n| GFM        | 100% w/ `remark-gfm` |',
+};
+
+export const MarkdownStrikethrough: Story = (args: MarkdownBlockProps) => <MarkdownBlockComponent {...args} />;
+MarkdownStrikethrough.args = {
+  content: '~~strikethrough~~',
+};
