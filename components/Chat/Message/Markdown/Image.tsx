@@ -7,7 +7,7 @@ export type ImageProps = {
   alt?: string;
 };
 
-export default function renderImage({ src, alt }: ImageProps): ReactNode {
+export default function MarkdownImage({ src, alt, ...props }: ImageProps): ReactNode {
   //console.log('Image:', src, alt);
   return src.includes(process.env.NEXT_PUBLIC_AGIXT_SERVER.split('://')[1].split(':')[0].split('/')[0]) ? (
     <ImageDialog imageSrc={src} title={alt} />

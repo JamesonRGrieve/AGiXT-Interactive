@@ -13,7 +13,7 @@ const handleAnchorClick = (e): void => {
   }
 };
 
-export default function renderLink({ children, ...props }): ReactNode {
+export default function MarkdownLink({ children, ...props }): ReactNode {
   const isExternal = props.href && !props.href.startsWith('#');
   return (
     <Link
