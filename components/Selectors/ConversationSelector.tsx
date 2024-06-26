@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { use, useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 import { Add, DriveFileRenameOutline } from '@mui/icons-material';
@@ -107,7 +107,10 @@ export default function ConversationSelector(): React.JSX.Element {
       element.click();
     }
   };
-
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    setLoaded(true);
+  }, []);
   return (
     <>
       <FormControl
@@ -178,11 +181,13 @@ export default function ConversationSelector(): React.JSX.Element {
           <MenuItem key='-' value='-'>
             - New Conversation -
           </MenuItem>
-          {state.overrides.conversationName !== '-' && !conversationData?.includes(state.overrides.conversationName) && (
-            <MenuItem key={state.overrides.conversationName} value={state.overrides.conversationName}>
-              {state.overrides.conversationName}
-            </MenuItem>
-          )}
+          {loaded &&
+            state.overrides.conversationName !== '-' &&
+            !conversationData?.includes(state.overrides.conversationName) && (
+              <MenuItem key={state.overrides.conversationName} value={state.overrides.conversationName}>
+                {state.overrides.conversationName}
+              </MenuItem>
+            )}
           {conversationData &&
             conversationData.map &&
             conversationData?.map((c) => (
