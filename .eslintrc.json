@@ -45,6 +45,7 @@
     "import/no-named-as-default": "warn", // Warn on using named export as the default export.
     "jsx-a11y/aria-role": "warn", // Enforce the use of valid values for the role attribute.
     "jsx-a11y/no-redundant-roles": "warn", // Enforce that elements with ARIA roles must use a valid, non-abstract ARIA role.
+    "@typescript-eslint/ban-ts-comment": "warn",
     "prettier/prettier": [
       "warn",
       {

@@ -6,8 +6,7 @@ import renderLink from './Markdown/Link';
 import renderList from './Markdown/List';
 import renderListItem from './Markdown/ListItem';
 import renderImage from './Markdown/Image';
-//import remarkGfm from 'remark-gfm';
-
+import remarkGfm from 'remark-gfm';
 export type MarkdownBlockProps = {
   content: string;
   chatItem?: { role: string; timestamp: string; message: string };
@@ -43,27 +42,38 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
   const fileName = chatItem ? `${chatItem.role}-${timestamp.split('.')[0]}` : `${timestamp.split('.')[0]}`;
   try {
     return (
+      // Switch to https://github.com/ariabuckles/simple-markdown ?
       <ReactMarkdown
-        //remarkPlugins={[[remarkGfm]]}
+        remarkPlugins={[[remarkGfm]]}
         className='react-markdown'
         components={{
+          // @ts-ignore
           a: renderLink,
+          // @ts-ignore
           h1({ children }) {
             return renderHeading('h1', children);
           },
+          // @ts-ignore
           h2({ children }) {
             return renderHeading('h2', children);
           },
+          // @ts-ignore
           h3({ children }) {
             return renderHeading('h3', children);
           },
+          // @ts-ignore
           h4({ children }) {
             return renderHeading('h4', children);
           },
+          // @ts-ignore
           ul: renderList,
+          // @ts-ignore
           ol: renderList,
+          // @ts-ignore
           li: renderListItem,
+          // @ts-ignore
           code: (props) => CodeBlock({ ...props, fileName: fileName, setLoading: setLoading }),
+          // @ts-ignore
           img: renderImage,
         }}
       >

@@ -44,11 +44,13 @@ const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
   },
 }));
 
-export const RendererCSV = ({
-  csvData,
+export const RendererXSV = ({
+  xsvData,
+  separator = ',',
   setLoading,
 }: {
-  csvData: string[];
+  xsvData: string[];
+  separator?: RegExp | string;
   setLoading?: (loading: boolean) => void;
 }): ReactNode => {
   const [open, setOpen] = useState(false);
@@ -58,57 +60,62 @@ export const RendererCSV = ({
   const [filteredRows, setFilteredRows] = useState([]);
   const [filteredColumns, setFilteredColumns] = useState([]);
   const [columns, setColumns] = useState([]);
-  // console.log('Rendering CSV', csvData);
+  // console.log('Rendering XSV', XSVData);
   useEffect(() => {
-    if (!csvData) throw 'No CSV data provided.';
-    setError('');
-    const rawData = csvData.map((row) =>
-      row
-        .split(',')
-        .map((cell) => cell.trim().replaceAll('"', ''))
-        .filter((cell) => cell),
-    );
-    // console.log('rawData', rawData);
-    if (
-      !rawData.every((row) => row.length === rawData[0].length) ||
-      !rawData[0] ||
-      rawData.some((row) => [0, 1].includes(row.length))
-    ) {
-      // TODO: This doesn't seem to work, it produces a blank placeholder instead of the raw code and an error in the data grid.
-      setError('CSV data is not valid.');
-      return;
-    }
+    if (!xsvData) {
+      setError('No data provided.');
+    } else {
+      const rawData = xsvData.map((row) =>
+        row
+          .split(separator)
+          .map((cell) => cell.trim().replaceAll('"', ''))
+          .filter((cell) => cell),
+      );
+      console.log(separator);
+      console.log(rawData);
+      // console.log('rawData', rawData);
+      if (
+        !rawData.every((row) => row.length === rawData[0].length) ||
+        !rawData[0] ||
+        rawData.some((row) => [0, 1].includes(row.length))
+      ) {
+        // TODO: This doesn't seem to work, it produces a blank placeholder instead of the raw code and an error in the data grid.
+        setError('XSV data is not valid.');
+      } else {
+        setError('');
 
-    setColumns(
-      (rawData[0][0].toLowerCase().includes('id') ? rawData[0].slice(1) : rawData[0]).map((header) => ({
-        field: header,
-        width: Math.max(160, header.length * 10),
-        flex: 1,
-        resizeable: true,
-        headerName: header,
-        sx: {
-          '& .MuiDataGrid-cell': {
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-          },
-        },
-      })),
-    );
-    setRows(
-      rawData.slice(1).map((row, index) =>
-        rawData[0][0].toLowerCase().includes('id')
-          ? {
-              id: row[0],
-              ...Object.fromEntries(row.slice(1).map((cell, index) => [rawData[0][index + 1], cell])),
-            }
-          : {
-              id: index,
-              ...Object.fromEntries(row.map((cell, index) => [rawData[0][index.toString()], cell])),
+        setColumns(
+          (rawData[0][0].toLowerCase().includes('id') ? rawData[0].slice(1) : rawData[0]).map((header) => ({
+            field: header,
+            width: Math.max(160, header.length * 10),
+            flex: 1,
+            resizeable: true,
+            headerName: header,
+            sx: {
+              '& .MuiDataGrid-cell': {
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+              },
             },
-      ),
-    );
-  }, [csvData]);
+          })),
+        );
+        setRows(
+          rawData.slice(1).map((row, index) =>
+            rawData[0][0].toLowerCase().includes('id')
+              ? {
+                  id: row[0],
+                  ...Object.fromEntries(row.slice(1).map((cell, index) => [rawData[0][index + 1], cell])),
+                }
+              : {
+                  id: index,
+                  ...Object.fromEntries(row.map((cell, index) => [rawData[0][index.toString()], cell])),
+                },
+          ),
+        );
+      }
+    }
+  }, [xsvData]);
   const context = useContext(InteractiveConfigContext);
   useEffect(() => {
     setFilteredRows(rows);
@@ -120,12 +127,17 @@ export const RendererCSV = ({
     setLoading(true);
     const stringifiedColumns = filteredColumns.map((header) => header.field);
     const stringifiedRows = filteredRows.map((row) =>
-      [row.id, ...filteredColumns.map((header) => row[header.field])].join(','),
+      [row.id, ...filteredColumns.map((header) => row[header.field])].join(
+        separator.toString() === '/\\t/' ? '\t' : separator.toString(),
+      ),
     );
 
     await context.agixt.runChain('Data Analysis', userMessage, context.agent, false, 1, {
       conversation_name: context.overrides.conversationName,
-      text: [['id', ...stringifiedColumns].join(','), ...stringifiedRows].join('\n'),
+      text: [
+        ['id', ...stringifiedColumns].join(separator.toString() === '/\\t/' ? '\t' : separator.toString()),
+        ...stringifiedRows,
+      ].join('\n'),
     });
     setLoading(false);
   };
@@ -238,7 +250,7 @@ export const RendererCSV = ({
       )}
     </Box>
   ) : (
-    csvData
+    xsvData
   );
 };
-export default RendererCSV;
+export default RendererXSV;
