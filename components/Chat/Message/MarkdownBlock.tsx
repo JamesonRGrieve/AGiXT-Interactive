@@ -20,7 +20,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
     .split('\n')
     .map((line) => (line.trim() ? line : '\\'))
     .join('\n')
-    .replaceAll(/(?<!\\)\n\\\n/g, '\n\n');
+    .replace(/\\\n\\\n/g, '\n\n');
 
     const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
     if (matches.length > 0) {
