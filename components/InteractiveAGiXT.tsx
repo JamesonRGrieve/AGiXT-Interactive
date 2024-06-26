@@ -142,9 +142,9 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
           ...props.overrides,
         },
         ...(process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG === 'true' ? searchParamConfig : {}),
-        ...(getCookie('conversation') && {
+        ...(getCookie('agixt-conversation') && {
           overrides: {
-            conversationName: getCookie('conversation'),
+            conversationName: getCookie('agixt-conversation'),
           },
         }),
       }}

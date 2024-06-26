@@ -44,7 +44,7 @@ export default function ConversationSelector(): React.JSX.Element {
 
   useEffect(() => {
     setChangedConversationName(state.overrides.conversationName);
-    setCookie('conversation', state.overrides.conversationName, {
+    setCookie('agixt-conversation', state.overrides.conversationName, {
       domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
     });
   }, [state.overrides.conversationName]);
@@ -195,16 +195,6 @@ export default function ConversationSelector(): React.JSX.Element {
                 {c}
               </MenuItem>
             ))}
-          {/* 
-              Workaround of a backend limitation - files only created (and rendered in conversation list) once they have messages.
-              Thanks, I hate it too.
-            
-            {!conversationData?.includes(state.overrides.conversationName) && (
-              <MenuItem key={state.overrides.conversationName} value={state.overrides.conversationName}>
-                {state.overrides.conversationName}
-              </MenuItem>
-            )}
-              */}
         </Select>
       </FormControl>
 
