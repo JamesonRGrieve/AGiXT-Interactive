@@ -17,10 +17,12 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
     let message = content
       .toString()
       .replace(/\n/g, ' \n') // Add a space before each newline character
-      .split('\n')
-      .map((line) => (line.trim() ? line : '\\'))
-      .join('\n')
-      .replaceAll(/[^\\\n]\n\\\n/g, '\n\n');
+      .split('\n') // Split the message into lines.
+      .map((line) => (line.trim() ? line : '\\')) // Replace empty lines (containing only \n)  with backslash.
+      .join('\n') // Recombine the split lines with newlines.
+      .replaceAll(/[^\\\n]\n\\\n/g, '\n\n') // Change the first slash following a line into a double linebreak.
+      .replace(/[\n\\]+$/, '') // Remove any newlines or backslashes at the end of the message.
+      .replace(/^[\n\\]+/, ''); // Remove any newlines or backslashes at the beginning of the message.
 
     const matches = [...message.matchAll(/\\```(.|\n)*```/g)];
     if (matches.length > 0) {

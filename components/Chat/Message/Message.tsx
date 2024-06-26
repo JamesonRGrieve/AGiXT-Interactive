@@ -46,7 +46,9 @@ export default function Message({
     try {
       const parsed = JSON.parse(chatItem.message);
       formatted = (parsed.text || chatItem.message).replace('\\n', '\n');
-    } catch (e) {}
+    } catch (e) {
+      // console.error(e);
+    }
     // if (chatItem.message.includes('#GENERATED_AUDIO:')) console.log('Formatted: ', formatted);
     return formatted;
   }, [chatItem]);

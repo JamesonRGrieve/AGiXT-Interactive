@@ -13,10 +13,16 @@ import {
   IconButton,
   Chip,
   Typography,
+  Popover,
+  MenuList,
+  MenuItem,
+  Switch,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
-import { setCookie } from 'cookies-next';
-import { CheckCircle, DeleteForever, Pending } from '@mui/icons-material';
+import { deleteCookie, getCookie, setCookie } from 'cookies-next';
+import { ArrowDropUp, CheckCircle, DeleteForever, Pending } from '@mui/icons-material';
 import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
 import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
 import Dialog from 'jrgcomponents/Dialog';
@@ -98,7 +104,31 @@ export default function ChatBar({
       clearInterval(interval);
     };
   }, [loading]);
-
+  const [tts, setTTS] = useState<boolean | null>(
+    getCookie('agixt-tts') === undefined ? null : getCookie('agixt-tts') !== 'false',
+  );
+  const [websearch, setWebsearch] = useState<boolean | null>(
+    getCookie('agixt-websearch') === undefined ? null : getCookie('agixt-websearch') !== 'false',
+  );
+  useEffect(() => {
+    if (tts === null) {
+      deleteCookie('agixt-tts', { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN });
+    } else {
+      setCookie('agixt-tts', tts.toString(), {
+        domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+        maxAge: 2147483647,
+      });
+    }
+    if (websearch === null) {
+      deleteCookie('agixt-websearch', { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN });
+    } else {
+      setCookie('agixt-websearch', websearch.toString(), {
+        domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+        maxAge: 2147483647,
+      });
+    }
+  }, [tts, websearch]);
+  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
       <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
@@ -137,6 +167,95 @@ export default function ChatBar({
                     </Box>
                   </Tooltip>
                 )}
+                <Tooltip title='Override Settings'>
+                  <IconButton
+                    color='primary'
+                    onClick={(event) => {
+                      setAnchorEl(event.currentTarget);
+                    }}
+                  >
+                    <ArrowDropUp />
+                  </IconButton>
+                </Tooltip>
+                <Popover
+                  open={Boolean(anchorEl)}
+                  anchorEl={anchorEl}
+                  onClose={() => setAnchorEl(null)}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'center',
+                  }}
+                  transformOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                >
+                  <MenuList dense>
+                    <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <Typography variant='h6' component='span'>
+                        Text-To-Speech
+                      </Typography>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={tts === null}
+                            onClick={() => {
+                              setTTS((old) => (old === null ? false : null));
+                            }}
+                          />
+                        }
+                        label='Use Default'
+                      />
+                      {tts !== null && (
+                        <Box display='flex' flexDirection='row' alignItems='center'>
+                          <Typography variant='caption'>{tts === null ? null : tts ? 'Always' : 'Never'}</Typography>
+                          <Tooltip title='Text-to-Speech'>
+                            <Switch
+                              color='primary'
+                              checked={tts}
+                              onClick={() => {
+                                setTTS((old) => !old);
+                              }}
+                            />
+                          </Tooltip>
+                        </Box>
+                      )}
+                    </MenuItem>
+                    <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                      <Typography variant='h6' component='span'>
+                        Websearch
+                      </Typography>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            checked={websearch === null}
+                            onClick={() => {
+                              setWebsearch((old) => (old === null ? false : null));
+                            }}
+                          />
+                        }
+                        label='Use Default'
+                      />
+                      {websearch !== null && (
+                        <Box display='flex' flexDirection='row' alignItems='center'>
+                          <Typography variant='caption'>
+                            {websearch === null ? null : websearch ? 'Always' : 'Never'}
+                          </Typography>
+                          <Tooltip title='Websearch'>
+                            <Switch
+                              color='primary'
+                              checked={websearch}
+                              disabled={websearch === null}
+                              onClick={() => {
+                                setWebsearch((old) => !old);
+                              }}
+                            />
+                          </Tooltip>
+                        </Box>
+                      )}
+                    </MenuItem>
+                  </MenuList>
+                </Popover>
                 {enableFileUpload && !alternativeInputActive && (
                   <>
                     <Tooltip title='Upload File(s)'>

@@ -1,3 +1,4 @@
+'use client';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { UIProps } from '../InteractiveAGiXT';
@@ -6,6 +7,7 @@ import ChatLog from './ChatLog';
 import ChatBar from './ChatBar';
 import { RuleFolderRounded } from '@mui/icons-material';
 import { get } from 'http';
+import { getCookie } from 'cookies-next';
 
 export async function getAndFormatConversastion(state): Promise<any[]> {
   const rawConversation = await state.agixt.getConversation(state.overrides.conversationName, 100, 1);
@@ -71,11 +73,12 @@ export default function Chat({
   async function chat(message, files): Promise<string> {
     const messages = [];
     // console.log(message);
+    let toPush: any = {};
     if (typeof message === 'object' && message.type === 'audio_url') {
-      messages.push({
+      toPush = {
         role: 'user',
         content: [message],
-      });
+      };
     } else {
       if (Object.keys(files).length > 0) {
         const fileContents = Object.entries(files).map(([fileName, fileContent]: [string, string]) => ({
@@ -85,16 +88,23 @@ export default function Chat({
             url: fileContent,
           },
         }));
-        messages.push({
+        toPush = {
           role: 'user',
           content: [
             { type: 'text', text: message },
             ...fileContents, // Spread operator to include all file contents
           ],
-        });
+        };
       } else {
-        messages.push({ role: 'user', content: message });
+        toPush = { role: 'user', content: message };
       }
+      if (getCookie('agixt-tts') !== undefined) {
+        toPush.tts = getCookie('agixt-tts');
+      }
+      if (getCookie('agixt-websearch') !== undefined) {
+        toPush.websearch = getCookie('agixt-websearch');
+      }
+      messages.push(toPush);
     }
 
     const toOpenAI = {
