@@ -13,6 +13,7 @@
     "fix": "prettier --write . && next lint --fix",
     "storybook": "storybook dev -p 6009",
     "storybook-build": "storybook build",
+    "test-storybook": "test-storybook --url http://localhost:6009",
     "storybook-deploy": "storybook build && gh-pages -d storybook-static"
   },
   "repository": {
@@ -91,6 +92,7 @@
     "@storybook/nextjs": "^8.1.10",
     "@storybook/react": "^8.1.4",
     "@storybook/test": "^8.1.4",
+    "@storybook/test-runner": "^0.19.0",
     "@types/node": "^20.14.8",
     "@types/react": "^18.3.3",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
