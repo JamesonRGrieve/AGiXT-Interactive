@@ -305,6 +305,7 @@ export default function ChatBar({
                           height: '56px',
                           padding: '0.5rem',
                         }}
+                        data-testid='send-message-button'
                       >
                         <SendIcon />
                       </IconButton>

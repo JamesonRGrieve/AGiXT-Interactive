@@ -1,5 +1,5 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
+import { userEvent, within, expect } from '@storybook/test';
 import ChatBar from './ChatBar';
 
 const mockOnSend = async (message: string | object, uploadedFiles?: { [x: string]: string }) => {
@@ -8,7 +8,7 @@ const mockOnSend = async (message: string | object, uploadedFiles?: { [x: string
 };
 
 const meta: Meta<typeof ChatBar> = {
-  title: 'Messaging/ChatBar',
+  title: 'Chat/ChatBar',
   component: ChatBar,
   tags: ['autodocs'],
   parameters: {
@@ -34,6 +34,13 @@ export const Default: Story = {
     showChatThemeToggles: true,
     enableFileUpload: true,
     enableVoiceInput: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole('textbox'));
+    await userEvent.type(canvas.getByRole('textbox'), 'Hello, World!');
+    await userEvent.click(canvas.getByTestId('send-message-button'));
+    await expect(canvas.getByRole('textbox')).toHaveValue('');
   },
 };
 
@@ -64,3 +71,16 @@ export const WithoutVoiceInput: Story = {
     enableVoiceInput: false,
   },
 };
+
+// Interaction tests
+
+/*
+1. Send message (shouldn't send on empty, and should clean on send)
+2. Upload file (should open a dialog and files should show up when uploaded)
+3. Using voice?
+4. Loading state
+5. Settings toggle (should open and settings should be toggled)
+6. Disabled state
+
+*/
+
