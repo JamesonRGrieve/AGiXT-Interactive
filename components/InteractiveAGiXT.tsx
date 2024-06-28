@@ -351,6 +351,7 @@ const InteractiveAGiXT = ({
         : 'Assuming a InteractiveConfigContext Provider encloses this instance.'
     }`,
   );
+  console.log('Initializing user interface with options: ', uiConfigWithEnv);
   // console.log('Configuration Provided From Server: ', chatConfig, serverConfig, uiConfig);
   return stateful ? (
     <Stateful overrides={overrides} serverConfig={serverConfig} uiConfig={uiConfigWithEnv} agent={agent} />

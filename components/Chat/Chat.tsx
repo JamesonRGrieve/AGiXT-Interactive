@@ -54,10 +54,11 @@ export default function Chat({
   alternateBackground,
   enableFileUpload,
   enableVoiceInput,
+  showOverrideSwitches,
 }: Overrides & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
-
+  console.log('OVERRIDE: ', showOverrideSwitches);
   const state = useContext(InteractiveConfigContext);
   const conversation = useSWR(
     conversationSWRPath + state.overrides.conversationName,
@@ -158,6 +159,7 @@ export default function Chat({
         enableVoiceInput={enableVoiceInput}
         loading={loading}
         setLoading={setLoading}
+        showOverrideSwitches={showOverrideSwitches}
       />
     </>
   );
