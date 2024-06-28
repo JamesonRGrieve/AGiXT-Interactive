@@ -56,6 +56,7 @@ export default function ChatBar({
   const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [alternativeInputActive, setAlternativeInputActive] = useState(false);
+
   useEffect(() => {
     console.log(uploadedFiles);
   }, [uploadedFiles]);
