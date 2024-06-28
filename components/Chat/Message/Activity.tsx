@@ -67,7 +67,22 @@ export default function Activity({
     gap: '0.5rem',
   };
   const rootChildren = (
-    <Tooltip title={formatDate(timestamp, false)}>
+    <Tooltip
+      title={formatDate(timestamp, false)}
+      placement='bottom-start'
+      slotProps={{
+        popper: {
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [12, -28],
+              },
+            },
+          ],
+        },
+      }}
+    >
       <Typography sx={rootStyles} variant='body1' display='flex' alignItems='center' margin='0'>
         {inProgress ? <SpinningIcon /> : severities[severity.toString()]}
         <MarkdownBlock content={message + dots} />
