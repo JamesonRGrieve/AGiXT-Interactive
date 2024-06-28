@@ -65,9 +65,6 @@ export default function Activity({
     display: 'flex',
     alignItems: 'center',
     gap: '0.5rem',
-    '& .MuiTypography-body1': {
-      margin: 0,
-    },
   };
   const rootChildren = (
     <Tooltip title={formatDate(timestamp, false)}>
