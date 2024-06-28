@@ -38,6 +38,7 @@ export default function ChatBar({
   showChatThemeToggles = process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
   enableFileUpload = false,
   enableVoiceInput = false,
+  showOverrideSwitches = true,
 }: {
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
   disabled: boolean;
@@ -47,6 +48,7 @@ export default function ChatBar({
   showChatThemeToggles: boolean;
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
+  showOverrideSwitches?: boolean;
 }): ReactNode {
   const state = useContext(InteractiveConfigContext);
   const [timer, setTimer] = useState<number>(-1);
@@ -167,95 +169,99 @@ export default function ChatBar({
                     </Box>
                   </Tooltip>
                 )}
-                <Tooltip title='Override Settings'>
-                  <IconButton
-                    color='primary'
-                    onClick={(event) => {
-                      setAnchorEl(event.currentTarget);
-                    }}
-                  >
-                    <ArrowDropUp />
-                  </IconButton>
-                </Tooltip>
-                <Popover
-                  open={Boolean(anchorEl)}
-                  anchorEl={anchorEl}
-                  onClose={() => setAnchorEl(null)}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                  }}
-                  transformOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
-                  }}
-                >
-                  <MenuList dense>
-                    <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Typography variant='h6' component='span'>
-                        Text-To-Speech
-                      </Typography>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={tts === null}
-                            onClick={() => {
-                              setTTS((old) => (old === null ? false : null));
-                            }}
-                          />
-                        }
-                        label='Use Default'
-                      />
-                      {tts !== null && (
-                        <Box display='flex' flexDirection='row' alignItems='center'>
-                          <Typography variant='caption'>{tts === null ? null : tts ? 'Always' : 'Never'}</Typography>
-                          <Tooltip title='Text-to-Speech'>
-                            <Switch
-                              color='primary'
-                              checked={tts}
-                              onClick={() => {
-                                setTTS((old) => !old);
-                              }}
-                            />
-                          </Tooltip>
-                        </Box>
-                      )}
-                    </MenuItem>
-                    <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Typography variant='h6' component='span'>
-                        Websearch
-                      </Typography>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={websearch === null}
-                            onClick={() => {
-                              setWebsearch((old) => (old === null ? false : null));
-                            }}
-                          />
-                        }
-                        label='Use Default'
-                      />
-                      {websearch !== null && (
-                        <Box display='flex' flexDirection='row' alignItems='center'>
-                          <Typography variant='caption'>
-                            {websearch === null ? null : websearch ? 'Always' : 'Never'}
+                {showOverrideSwitches && (
+                  <>
+                    <Tooltip title='Override Settings'>
+                      <IconButton
+                        color='primary'
+                        onClick={(event) => {
+                          setAnchorEl(event.currentTarget);
+                        }}
+                      >
+                        <ArrowDropUp />
+                      </IconButton>
+                    </Tooltip>
+                    <Popover
+                      open={Boolean(anchorEl)}
+                      anchorEl={anchorEl}
+                      onClose={() => setAnchorEl(null)}
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                      }}
+                      transformOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                      }}
+                    >
+                      <MenuList dense>
+                        <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <Typography variant='h6' component='span'>
+                            Text-To-Speech
                           </Typography>
-                          <Tooltip title='Websearch'>
-                            <Switch
-                              color='primary'
-                              checked={websearch}
-                              disabled={websearch === null}
-                              onClick={() => {
-                                setWebsearch((old) => !old);
-                              }}
-                            />
-                          </Tooltip>
-                        </Box>
-                      )}
-                    </MenuItem>
-                  </MenuList>
-                </Popover>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={tts === null}
+                                onClick={() => {
+                                  setTTS((old) => (old === null ? false : null));
+                                }}
+                              />
+                            }
+                            label='Use Default'
+                          />
+                          {tts !== null && (
+                            <Box display='flex' flexDirection='row' alignItems='center'>
+                              <Typography variant='caption'>{tts === null ? null : tts ? 'Always' : 'Never'}</Typography>
+                              <Tooltip title='Text-to-Speech'>
+                                <Switch
+                                  color='primary'
+                                  checked={tts}
+                                  onClick={() => {
+                                    setTTS((old) => !old);
+                                  }}
+                                />
+                              </Tooltip>
+                            </Box>
+                          )}
+                        </MenuItem>
+                        <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <Typography variant='h6' component='span'>
+                            Websearch
+                          </Typography>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                checked={websearch === null}
+                                onClick={() => {
+                                  setWebsearch((old) => (old === null ? false : null));
+                                }}
+                              />
+                            }
+                            label='Use Default'
+                          />
+                          {websearch !== null && (
+                            <Box display='flex' flexDirection='row' alignItems='center'>
+                              <Typography variant='caption'>
+                                {websearch === null ? null : websearch ? 'Always' : 'Never'}
+                              </Typography>
+                              <Tooltip title='Websearch'>
+                                <Switch
+                                  color='primary'
+                                  checked={websearch}
+                                  disabled={websearch === null}
+                                  onClick={() => {
+                                    setWebsearch((old) => !old);
+                                  }}
+                                />
+                              </Tooltip>
+                            </Box>
+                          )}
+                        </MenuItem>
+                      </MenuList>
+                    </Popover>
+                  </>
+                )}
                 {enableFileUpload && !alternativeInputActive && (
                   <>
                     <Tooltip title='Upload File(s)'>
