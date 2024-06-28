@@ -65,17 +65,17 @@ export default function Activity({
     display: 'flex',
     alignItems: 'center',
     gap: '0.5rem',
+    '& .MuiTypography-body1': {
+      margin: 0,
+    },
   };
   const rootChildren = (
-    <>
-      {inProgress ? <SpinningIcon /> : severities[severity.toString()]}
-      <Tooltip title={formatDate(timestamp, false)}>
-        <Typography variant='body1' display='flex' alignItems='center' margin='0'>
-          <MarkdownBlock content={message} />
-          {dots}
-        </Typography>
-      </Tooltip>
-    </>
+    <Tooltip title={formatDate(timestamp, false)}>
+      <Typography sx={rootStyles} variant='body1' display='flex' alignItems='center' margin='0'>
+        {inProgress ? <SpinningIcon /> : severities[severity.toString()]}
+        <MarkdownBlock content={message + dots} />
+      </Typography>
+    </Tooltip>
   );
 
   if (!children?.length) {
@@ -132,5 +132,7 @@ export default function Activity({
         })}
       </AccordionDetails>
     </Accordion>
+  ) : (
+    rootChildren
   );
 }

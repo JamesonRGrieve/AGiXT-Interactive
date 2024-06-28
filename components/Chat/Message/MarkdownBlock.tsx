@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import CodeBlock from './Markdown/CodeBlock';
 import remarkGfm from 'remark-gfm';
 import ListItem from '@mui/material/ListItem';
-import { List } from '@mui/material';
+import { List, Typography } from '@mui/material';
 import MarkdownHeading from './Markdown/Heading';
 import MarkdownLink from './Markdown/Link';
 import MarkdownImage from './Markdown/Image';
@@ -50,13 +50,6 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
         remarkPlugins={[[remarkGfm]]}
         className='react-markdown'
         components={{
-          li({ children }) {
-            return <ListItem sx={{ display: 'list-item', paddingY: '0.2rem' }}>{children}</ListItem>;
-          },
-
-          a({ children, ...props }) {
-            return <MarkdownLink {...props}>{children}</MarkdownLink>;
-          },
           h1({ children }) {
             return <MarkdownHeading tag='h1'>{children}</MarkdownHeading>;
           },
@@ -74,6 +67,16 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
           },
           h6({ children }) {
             return <MarkdownHeading tag='h6'>{children}</MarkdownHeading>;
+          },
+          p({ children }) {
+            return (
+              <Typography variant='body1' my='0.5rem'>
+                {children}
+              </Typography>
+            );
+          },
+          a({ children, ...props }) {
+            return <MarkdownLink {...props}>{children}</MarkdownLink>;
           },
           ul({ children }) {
             return (
@@ -101,6 +104,20 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
               >
                 {children}
               </List>
+            );
+          },
+          li({ children }) {
+            return (
+              <ListItem
+                sx={{
+                  display: 'list-item',
+                  '& .MuiTypography-body1': {
+                    my: '0.25rem',
+                  },
+                }}
+              >
+                {children}
+              </ListItem>
             );
           },
           code({ ...props }) {
