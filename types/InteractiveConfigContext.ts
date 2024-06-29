@@ -1,7 +1,7 @@
 'use client';
 import AGiXTSDK from 'agixt';
 import OpenAI from 'openai';
-import { Context, createContext } from 'react';
+import { Context, createContext, useContext } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ConfigDefault = require('./InteractiveConfigDefault');
@@ -43,3 +43,13 @@ export const InteractiveConfigContext: Context<InteractiveConfig> = createContex
   ConfigDefault as unknown as InteractiveConfig,
 );
 export const InteractiveConfigDefault = ConfigDefault;
+
+export const useInteractiveConfig = (): InteractiveConfig => {
+  const context = useContext(InteractiveConfigContext);
+
+  if (context === undefined) {
+    throw new Error('No InteractiveConfigContext found');
+  }
+
+  return context;
+};
