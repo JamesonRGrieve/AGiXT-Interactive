@@ -131,14 +131,7 @@ export default function ChatBar({
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
-      <Box
-        display='flex'
-        flexDirection='row'
-        justifyContent='space-between'
-        alignItems='center'
-        width='100%'
-        sx={{ border: '10px solid green' }}
-      >
+      <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
         <TextField
           label={`Enter your message to ${state.agent} here.`}
           placeholder={`Hello, ${state.agent}!`}
@@ -174,121 +167,16 @@ export default function ChatBar({
                     </Box>
                   </Tooltip>
                 )}
-                <Tooltip title='Override Settings'>
-                  <IconButton
-                    color='primary'
-                    onClick={(event) => {
-                      setAnchorEl(event.currentTarget);
-                    }}
-                  >
-                    <ArrowDropUp />
-                  </IconButton>
-                </Tooltip>
-                <Popover
-                  open={Boolean(anchorEl)}
-                  anchorEl={anchorEl}
-                  onClose={() => setAnchorEl(null)}
-                  anchorOrigin={{
-                    vertical: 'top',
-                    horizontal: 'center',
-                  }}
-                  transformOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'center',
-                  }}
-                >
-                  <MenuList dense>
-                    <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Typography variant='h6' component='span'>
-                        Text-To-Speech
-                      </Typography>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={tts === null}
-                            onClick={() => {
-                              setTTS((old) => (old === null ? false : null));
-                            }}
-                          />
-                        }
-                        label='Use Default'
-                      />
-                      {tts !== null && (
-                        <Box display='flex' flexDirection='row' alignItems='center'>
-                          <Typography variant='caption'>{tts === null ? null : tts ? 'Always' : 'Never'}</Typography>
-                          <Tooltip title='Text-to-Speech'>
-                            <Switch
-                              color='primary'
-                              checked={tts}
-                              onClick={() => {
-                                setTTS((old) => !old);
-                              }}
-                            />
-                          </Tooltip>
-                        </Box>
-                      )}
-                    </MenuItem>
-                    <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                      <Typography variant='h6' component='span'>
-                        Websearch
-                      </Typography>
-                      <FormControlLabel
-                        control={
-                          <Checkbox
-                            checked={websearch === null}
-                            onClick={() => {
-                              setWebsearch((old) => (old === null ? false : null));
-                            }}
-                          />
-                        }
-                        label='Use Default'
-                      />
-                      {websearch !== null && (
-                        <Box display='flex' flexDirection='row' alignItems='center'>
-                          <Typography variant='caption'>
-                            {websearch === null ? null : websearch ? 'Always' : 'Never'}
-                          </Typography>
-                          <Tooltip title='Websearch'>
-                            <Switch
-                              color='primary'
-                              checked={websearch}
-                              disabled={websearch === null}
-                              onClick={() => {
-                                setWebsearch((old) => !old);
-                              }}
-                            />
-                          </Tooltip>
-                        </Box>
-                      )}
-                    </MenuItem>
-                  </MenuList>
-                </Popover>
+                <ChatOverrideSettings {...{ tts, setTTS, websearch, setWebsearch }} />
                 {enableFileUpload && !alternativeInputActive && (
-                  <>
-                    <Tooltip title='Upload File(s)'>
-                      <IconButton
-                        onClick={() => {
-                          setFileUploadOpen(true);
-                        }}
-                        disabled={disabled}
-                        color='primary'
-                      >
-                        <NoteAddOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <MUIDialog
-                      open={fileUploadOpen}
-                      onClose={() => {
-                        setFileUploadOpen(false);
-                      }}
-                    >
-                      <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
-                      <DialogContent>
-                        <DialogContentText>Please upload the files you would like to send.</DialogContentText>
-                        <input accept='*' id='contained-button-file' multiple type='file' onChange={handleUploadFiles} />
-                      </DialogContent>
-                    </MUIDialog>
-                  </>
+                  <UploadFiles
+                    {...{
+                      handleUploadFiles,
+                      disabled,
+                      setFileUploadOpen,
+                      fileUploadOpen,
+                    }}
+                  />
                 )}
                 {enableVoiceInput && (
                   <AudioRecorder
@@ -333,6 +221,132 @@ export default function ChatBar({
     </Box>
   );
 }
+
+const ChatOverrideSettings = ({ setTTS, tts, setWebsearch, websearch }: any) => {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  return (
+    <>
+      <Tooltip title='Override Settings'>
+        <IconButton
+          color='primary'
+          onClick={(event) => {
+            setAnchorEl(event.currentTarget);
+          }}
+        >
+          <ArrowDropUp />
+        </IconButton>
+      </Tooltip>
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+      >
+        <MenuList dense>
+          <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography variant='h6' component='span'>
+              Text-To-Speech
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={tts === null}
+                  onClick={() => {
+                    setTTS((old) => (old === null ? false : null));
+                  }}
+                />
+              }
+              label='Use Default'
+            />
+            {tts !== null && (
+              <Box display='flex' flexDirection='row' alignItems='center'>
+                <Typography variant='caption'>{tts === null ? null : tts ? 'Always' : 'Never'}</Typography>
+                <Tooltip title='Text-to-Speech'>
+                  <Switch
+                    color='primary'
+                    checked={tts}
+                    onClick={() => {
+                      setTTS((old) => !old);
+                    }}
+                  />
+                </Tooltip>
+              </Box>
+            )}
+          </MenuItem>
+          <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography variant='h6' component='span'>
+              Websearch
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={websearch === null}
+                  onClick={() => {
+                    setWebsearch((old) => (old === null ? false : null));
+                  }}
+                />
+              }
+              label='Use Default'
+            />
+            {websearch !== null && (
+              <Box display='flex' flexDirection='row' alignItems='center'>
+                <Typography variant='caption'>{websearch === null ? null : websearch ? 'Always' : 'Never'}</Typography>
+                <Tooltip title='Websearch'>
+                  <Switch
+                    color='primary'
+                    checked={websearch}
+                    disabled={websearch === null}
+                    onClick={() => {
+                      setWebsearch((old) => !old);
+                    }}
+                  />
+                </Tooltip>
+              </Box>
+            )}
+          </MenuItem>
+        </MenuList>
+      </Popover>
+    </>
+  );
+};
+
+const UploadFiles = ({ handleUploadFiles, disabled, setFileUploadOpen, fileUploadOpen }: any) => {
+  return (
+    <>
+      <Tooltip title='Upload File(s)'>
+        <IconButton
+          onClick={() => {
+            setFileUploadOpen(true);
+          }}
+          disabled={disabled}
+          color='primary'
+        >
+          <NoteAddOutlinedIcon />
+        </IconButton>
+      </Tooltip>
+      <MUIDialog
+        open={fileUploadOpen}
+        onClose={() => {
+          setFileUploadOpen(false);
+        }}
+      >
+        <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Please upload the files you would like to send.</DialogContentText>
+          <input accept='*' id='contained-button-file' multiple type='file' onChange={handleUploadFiles} />
+        </DialogContent>
+      </MUIDialog>
+    </>
+  );
+};
 
 const ResetConversation = ({ state, setCookie }: any) => {
   return (
