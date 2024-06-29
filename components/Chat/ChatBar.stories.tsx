@@ -63,12 +63,20 @@ export const WithoutFileUpload: Story = {
     ...Default.args,
     enableFileUpload: false,
   },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(await canvas.getByLabelText('Record Audio')).toBeInTheDocument();
+  },
 };
 
 export const WithoutVoiceInput: Story = {
   args: {
     ...Default.args,
     enableVoiceInput: false,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(await canvas.getByLabelText('Upload File(s)')).toBeInTheDocument();
   },
 };
 
@@ -83,4 +91,3 @@ export const WithoutVoiceInput: Story = {
 6. Disabled state
 
 */
-
