@@ -85,7 +85,7 @@ export default function Activity({
     >
       <Typography sx={rootStyles} variant='body1' display='flex' alignItems='center' margin='0'>
         {inProgress ? <SpinningIcon /> : severities[severity.toString()]}
-        <MarkdownBlock content={message + dots} />
+        <MarkdownBlock content={message + inProgress && dots} />
       </Typography>
     </Tooltip>
   );
