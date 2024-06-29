@@ -171,38 +171,16 @@ export default function ChatBar({
                     onSend={handleSend}
                   />
                 )}
-                {!alternativeInputActive && (
-                  <Tooltip title='Send Message'>
-                    <span>
-                      <IconButton
-                        onClick={(event) => {
-                          event.preventDefault();
-                          handleSend(message, uploadedFiles);
-                        }}
-                        disabled={message.trim().length === 0 || disabled}
-                        color='primary'
-                        sx={{
-                          height: '56px',
-                          padding: '0.5rem',
-                        }}
-                        data-testid='send-message-button'
-                      >
-                        <SendIcon />
-                      </IconButton>
-                    </span>
-                  </Tooltip>
-                )}
+                {!alternativeInputActive && <SendMessage {...{ handleSend, message, uploadedFiles, disabled }} />}
               </InputAdornment>
             ),
           }}
         />
         {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
-          process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && (
-            <ResetConversation state={state} setCookie={setCookie} />
-          )}
+          process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && <ResetConversation {...{ state, setCookie }} />}
         {showChatThemeToggles && <ThemeToggles />}
       </Box>
-      {Object.keys(uploadedFiles).length > 0 && ListUploadedFiles({ uploadedFiles, setUploadedFiles })}
+      {Object.keys(uploadedFiles).length > 0 && <ListUploadedFiles {...{ uploadedFiles, setUploadedFiles }} />}
     </Box>
   );
 }
@@ -349,6 +327,30 @@ const UploadFiles = ({ handleUploadFiles, disabled, setFileUploadOpen, fileUploa
         </DialogContent>
       </MUIDialog>
     </>
+  );
+};
+
+const SendMessage = ({ handleSend, message, uploadedFiles, disabled }: any) => {
+  return (
+    <Tooltip title='Send Message'>
+      <span>
+        <IconButton
+          onClick={(event) => {
+            event.preventDefault();
+            handleSend(message, uploadedFiles);
+          }}
+          disabled={message.trim().length === 0 || disabled}
+          color='primary'
+          sx={{
+            height: '56px',
+            padding: '0.5rem',
+          }}
+          data-testid='send-message-button'
+        >
+          <SendIcon />
+        </IconButton>
+      </span>
+    </Tooltip>
   );
 };
 
