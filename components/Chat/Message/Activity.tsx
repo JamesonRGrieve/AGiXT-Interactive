@@ -77,7 +77,12 @@ export default function Activity({
       </Tooltip>
     </>
   );
-  return children?.length > 0 ? (
+
+  if (!children?.length) {
+    return <Box sx={rootStyles}>{rootChildren}</Box>;
+  }
+
+  return (
     <Accordion
       elevation={0}
       sx={{
@@ -127,7 +132,5 @@ export default function Activity({
         })}
       </AccordionDetails>
     </Accordion>
-  ) : (
-    <Box sx={rootStyles}>{rootChildren}</Box>
   );
 }
