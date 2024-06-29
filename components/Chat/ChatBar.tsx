@@ -151,22 +151,7 @@ export default function ChatBar({
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
-                {timer > -1 && (
-                  <Tooltip
-                    title={
-                      loading
-                        ? `Your most recent interation has been underway (including all activities) for ${(timer / 10).toFixed(1)} seconds.`
-                        : `Your last interaction took ${(timer / 10).toFixed(1)} seconds to completely resolve.`
-                    }
-                  >
-                    <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
-                      <Typography variant='caption' display='flex' position='relative' top='0.15rem'>
-                        {(timer / 10).toFixed(1)}s
-                      </Typography>
-                      {loading ? <Pending color='info' /> : <CheckCircle color='success' />}
-                    </Box>
-                  </Tooltip>
-                )}
+                {timer > -1 && <Timer {...{ timer, loading }} />}
                 <ChatOverrideSettings {...{ tts, setTTS, websearch, setWebsearch }} />
                 {enableFileUpload && !alternativeInputActive && (
                   <UploadFiles
@@ -221,6 +206,25 @@ export default function ChatBar({
     </Box>
   );
 }
+
+const Timer = ({ timer, loading }: any) => {
+  return (
+    <Tooltip
+      title={
+        loading
+          ? `Your most recent interation has been underway (including all activities) for ${(timer / 10).toFixed(1)} seconds.`
+          : `Your last interaction took ${(timer / 10).toFixed(1)} seconds to completely resolve.`
+      }
+    >
+      <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
+        <Typography variant='caption' display='flex' position='relative' top='0.15rem'>
+          {(timer / 10).toFixed(1)}s
+        </Typography>
+        {loading ? <Pending color='info' /> : <CheckCircle color='success' />}
+      </Box>
+    </Tooltip>
+  );
+};
 
 const ChatOverrideSettings = ({ setTTS, tts, setWebsearch, websearch }: any) => {
   const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
