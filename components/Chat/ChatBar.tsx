@@ -131,7 +131,14 @@ export default function ChatBar({
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
-      <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
+      <Box
+        display='flex'
+        flexDirection='row'
+        justifyContent='space-between'
+        alignItems='center'
+        width='100%'
+        sx={{ border: '10px solid green' }}
+      >
         <TextField
           label={`Enter your message to ${state.agent} here.`}
           placeholder={`Hello, ${state.agent}!`}
@@ -318,61 +325,67 @@ export default function ChatBar({
         />
         {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
           process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && (
-            <Dialog
-              ButtonComponent={IconButton}
-              ButtonProps={{
-                children: <DeleteForever />,
-                disabled: false,
-                color: 'primary',
-                sx: {
-                  height: '56px',
-                  padding: '1rem',
-                },
-              }}
-              title='Are you sure you want to reset the conversation? This cannot be undone.'
-              onConfirm={() => {
-                const uuid = crypto.randomUUID();
-                setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
-                state.mutate((oldState) => ({
-                  ...oldState,
-                  overrides: { ...oldState.overrides, conversationName: uuid },
-                }));
-              }}
-            />
+            <ResetConversation state={state} setCookie={setCookie} />
           )}
-        {showChatThemeToggles && (
-          <Box display='flex' flexDirection='column' alignItems='center'>
-            <SwitchDark />
-            <SwitchColorblind />
-          </Box>
-        )}
+        {showChatThemeToggles && <ThemeToggles />}
       </Box>
-      {Object.keys(uploadedFiles).length > 0 && (
-        <Box
-          display='flex'
-          flexDirection='row'
-          justifyContent='start'
-          width='100%'
-          mb='1rem'
-          gap='0.5rem'
-          alignItems='center'
-        >
-          <Typography variant='caption'>Uploaded Files: </Typography>
-          {Object.entries(uploadedFiles).map(([fileName]) => (
-            <Chip
-              key={fileName}
-              label={fileName}
-              onDelete={() => {
-                setUploadedFiles((prevFiles) => {
-                  const newFiles = { ...prevFiles };
-                  delete newFiles[String(fileName)];
-                  return newFiles;
-                });
-              }}
-            />
-          ))}
-        </Box>
-      )}
+      {Object.keys(uploadedFiles).length > 0 && ListUploadedFiles({ uploadedFiles, setUploadedFiles })}
     </Box>
   );
 }
+
+const ResetConversation = ({ state, setCookie }: any) => {
+  return (
+    <Dialog
+      ButtonComponent={IconButton}
+      ButtonProps={{
+        children: <DeleteForever />,
+        disabled: false,
+        color: 'primary',
+        sx: {
+          height: '56px',
+          padding: '1rem',
+        },
+      }}
+      title='Are you sure you want to reset the conversation? This cannot be undone.'
+      onConfirm={() => {
+        const uuid = crypto.randomUUID();
+        setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+        state.mutate((oldState) => ({
+          ...oldState,
+          overrides: { ...oldState.overrides, conversationName: uuid },
+        }));
+      }}
+    />
+  );
+};
+
+const ThemeToggles = (): ReactNode => {
+  return (
+    <Box display='flex' flexDirection='column' alignItems='center'>
+      <SwitchDark />
+      <SwitchColorblind />
+    </Box>
+  );
+};
+
+const ListUploadedFiles = ({ uploadedFiles, setUploadedFiles }: any): ReactNode => {
+  return (
+    <Box display='flex' flexDirection='row' justifyContent='start' width='100%' mb='1rem' gap='0.5rem' alignItems='center'>
+      <Typography variant='caption'>Uploaded Files: </Typography>
+      {Object.entries(uploadedFiles).map(([fileName]) => (
+        <Chip
+          key={fileName}
+          label={fileName}
+          onDelete={() => {
+            setUploadedFiles((prevFiles) => {
+              const newFiles = { ...prevFiles };
+              delete newFiles[String(fileName)];
+              return newFiles;
+            });
+          }}
+        />
+      ))}
+    </Box>
+  );
+};
