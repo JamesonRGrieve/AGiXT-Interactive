@@ -131,6 +131,7 @@ export default function ChatBar({
     }
   }, [tts, websearch]);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
       <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
@@ -153,141 +154,12 @@ export default function ChatBar({
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
-                {timer > -1 && (
-                  <Tooltip
-                    title={
-                      loading
-                        ? `Your most recent interation has been underway (including all activities) for ${(timer / 10).toFixed(1)} seconds.`
-                        : `Your last interaction took ${(timer / 10).toFixed(1)} seconds to completely resolve.`
-                    }
-                  >
-                    <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
-                      <Typography variant='caption' display='flex' position='relative' top='0.15rem'>
-                        {(timer / 10).toFixed(1)}s
-                      </Typography>
-                      {loading ? <Pending color='info' /> : <CheckCircle color='success' />}
-                    </Box>
-                  </Tooltip>
-                )}
+                {timer > -1 && <Timer {...{ loading, timer }} />}
                 {showOverrideSwitches && (
-                  <>
-                    <Tooltip title='Override Settings'>
-                      <IconButton
-                        color='primary'
-                        onClick={(event) => {
-                          setAnchorEl(event.currentTarget);
-                        }}
-                      >
-                        <ArrowDropUp />
-                      </IconButton>
-                    </Tooltip>
-                    <Popover
-                      open={Boolean(anchorEl)}
-                      anchorEl={anchorEl}
-                      onClose={() => setAnchorEl(null)}
-                      anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                      }}
-                      transformOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'center',
-                      }}
-                    >
-                      <MenuList dense>
-                        <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                          <Typography variant='h6' component='span'>
-                            Text-To-Speech
-                          </Typography>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={tts === null}
-                                onClick={() => {
-                                  setTTS((old) => (old === null ? false : null));
-                                }}
-                              />
-                            }
-                            label='Use Default'
-                          />
-                          {tts !== null && (
-                            <Box display='flex' flexDirection='row' alignItems='center'>
-                              <Typography variant='caption'>{tts === null ? null : tts ? 'Always' : 'Never'}</Typography>
-                              <Tooltip title='Text-to-Speech'>
-                                <Switch
-                                  color='primary'
-                                  checked={tts}
-                                  onClick={() => {
-                                    setTTS((old) => !old);
-                                  }}
-                                />
-                              </Tooltip>
-                            </Box>
-                          )}
-                        </MenuItem>
-                        <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                          <Typography variant='h6' component='span'>
-                            Websearch
-                          </Typography>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={websearch === null}
-                                onClick={() => {
-                                  setWebsearch((old) => (old === null ? false : null));
-                                }}
-                              />
-                            }
-                            label='Use Default'
-                          />
-                          {websearch !== null && (
-                            <Box display='flex' flexDirection='row' alignItems='center'>
-                              <Typography variant='caption'>
-                                {websearch === null ? null : websearch ? 'Always' : 'Never'}
-                              </Typography>
-                              <Tooltip title='Websearch'>
-                                <Switch
-                                  color='primary'
-                                  checked={websearch}
-                                  disabled={websearch === null}
-                                  onClick={() => {
-                                    setWebsearch((old) => !old);
-                                  }}
-                                />
-                              </Tooltip>
-                            </Box>
-                          )}
-                        </MenuItem>
-                      </MenuList>
-                    </Popover>
-                  </>
+                  <OverrideSwitches {...{ setTTS, setWebsearch, tts, websearch, setAnchorEl, anchorEl }} />
                 )}
                 {enableFileUpload && !alternativeInputActive && (
-                  <>
-                    <Tooltip title='Upload File(s)'>
-                      <IconButton
-                        onClick={() => {
-                          setFileUploadOpen(true);
-                        }}
-                        disabled={disabled}
-                        color='primary'
-                      >
-                        <NoteAddOutlinedIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <MUIDialog
-                      open={fileUploadOpen}
-                      onClose={() => {
-                        setFileUploadOpen(false);
-                      }}
-                    >
-                      <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
-                      <DialogContent>
-                        <DialogContentText>Please upload the files you would like to send.</DialogContentText>
-                        <input accept='*' id='contained-button-file' multiple type='file' onChange={handleUploadFiles} />
-                      </DialogContent>
-                    </MUIDialog>
-                  </>
+                  <UploadFiles {...{ handleUploadFiles, disabled, setFileUploadOpen, fileUploadOpen }} />
                 )}
                 {enableVoiceInput && (
                   <AudioRecorder
@@ -297,87 +169,240 @@ export default function ChatBar({
                     onSend={handleSend}
                   />
                 )}
-                {!alternativeInputActive && (
-                  <Tooltip title='Send Message'>
-                    <span>
-                      <IconButton
-                        onClick={(event) => {
-                          event.preventDefault();
-                          handleSend(message, uploadedFiles);
-                        }}
-                        disabled={message.trim().length === 0 || disabled}
-                        color='primary'
-                        sx={{
-                          height: '56px',
-                          padding: '0.5rem',
-                        }}
-                      >
-                        <SendIcon />
-                      </IconButton>
-                    </span>
-                  </Tooltip>
-                )}
+                {!alternativeInputActive && <SendMessage {...{ handleSend, message, uploadedFiles, disabled }} />}
               </InputAdornment>
             ),
           }}
         />
         {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
-          process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && (
-            <Dialog
-              ButtonComponent={IconButton}
-              ButtonProps={{
-                children: <DeleteForever />,
-                disabled: false,
-                color: 'primary',
-                sx: {
-                  height: '56px',
-                  padding: '1rem',
-                },
-              }}
-              title='Are you sure you want to reset the conversation? This cannot be undone.'
-              onConfirm={() => {
-                const uuid = crypto.randomUUID();
-                setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
-                state.mutate((oldState) => ({
-                  ...oldState,
-                  overrides: { ...oldState.overrides, conversationName: uuid },
-                }));
-              }}
-            />
-          )}
-        {showChatThemeToggles && (
-          <Box display='flex' flexDirection='column' alignItems='center'>
-            <SwitchDark />
-            <SwitchColorblind />
-          </Box>
-        )}
+          process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && <ResetConversation {...{ state, setCookie }} />}
+        {showChatThemeToggles && <ThemeToggles />}
       </Box>
-      {Object.keys(uploadedFiles).length > 0 && (
-        <Box
-          display='flex'
-          flexDirection='row'
-          justifyContent='start'
-          width='100%'
-          mb='1rem'
-          gap='0.5rem'
-          alignItems='center'
-        >
-          <Typography variant='caption'>Uploaded Files: </Typography>
-          {Object.entries(uploadedFiles).map(([fileName]) => (
-            <Chip
-              key={fileName}
-              label={fileName}
-              onDelete={() => {
-                setUploadedFiles((prevFiles) => {
-                  const newFiles = { ...prevFiles };
-                  delete newFiles[String(fileName)];
-                  return newFiles;
-                });
-              }}
-            />
-          ))}
-        </Box>
-      )}
+      {Object.keys(uploadedFiles).length > 0 && <ListUploadedFiles {...{ uploadedFiles, setUploadedFiles }} />}
     </Box>
   );
 }
+
+// Extracted for better readability of the chat bar component and testing in Storybook
+const Timer = ({ loading, timer }: any) => {
+  return (
+    <Tooltip
+      title={
+        loading
+          ? `Your most recent interation has been underway (including all activities) for ${(timer / 10).toFixed(1)} seconds.`
+          : `Your last interaction took ${(timer / 10).toFixed(1)} seconds to completely resolve.`
+      }
+    >
+      <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
+        <Typography variant='caption' display='flex' position='relative' top='0.15rem'>
+          {(timer / 10).toFixed(1)}s
+        </Typography>
+        {loading ? <Pending color='info' /> : <CheckCircle color='success' />}
+      </Box>
+    </Tooltip>
+  );
+};
+
+const OverrideSwitches = ({ setTTS, setWebsearch, tts, websearch, setAnchorEl, anchorEl }: any) => {
+  return (
+    <>
+      <Tooltip title='Override Settings'>
+        <IconButton
+          color='primary'
+          onClick={(event) => {
+            setAnchorEl(event.currentTarget);
+          }}
+        >
+          <ArrowDropUp />
+        </IconButton>
+      </Tooltip>
+      <Popover
+        open={Boolean(anchorEl)}
+        anchorEl={anchorEl}
+        onClose={() => setAnchorEl(null)}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+      >
+        <MenuList dense>
+          <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography variant='h6' component='span'>
+              Text-To-Speech
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={tts === null}
+                  onClick={() => {
+                    setTTS((old) => (old === null ? false : null));
+                  }}
+                />
+              }
+              label='Use Default'
+            />
+            {tts !== null && (
+              <Box display='flex' flexDirection='row' alignItems='center'>
+                <Typography variant='caption'>{tts === null ? null : tts ? 'Always' : 'Never'}</Typography>
+                <Tooltip title='Text-to-Speech'>
+                  <Switch
+                    color='primary'
+                    checked={tts}
+                    onClick={() => {
+                      setTTS((old) => !old);
+                    }}
+                  />
+                </Tooltip>
+              </Box>
+            )}
+          </MenuItem>
+          <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Typography variant='h6' component='span'>
+              Websearch
+            </Typography>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={websearch === null}
+                  onClick={() => {
+                    setWebsearch((old) => (old === null ? false : null));
+                  }}
+                />
+              }
+              label='Use Default'
+            />
+            {websearch !== null && (
+              <Box display='flex' flexDirection='row' alignItems='center'>
+                <Typography variant='caption'>{websearch === null ? null : websearch ? 'Always' : 'Never'}</Typography>
+                <Tooltip title='Websearch'>
+                  <Switch
+                    color='primary'
+                    checked={websearch}
+                    disabled={websearch === null}
+                    onClick={() => {
+                      setWebsearch((old) => !old);
+                    }}
+                  />
+                </Tooltip>
+              </Box>
+            )}
+          </MenuItem>
+        </MenuList>
+      </Popover>
+    </>
+  );
+};
+
+const UploadFiles = ({ handleUploadFiles, disabled, setFileUploadOpen, fileUploadOpen }: any) => {
+  return (
+    <>
+      <Tooltip title='Upload File(s)'>
+        <IconButton
+          onClick={() => {
+            setFileUploadOpen(true);
+          }}
+          disabled={disabled}
+          color='primary'
+        >
+          <NoteAddOutlinedIcon />
+        </IconButton>
+      </Tooltip>
+      <MUIDialog
+        open={fileUploadOpen}
+        onClose={() => {
+          setFileUploadOpen(false);
+        }}
+      >
+        <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
+        <DialogContent>
+          <DialogContentText>Please upload the files you would like to send.</DialogContentText>
+          <input accept='*' id='contained-button-file' multiple type='file' onChange={handleUploadFiles} />
+        </DialogContent>
+      </MUIDialog>
+    </>
+  );
+};
+
+const SendMessage = ({ handleSend, message, uploadedFiles, disabled }: any) => {
+  return (
+    <Tooltip title='Send Message'>
+      <span>
+        <IconButton
+          onClick={(event) => {
+            event.preventDefault();
+            handleSend(message, uploadedFiles);
+          }}
+          disabled={message.trim().length === 0 || disabled}
+          color='primary'
+          sx={{
+            height: '56px',
+            padding: '0.5rem',
+          }}
+          data-testid='send-message-button'
+        >
+          <SendIcon />
+        </IconButton>
+      </span>
+    </Tooltip>
+  );
+};
+
+const ResetConversation = ({ state, setCookie }: any) => {
+  return (
+    <Dialog
+      ButtonComponent={IconButton}
+      ButtonProps={{
+        children: <DeleteForever />,
+        disabled: false,
+        color: 'primary',
+        sx: {
+          height: '56px',
+          padding: '1rem',
+        },
+      }}
+      title='Are you sure you want to reset the conversation? This cannot be undone.'
+      onConfirm={() => {
+        const uuid = crypto.randomUUID();
+        setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+        state.mutate((oldState) => ({
+          ...oldState,
+          overrides: { ...oldState.overrides, conversationName: uuid },
+        }));
+      }}
+    />
+  );
+};
+
+const ThemeToggles = (): ReactNode => {
+  return (
+    <Box display='flex' flexDirection='column' alignItems='center'>
+      <SwitchDark />
+      <SwitchColorblind />
+    </Box>
+  );
+};
+
+const ListUploadedFiles = ({ uploadedFiles, setUploadedFiles }: any): ReactNode => {
+  return (
+    <Box display='flex' flexDirection='row' justifyContent='start' width='100%' mb='1rem' gap='0.5rem' alignItems='center'>
+      <Typography variant='caption'>Uploaded Files: </Typography>
+      {Object.entries(uploadedFiles).map(([fileName]) => (
+        <Chip
+          key={fileName}
+          label={fileName}
+          onDelete={() => {
+            setUploadedFiles((prevFiles) => {
+              const newFiles = { ...prevFiles };
+              delete newFiles[String(fileName)];
+              return newFiles;
+            });
+          }}
+        />
+      ))}
+    </Box>
+  );
+};
