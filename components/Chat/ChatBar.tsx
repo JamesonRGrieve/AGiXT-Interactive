@@ -132,6 +132,7 @@ export default function ChatBar({
     }
   }, [tts, websearch]);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
       <Box display='flex' flexDirection='row' justifyContent='space-between' alignItems='center' width='100%'>
@@ -154,124 +155,12 @@ export default function ChatBar({
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
-                {timer > -1 && (
-                  <Tooltip
-                    title={
-                      loading
-                        ? `Your most recent interation has been underway (including all activities) for ${(timer / 10).toFixed(1)} seconds.`
-                        : `Your last interaction took ${(timer / 10).toFixed(1)} seconds to completely resolve.`
-                    }
-                  >
-                    <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
-                      <Typography variant='caption' display='flex' position='relative' top='0.15rem'>
-                        {(timer / 10).toFixed(1)}s
-                      </Typography>
-                      {loading ? <Pending color='info' /> : <CheckCircle color='success' />}
-                    </Box>
-                  </Tooltip>
-                )}
+                {timer > -1 && <Timer {...{ loading, timer }} />}
                 {showOverrideSwitches && (
-                  <>
-                    <Tooltip title='Override Settings'>
-                      <IconButton
-                        color='primary'
-                        onClick={(event) => {
-                          setAnchorEl(event.currentTarget);
-                        }}
-                      >
-                        <ArrowDropUp />
-                      </IconButton>
-                    </Tooltip>
-                    <Popover
-                      open={Boolean(anchorEl)}
-                      anchorEl={anchorEl}
-                      onClose={() => setAnchorEl(null)}
-                      anchorOrigin={{
-                        vertical: 'top',
-                        horizontal: 'center',
-                      }}
-                      transformOrigin={{
-                        vertical: 'bottom',
-                        horizontal: 'center',
-                      }}
-                    >
-                      <MenuList dense>
-                        <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                          <Typography variant='h6' component='span'>
-                            Text-To-Speech
-                          </Typography>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={tts === null}
-                                onClick={() => {
-                                  setTTS((old) => (old === null ? false : null));
-                                }}
-                              />
-                            }
-                            label='Use Default'
-                          />
-                          {tts !== null && (
-                            <Box display='flex' flexDirection='row' alignItems='center'>
-                              <Typography variant='caption'>{tts === null ? null : tts ? 'Always' : 'Never'}</Typography>
-                              <Tooltip title='Text-to-Speech'>
-                                <Switch
-                                  color='primary'
-                                  checked={tts}
-                                  onClick={() => {
-                                    setTTS((old) => !old);
-                                  }}
-                                />
-                              </Tooltip>
-                            </Box>
-                          )}
-                        </MenuItem>
-                        <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                          <Typography variant='h6' component='span'>
-                            Websearch
-                          </Typography>
-                          <FormControlLabel
-                            control={
-                              <Checkbox
-                                checked={websearch === null}
-                                onClick={() => {
-                                  setWebsearch((old) => (old === null ? false : null));
-                                }}
-                              />
-                            }
-                            label='Use Default'
-                          />
-                          {websearch !== null && (
-                            <Box display='flex' flexDirection='row' alignItems='center'>
-                              <Typography variant='caption'>
-                                {websearch === null ? null : websearch ? 'Always' : 'Never'}
-                              </Typography>
-                              <Tooltip title='Websearch'>
-                                <Switch
-                                  color='primary'
-                                  checked={websearch}
-                                  disabled={websearch === null}
-                                  onClick={() => {
-                                    setWebsearch((old) => !old);
-                                  }}
-                                />
-                              </Tooltip>
-                            </Box>
-                          )}
-                        </MenuItem>
-                      </MenuList>
-                    </Popover>
-                  </>
+                  <OverrideSwitches {...{ setTTS, setWebsearch, tts, websearch, setAnchorEl, anchorEl }} />
                 )}
                 {enableFileUpload && !alternativeInputActive && (
-                  <UploadFiles
-                    {...{
-                      handleUploadFiles,
-                      disabled,
-                      setFileUploadOpen,
-                      fileUploadOpen,
-                    }}
-                  />
+                  <UploadFiles {...{ handleUploadFiles, disabled, setFileUploadOpen, fileUploadOpen }} />
                 )}
                 {enableVoiceInput && (
                   <AudioRecorder
@@ -295,7 +184,8 @@ export default function ChatBar({
   );
 }
 
-const Timer = ({ timer, loading }: any) => {
+// Extracted for better readability of the chat bar component and testing in Storybook
+const Timer = ({ loading, timer }: any) => {
   return (
     <Tooltip
       title={
@@ -314,9 +204,7 @@ const Timer = ({ timer, loading }: any) => {
   );
 };
 
-const ChatOverrideSettings = ({ setTTS, tts, setWebsearch, websearch }: any) => {
-  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
-
+const OverrideSwitches = ({ setTTS, setWebsearch, tts, websearch, setAnchorEl, anchorEl }: any) => {
   return (
     <>
       <Tooltip title='Override Settings'>
