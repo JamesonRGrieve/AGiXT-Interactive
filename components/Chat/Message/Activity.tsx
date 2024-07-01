@@ -67,22 +67,29 @@ export default function Activity({
     gap: '0.5rem',
   };
   const rootChildren = (
-    <>
-      {inProgress ? <SpinningIcon /> : severities[severity.toString()]}
-      <Tooltip title={formatDate(timestamp, false)}>
-        <Typography variant='body1' display='flex' alignItems='center' margin='0'>
-          <MarkdownBlock content={message} />
-          {dots}
-        </Typography>
-      </Tooltip>
-    </>
+    <Tooltip
+      title={formatDate(timestamp, false)}
+      placement='bottom-start'
+      slotProps={{
+        popper: {
+          modifiers: [
+            {
+              name: 'offset',
+              options: {
+                offset: [12, -28],
+              },
+            },
+          ],
+        },
+      }}
+    >
+      <Typography sx={rootStyles} variant='body1' display='flex' alignItems='center' margin='0'>
+        {inProgress ? <SpinningIcon /> : severities[severity.toString()]}
+        <MarkdownBlock content={message + dots} />
+      </Typography>
+    </Tooltip>
   );
-
-  if (!children?.length) {
-    return <Box sx={rootStyles}>{rootChildren}</Box>;
-  }
-
-  return (
+  return children?.length > 0 ? (
     <Accordion
       elevation={0}
       sx={{
@@ -132,5 +139,7 @@ export default function Activity({
         })}
       </AccordionDetails>
     </Accordion>
+  ) : (
+    rootChildren
   );
 }

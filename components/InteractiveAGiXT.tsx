@@ -46,6 +46,7 @@ export type UIProps = {
   enableVoiceInput?: boolean;
   alternateBackground?: 'primary' | 'secondary';
   footerMessage?: string;
+  showOverrideSwitches?: boolean;
 };
 export type ServerProps = {
   apiKey: string;
@@ -304,6 +305,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
           showChatThemeToggles={props.showChatThemeToggles}
           enableFileUpload={props.enableFileUpload}
           enableVoiceInput={props.enableVoiceInput}
+          showOverrideSwitches={props.showOverrideSwitches}
         />
       ) : (
         <Chat
@@ -312,6 +314,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
           alternateBackground={props.alternateBackground}
           enableFileUpload={props.enableFileUpload}
           enableVoiceInput={props.enableVoiceInput}
+          showOverrideSwitches={props.showOverrideSwitches}
         />
       )}
     </AppWrapper>
@@ -335,6 +338,7 @@ const InteractiveAGiXT = ({
       showRLHF: process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true',
       showChatThemeToggles: process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
       footerMessage: process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE || '',
+      showOverrideSwitches: process.env.NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES === 'true',
       alternateBackground: 'primary' as 'primary' | 'secondary',
       ...uiConfig,
     }),
@@ -347,6 +351,7 @@ const InteractiveAGiXT = ({
         : 'Assuming a InteractiveConfigContext Provider encloses this instance.'
     }`,
   );
+  console.log('Initializing user interface with options: ', uiConfigWithEnv);
   // console.log('Configuration Provided From Server: ', chatConfig, serverConfig, uiConfig);
   return stateful ? (
     <Stateful overrides={overrides} serverConfig={serverConfig} uiConfig={uiConfigWithEnv} agent={agent} />
