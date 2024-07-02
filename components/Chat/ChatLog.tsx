@@ -6,10 +6,12 @@ import Message from './Message/Message';
 export default function ChatLog({
   conversation,
   alternateBackground,
+  loading,
   setLoading,
 }: {
   conversation: { role: string; message: string; timestamp: string; children: any[] }[];
   setLoading: (loading: boolean) => void;
+  loading: boolean;
   alternateBackground?: string;
 }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
@@ -52,7 +54,9 @@ export default function ChatLog({
                     ? 'success'
                     : (messageType.split('[')[2].split(']')[0].toLowerCase() as 'error' | 'info' | 'success' | 'warn')
                 }
-                inProgress={['[ACTIVITY]', '[SUBACTIVITY]'].includes(messageType) && index === conversation.length - 1}
+                inProgress={
+                  loading && ['[ACTIVITY]', '[SUBACTIVITY]'].includes(messageType) && index === conversation.length - 1
+                }
                 message={messageBody}
                 timestamp={chatItem.timestamp}
                 alternateBackground={alternateBackground}

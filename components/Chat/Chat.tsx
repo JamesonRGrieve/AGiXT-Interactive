@@ -58,7 +58,6 @@ export default function Chat({
 }: Overrides & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
-  console.log('OVERRIDE: ', showOverrideSwitches);
   const state = useContext(InteractiveConfigContext);
   const conversation = useSWR(
     conversationSWRPath + state.overrides.conversationName,
@@ -148,9 +147,21 @@ export default function Chat({
     // console.log("Conversation changed, fetching new conversation's messages.", state.overrides.conversationName);
     mutate(conversationSWRPath + state.overrides.conversationName);
   }, [state.overrides.conversationName]);
+  useEffect(() => {
+    if (!loading) {
+      setTimeout(() => {
+        mutate(conversationSWRPath + state.overrides.conversationName);
+      }, 1000);
+    }
+  }, [loading, state.overrides.conversationName]);
   return (
     <>
-      <ChatLog conversation={conversation.data} alternateBackground={alternateBackground} setLoading={setLoading} />
+      <ChatLog
+        conversation={conversation.data}
+        alternateBackground={alternateBackground}
+        setLoading={setLoading}
+        loading={loading}
+      />
       <ChatBar
         onSend={(message, files) => chat(message, files)}
         disabled={loading}
