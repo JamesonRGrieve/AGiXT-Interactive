@@ -55,7 +55,6 @@ export default function Activity({
       return () => clearInterval(interval);
     }
   }, [inProgress]);
-  const [childrenOpen, setChildrenOpen] = useState<boolean>(false);
   const rootStyles = {
     backgroundColor: theme.palette[String(alternateBackground)][theme.palette.mode],
     padding: '10px',
@@ -85,7 +84,7 @@ export default function Activity({
     >
       <Typography sx={rootStyles} variant='body1' display='flex' alignItems='center' margin='0'>
         {inProgress ? <SpinningIcon /> : severities[severity.toString()]}
-        <MarkdownBlock content={message + dots} />
+        <MarkdownBlock content={message + (inProgress ? dots : '')} />
       </Typography>
     </Tooltip>
   );
