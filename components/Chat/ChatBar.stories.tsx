@@ -34,6 +34,7 @@ export const Default: Story = {
     showChatThemeToggles: true,
     enableFileUpload: true,
     enableVoiceInput: true,
+    showOverrideSwitches: '',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -77,6 +78,13 @@ export const WithoutVoiceInput: Story = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     expect(await canvas.getByLabelText('Upload File(s)')).toBeInTheDocument();
+  },
+};
+
+export const WithOverrideSwitches: Story = {
+  args: {
+    ...Default.args,
+    showOverrideSwitches: 'tts,websearch',
   },
 };
 
