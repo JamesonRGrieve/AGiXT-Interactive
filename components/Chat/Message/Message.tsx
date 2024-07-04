@@ -77,14 +77,15 @@ export default function Message({
   return (
     <Box
       sx={{
-        backgroundColor:
-          chatItem.role === 'USER'
-            ? theme.palette.background.default
-            : theme.palette[String(alternateBackground)][theme.palette.mode],
-        padding: '10px',
+        backgroundColor: theme.palette.background.default,
+        margin: '10px',
         overflow: 'hidden',
         position: 'center',
         color: theme.palette.text.primary,
+        ...(chatItem.role === 'USER' && {
+          maxWidth: '60%',
+          alignSelf: 'flex-end',
+        }),
       }}
     >
       {audios?.sources?.length > 0 ? (
@@ -104,7 +105,17 @@ export default function Message({
           ))}
         </>
       ) : (
-        <MarkdownBlock content={formattedMessage} chatItem={chatItem} setLoading={setLoading} />
+        <Box
+          sx={{
+            ...(chatItem.role === 'USER' && {
+              backgroundColor: theme.palette[String(alternateBackground)][theme.palette.mode],
+              borderRadius: '10px 10px 0 10px',
+              padding: '10px 20px',
+            }),
+          }}
+        >
+          <MarkdownBlock content={formattedMessage} chatItem={chatItem} setLoading={setLoading} />
+        </Box>
       )}
 
       {chatItem.timestamp !== '' && (
@@ -123,32 +134,28 @@ export default function Message({
       )}
       {(audios?.message?.trim() || !audios) && (
         <>
-          {chatItem.role !== 'USER' && (
+          {chatItem.role !== 'USER' && process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
             <>
-              {process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
-                <>
-                  <Tooltip title='Provide Positive Feedback'>
-                    <IconButton
-                      onClick={() => {
-                        setVote(1);
-                        setOpen(true);
-                      }}
-                    >
-                      <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title='Provide Negative Feedback'>
-                    <IconButton
-                      onClick={() => {
-                        setVote(-1);
-                        setOpen(true);
-                      }}
-                    >
-                      <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
-                    </IconButton>
-                  </Tooltip>
-                </>
-              )}
+              <Tooltip title='Provide Positive Feedback'>
+                <IconButton
+                  onClick={() => {
+                    setVote(1);
+                    setOpen(true);
+                  }}
+                >
+                  <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title='Provide Negative Feedback'>
+                <IconButton
+                  onClick={() => {
+                    setVote(-1);
+                    setOpen(true);
+                  }}
+                >
+                  <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
+                </IconButton>
+              </Tooltip>
             </>
           )}
 
