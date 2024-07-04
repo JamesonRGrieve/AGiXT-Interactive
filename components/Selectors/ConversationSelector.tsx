@@ -20,11 +20,12 @@ import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
 import React, { use, useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
-import { Add, DriveFileRenameOutline } from '@mui/icons-material';
+import { Add, ArrowDropDown, ArrowDropUp, DriveFileRenameOutline } from '@mui/icons-material';
 import { setCookie } from 'cookies-next';
 import { getAndFormatConversastion } from '../Chat/Chat';
 
 export default function ConversationSelector(): React.JSX.Element {
+  const [dropDownOpen, setDropDownOpen] = useState(false);
   const state = useContext(InteractiveConfigContext);
   const theme = useTheme();
   const { data: conversationData } = useSWR<string[]>(`/conversation`, async () =>
@@ -141,7 +142,12 @@ export default function ConversationSelector(): React.JSX.Element {
               opacity: '1',
             },
             fontSize: '12px',
+            paddingRight: '0px',
           }}
+          open={dropDownOpen}
+          onOpen={() => setDropDownOpen(true)}
+          onClose={() => setDropDownOpen(false)}
+          IconComponent={() => null}
           variant='outlined'
           labelId='conversation-label'
           label='Select a Conversation'
@@ -154,8 +160,8 @@ export default function ConversationSelector(): React.JSX.Element {
             }))
           }
           endAdornment={
-            <InputAdornment position='end' sx={{ marginRight: '1rem' }}>
-              <Tooltip title='Add Conversation'>
+            <InputAdornment position='end'>
+              <Tooltip title='Add Conversation' sx={{ marginRight: '1rem' }}>
                 <IconButton onClick={() => handleAddConversation()} color='info' sx={{ minWidth: '20px' }}>
                   <Add sx={{ minWidth: '20px' }} />
                 </IconButton>
@@ -173,6 +179,11 @@ export default function ConversationSelector(): React.JSX.Element {
               <Tooltip title='Delete Conversation'>
                 <IconButton onClick={() => setOpenDeleteConversation(true)} color='error' sx={{ minWidth: '20px' }}>
                   <DeleteIcon sx={{ minWidth: '20px' }} />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title='Open Dropdown'>
+                <IconButton onClick={() => setDropDownOpen(!dropDownOpen)} color='error' sx={{ minWidth: '20px' }}>
+                  {dropDownOpen ? <ArrowDropUp fontSize='medium' /> : <ArrowDropDown fontSize='medium' />}
                 </IconButton>
               </Tooltip>
             </InputAdornment>
