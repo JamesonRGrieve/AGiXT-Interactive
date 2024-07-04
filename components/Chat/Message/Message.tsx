@@ -32,11 +32,13 @@ export type MessageProps = {
   chatItem: { role: string; message: string; timestamp: string; rlhf?: { positive: boolean; feedback: string } };
   lastUserMessage: string;
   alternateBackground?: string;
+  rlhf?: boolean;
   setLoading: (loading: boolean) => void;
 };
 export default function Message({
   chatItem,
   lastUserMessage,
+  rlhf,
   alternateBackground = 'primary',
   setLoading,
 }: MessageProps): React.JSX.Element {
@@ -125,7 +127,7 @@ export default function Message({
         <>
           {chatItem.role !== 'USER' && (
             <>
-              {process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
+              {rlhf && (
                 <>
                   <Tooltip title='Provide Positive Feedback'>
                     <IconButton

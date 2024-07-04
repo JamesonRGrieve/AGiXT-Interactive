@@ -68,21 +68,25 @@ export default function ChatLog({
                 chatItem={chatItem}
                 lastUserMessage={lastUserMessage}
                 setLoading={setLoading}
+                rlhf={process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true'}
               />
             );
           })
         ) : (
           <Box pt='2rem' pb='3rem'>
             <Typography variant='h1' align='center'>
-              Welcome to {process.env.NEXT_PUBLIC_APP_NAME}
+              Welcome {process.env.NEXT_PUBLIC_APP_NAME && `to ${process.env.NEXT_PUBLIC_APP_NAME}`}
             </Typography>
-            <Typography variant='subtitle1' align='center' mb='2rem'>
-              {process.env.NEXT_PUBLIC_APP_DESCRIPTION}
-            </Typography>
+            {process.env.NEXT_PUBLIC_APP_DESCRIPTION && (
+              <Typography variant='subtitle1' align='center' mb='2rem'>
+                {process.env.NEXT_PUBLIC_APP_DESCRIPTION}
+              </Typography>
+            )}
             <Typography variant='body1' align='center' px='2rem'>
-              {process.env.NEXT_PUBLIC_APP_NAME} may provide inaccurate or inappropriate responses, may break character and
-              comes with no warranty of any kind. By using this software you agree to hold harmless the developers of{' '}
-              {process.env.NEXT_PUBLIC_APP_NAME} for any damages caused by the use of this software.
+              {process.env.NEXT_PUBLIC_APP_NAME || 'This software'} may provide inaccurate or inappropriate responses, may
+              break character and comes with no warranty of any kind. By using this software you agree to hold harmless the
+              developers of {process.env.NEXT_PUBLIC_APP_NAME || 'this software'} for any damages caused by the use of this
+              software.
             </Typography>
           </Box>
         )}
