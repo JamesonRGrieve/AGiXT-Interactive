@@ -28,6 +28,7 @@ import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
 import Dialog from 'jrgcomponents/Dialog';
 import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 import AudioRecorder from './AudioRecorder';
+import OverrideSwitch from './OverrideSwitch';
 
 export default function ChatBar({
   onSend,
@@ -38,7 +39,7 @@ export default function ChatBar({
   showChatThemeToggles = process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
   enableFileUpload = false,
   enableVoiceInput = false,
-  showOverrideSwitches = true,
+  showOverrideSwitches = '',
 }: {
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
   disabled: boolean;
@@ -48,7 +49,7 @@ export default function ChatBar({
   showChatThemeToggles: boolean;
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
-  showOverrideSwitches?: boolean;
+  showOverrideSwitches?: string;
 }): ReactNode {
   const state = useContext(InteractiveConfigContext);
   const [timer, setTimer] = useState<number>(-1);
@@ -107,30 +108,6 @@ export default function ChatBar({
       clearInterval(interval);
     };
   }, [loading]);
-  const [tts, setTTS] = useState<boolean | null>(
-    getCookie('agixt-tts') === undefined ? null : getCookie('agixt-tts') !== 'false',
-  );
-  const [websearch, setWebsearch] = useState<boolean | null>(
-    getCookie('agixt-websearch') === undefined ? null : getCookie('agixt-websearch') !== 'false',
-  );
-  useEffect(() => {
-    if (tts === null) {
-      deleteCookie('agixt-tts', { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN });
-    } else {
-      setCookie('agixt-tts', tts.toString(), {
-        domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-        maxAge: 2147483647,
-      });
-    }
-    if (websearch === null) {
-      deleteCookie('agixt-websearch', { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN });
-    } else {
-      setCookie('agixt-websearch', websearch.toString(), {
-        domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-        maxAge: 2147483647,
-      });
-    }
-  }, [tts, websearch]);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
   return (
@@ -157,7 +134,40 @@ export default function ChatBar({
               <InputAdornment position='end'>
                 {timer > -1 && <Timer {...{ loading, timer }} />}
                 {showOverrideSwitches && (
-                  <OverrideSwitches {...{ setTTS, setWebsearch, tts, websearch, setAnchorEl, anchorEl }} />
+                  <>
+                    <Tooltip title='Override Settings'>
+                      <IconButton
+                        color='primary'
+                        onClick={(event) => {
+                          setAnchorEl(event.currentTarget);
+                        }}
+                      >
+                        <ArrowDropUp />
+                      </IconButton>
+                    </Tooltip>
+                    <Popover
+                      open={Boolean(anchorEl)}
+                      anchorEl={anchorEl}
+                      onClose={() => setAnchorEl(null)}
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                      }}
+                      transformOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                      }}
+                    >
+                      <MenuList dense>
+                        {process.env.NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES.split(',').includes('tts') && (
+                          <OverrideSwitch name='tts' label='Text-to-Speech' />
+                        )}
+                        {process.env.NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES.split(',').includes('websearch') && (
+                          <OverrideSwitch name='websearch' label='Websearch' />
+                        )}
+                      </MenuList>
+                    </Popover>
+                  </>
                 )}
                 {enableFileUpload && !alternativeInputActive && (
                   <UploadFiles {...{ handleUploadFiles, disabled, setFileUploadOpen, fileUploadOpen }} />
