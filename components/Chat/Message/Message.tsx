@@ -112,6 +112,9 @@ export default function Message({
               borderRadius: '10px 10px 0 10px',
               padding: '10px 20px',
             }),
+            ...(chatItem.role !== 'USER' && {
+              padding: '0px 30px 0px 0px',
+            }),
           }}
         >
           <MarkdownBlock content={formattedMessage} chatItem={chatItem} setLoading={setLoading} />
