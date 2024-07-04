@@ -36,9 +36,10 @@ export default function ChatBar({
   loading,
   setLoading,
   clearOnSend = true,
-  showChatThemeToggles = process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
+  showChatThemeToggles = false,
   enableFileUpload = false,
   enableVoiceInput = false,
+  showResetConversation = false,
   showOverrideSwitches = '',
 }: {
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
@@ -49,6 +50,7 @@ export default function ChatBar({
   showChatThemeToggles: boolean;
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
+  showResetConversation?: boolean;
   showOverrideSwitches?: string;
 }): ReactNode {
   const state = useContext(InteractiveConfigContext);
@@ -159,10 +161,10 @@ export default function ChatBar({
                       }}
                     >
                       <MenuList dense>
-                        {process.env.NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES.split(',').includes('tts') && (
+                        {showOverrideSwitches.split(',').includes('tts') && (
                           <OverrideSwitch name='tts' label='Text-to-Speech' />
                         )}
-                        {process.env.NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES.split(',').includes('websearch') && (
+                        {showOverrideSwitches.split(',').includes('websearch') && (
                           <OverrideSwitch name='websearch' label='Websearch' />
                         )}
                       </MenuList>
@@ -185,9 +187,35 @@ export default function ChatBar({
             ),
           }}
         />
-        {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
-          process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && <ResetConversation {...{ state, setCookie }} />}
-        {showChatThemeToggles && <ThemeToggles />}
+        {showResetConversation && (
+          <Dialog
+            ButtonComponent={IconButton}
+            ButtonProps={{
+              children: <DeleteForever />,
+              disabled: false,
+              color: 'primary',
+              sx: {
+                height: '56px',
+                padding: '1rem',
+              },
+            }}
+            title='Are you sure you want to reset the conversation? This cannot be undone.'
+            onConfirm={() => {
+              const uuid = crypto.randomUUID();
+              setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+              state.mutate((oldState) => ({
+                ...oldState,
+                overrides: { ...oldState.overrides, conversationName: uuid },
+              }));
+            }}
+          />
+        )}
+        {showChatThemeToggles && (
+          <Box display='flex' flexDirection='column' alignItems='center'>
+            <SwitchDark />
+            <SwitchColorblind />
+          </Box>
+        )}
       </Box>
       {Object.keys(uploadedFiles).length > 0 && <ListUploadedFiles {...{ uploadedFiles, setUploadedFiles }} />}
     </Box>
