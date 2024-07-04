@@ -103,7 +103,7 @@ export default function Activity({
       <AccordionSummary
         sx={{
           ...rootStyles,
-          padding: 0,
+          padding: '0px 10px 0px 0px',
           borderBottom: '1px solid',
           borderColor: theme.palette.divider,
           '& .MuiAccordionSummary-content': { ...rootStyles, padding: 0, margin: 0 },
