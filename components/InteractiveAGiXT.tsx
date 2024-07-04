@@ -46,7 +46,7 @@ export type UIProps = {
   enableVoiceInput?: boolean;
   alternateBackground?: 'primary' | 'secondary';
   footerMessage?: string;
-  showOverrideSwitches?: boolean;
+  showOverrideSwitches?: string;
 };
 export type ServerProps = {
   apiKey: string;
@@ -338,7 +338,7 @@ const InteractiveAGiXT = ({
       showRLHF: process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true',
       showChatThemeToggles: process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
       footerMessage: process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE || '',
-      showOverrideSwitches: process.env.NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES === 'true',
+      showOverrideSwitches: process.env.NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES || '',
       alternateBackground: 'primary' as 'primary' | 'secondary',
       ...uiConfig,
     }),

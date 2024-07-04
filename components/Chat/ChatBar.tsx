@@ -28,6 +28,7 @@ import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
 import Dialog from 'jrgcomponents/Dialog';
 import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
 import AudioRecorder from './AudioRecorder';
+import OverrideSwitch from './OverrideSwitch';
 
 export default function ChatBar({
   onSend,
@@ -35,10 +36,11 @@ export default function ChatBar({
   loading,
   setLoading,
   clearOnSend = true,
-  showChatThemeToggles = process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
+  showChatThemeToggles = false,
   enableFileUpload = false,
   enableVoiceInput = false,
-  showOverrideSwitches = true,
+  showResetConversation = false,
+  showOverrideSwitches = '',
 }: {
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
   disabled: boolean;
@@ -48,7 +50,8 @@ export default function ChatBar({
   showChatThemeToggles: boolean;
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
-  showOverrideSwitches?: boolean;
+  showResetConversation?: boolean;
+  showOverrideSwitches?: string;
 }): ReactNode {
   const state = useContext(InteractiveConfigContext);
   const [timer, setTimer] = useState<number>(-1);
@@ -106,30 +109,6 @@ export default function ChatBar({
       clearInterval(interval);
     };
   }, [loading]);
-  const [tts, setTTS] = useState<boolean | null>(
-    getCookie('agixt-tts') === undefined ? null : getCookie('agixt-tts') !== 'false',
-  );
-  const [websearch, setWebsearch] = useState<boolean | null>(
-    getCookie('agixt-websearch') === undefined ? null : getCookie('agixt-websearch') !== 'false',
-  );
-  useEffect(() => {
-    if (tts === null) {
-      deleteCookie('agixt-tts', { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN });
-    } else {
-      setCookie('agixt-tts', tts.toString(), {
-        domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-        maxAge: 2147483647,
-      });
-    }
-    if (websearch === null) {
-      deleteCookie('agixt-websearch', { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN });
-    } else {
-      setCookie('agixt-websearch', websearch.toString(), {
-        domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-        maxAge: 2147483647,
-      });
-    }
-  }, [tts, websearch]);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
   return (
@@ -155,9 +134,7 @@ export default function ChatBar({
             endAdornment: (
               <InputAdornment position='end'>
                 {timer > -1 && <Timer {...{ loading, timer }} />}
-                {showOverrideSwitches && (
-                  <OverrideSwitches {...{ setTTS, setWebsearch, tts, websearch, setAnchorEl, anchorEl }} />
-                )}
+                {showOverrideSwitches && <OverrideSwitches {...{ setAnchorEl, anchorEl, showOverrideSwitches }} />}
                 {enableFileUpload && !alternativeInputActive && (
                   <UploadFiles {...{ handleUploadFiles, disabled, setFileUploadOpen, fileUploadOpen }} />
                 )}
@@ -174,8 +151,7 @@ export default function ChatBar({
             ),
           }}
         />
-        {process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
-          process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && <ResetConversation {...{ state, setCookie }} />}
+        {showResetConversation && <ResetConversation {...{ state, setCookie }} />}
         {showChatThemeToggles && <ThemeToggles />}
       </Box>
       {Object.keys(uploadedFiles).length > 0 && <ListUploadedFiles {...{ uploadedFiles, setUploadedFiles }} />}
@@ -203,7 +179,7 @@ const Timer = ({ loading, timer }: any) => {
   );
 };
 
-const OverrideSwitches = ({ setTTS, setWebsearch, tts, websearch, setAnchorEl, anchorEl }: any) => {
+const OverrideSwitches = ({ setAnchorEl, anchorEl, showOverrideSwitches }: any) => {
   return (
     <>
       <Tooltip title='Override Settings'>
@@ -230,67 +206,8 @@ const OverrideSwitches = ({ setTTS, setWebsearch, tts, websearch, setAnchorEl, a
         }}
       >
         <MenuList dense>
-          <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography variant='h6' component='span'>
-              Text-To-Speech
-            </Typography>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={tts === null}
-                  onClick={() => {
-                    setTTS((old) => (old === null ? false : null));
-                  }}
-                />
-              }
-              label='Use Default'
-            />
-            {tts !== null && (
-              <Box display='flex' flexDirection='row' alignItems='center'>
-                <Typography variant='caption'>{tts === null ? null : tts ? 'Always' : 'Never'}</Typography>
-                <Tooltip title='Text-to-Speech'>
-                  <Switch
-                    color='primary'
-                    checked={tts}
-                    onClick={() => {
-                      setTTS((old) => !old);
-                    }}
-                  />
-                </Tooltip>
-              </Box>
-            )}
-          </MenuItem>
-          <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography variant='h6' component='span'>
-              Websearch
-            </Typography>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={websearch === null}
-                  onClick={() => {
-                    setWebsearch((old) => (old === null ? false : null));
-                  }}
-                />
-              }
-              label='Use Default'
-            />
-            {websearch !== null && (
-              <Box display='flex' flexDirection='row' alignItems='center'>
-                <Typography variant='caption'>{websearch === null ? null : websearch ? 'Always' : 'Never'}</Typography>
-                <Tooltip title='Websearch'>
-                  <Switch
-                    color='primary'
-                    checked={websearch}
-                    disabled={websearch === null}
-                    onClick={() => {
-                      setWebsearch((old) => !old);
-                    }}
-                  />
-                </Tooltip>
-              </Box>
-            )}
-          </MenuItem>
+          {showOverrideSwitches.split(',').includes('tts') && <OverrideSwitch name='tts' label='Text-to-Speech' />}
+          {showOverrideSwitches.split(',').includes('websearch') && <OverrideSwitch name='websearch' label='Websearch' />}
         </MenuList>
       </Popover>
     </>

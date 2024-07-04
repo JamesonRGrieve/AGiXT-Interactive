@@ -171,6 +171,10 @@ export default function Chat({
         loading={loading}
         setLoading={setLoading}
         showOverrideSwitches={showOverrideSwitches}
+        showResetConversation={
+          process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
+          process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
+        }
       />
     </>
   );

@@ -20,7 +20,7 @@ exports.useAGiXTConfig = () => ({
     NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED: process.env.AGIXT_VOICE_INPUT_ENABLED, //|| String(InteractiveConfigDefault.overrides.enableVoiceInput),
     NEXT_PUBLIC_AGIXT_ALLOW_MESSAGE_EDITING: process.env.AGIXT_ALLOW_MESSAGE_EDITING, //|| String(InteractiveConfigDefault.overrides.allowMessageEditing),
     NEXT_PUBLIC_AGIXT_ALLOW_MESSAGE_DELETION: process.env.AGIXT_ALLOW_MESSAGE_DELETION, //|| String(InteractiveConfigDefault.overrides.allowMessageEditing),
-    NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES: process.env.AGIXT_SHOW_OVERRIDE_SWITCHES || 'true',
+    NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES: process.env.AGIXT_SHOW_OVERRIDE_SWITCHES || 'tts,websearch',
     // Override Options
     NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG: process.env.AGIXT_ENABLE_SEARCHPARAM_CONFIG || 'true',
     NEXT_PUBLIC_AGIXT_MODE: process.env.AGIXT_MODE || InteractiveConfigDefault.overrides.mode,
