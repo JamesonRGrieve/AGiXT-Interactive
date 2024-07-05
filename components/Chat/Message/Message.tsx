@@ -185,7 +185,7 @@ export default function Message({
                   type: 'text/plain;charset=utf-8',
                 });
                 element.href = URL.createObjectURL(file);
-                element.download = `${chatItem.role}-${chatItem.timestamp}.txt`;
+                element.download = `${chatItem.role}-${chatItem.timestamp}.md`;
                 document.body.appendChild(element);
                 element.click();
               }}
