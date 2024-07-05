@@ -103,7 +103,7 @@ const generateSearchParamConfig = (searchParams: URLSearchParams): InteractiveCo
       websearchDepth: Number(searchParams.get('websearchDepth')) || undefined,
       injectMemoriesFromCollectionNumber: Number(searchParams.get('injectMemoriesFromCollectionNumber')) || undefined,
       conversationResults: Number(searchParams.get('results')) || undefined,
-      conversationName: searchParams.get('conversation') || undefined,
+      conversation: searchParams.get('conversation') || undefined,
       browseLinks: Boolean(searchParams.get('browseLinks')) || undefined,
       webSearch: Boolean(searchParams.get('webSearch')) || undefined,
       insightAgentName: searchParams.get('insightAgent') || undefined,
@@ -136,7 +136,7 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
           chain: process.env.NEXT_PUBLIC_AGIXT_CHAIN,
           command: process.env.NEXT_PUBLIC_AGIXT_COMMAND,
           commandMessageArg: process.env.NEXT_PUBLIC_AGIXT_COMMAND_MESSAGE_ARG,
-          conversationName:
+          conversation:
             process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
               ? uuid
               : process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME,
@@ -145,7 +145,7 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
         ...(process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG === 'true' ? searchParamConfig : {}),
         ...(getCookie('agixt-conversation') && {
           overrides: {
-            conversationName: getCookie('agixt-conversation'),
+            conversation: getCookie('agixt-conversation'),
           },
         }),
       }}

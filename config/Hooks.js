@@ -2,7 +2,7 @@ const InteractiveConfigDefault = require('../types/InteractiveConfigDefault');
 
 exports.useAGiXTConfig = () => ({
   env: {
-    NEXT_PUBLIC_AGIXT_CONVERSATION_NAME: process.env.AGIXT_CONVERSATION || 'Default',
+    NEXT_PUBLIC_AGIXT_CONVERSATION_NAME: process.env.AGIXT_CONVERSATION || '-',
     NEXT_PUBLIC_AGIXT_CONVERSATION_MODE: process.env.AGIXT_CONVERSATION_MODE || 'static', // static, select or uuid
     NEXT_PUBLIC_AGIXT_API_KEY: process.env.AGIXT_API_KEY || '',
     NEXT_PUBLIC_AGIXT_SERVER: process.env.AGIXT_SERVER || process.env.AUTH_SERVER || 'http://localhost:7437',

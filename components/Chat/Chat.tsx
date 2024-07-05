@@ -10,7 +10,7 @@ import { get } from 'http';
 import { getCookie } from 'cookies-next';
 
 export async function getAndFormatConversastion(state): Promise<any[]> {
-  const rawConversation = await state.agixt.getConversation(state.overrides.conversationName, 100, 1);
+  const rawConversation = await state.agixt.getConversation(state.overrides.conversation, 100, 1);
   //console.log('Raw conversation: ', rawConversation);
   return rawConversation.reduce((accumulator, currentMessage: { id: string; message: string }) => {
     const messageType = currentMessage.message.split(' ')[0];
@@ -55,12 +55,13 @@ export default function Chat({
   enableFileUpload,
   enableVoiceInput,
   showOverrideSwitches,
+  showRLHF,
 }: Overrides & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
   const state = useContext(InteractiveConfigContext);
   const conversation = useSWR(
-    conversationSWRPath + state.overrides.conversationName,
+    conversationSWRPath + state.overrides.conversation,
     async () => {
       return await getAndFormatConversastion(state);
     },
@@ -110,17 +111,17 @@ export default function Chat({
     const toOpenAI = {
       messages: messages,
       model: state.agent,
-      user: state.overrides.conversationName,
+      user: state.overrides.conversation,
     };
     setLoading(true);
     console.log('Sending: ', state.openai, toOpenAI);
     const req = state.openai.chat.completions.create(toOpenAI);
     await new Promise((resolve) => setTimeout(resolve, 100));
-    mutate(conversationSWRPath + state.overrides.conversationName);
+    mutate(conversationSWRPath + state.overrides.conversation);
     const chatCompletion = await req;
     let response;
-    if (state.overrides.conversationName === '-') {
-      response = await state.agixt.renameConversation(state.agent, state.overrides.conversationName);
+    if (state.overrides.conversation === '-') {
+      response = await state.agixt.renameConversation(state.agent, state.overrides.conversation);
       await mutate('/conversation');
       console.log(response);
       if (!response.startsWith('Error')) {
@@ -129,7 +130,7 @@ export default function Chat({
             ...oldState,
             overrides: {
               ...oldState.overrides,
-              conversationName: response,
+              conversation: response,
             },
           };
         });
@@ -144,16 +145,16 @@ export default function Chat({
     }
   }
   useEffect(() => {
-    // console.log("Conversation changed, fetching new conversation's messages.", state.overrides.conversationName);
-    mutate(conversationSWRPath + state.overrides.conversationName);
-  }, [state.overrides.conversationName]);
+    // console.log("Conversation changed, fetching new conversation's messages.", state.overrides.conversation);
+    mutate(conversationSWRPath + state.overrides.conversation);
+  }, [state.overrides.conversation]);
   useEffect(() => {
     if (!loading) {
       setTimeout(() => {
-        mutate(conversationSWRPath + state.overrides.conversationName);
+        mutate(conversationSWRPath + state.overrides.conversation);
       }, 1000);
     }
-  }, [loading, state.overrides.conversationName]);
+  }, [loading, state.overrides.conversation]);
   return (
     <>
       <ChatLog
@@ -161,6 +162,7 @@ export default function Chat({
         alternateBackground={alternateBackground}
         setLoading={setLoading}
         loading={loading}
+        showRLHF={showRLHF}
       />
       <ChatBar
         onSend={(message, files) => chat(message, files)}

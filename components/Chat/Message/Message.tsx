@@ -248,7 +248,7 @@ export default function Message({
                       chatItem.message,
                       lastUserMessage,
                       feedback,
-                      state.overrides.conversationName,
+                      state.overrides.conversation,
                     );
                   } else {
                     state.agixt.addConversationFeedback(
@@ -257,7 +257,7 @@ export default function Message({
                       chatItem.message,
                       lastUserMessage,
                       feedback,
-                      state.overrides.conversationName,
+                      state.overrides.conversation,
                     );
                   }
                 }}

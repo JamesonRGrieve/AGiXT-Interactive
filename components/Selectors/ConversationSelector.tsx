@@ -32,35 +32,35 @@ export default function ConversationSelector(): React.JSX.Element {
     ((await state.agixt.getConversations()) as string[]).filter((conv) => conv !== '-'),
   );
   const { data: currentConversation } = useSWR(
-    '/conversation/' + state.overrides.conversationName,
+    '/conversation/' + state.overrides.conversation,
     async () => await getAndFormatConversastion(state),
     {
       fallbackData: [],
     },
   );
   const [openRenameConversation, setOpenRenameConversation] = useState(false);
-  const [changedConversationName, setChangedConversationName] = useState(state.overrides.conversationName);
+  const [changedconversation, setChangedconversation] = useState(state.overrides.conversation);
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
 
   useEffect(() => {
-    setChangedConversationName(state.overrides.conversationName);
-    setCookie('agixt-conversation', state.overrides.conversationName, {
+    setChangedconversation(state.overrides.conversation);
+    setCookie('agixt-conversation', state.overrides.conversation, {
       domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
     });
-  }, [state.overrides.conversationName]);
+  }, [state.overrides.conversation]);
   const handleAddConversation = async (): Promise<void> => {
     state.mutate((oldState) => ({
       ...oldState,
-      overrides: { ...oldState.overrides, conversationName: '-' },
+      overrides: { ...oldState.overrides, conversation: '-' },
     }));
   };
   const handleRenameConversation = async (magic: boolean = true): Promise<void> => {
-    if (state.overrides.conversationName) {
+    if (state.overrides.conversation) {
       const response = await state.agixt.renameConversation(
         state.agent,
-        state.overrides.conversationName,
-        magic ? '-' : changedConversationName,
+        state.overrides.conversation,
+        magic ? '-' : changedconversation,
       );
       await mutate('/conversation');
       //console.log(response);
@@ -70,7 +70,7 @@ export default function ConversationSelector(): React.JSX.Element {
             ...oldState,
             overrides: {
               ...oldState.overrides,
-              conversationName: response,
+              conversation: response,
             },
           };
         });
@@ -80,15 +80,15 @@ export default function ConversationSelector(): React.JSX.Element {
   };
 
   const handleDeleteConversation = async (): Promise<void> => {
-    if (state.overrides.conversationName) {
-      await state.agixt.deleteConversation(state.overrides.conversationName);
+    if (state.overrides.conversation) {
+      await state.agixt.deleteConversation(state.overrides.conversation);
       await mutate('/conversation');
       state.mutate((oldState) => {
         return {
           ...oldState,
           overrides: {
             ...oldState.overrides,
-            conversationName: conversationData[0],
+            conversation: conversationData[0],
           },
         };
       });
@@ -97,13 +97,13 @@ export default function ConversationSelector(): React.JSX.Element {
   };
 
   const handleExportConversation = async (): Promise<void> => {
-    if (state.overrides.conversationName) {
+    if (state.overrides.conversation) {
       const element = document.createElement('a');
       const file = new Blob([JSON.stringify(currentConversation)], {
         type: 'application/json',
       });
       element.href = URL.createObjectURL(file);
-      element.download = `${state.overrides.conversationName}.json`;
+      element.download = `${state.overrides.conversation}.json`;
       document.body.appendChild(element); // Required for this to work in FireFox
       element.click();
     }
@@ -152,11 +152,11 @@ export default function ConversationSelector(): React.JSX.Element {
           labelId='conversation-label'
           label='Select a Conversation'
           disabled={conversationData?.length === 0}
-          value={state.overrides.conversationName}
+          value={state.overrides.conversation}
           onChange={(e) =>
             state.mutate((oldState) => ({
               ...oldState,
-              overrides: { ...oldState.overrides, conversationName: e.target.value },
+              overrides: { ...oldState.overrides, conversation: e.target.value },
             }))
           }
           endAdornment={
@@ -192,13 +192,11 @@ export default function ConversationSelector(): React.JSX.Element {
           <MenuItem key='-' value='-'>
             - New Conversation -
           </MenuItem>
-          {loaded &&
-            state.overrides.conversationName !== '-' &&
-            !conversationData?.includes(state.overrides.conversationName) && (
-              <MenuItem key={state.overrides.conversationName} value={state.overrides.conversationName}>
-                {state.overrides.conversationName}
-              </MenuItem>
-            )}
+          {loaded && state.overrides.conversation !== '-' && !conversationData?.includes(state.overrides.conversation) && (
+            <MenuItem key={state.overrides.conversation} value={state.overrides.conversation}>
+              {state.overrides.conversation}
+            </MenuItem>
+          )}
           {conversationData &&
             conversationData.map &&
             conversationData?.map((c) => (
@@ -232,8 +230,8 @@ export default function ConversationSelector(): React.JSX.Element {
             label='New Conversation Name'
             type='text'
             fullWidth
-            value={changedConversationName}
-            onChange={(e) => setChangedConversationName(e.target.value)}
+            value={changedconversation}
+            onChange={(e) => setChangedconversation(e.target.value)}
             variant='outlined'
             color='info'
           />

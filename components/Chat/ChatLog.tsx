@@ -6,12 +6,14 @@ import Message from './Message/Message';
 export default function ChatLog({
   conversation,
   alternateBackground,
+  showRLHF,
   loading,
   setLoading,
 }: {
   conversation: { role: string; message: string; timestamp: string; children: any[] }[];
   setLoading: (loading: boolean) => void;
   loading: boolean;
+  showRLHF: boolean;
   alternateBackground?: string;
 }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
@@ -19,7 +21,7 @@ export default function ChatLog({
   const theme = useTheme();
   console.log(conversation);
   useEffect(() => {
-    // console.log('Conversation mutated, scrolling to bottom.', state.overrides.conversationName, conversation);
+    // console.log('Conversation mutated, scrolling to bottom.', state.overrides.conversation, conversation);
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
   return (
@@ -68,7 +70,7 @@ export default function ChatLog({
                 chatItem={chatItem}
                 lastUserMessage={lastUserMessage}
                 setLoading={setLoading}
-                rlhf={process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true'}
+                rlhf={showRLHF}
               />
             );
           })
