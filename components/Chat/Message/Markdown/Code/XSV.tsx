@@ -133,7 +133,7 @@ export const RendererXSV = ({
     );
 
     await context.agixt.runChain('Data Analysis', userMessage, context.agent, false, 1, {
-      conversation_name: context.overrides.conversationName,
+      conversation_name: context.overrides.conversation,
       text: [
         ['id', ...stringifiedColumns].join(separator.toString() === '/\\t/' ? '\t' : separator.toString()),
         ...stringifiedRows,

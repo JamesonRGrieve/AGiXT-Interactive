@@ -43,7 +43,7 @@ import AGiXTInteractive from '@agixt/interactive';
     apiKey: getCookie('jwt') || '',
   }}
   overrides={{
-    conversationName: 'MyConversation',
+    conversation: 'MyConversation',
   }}
 />;
 ```

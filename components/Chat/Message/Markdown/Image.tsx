@@ -1,4 +1,3 @@
-import { Box } from '@mui/material';
 import ImageDialog from 'jrgcomponents/ImageDialog';
 import { ReactNode } from 'react';
 
@@ -8,10 +7,12 @@ export type ImageProps = {
 };
 
 export default function MarkdownImage({ src, alt, ...props }: ImageProps): ReactNode {
-  //console.log('Image:', src, alt);
-  return src.includes(process.env.NEXT_PUBLIC_AGIXT_SERVER.split('://')[1].split(':')[0].split('/')[0]) ? (
-    <ImageDialog imageSrc={src} title={alt} />
-  ) : (
-    <img src={src} alt={alt} />
+  // Since AGIXT Server is included in static optimization by default, we include it as a NextImage.
+  return (
+    <ImageDialog
+      imageSrc={src}
+      title={alt}
+      nextImage={src.includes(process.env.NEXT_PUBLIC_AGIXT_SERVER.split('://')[1].split(':')[0].split('/')[0])}
+    />
   );
 }

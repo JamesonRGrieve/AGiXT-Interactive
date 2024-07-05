@@ -26,7 +26,7 @@ export type Overrides = {
   websearchDepth?: number;
   injectMemoriesFromCollectionNumber?: number;
   conversationResults?: number;
-  conversationName?: string;
+  conversation?: string;
   browseLinks?: boolean;
   webSearch?: boolean;
   insightAgentName?: string;
