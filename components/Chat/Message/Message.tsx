@@ -185,7 +185,7 @@ export default function Message({
                   type: 'text/plain;charset=utf-8',
                 });
                 element.href = URL.createObjectURL(file);
-                element.download = `${chatItem.role}-${chatItem.timestamp}.txt`;
+                element.download = `${chatItem.role}-${chatItem.timestamp}.md`;
                 document.body.appendChild(element);
                 element.click();
               }}
@@ -248,7 +248,7 @@ export default function Message({
                       chatItem.message,
                       lastUserMessage,
                       feedback,
-                      state.overrides.conversationName,
+                      state.overrides.conversation,
                     );
                   } else {
                     state.agixt.addConversationFeedback(
@@ -257,7 +257,7 @@ export default function Message({
                       chatItem.message,
                       lastUserMessage,
                       feedback,
-                      state.overrides.conversationName,
+                      state.overrides.conversation,
                     );
                   }
                 }}

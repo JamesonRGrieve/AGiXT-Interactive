@@ -29,6 +29,7 @@ import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
 import EditDialog from 'jrgcomponents/EditDialog';
 import useSWR from 'swr';
 import axios from 'axios';
+import Gravatar from './Gravatar';
 
 export type FormProps = {
   fieldOverrides?: { [key: string]: ReactNode };
@@ -103,7 +104,7 @@ const generateSearchParamConfig = (searchParams: URLSearchParams): InteractiveCo
       websearchDepth: Number(searchParams.get('websearchDepth')) || undefined,
       injectMemoriesFromCollectionNumber: Number(searchParams.get('injectMemoriesFromCollectionNumber')) || undefined,
       conversationResults: Number(searchParams.get('results')) || undefined,
-      conversationName: searchParams.get('conversation') || undefined,
+      conversation: searchParams.get('conversation') || undefined,
       browseLinks: Boolean(searchParams.get('browseLinks')) || undefined,
       webSearch: Boolean(searchParams.get('webSearch')) || undefined,
       insightAgentName: searchParams.get('insightAgent') || undefined,
@@ -136,7 +137,7 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
           chain: process.env.NEXT_PUBLIC_AGIXT_CHAIN,
           command: process.env.NEXT_PUBLIC_AGIXT_COMMAND,
           commandMessageArg: process.env.NEXT_PUBLIC_AGIXT_COMMAND_MESSAGE_ARG,
-          conversationName:
+          conversation:
             process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'
               ? uuid
               : process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_NAME,
@@ -145,7 +146,7 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
         ...(process.env.NEXT_PUBLIC_AGIXT_ENABLE_SEARCHPARAM_CONFIG === 'true' ? searchParamConfig : {}),
         ...(getCookie('agixt-conversation') && {
           overrides: {
-            conversationName: getCookie('agixt-conversation'),
+            conversation: getCookie('agixt-conversation'),
           },
         }),
       }}
@@ -239,41 +240,47 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                     horizontal: 'left',
                   }}
                 >
-                  <MenuList dense>
-                    <EditDialog
-                      onConfirm={(data) => {
-                        console.log(data);
-                        return data;
-                      }}
-                      toUpdate={user}
-                      title={`Settings for ${user?.email ?? 'User'}`}
-                      excludeFields={['subscription', 'email']}
-                      ButtonComponent={MenuItem}
-                      ButtonProps={{
-                        children: (
-                          <>
-                            <ListItemIcon>
-                              <Settings />
-                            </ListItemIcon>
-                            <ListItemText>Settings</ListItemText>
-                          </>
-                        ),
-                      }}
-                    />
+                  <MenuList dense sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Typography variant='h6' sx={{ px: '1rem', py: '0.5rem' }}>
+                      {user?.email ?? 'User'}
+                    </Typography>
+                    {user?.email && <Gravatar email={user?.email} />}
+                    <Box display='flex' flexDirection='column' alignItems='start'>
+                      <EditDialog
+                        onConfirm={(data) => {
+                          console.log(data);
+                          return data;
+                        }}
+                        toUpdate={user}
+                        title={`Settings for ${user?.email ?? 'User'}`}
+                        excludeFields={['subscription', 'email']}
+                        ButtonComponent={MenuItem}
+                        ButtonProps={{
+                          children: (
+                            <>
+                              <ListItemIcon>
+                                <Settings />
+                              </ListItemIcon>
+                              <ListItemText>Settings</ListItemText>
+                            </>
+                          ),
+                        }}
+                      />
 
-                    <MenuItem
-                      onClick={() => {
-                        deleteCookie('jwt', {
-                          domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-                        });
-                        window.location.reload();
-                      }}
-                    >
-                      <ListItemIcon>
-                        <Logout />
-                      </ListItemIcon>
-                      <ListItemText>Logout</ListItemText>
-                    </MenuItem>
+                      <MenuItem
+                        onClick={() => {
+                          deleteCookie('jwt', {
+                            domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+                          });
+                          window.location.reload();
+                        }}
+                      >
+                        <ListItemIcon>
+                          <Logout />
+                        </ListItemIcon>
+                        <ListItemText>Logout</ListItemText>
+                      </MenuItem>
+                    </Box>
                     <MenuItem sx={{ py: '0.5rem' }}>
                       <SwitchDark />
                       <SwitchColorblind />

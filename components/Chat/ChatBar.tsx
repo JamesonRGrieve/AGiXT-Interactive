@@ -287,7 +287,7 @@ const ResetConversation = ({ state, setCookie }: any) => {
         setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
         state.mutate((oldState) => ({
           ...oldState,
-          overrides: { ...oldState.overrides, conversationName: uuid },
+          overrides: { ...oldState.overrides, conversation: uuid },
         }));
       }}
     />

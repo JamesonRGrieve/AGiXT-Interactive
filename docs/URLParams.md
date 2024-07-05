@@ -20,5 +20,5 @@
 - `allResponses`: Boolean to determine if all responses should be shown in chain mode.
 - `prompt`: The initial prompt for the chat.
 - `promptCategory`: Category of the prompt.
-- `conversationName`: Name of the specific conversation.
+- `conversation`: Name of the specific conversation.
 - `chain`: Specifies the chain configuration.
