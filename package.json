@@ -65,6 +65,7 @@
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.2.1",
     "jrgcomponents": "^0.0.161",
+    "md5": "^2.3.0",
     "mermaid": "^10.9.1",
     "next": "^14.2.4",
     "openai": "^4.52.0",

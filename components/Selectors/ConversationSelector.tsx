@@ -87,7 +87,7 @@ export default function ConversationSelector(): React.JSX.Element {
           ...oldState,
           overrides: {
             ...oldState.overrides,
-            conversation: conversationData[0],
+            conversation: '-',
           },
         };
       });
