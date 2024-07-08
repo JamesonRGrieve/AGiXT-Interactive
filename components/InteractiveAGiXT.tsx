@@ -294,17 +294,19 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
         }
       }
       footer={
-        props.footerMessage && {
-          components: {
-            center: (
-              <Box textAlign='center'>
-                <Typography sx={{ margin: 0 }} variant='caption'>
-                  {props.footerMessage}
-                </Typography>
-              </Box>
-            ),
-          },
-        }
+        props.footerMessage
+          ? {
+              components: {
+                center: (
+                  <Box textAlign='center'>
+                    <Typography sx={{ margin: 0 }} variant='caption'>
+                      {props.footerMessage}
+                    </Typography>
+                  </Box>
+                ),
+              },
+            }
+          : undefined
       }
     >
       {process.env.NEXT_PUBLIC_INTERACTIVE_UI === 'form' ? (
