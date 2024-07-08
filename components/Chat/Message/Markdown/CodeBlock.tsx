@@ -89,7 +89,7 @@ const languageRenders = {
     const tsvData = (content.constructor === Array ? (content.length > 1 ? content : content[0]) : content.split('\n'))
       .filter((row) => row.trim())
       .map((row) => row.trim());
-    console.log(tsvData);
+    //console.log(tsvData);
     return <XSV xsvData={tsvData} setLoading={setLoading} separator={/\t/} />;
   },
   gantt: (content) => <Mermaid chart={'gantt\n' + content} />,
@@ -114,11 +114,11 @@ export default function CodeBlock({
   setLoading,
   ...props
 }: CodeBlockProps): ReactNode {
-  console.log(props);
-  console.log(children);
-  console.log(className);
-  console.log(fileName);
-  console.log(inline);
+  // console.log(props);
+  // console.log(children);
+  // console.log(className);
+  // console.log(fileName);
+  // console.log(inline);
   const theme = useTheme();
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -126,7 +126,7 @@ export default function CodeBlock({
   const language = className?.replace(/language-/, '') || 'Text';
   const fileNameWithExtension = `${fileName || 'code'}.${fileExtensions[String(language.toLowerCase())] || 'txt'}`;
   const [tab, setTab] = React.useState(0);
-  console.log(language);
+  //console.log(language);
   return className || children.toString().includes('\n') ? (
     <Box
       my='0.5rem'
