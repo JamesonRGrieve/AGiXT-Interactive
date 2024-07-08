@@ -8,13 +8,15 @@ export type ImageProps = {
 
 export default function MarkdownImage({ src, alt, ...props }: ImageProps): ReactNode {
   // Since AGIXT Server is included in static optimization by default, we include it as a NextImage.
-  console.log(src, alt);
-  console.log(src.includes(process.env.NEXT_PUBLIC_AGIXT_SERVER.split('://')[1].split(':')[0].split('/')[0]));
   return (
     <ImageDialog
       imageSrc={src}
       title={alt}
-      nextImage={src.includes(process.env.NEXT_PUBLIC_AGIXT_SERVER.split('://')[1].split(':')[0].split('/')[0])}
+      nextImage={src.includes(
+        process.env.NEXT_PUBLIC_AGIXT_SERVER?.split('://')
+          [process.env.NEXT_PUBLIC_AGIXT_SERVER.includes('://') ? 1 : 0].split(':')[0]
+          .split('/')[0],
+      )}
     />
   );
 }
