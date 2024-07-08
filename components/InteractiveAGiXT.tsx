@@ -40,14 +40,14 @@ export type FormProps = {
 };
 export type UIProps = {
   showAppBar?: boolean;
-  showConversationSelector?: boolean;
+  showSelectorsCSV?: string;
   showChatThemeToggles?: boolean;
   showRLHF?: boolean;
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
   alternateBackground?: 'primary' | 'secondary';
   footerMessage?: string;
-  showOverrideSwitches?: string;
+  showOverrideSwitchesCSV?: string;
 };
 export type ServerProps = {
   apiKey: string;
@@ -152,18 +152,7 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
         }),
       }}
     >
-      <Interactive
-        {...props.overrides}
-        {...props.uiConfig}
-        enableVoiceInput={
-          process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true' ??
-          (Boolean(searchParams.get('voiceInput')) || undefined)
-        }
-        enableFileUpload={
-          process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true' ??
-          (Boolean(searchParams.get('fileUpload')) || undefined)
-        }
-      />
+      <Interactive {...props.overrides} {...props.uiConfig} />
     </ContextWrapper>
   );
 };
@@ -171,7 +160,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
   const mobile = useMediaQuery('(max-width: 1100px)');
   const menuItem = (): ReactNode => (
     <Box p='0.5rem' display='flex' flexDirection='column' gap='0.5rem'>
-      {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION?.split(',').map((selector) => selectionBars[String(selector)])}
+      {props.showSelectorsCSV?.split(',').map((selector) => selectionBars[String(selector)])}
     </Box>
   );
   const {
@@ -206,19 +195,19 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
               }
             ) : (
               <Box display='flex' gap='1rem' width='100%' maxWidth='32rem'>
-                {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION?.split(',').map((selector) =>
-                  selector === 'conversation' && process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION?.split(',').length > 1
-                    ? null
-                    : selectionBars[selector],
-                )}
+                {props.showSelectorsCSV
+                  ?.split(',')
+                  .map((selector) =>
+                    selector === 'conversation' && props.showSelectorsCSV?.split(',').length > 1
+                      ? null
+                      : selectionBars[selector],
+                  )}
               </Box>
             ),
             right: (
               <>
-                {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION &&
-                  (!mobile &&
-                  process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.includes('conversation') &&
-                  process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.includes(',') ? (
+                {props.showSelectorsCSV &&
+                  (!mobile && props.showSelectorsCSV.includes('conversation') && props.showSelectorsCSV.includes(',') ? (
                     <Box minWidth='12rem' width='100%' display='flex'>
                       {selectionBars['conversation']}
                     </Box>
@@ -315,7 +304,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
           showChatThemeToggles={props.showChatThemeToggles}
           enableFileUpload={props.enableFileUpload}
           enableVoiceInput={props.enableVoiceInput}
-          showOverrideSwitches={props.showOverrideSwitches}
+          showOverrideSwitchesCSV={props.showOverrideSwitchesCSV}
         />
       ) : (
         <Chat
@@ -324,7 +313,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
           alternateBackground={props.alternateBackground}
           enableFileUpload={props.enableFileUpload}
           enableVoiceInput={props.enableVoiceInput}
-          showOverrideSwitches={props.showOverrideSwitches}
+          showOverrideSwitchesCSV={props.showOverrideSwitchesCSV}
         />
       )}
     </AppWrapper>
@@ -344,12 +333,14 @@ const InteractiveAGiXT = ({
   const uiConfigWithEnv = useMemo(
     () => ({
       showAppBar: process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
-      showConversationSelector: process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
       showRLHF: process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true',
       showChatThemeToggles: process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
       footerMessage: process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE || '',
-      showOverrideSwitches: process.env.NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES || '',
+      showOverrideSwitchesCSV: process.env.NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES || '',
       alternateBackground: 'primary' as 'primary' | 'secondary',
+      showSelectorsCSV: process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION,
+      enableVoiceInput: process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true',
+      enableFileUpload: process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true',
       ...uiConfig,
     }),
     [uiConfig],

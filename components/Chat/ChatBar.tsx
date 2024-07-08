@@ -40,7 +40,7 @@ export default function ChatBar({
   enableFileUpload = false,
   enableVoiceInput = false,
   showResetConversation = false,
-  showOverrideSwitches = '',
+  showOverrideSwitchesCSV = '',
 }: {
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
   disabled: boolean;
@@ -51,7 +51,7 @@ export default function ChatBar({
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
   showResetConversation?: boolean;
-  showOverrideSwitches?: string;
+  showOverrideSwitchesCSV?: string;
 }): ReactNode {
   const state = useContext(InteractiveConfigContext);
   const [timer, setTimer] = useState<number>(-1);
@@ -149,7 +149,7 @@ export default function ChatBar({
                     </Box>
                   </Tooltip>
                 )}
-                {showOverrideSwitches && (
+                {showOverrideSwitchesCSV && (
                   <>
                     <Tooltip title='Override Settings'>
                       <IconButton
@@ -175,10 +175,10 @@ export default function ChatBar({
                       }}
                     >
                       <MenuList dense>
-                        {showOverrideSwitches.split(',').includes('tts') && (
+                        {showOverrideSwitchesCSV.split(',').includes('tts') && (
                           <OverrideSwitch name='tts' label='Text-to-Speech' />
                         )}
-                        {showOverrideSwitches.split(',').includes('websearch') && (
+                        {showOverrideSwitchesCSV.split(',').includes('websearch') && (
                           <OverrideSwitch name='websearch' label='Websearch' />
                         )}
                       </MenuList>
