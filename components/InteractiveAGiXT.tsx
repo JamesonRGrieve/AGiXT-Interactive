@@ -218,7 +218,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                       setAnchorEl(event.currentTarget);
                     }}
                   >
-                    <Menu />
+                    {user?.email ? <Gravatar email={user?.email} sx={{ width: '2rem', height: '2rem' }} /> : <Menu />}
                   </IconButton>
                 </Tooltip>
                 <Popover
@@ -231,46 +231,47 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                   }}
                 >
                   <MenuList dense sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography variant='h6' sx={{ px: '1rem', py: '0.5rem' }}>
-                      {user?.email ?? 'User'}
-                    </Typography>
-                    {user?.email && <Gravatar email={user?.email} />}
-                    <Box display='flex' flexDirection='column' alignItems='start'>
-                      <EditDialog
-                        onConfirm={(data) => {
-                          console.log(data);
-                          return data;
-                        }}
-                        toUpdate={user}
-                        title={`Settings for ${user?.email ?? 'User'}`}
-                        excludeFields={['subscription', 'email']}
-                        ButtonComponent={MenuItem}
-                        ButtonProps={{
-                          children: (
-                            <>
-                              <ListItemIcon>
-                                <Settings />
-                              </ListItemIcon>
-                              <ListItemText>Settings</ListItemText>
-                            </>
-                          ),
-                        }}
-                      />
+                    {user?.email && (
+                      <Typography variant='h6' sx={{ px: '1rem', py: '0.5rem' }}>
+                        {user?.email ?? 'User'}
+                      </Typography>
+                    )}
 
-                      <MenuItem
-                        onClick={() => {
-                          deleteCookie('jwt', {
-                            domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-                          });
-                          window.location.reload();
-                        }}
-                      >
-                        <ListItemIcon>
-                          <Logout />
-                        </ListItemIcon>
-                        <ListItemText>Logout</ListItemText>
-                      </MenuItem>
-                    </Box>
+                    <EditDialog
+                      onConfirm={(data) => {
+                        console.log(data);
+                        return data;
+                      }}
+                      toUpdate={user}
+                      title={`Settings for ${user?.email ?? 'User'}`}
+                      excludeFields={['subscription', 'email']}
+                      ButtonComponent={MenuItem}
+                      ButtonProps={{
+                        children: (
+                          <>
+                            <ListItemIcon>
+                              <Settings />
+                            </ListItemIcon>
+                            <ListItemText>Settings</ListItemText>
+                          </>
+                        ),
+                      }}
+                    />
+
+                    <MenuItem
+                      onClick={() => {
+                        deleteCookie('jwt', {
+                          domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+                        });
+                        window.location.reload();
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Logout />
+                      </ListItemIcon>
+                      <ListItemText>Logout</ListItemText>
+                    </MenuItem>
+
                     <MenuItem sx={{ py: '0.5rem' }}>
                       <SwitchDark />
                       <SwitchColorblind />
