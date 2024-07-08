@@ -120,8 +120,9 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
   if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
-  console.log(props.overrides);
-  console.log(process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME);
+  console.log('Overrides Prop Provided to Stateful:', props.overrides);
+  console.log('UI Config Provided to Stateful:', props.uiConfig);
+  console.log('Server Config Prop Provided to Stateful:', props.serverConfig);
   return (
     <ContextWrapper
       apiKey={props.serverConfig?.apiKey || process.env.NEXT_PUBLIC_AGIXT_API_KEY || getCookie('jwt') || ''}
@@ -293,12 +294,12 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
         }
       }
       footer={
-        process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE && {
+        props.footerMessage && {
           components: {
             center: (
               <Box textAlign='center'>
                 <Typography sx={{ margin: 0 }} variant='caption'>
-                  {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
+                  {props.footerMessage}
                 </Typography>
               </Box>
             ),
