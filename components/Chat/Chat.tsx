@@ -54,7 +54,7 @@ export default function Chat({
   alternateBackground,
   enableFileUpload,
   enableVoiceInput,
-  showOverrideSwitches,
+  showOverrideSwitchesCSV,
   showRLHF,
 }: Overrides & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
@@ -172,7 +172,7 @@ export default function Chat({
         enableVoiceInput={enableVoiceInput}
         loading={loading}
         setLoading={setLoading}
-        showOverrideSwitches={showOverrideSwitches}
+        showOverrideSwitchesCSV={showOverrideSwitchesCSV}
         showResetConversation={
           process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
           process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'

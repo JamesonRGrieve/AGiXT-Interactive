@@ -24,6 +24,7 @@ export default function ChatLog({
     // console.log('Conversation mutated, scrolling to bottom.', state.overrides.conversation, conversation);
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
+
   return (
     <Paper
       elevation={5}
@@ -70,6 +71,7 @@ export default function ChatLog({
                 chatItem={chatItem}
                 lastUserMessage={lastUserMessage}
                 setLoading={setLoading}
+                alternateBackground={alternateBackground}
                 rlhf={showRLHF}
               />
             );
