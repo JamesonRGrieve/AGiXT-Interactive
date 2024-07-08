@@ -40,7 +40,7 @@ export default function ChatBar({
   enableFileUpload = false,
   enableVoiceInput = false,
   showResetConversation = false,
-  showOverrideSwitches = '',
+  showOverrideSwitchesCSV = '',
 }: {
   onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
   disabled: boolean;
@@ -51,7 +51,7 @@ export default function ChatBar({
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
   showResetConversation?: boolean;
-  showOverrideSwitches?: string;
+  showOverrideSwitchesCSV?: string;
 }): ReactNode {
   const state = useContext(InteractiveConfigContext);
   const [timer, setTimer] = useState<number>(-1);
@@ -133,8 +133,58 @@ export default function ChatBar({
           InputProps={{
             endAdornment: (
               <InputAdornment position='end'>
-                {timer > -1 && <Timer {...{ loading, timer }} />}
-                {showOverrideSwitches && <OverrideSwitches {...{ setAnchorEl, anchorEl, showOverrideSwitches }} />}
+                {timer > -1 && (
+                  <Tooltip
+                    title={
+                      loading
+                        ? `Your most recent interation has been underway (including all activities) for ${(timer / 10).toFixed(1)} seconds.`
+                        : `Your last interaction took ${(timer / 10).toFixed(1)} seconds to completely resolve.`
+                    }
+                  >
+                    <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
+                      <Typography variant='caption' display='flex' position='relative' top='0.15rem'>
+                        {(timer / 10).toFixed(1)}s
+                      </Typography>
+                      {loading ? <Pending color='info' /> : <CheckCircle color='success' />}
+                    </Box>
+                  </Tooltip>
+                )}
+                {showOverrideSwitchesCSV && (
+                  <>
+                    <Tooltip title='Override Settings'>
+                      <IconButton
+                        color='primary'
+                        onClick={(event) => {
+                          setAnchorEl(event.currentTarget);
+                        }}
+                      >
+                        <ArrowDropUp />
+                      </IconButton>
+                    </Tooltip>
+                    <Popover
+                      open={Boolean(anchorEl)}
+                      anchorEl={anchorEl}
+                      onClose={() => setAnchorEl(null)}
+                      anchorOrigin={{
+                        vertical: 'top',
+                        horizontal: 'center',
+                      }}
+                      transformOrigin={{
+                        vertical: 'bottom',
+                        horizontal: 'center',
+                      }}
+                    >
+                      <MenuList dense>
+                        {showOverrideSwitchesCSV.split(',').includes('tts') && (
+                          <OverrideSwitch name='tts' label='Text-to-Speech' />
+                        )}
+                        {showOverrideSwitchesCSV.split(',').includes('websearch') && (
+                          <OverrideSwitch name='websearch' label='Websearch' />
+                        )}
+                      </MenuList>
+                    </Popover>
+                  </>
+                )}
                 {enableFileUpload && !alternativeInputActive && (
                   <UploadFiles {...{ handleUploadFiles, disabled, setFileUploadOpen, fileUploadOpen }} />
                 )}

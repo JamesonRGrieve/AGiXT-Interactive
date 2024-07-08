@@ -40,14 +40,14 @@ export type FormProps = {
 };
 export type UIProps = {
   showAppBar?: boolean;
-  showConversationSelector?: boolean;
+  showSelectorsCSV?: string;
   showChatThemeToggles?: boolean;
   showRLHF?: boolean;
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
   alternateBackground?: 'primary' | 'secondary';
   footerMessage?: string;
-  showOverrideSwitches?: string;
+  showOverrideSwitchesCSV?: string;
 };
 export type ServerProps = {
   apiKey: string;
@@ -120,8 +120,9 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
   if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
-  console.log(props.overrides);
-  console.log(process.env.NEXT_PUBLIC_AGIXT_PROMPT_NAME);
+  console.log('Overrides Prop Provided to Stateful:', props.overrides);
+  console.log('UI Config Provided to Stateful:', props.uiConfig);
+  console.log('Server Config Prop Provided to Stateful:', props.serverConfig);
   return (
     <ContextWrapper
       apiKey={props.serverConfig?.apiKey || process.env.NEXT_PUBLIC_AGIXT_API_KEY || getCookie('jwt') || ''}
@@ -151,18 +152,7 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
         }),
       }}
     >
-      <Interactive
-        {...props.overrides}
-        {...props.uiConfig}
-        enableVoiceInput={
-          process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true' ??
-          (Boolean(searchParams.get('voiceInput')) || undefined)
-        }
-        enableFileUpload={
-          process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true' ??
-          (Boolean(searchParams.get('fileUpload')) || undefined)
-        }
-      />
+      <Interactive {...props.overrides} {...props.uiConfig} />
     </ContextWrapper>
   );
 };
@@ -170,7 +160,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
   const mobile = useMediaQuery('(max-width: 1100px)');
   const menuItem = (): ReactNode => (
     <Box p='0.5rem' display='flex' flexDirection='column' gap='0.5rem'>
-      {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION?.split(',').map((selector) => selectionBars[String(selector)])}
+      {props.showSelectorsCSV?.split(',').map((selector) => selectionBars[String(selector)])}
     </Box>
   );
   const {
@@ -205,19 +195,19 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
               }
             ) : (
               <Box display='flex' gap='1rem' width='100%' maxWidth='32rem'>
-                {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION?.split(',').map((selector) =>
-                  selector === 'conversation' && process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION?.split(',').length > 1
-                    ? null
-                    : selectionBars[selector],
-                )}
+                {props.showSelectorsCSV
+                  ?.split(',')
+                  .map((selector) =>
+                    selector === 'conversation' && props.showSelectorsCSV?.split(',').length > 1
+                      ? null
+                      : selectionBars[selector],
+                  )}
               </Box>
             ),
             right: (
               <>
-                {process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION &&
-                  (!mobile &&
-                  process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.includes('conversation') &&
-                  process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION.includes(',') ? (
+                {props.showSelectorsCSV &&
+                  (!mobile && props.showSelectorsCSV.includes('conversation') && props.showSelectorsCSV.includes(',') ? (
                     <Box minWidth='12rem' width='100%' display='flex'>
                       {selectionBars['conversation']}
                     </Box>
@@ -228,7 +218,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                       setAnchorEl(event.currentTarget);
                     }}
                   >
-                    <Menu />
+                    {user?.email ? <Gravatar email={user?.email} sx={{ width: '2rem', height: '2rem' }} /> : <Menu />}
                   </IconButton>
                 </Tooltip>
                 <Popover
@@ -241,46 +231,47 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                   }}
                 >
                   <MenuList dense sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Typography variant='h6' sx={{ px: '1rem', py: '0.5rem' }}>
-                      {user?.email ?? 'User'}
-                    </Typography>
-                    {user?.email && <Gravatar email={user?.email} />}
-                    <Box display='flex' flexDirection='column' alignItems='start'>
-                      <EditDialog
-                        onConfirm={(data) => {
-                          console.log(data);
-                          return data;
-                        }}
-                        toUpdate={user}
-                        title={`Settings for ${user?.email ?? 'User'}`}
-                        excludeFields={['subscription', 'email']}
-                        ButtonComponent={MenuItem}
-                        ButtonProps={{
-                          children: (
-                            <>
-                              <ListItemIcon>
-                                <Settings />
-                              </ListItemIcon>
-                              <ListItemText>Settings</ListItemText>
-                            </>
-                          ),
-                        }}
-                      />
+                    {user?.email && (
+                      <Typography variant='h6' sx={{ px: '1rem', py: '0.5rem' }}>
+                        {user?.email ?? 'User'}
+                      </Typography>
+                    )}
 
-                      <MenuItem
-                        onClick={() => {
-                          deleteCookie('jwt', {
-                            domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-                          });
-                          window.location.reload();
-                        }}
-                      >
-                        <ListItemIcon>
-                          <Logout />
-                        </ListItemIcon>
-                        <ListItemText>Logout</ListItemText>
-                      </MenuItem>
-                    </Box>
+                    <EditDialog
+                      onConfirm={(data) => {
+                        console.log(data);
+                        return data;
+                      }}
+                      toUpdate={user}
+                      title={`Settings for ${user?.email ?? 'User'}`}
+                      excludeFields={['subscription', 'email']}
+                      ButtonComponent={MenuItem}
+                      ButtonProps={{
+                        children: (
+                          <>
+                            <ListItemIcon>
+                              <Settings />
+                            </ListItemIcon>
+                            <ListItemText>Settings</ListItemText>
+                          </>
+                        ),
+                      }}
+                    />
+
+                    <MenuItem
+                      onClick={() => {
+                        deleteCookie('jwt', {
+                          domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+                        });
+                        window.location.reload();
+                      }}
+                    >
+                      <ListItemIcon>
+                        <Logout />
+                      </ListItemIcon>
+                      <ListItemText>Logout</ListItemText>
+                    </MenuItem>
+
                     <MenuItem sx={{ py: '0.5rem' }}>
                       <SwitchDark />
                       <SwitchColorblind />
@@ -293,17 +284,19 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
         }
       }
       footer={
-        process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE && {
-          components: {
-            center: (
-              <Box textAlign='center'>
-                <Typography sx={{ margin: 0 }} variant='caption'>
-                  {process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE}
-                </Typography>
-              </Box>
-            ),
-          },
-        }
+        props.footerMessage
+          ? {
+              components: {
+                center: (
+                  <Box textAlign='center'>
+                    <Typography sx={{ margin: 0 }} variant='caption'>
+                      {props.footerMessage}
+                    </Typography>
+                  </Box>
+                ),
+              },
+            }
+          : undefined
       }
     >
       {process.env.NEXT_PUBLIC_INTERACTIVE_UI === 'form' ? (
@@ -312,7 +305,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
           showChatThemeToggles={props.showChatThemeToggles}
           enableFileUpload={props.enableFileUpload}
           enableVoiceInput={props.enableVoiceInput}
-          showOverrideSwitches={props.showOverrideSwitches}
+          showOverrideSwitchesCSV={props.showOverrideSwitchesCSV}
         />
       ) : (
         <Chat
@@ -321,7 +314,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
           alternateBackground={props.alternateBackground}
           enableFileUpload={props.enableFileUpload}
           enableVoiceInput={props.enableVoiceInput}
-          showOverrideSwitches={props.showOverrideSwitches}
+          showOverrideSwitchesCSV={props.showOverrideSwitchesCSV}
         />
       )}
     </AppWrapper>
@@ -341,12 +334,14 @@ const InteractiveAGiXT = ({
   const uiConfigWithEnv = useMemo(
     () => ({
       showAppBar: process.env.NEXT_PUBLIC_AGIXT_SHOW_APP_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
-      showConversationSelector: process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR === 'true', // Show the conversation selection bar to create, delete, and export conversations
       showRLHF: process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true',
       showChatThemeToggles: process.env.NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES === 'true',
       footerMessage: process.env.NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE || '',
-      showOverrideSwitches: process.env.NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES || '',
+      showOverrideSwitchesCSV: process.env.NEXT_PUBLIC_AGIXT_SHOW_OVERRIDE_SWITCHES || '',
       alternateBackground: 'primary' as 'primary' | 'secondary',
+      showSelectorsCSV: process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION,
+      enableVoiceInput: process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true',
+      enableFileUpload: process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true',
       ...uiConfig,
     }),
     [uiConfig],

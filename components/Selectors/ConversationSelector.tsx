@@ -144,6 +144,7 @@ export default function ConversationSelector(): React.JSX.Element {
             fontSize: '12px',
             paddingRight: '0px',
           }}
+          fullWidth
           open={dropDownOpen}
           onOpen={() => setDropDownOpen(true)}
           onClose={() => setDropDownOpen(false)}
