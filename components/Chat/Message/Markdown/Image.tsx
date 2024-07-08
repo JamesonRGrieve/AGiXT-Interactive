@@ -12,7 +12,11 @@ export default function MarkdownImage({ src, alt, ...props }: ImageProps): React
     <ImageDialog
       imageSrc={src}
       title={alt}
-      nextImage={src.includes(process.env.NEXT_PUBLIC_AGIXT_SERVER.split('://')[1].split(':')[0].split('/')[0])}
+      nextImage={src.includes(
+        process.env.NEXT_PUBLIC_AGIXT_SERVER?.split('://')
+          [process.env.NEXT_PUBLIC_AGIXT_SERVER.includes('://') ? 1 : 0].split(':')[0]
+          .split('/')[0],
+      )}
     />
   );
 }

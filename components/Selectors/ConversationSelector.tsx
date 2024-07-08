@@ -39,12 +39,12 @@ export default function ConversationSelector(): React.JSX.Element {
     },
   );
   const [openRenameConversation, setOpenRenameConversation] = useState(false);
-  const [changedconversation, setChangedconversation] = useState(state.overrides.conversation);
+  const [changedConversation, setChangedConversation] = useState('-');
   // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
 
   useEffect(() => {
-    setChangedconversation(state.overrides.conversation);
+    setChangedConversation(state.overrides.conversation);
     setCookie('agixt-conversation', state.overrides.conversation, {
       domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
     });
@@ -60,7 +60,7 @@ export default function ConversationSelector(): React.JSX.Element {
       const response = await state.agixt.renameConversation(
         state.agent,
         state.overrides.conversation,
-        magic ? '-' : changedconversation,
+        magic ? '-' : changedConversation,
       );
       await mutate('/conversation');
       //console.log(response);
@@ -153,7 +153,7 @@ export default function ConversationSelector(): React.JSX.Element {
           labelId='conversation-label'
           label='Select a Conversation'
           disabled={conversationData?.length === 0}
-          value={state.overrides.conversation}
+          value={changedConversation}
           onChange={(e) =>
             state.mutate((oldState) => ({
               ...oldState,
@@ -183,7 +183,7 @@ export default function ConversationSelector(): React.JSX.Element {
                 </IconButton>
               </Tooltip>
               <Tooltip title='Open Dropdown'>
-                <IconButton onClick={() => setDropDownOpen(!dropDownOpen)} color='error' sx={{ minWidth: '20px' }}>
+                <IconButton onClick={() => setDropDownOpen((prev) => !prev)} color='error' sx={{ minWidth: '20px' }}>
                   {dropDownOpen ? <ArrowDropUp fontSize='medium' /> : <ArrowDropDown fontSize='medium' />}
                 </IconButton>
               </Tooltip>
@@ -231,8 +231,8 @@ export default function ConversationSelector(): React.JSX.Element {
             label='New Conversation Name'
             type='text'
             fullWidth
-            value={changedconversation}
-            onChange={(e) => setChangedconversation(e.target.value)}
+            value={changedConversation}
+            onChange={(e) => setChangedConversation(e.target.value)}
             variant='outlined'
             color='info'
           />
