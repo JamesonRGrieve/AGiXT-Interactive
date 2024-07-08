@@ -161,7 +161,7 @@ export default function ConversationSelector(): React.JSX.Element {
           }
           endAdornment={
             <InputAdornment position='end'>
-              <Tooltip title='Add Conversation' sx={{ marginRight: '1rem' }}>
+              <Tooltip title='Add Conversation'>
                 <IconButton onClick={() => handleAddConversation()} color='info' sx={{ minWidth: '20px' }}>
                   <Add sx={{ minWidth: '20px' }} />
                 </IconButton>
