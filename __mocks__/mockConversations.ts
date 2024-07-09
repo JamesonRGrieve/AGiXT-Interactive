@@ -261,32 +261,80 @@ export const moreMockConversations = [
         role: 'BOT',
         message: '[SUBACTIVITY] Searching for Mitsubishi 3000GT specifications June 21, 2024 02:16 PM.',
         timestamp: '2024-07-03T14:16:20Z',
-        children: [],
-      },
-      {
-        role: 'BOT',
-        message: '[SUBACTIVITY] Browsing https://www.ultimatespecs.com/car-specs/Mitsubishi/m11135/3000GT.',
-        timestamp: '2024-07-03T14:16:25Z',
-        children: [],
-      },
-      {
-        role: 'BOT',
-        message:
-          '[SUBACTIVITY] Browsing https://www.thedrive.com/news/this-mitsubishi-3000gt-lm-edition-is-a-gran-turismo-legend-made-real.',
-        timestamp: '2024-07-03T14:16:30Z',
-        children: [],
-      },
-      {
-        role: 'BOT',
-        message: '[SUBACTIVITY] Browsing https://www.auto-data.net/en/mitsubishi-3000-gt-model-1713.',
-        timestamp: '2024-07-03T14:16:35Z',
-        children: [],
+        children: [
+          {
+            role: 'BOT',
+            message: '[SUBACTIVITY] Browsing https://www.ultimatespecs.com/car-specs/Mitsubishi/m11135/3000GT.',
+            timestamp: '2024-07-03T14:16:25Z',
+            children: [
+              {
+                role: 'BOT',
+                message: '[SUBACTIVITY] Searching for Mitsubishi 3000GT specifications June 21, 2024 02:16 PM.',
+                timestamp: '2024-07-03T14:16:20Z',
+                children: [
+                  {
+                    role: 'BOT',
+                    message: '[SUBACTIVITY] Browsing https://www.ultimatespecs.com/car-specs/Mitsubishi/m11135/3000GT.',
+                    timestamp: '2024-07-03T14:16:25Z',
+                    children: [],
+                  },
+                  {
+                    role: 'BOT',
+                    message:
+                      '[SUBACTIVITY] Browsing https://www.thedrive.com/news/this-mitsubishi-3000gt-lm-edition-is-a-gran-turismo-legend-made-real.',
+                    timestamp: '2024-07-03T14:16:30Z',
+                    children: [],
+                  },
+                  {
+                    role: 'BOT',
+                    message: '[SUBACTIVITY] Browsing https://www.auto-data.net/en/mitsubishi-3000-gt-model-1713.',
+                    timestamp: '2024-07-03T14:16:35Z',
+                    children: [],
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            role: 'BOT',
+            message:
+              '[SUBACTIVITY] Browsing https://www.thedrive.com/news/this-mitsubishi-3000gt-lm-edition-is-a-gran-turismo-legend-made-real.',
+            timestamp: '2024-07-03T14:16:30Z',
+            children: [],
+          },
+          {
+            role: 'BOT',
+            message: '[SUBACTIVITY] Browsing https://www.auto-data.net/en/mitsubishi-3000-gt-model-1713.',
+            timestamp: '2024-07-03T14:16:35Z',
+            children: [],
+          },
+        ],
       },
       {
         role: 'BOT',
         message: '[SUBACTIVITY] Searching for Mitsubishi 3000GT history and performance June 21, 2024 02:16 PM.',
         timestamp: '2024-07-03T14:16:40Z',
-        children: [],
+        children: [
+          {
+            role: 'BOT',
+            message: '[SUBACTIVITY] Browsing https://www.ultimatespecs.com/car-specs/Mitsubishi/m11135/3000GT.',
+            timestamp: '2024-07-03T14:16:25Z',
+            children: [],
+          },
+          {
+            role: 'BOT',
+            message:
+              '[SUBACTIVITY] Browsing https://www.thedrive.com/news/this-mitsubishi-3000gt-lm-edition-is-a-gran-turismo-legend-made-real.',
+            timestamp: '2024-07-03T14:16:30Z',
+            children: [],
+          },
+          {
+            role: 'BOT',
+            message: '[SUBACTIVITY] Browsing https://www.auto-data.net/en/mitsubishi-3000-gt-model-1713.',
+            timestamp: '2024-07-03T14:16:35Z',
+            children: [],
+          },
+        ],
       },
       {
         role: 'BOT',
