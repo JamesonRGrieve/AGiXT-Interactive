@@ -112,6 +112,7 @@ export default function Activity({
           borderBottom: '1px solid',
           borderColor: theme.palette.divider,
           '& .MuiAccordionSummary-content': { ...rootStyles, padding: 0, margin: 0 },
+          '.Mui-expanded': '0px 10px 0px 0px',
         }}
         expandIcon={<ExpandMore />}
       >
