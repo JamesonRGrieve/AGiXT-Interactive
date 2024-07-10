@@ -120,8 +120,10 @@ export default function ChatBar({
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
       <Dropzone
         onDrop={(acceptedFiles) => {
-          for (const file of acceptedFiles) {
-            uploadFile(file);
+          if (enableFileUpload) {
+            for (const file of acceptedFiles) {
+              uploadFile(file);
+            }
           }
         }}
       >
