@@ -4,7 +4,7 @@ import { action } from '@storybook/addon-actions';
 
 // Define mock functions
 const setRecording = action('setRecording');
-const onSend = action('onSend');
+const onSave = action('onSave');
 
 const meta: Meta<typeof AudioRecorder> = {
   title: 'Chat/AudioRecorder',
@@ -28,7 +28,7 @@ export const Default: Story = {
     recording: false,
     setRecording,
     disabled: false,
-    onSend,
+    onSave,
   },
 };
 
@@ -37,7 +37,7 @@ export const Recording: Story = {
     recording: true,
     setRecording,
     disabled: false,
-    onSend,
+    onSave,
   },
 };
 
@@ -46,6 +46,6 @@ export const Disabled: Story = {
     recording: false,
     setRecording,
     disabled: true,
-    onSend,
+    onSave,
   },
 };

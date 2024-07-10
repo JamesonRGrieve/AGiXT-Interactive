@@ -80,26 +80,12 @@ export default function ChatBar({
     newUploadedFiles[file.name] = fileContent as string;
     setUploadedFiles((previous) => ({ ...previous, ...newUploadedFiles }));
   };
-  const handleSend = useCallback(
-    (message, uploadedFiles) => {
-      setLoading(true);
-      event.preventDefault();
-      if (clearOnSend) {
-        setMessage('');
-        setUploadedFiles({});
-      }
-
-      onSend(message, uploadedFiles)
-        .then(() => {
-          setLoading(false);
-          return true;
-        })
-        .catch(() => {
-          return false;
-        });
-    },
-    [clearOnSend, onSend, setLoading],
-  );
+  const handleSave = useCallback((audio) => {
+    const newUploadedFiles = {
+      [`${new Date().getTime()}.recording.wav`]: audio,
+    };
+    setUploadedFiles((previous) => ({ ...previous, ...newUploadedFiles }));
+  }, []);
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (loading) {
@@ -146,7 +132,7 @@ export default function ChatBar({
               onKeyDown={async (event) => {
                 if (event.key === 'Enter' && !event.shiftKey && message) {
                   event.preventDefault();
-                  handleSend(message, uploadedFiles);
+                  onSend(message, uploadedFiles);
                 }
               }}
               onChange={(e) => setMessage(e.target.value)}
@@ -215,10 +201,12 @@ export default function ChatBar({
                         recording={alternativeInputActive}
                         setRecording={setAlternativeInputActive}
                         disabled={disabled}
-                        onSend={handleSend}
+                        onSave={handleSave}
                       />
                     )}
-                    {!alternativeInputActive && <SendMessage {...{ handleSend, message, uploadedFiles, disabled }} />}
+                    {!alternativeInputActive && (
+                      <SendMessage {...{ handleSend: handleSave, message, uploadedFiles, disabled }} />
+                    )}
                   </InputAdornment>
                 ),
               }}

@@ -73,42 +73,24 @@ export default function Chat({
     },
   );
   //console.log(conversation.data);
-  async function chat(message, files): Promise<string> {
+  async function chat(messageTextBody, messageAttachedFiles): Promise<string> {
     const messages = [];
-    // console.log(message);
-    let toPush: any = {};
-    if (typeof message === 'object' && message.type === 'audio_url') {
-      toPush = {
-        role: 'user',
-        content: [message],
-      };
-    } else {
-      if (Object.keys(files).length > 0) {
-        const fileContents = Object.entries(files).map(([fileName, fileContent]: [string, string]) => ({
+
+    messages.push({
+      role: 'user',
+      content: [
+        { type: 'text', text: messageTextBody },
+        ...Object.entries(messageAttachedFiles).map(([fileName, fileContent]: [string, string]) => ({
           type: `${fileContent.split(':')[1].split('/')[0]}_url`,
           file_name: fileName,
           [`${fileContent.split(':')[1].split('/')[0]}_url`]: {
             url: fileContent,
           },
-        }));
-        toPush = {
-          role: 'user',
-          content: [
-            { type: 'text', text: message },
-            ...fileContents, // Spread operator to include all file contents
-          ],
-        };
-      } else {
-        toPush = { role: 'user', content: message };
-      }
-      if (getCookie('agixt-tts') !== undefined) {
-        toPush.tts = getCookie('agixt-tts');
-      }
-      if (getCookie('agixt-websearch') !== undefined) {
-        toPush.websearch = getCookie('agixt-websearch');
-      }
-      messages.push(toPush);
-    }
+        })), // Spread operator to include all file contents
+      ],
+      ...(getCookie('agixt-tts') ? { tts: getCookie('agixt-tts') } : {}),
+      ...(getCookie('agixt-websearch') ? { websearch: getCookie('agixt-websearch') } : {}),
+    });
 
     const toOpenAI = {
       messages: messages,
@@ -169,7 +151,7 @@ export default function Chat({
         enableMessageEditing={enableMessageEditing}
       />
       <ChatBar
-        onSend={(message, files) => chat(message, files)}
+        onSend={chat}
         disabled={loading}
         showChatThemeToggles={showChatThemeToggles}
         enableFileUpload={enableFileUpload}

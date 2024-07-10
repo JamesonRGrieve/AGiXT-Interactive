@@ -34,7 +34,7 @@ export const Default: Story = {
     showChatThemeToggles: true,
     enableFileUpload: true,
     enableVoiceInput: true,
-    showOverrideSwitches: '',
+    showOverrideSwitchesCSV: '',
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -84,7 +84,7 @@ export const WithoutVoiceInput: Story = {
 export const WithOverrideSwitches: Story = {
   args: {
     ...Default.args,
-    showOverrideSwitches: 'tts,websearch',
+    showOverrideSwitchesCSV: 'tts,websearch',
   },
 };
 

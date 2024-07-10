@@ -33,6 +33,6 @@ export const Default: Story = {
     alternateBackground: 'primary',
     enableFileUpload: true,
     enableVoiceInput: true,
-    showOverrideSwitches: true,
+    showOverrideSwitchesCSV: '',
   },
 };

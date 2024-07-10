@@ -1,17 +1,17 @@
 import { useState, useRef, useCallback } from 'react';
 import { IconButton, Tooltip } from '@mui/material';
-import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon } from '@mui/icons-material';
+import { Mic as MicIcon, Cancel as CancelIcon, Send as SendIcon, Add } from '@mui/icons-material';
 
 export default function AudioRecorder({
   recording,
   setRecording,
   disabled,
-  onSend,
+  onSave,
 }: {
   recording: boolean;
   setRecording: (recording: boolean) => void;
   disabled: boolean;
-  onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => void;
+  onSave: (message: string | object, uploadedFiles?: { [x: string]: string }) => void;
 }): React.JSX.Element {
   const [audioData, setAudioData] = useState(null);
   const mediaRecorder = useRef(null);
@@ -47,19 +47,11 @@ export default function AudioRecorder({
       const reader = new FileReader();
       reader.readAsDataURL(audioData); // Use readAsDataURL for base64 conversion
       reader.onloadend = (): void => {
-        const base64Audio = reader.result as string; // Format looks like: data:audio/webm;codecs=opus;base64,GkXfo59ChoEBQveBAU...
-        const response = {
-          type: 'audio_url',
-          audio_url: {
-            url: base64Audio,
-          },
-        };
-
         setAudioData(null);
-        onSend(response);
+        onSave(reader.result as string); // Format looks like: data:audio/webm;codecs=opus;base64,GkXfo59ChoEBQveBAU...
       };
     }
-  }, [audioData, onSend]);
+  }, [audioData, onSave]);
 
   const cancelRecording = (): void => {
     if (mediaRecorder.current) {
@@ -83,10 +75,10 @@ export default function AudioRecorder({
           <CancelIcon />
         </IconButton>
       </Tooltip>
-      <Tooltip title='Send Audio'>
+      <Tooltip title='Add Audio to Message'>
         {/* Finish recording triggers data as soon as audio data is available */}
         <IconButton color='primary' onClick={finishRecording}>
-          <SendIcon />
+          <Add />
         </IconButton>
       </Tooltip>
     </>
