@@ -104,6 +104,7 @@ export default function ChatBar({
   return (
     <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
       <Dropzone
+        noClick
         onDrop={(acceptedFiles) => {
           if (enableFileUpload) {
             for (const file of acceptedFiles) {
@@ -121,7 +122,6 @@ export default function ChatBar({
             width='100%'
             {...getRootProps()}
           >
-            <input {...getInputProps()} />
             <TextField
               label={`Enter your message to ${state.agent} here.`}
               placeholder={`Hello, ${state.agent}!`}
