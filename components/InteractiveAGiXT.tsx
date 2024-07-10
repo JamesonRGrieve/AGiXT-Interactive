@@ -312,6 +312,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
       ) : (
         <Chat
           mode={props.mode}
+          showRLHF={props.showRLHF}
           showChatThemeToggles={props.showChatThemeToggles}
           alternateBackground={props.alternateBackground}
           enableFileUpload={props.enableFileUpload}
