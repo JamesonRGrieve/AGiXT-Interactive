@@ -82,8 +82,9 @@ export default function ChatBar({
   };
   const handleSave = useCallback((audio) => {
     const newUploadedFiles = {
-      [`${new Date().getTime()}.recording.wav`]: audio,
+      [`${new Date().getHours()}.${new Date().getMinutes()}.${new Date().getSeconds()}.recording.wav`]: audio,
     };
+    console.log(newUploadedFiles);
     setUploadedFiles((previous) => ({ ...previous, ...newUploadedFiles }));
   }, []);
   useEffect(() => {
@@ -205,7 +206,20 @@ export default function ChatBar({
                       />
                     )}
                     {!alternativeInputActive && (
-                      <SendMessage {...{ handleSend: handleSave, message, uploadedFiles, disabled }} />
+                      <SendMessage
+                        {...{
+                          handleSend: () => {
+                            onSend(message, uploadedFiles);
+                            if (clearOnSend) {
+                              setMessage('');
+                              setUploadedFiles({});
+                            }
+                          },
+                          message,
+                          uploadedFiles,
+                          disabled,
+                        }}
+                      />
                     )}
                   </InputAdornment>
                 ),
@@ -315,7 +329,7 @@ const SendMessage = ({ handleSend, message, uploadedFiles, disabled }: any) => {
             event.preventDefault();
             handleSend(message, uploadedFiles);
           }}
-          disabled={message.trim().length === 0 || disabled}
+          disabled={(message.trim().length === 0 && Object.keys(uploadedFiles).length === 0) || disabled}
           color='primary'
           sx={{
             height: '56px',
