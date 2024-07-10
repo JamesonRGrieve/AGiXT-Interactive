@@ -87,7 +87,6 @@ export default function Message({
   return (
     <Box
       sx={{
-        backgroundColor: theme.palette.background.default,
         margin: '10px',
         overflow: 'hidden',
         position: 'center',
