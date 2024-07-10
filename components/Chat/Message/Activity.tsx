@@ -57,7 +57,6 @@ export default function Activity({
   }, [inProgress]);
   const rootStyles = {
     // backgroundColor: theme.palette[String(alternateBackground)][theme.palette.mode],
-    backgroundColor: theme.palette.background.default,
     padding: '10px',
     overflow: 'hidden',
     position: 'center',
