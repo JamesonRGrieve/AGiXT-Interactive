@@ -185,11 +185,14 @@ export default function ChatBar({
                           }}
                         >
                           <MenuList dense>
+                            {showOverrideSwitchesCSV.split(',').includes('websearch') && (
+                              <OverrideSwitch name='websearch' label='Websearch' />
+                            )}
                             {showOverrideSwitchesCSV.split(',').includes('tts') && (
                               <OverrideSwitch name='tts' label='Text-to-Speech' />
                             )}
-                            {showOverrideSwitchesCSV.split(',').includes('websearch') && (
-                              <OverrideSwitch name='websearch' label='Websearch' />
+                            {showOverrideSwitchesCSV.split(',').includes('create-image') && (
+                              <OverrideSwitch name='create-image' label='Generate an Image' />
                             )}
                           </MenuList>
                         </Popover>
