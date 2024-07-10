@@ -8,12 +8,16 @@ export default function ChatLog({
   alternateBackground,
   showRLHF,
   loading,
+  enableMessageDeletion,
+  enableMessageEditing,
   setLoading,
 }: {
   conversation: { role: string; message: string; timestamp: string; children: any[] }[];
   setLoading: (loading: boolean) => void;
   loading: boolean;
   showRLHF: boolean;
+  enableMessageEditing: boolean;
+  enableMessageDeletion: boolean;
   alternateBackground?: string;
 }): React.JSX.Element {
   let lastUserMessage = ''; // track the last user message
@@ -73,6 +77,8 @@ export default function ChatLog({
                 setLoading={setLoading}
                 alternateBackground={alternateBackground}
                 rlhf={showRLHF}
+                enableMessageDeletion={enableMessageDeletion}
+                enableMessageEditing={enableMessageEditing}
               />
             );
           })

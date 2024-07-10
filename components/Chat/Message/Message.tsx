@@ -27,11 +27,16 @@ import clipboardCopy from 'clipboard-copy';
 import { InteractiveConfigContext } from '../../../types/InteractiveConfigContext';
 import MarkdownBlock from './MarkdownBlock';
 import formatDate from './formatDate';
+import JRGDialog from 'jrgcomponents/Dialog';
+import { maxWidth } from '@mui/system';
+import { mutate } from 'swr';
 
 export type MessageProps = {
   chatItem: { role: string; message: string; timestamp: string; rlhf?: { positive: boolean; feedback: string } };
   lastUserMessage: string;
   alternateBackground?: string;
+  enableMessageEditing: boolean;
+  enableMessageDeletion: boolean;
   rlhf?: boolean;
   setLoading: (loading: boolean) => void;
 };
@@ -39,10 +44,13 @@ export default function Message({
   chatItem,
   lastUserMessage,
   rlhf,
+  enableMessageDeletion,
+  enableMessageEditing,
   alternateBackground = 'primary',
   setLoading,
 }: MessageProps): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);
+  const [updatedMessage, setUpdatedMessage] = useState(chatItem.message);
   const formattedMessage = useMemo(() => {
     let formatted = chatItem.message;
     try {
@@ -193,16 +201,47 @@ export default function Message({
               <DownloadIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title='Edit Message'>
-            <IconButton disabled>
-              <EditNote />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title='Delete Message'>
-            <IconButton disabled>
-              <DeleteForever />
-            </IconButton>
-          </Tooltip>
+          {enableMessageEditing && (
+            <Tooltip title='Edit Message'>
+              <JRGDialog
+                ButtonComponent={IconButton}
+                ButtonProps={{ children: <EditNote /> }}
+                title='Edit Message'
+                onConfirm={async () => {
+                  await state.agixt.updateConversationMessage(
+                    state.overrides.conversation,
+                    chatItem.message,
+                    updatedMessage,
+                  );
+                  mutate('/conversation/' + state.overrides.conversation);
+                }}
+                content={
+                  <TextField
+                    multiline
+                    fullWidth
+                    value={updatedMessage}
+                    onChange={(event) => {
+                      setUpdatedMessage(event.target.value);
+                    }}
+                  />
+                }
+                sx={{ width: '70%', maxWidth: 'unset' }}
+              />
+            </Tooltip>
+          )}
+          {enableMessageDeletion && (
+            <Tooltip title='Delete Message'>
+              <JRGDialog
+                ButtonComponent={IconButton}
+                ButtonProps={{ children: <DeleteForever /> }}
+                title='Delete Message'
+                onConfirm={async () => {
+                  await state.agixt.deleteConversationMessage(state.overrides.conversation, chatItem.message);
+                }}
+                content={`Are you sure you'd like to permanently delete this message from the conversation?`}
+              />
+            </Tooltip>
+          )}
           {chatItem.rlhf && (
             <Typography variant='caption' color={chatItem.rlhf.positive ? 'success' : 'error'}>
               {chatItem.rlhf.feedback}
