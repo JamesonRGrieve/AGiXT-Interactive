@@ -45,6 +45,8 @@ export type UIProps = {
   showRLHF?: boolean;
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
+  enableMessageEditing?: boolean;
+  enableMessageDeletion?: boolean;
   alternateBackground?: 'primary' | 'secondary';
   footerMessage?: string;
   showOverrideSwitchesCSV?: string;
@@ -244,7 +246,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                       }}
                       toUpdate={user}
                       title={`Settings for ${user?.email ?? 'User'}`}
-                      excludeFields={['subscription', 'email']}
+                      excludeFields={['subscription', 'email', 'ip_address']}
                       ButtonComponent={MenuItem}
                       ButtonProps={{
                         children: (
@@ -314,6 +316,8 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
           alternateBackground={props.alternateBackground}
           enableFileUpload={props.enableFileUpload}
           enableVoiceInput={props.enableVoiceInput}
+          enableMessageDeletion={props.enableMessageDeletion}
+          enableMessageEditing={props.enableMessageEditing}
           showOverrideSwitchesCSV={props.showOverrideSwitchesCSV}
         />
       )}
@@ -342,6 +346,8 @@ const InteractiveAGiXT = ({
       showSelectorsCSV: process.env.NEXT_PUBLIC_AGIXT_SHOW_SELECTION,
       enableVoiceInput: process.env.NEXT_PUBLIC_AGIXT_VOICE_INPUT_ENABLED === 'true',
       enableFileUpload: process.env.NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED === 'true',
+      enableMessageDeletion: process.env.NEXT_PUBLIC_AGIXT_ALLOW_MESSAGE_DELETION === 'true',
+      enableMessageEditing: process.env.NEXT_PUBLIC_AGIXT_ALLOW_MESSAGE_EDITING === 'true',
       ...uiConfig,
     }),
     [uiConfig],

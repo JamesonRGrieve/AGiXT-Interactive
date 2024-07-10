@@ -48,12 +48,14 @@ export async function getAndFormatConversastion(state): Promise<any[]> {
   }, []);
 }
 
-const conversationSWRPath = /conversation/;
+const conversationSWRPath = '/conversation/';
 export default function Chat({
   showChatThemeToggles,
   alternateBackground,
   enableFileUpload,
   enableVoiceInput,
+  enableMessageDeletion,
+  enableMessageEditing,
   showOverrideSwitchesCSV,
   showRLHF,
 }: Overrides & UIProps): React.JSX.Element {
@@ -163,6 +165,8 @@ export default function Chat({
         setLoading={setLoading}
         loading={loading}
         showRLHF={showRLHF}
+        enableMessageDeletion={enableMessageDeletion}
+        enableMessageEditing={enableMessageEditing}
       />
       <ChatBar
         onSend={(message, files) => chat(message, files)}
