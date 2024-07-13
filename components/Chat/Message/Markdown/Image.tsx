@@ -14,7 +14,7 @@ export default function MarkdownImage({ src, alt, ...props }: ImageProps): React
     <Box
       position='relative'
       width='100%'
-      height='12rem'
+      height='20rem'
       sx={
         {
           /*cursor: 'pointer'*/
