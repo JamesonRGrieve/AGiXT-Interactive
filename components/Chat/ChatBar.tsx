@@ -212,11 +212,11 @@ export default function ChatBar({
                       <SendMessage
                         {...{
                           handleSend: () => {
-                            onSend(message, uploadedFiles);
                             if (clearOnSend) {
                               setMessage('');
                               setUploadedFiles({});
                             }
+                            onSend(message, uploadedFiles);
                           },
                           message,
                           uploadedFiles,
