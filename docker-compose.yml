@@ -25,7 +25,8 @@ services:
       - THEME_NAME=${THEME_NAME-valentines}
       - ENV=${ENV-production}
       - TZ=${TZ-America/New_York}
-        - AUTODESK_CLIENT_ID=${AUTODESK_CLIENT_ID}
+      - AGIXT_SHOW_SELECTION=${AGIXT_SHOW_SELECTION-conversation}
+      - AUTODESK_CLIENT_ID=${AUTODESK_CLIENT_ID}
       - AWS_CLIENT_ID=${AWS_CLIENT_ID}
       - AWS_REGION=${AWS_REGION}
       - AWS_USER_POOL_ID=${AWS_USER_POOL_ID}
