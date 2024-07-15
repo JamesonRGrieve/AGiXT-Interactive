@@ -236,6 +236,7 @@ export default function Message({
                 title='Delete Message'
                 onConfirm={async () => {
                   await state.agixt.deleteConversationMessage(state.overrides.conversation, chatItem.message);
+                  mutate('/conversation/' + state.overrides.conversation);
                 }}
                 content={`Are you sure you'd like to permanently delete this message from the conversation?`}
               />
