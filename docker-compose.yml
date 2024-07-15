@@ -22,6 +22,7 @@ services:
       - APP_URI=${APP_URI-http://localhost:3437}
       - LOG_VERBOSITY_SERVER=${LOG_VERBOSITY_SERVER-3}
       - THEME_NAME=${THEME_NAME-valentines}
+      - ENV=${ENV-production}
       - TZ=${TZ-America/New_York}
     ports:
       - 3437:3437
