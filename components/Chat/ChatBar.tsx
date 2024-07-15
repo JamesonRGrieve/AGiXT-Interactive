@@ -134,7 +134,8 @@ export default function ChatBar({
               onKeyDown={async (event) => {
                 if (event.key === 'Enter' && !event.shiftKey && message) {
                   event.preventDefault();
-                  onSend(message, uploadedFiles);
+                  await onSend(message, uploadedFiles);
+                  setMessage('');
                 }
               }}
               onChange={(e) => setMessage(e.target.value)}
