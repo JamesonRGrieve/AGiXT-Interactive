@@ -16,7 +16,7 @@ services:
       - ENV=${ENV-production}
       - TZ=${TZ-America/New_York}
       - AGIXT_SERVER=${AGIXT_SERVER-http://localhost:7437}
-      - AGIXT_API_KEY=${AGIXT_REQUIRE_API_KEY-false}
+      - AGIXT_API_KEY=${AGIXT_API_KEY}
       - AGIXT_MODE=${AGIXT_MODE-prompt}
       - AGIXT_ENABLE_SEARCHPARAM_CONFIG=${AGIXT_ENABLE_SEARCHPARAM_CONFIG}
       - AGIXT_CONVERSATION=${AGIXT_CONVERSATION}
