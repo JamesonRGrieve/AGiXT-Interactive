@@ -2,10 +2,11 @@ const InteractiveConfigDefault = require('../types/InteractiveConfigDefault');
 
 exports.useAGiXTConfig = () => ({
   env: {
+    NEXT_PUBLIC_AGIXT_SERVER: process.env.AGIXT_SERVER || process.env.AUTH_SERVER || 'http://localhost:7437',
+    NEXT_PUBLIC_AGIXT_API_KEY: process.env.AGIXT_API_KEY || '',
+
     NEXT_PUBLIC_AGIXT_CONVERSATION_NAME: process.env.AGIXT_CONVERSATION || '-',
     NEXT_PUBLIC_AGIXT_CONVERSATION_MODE: process.env.AGIXT_CONVERSATION_MODE || 'static', // static, select or uuid
-    NEXT_PUBLIC_AGIXT_API_KEY: process.env.AGIXT_API_KEY || '',
-    NEXT_PUBLIC_AGIXT_SERVER: process.env.AGIXT_SERVER || process.env.AUTH_SERVER || 'http://localhost:7437',
     NEXT_PUBLIC_AUTH_SERVER: process.env.AUTH_SERVER || process.env.AGIXT_SERVER || '',
     // UI Options
     NEXT_PUBLIC_INTERACTIVE_UI: process.env.INTERACTIVE_UI || 'chat',
@@ -13,7 +14,7 @@ exports.useAGiXTConfig = () => ({
     NEXT_PUBLIC_AGIXT_SHOW_SELECTION:
       process.env.AGIXT_SHOW_SELECTION || (process.env.AGIXT_CONVERSATION_MODE === 'select' ? 'conversation' : ''), // csv of: 'agent', 'conversation' and/or 'prompt'
     NEXT_PUBLIC_AGIXT_FOOTER_MESSAGE: process.env.AGIXT_FOOTER_MESSAGE || 'Powered by AGiXT',
-    NEXT_PUBLIC_AGIXT_RLHF: process.env.AGIXT_RLHF || 'false',
+    NEXT_PUBLIC_AGIXT_RLHF: process.env.AGIXT_RLHF || 'true',
     NEXT_PUBLIC_AGIXT_SHOW_CHAT_THEME_TOGGLES:
       process.env.AGIXT_SHOW_CHAT_THEME_TOGGLES || process.env.AGIXT_SHOW_APP_BAR === 'false' ? 'true' : 'false',
     NEXT_PUBLIC_AGIXT_FILE_UPLOAD_ENABLED: process.env.AGIXT_FILE_UPLOAD_ENABLED || 'true', //|| String(InteractiveConfigDefault.overrides.enableFileUpload),
