@@ -199,7 +199,23 @@ export default function ChatBar({
                       </>
                     )}
                     {enableFileUpload && !alternativeInputActive && (
-                      <UploadFiles {...{ handleUploadFiles, disabled, setFileUploadOpen, fileUploadOpen }} />
+                      <>
+                        <IconButton>
+                          <label htmlFor='contained-button-file' style={{ lineHeight: '0.5rem' }}>
+                            <Tooltip title='Upload File(s)'>
+                              <NoteAddOutlinedIcon color='primary' sx={{ cursor: 'pointer' }} />
+                            </Tooltip>
+                          </label>
+                        </IconButton>
+                        <input
+                          accept='*'
+                          hidden
+                          id='contained-button-file'
+                          multiple
+                          type='file'
+                          onChange={handleUploadFiles}
+                        />
+                      </>
                     )}
                     {enableVoiceInput && (
                       <AudioRecorder
@@ -290,36 +306,6 @@ const OverrideSwitches = ({ setAnchorEl, anchorEl, showOverrideSwitches }: any) 
           {showOverrideSwitches.split(',').includes('websearch') && <OverrideSwitch name='websearch' label='Websearch' />}
         </MenuList>
       </Popover>
-    </>
-  );
-};
-
-const UploadFiles = ({ handleUploadFiles, disabled, setFileUploadOpen, fileUploadOpen }: any) => {
-  return (
-    <>
-      <Tooltip title='Upload File(s)'>
-        <IconButton
-          onClick={() => {
-            setFileUploadOpen(true);
-          }}
-          disabled={disabled}
-          color='primary'
-        >
-          <NoteAddOutlinedIcon />
-        </IconButton>
-      </Tooltip>
-      <MUIDialog
-        open={fileUploadOpen}
-        onClose={() => {
-          setFileUploadOpen(false);
-        }}
-      >
-        <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Please upload the files you would like to send.</DialogContentText>
-          <input accept='*' id='contained-button-file' multiple type='file' onChange={handleUploadFiles} />
-        </DialogContent>
-      </MUIDialog>
     </>
   );
 };
