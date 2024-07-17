@@ -57,7 +57,6 @@ export default function ChatBar({
   const state = useContext(InteractiveConfigContext);
   const [timer, setTimer] = useState<number>(-1);
   const [uploadedFiles, setUploadedFiles] = useState<{ [x: string]: string }>({});
-  const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [alternativeInputActive, setAlternativeInputActive] = useState(false);
 
@@ -68,7 +67,6 @@ export default function ChatBar({
     for (const file of event.target.files) {
       uploadFile(file);
     }
-    setFileUploadOpen(false);
   };
   const uploadFile = async (file: File) => {
     const newUploadedFiles: { [x: string]: string } = {};
@@ -199,9 +197,7 @@ export default function ChatBar({
                         </Popover>
                       </>
                     )}
-                    {enableFileUpload && !alternativeInputActive && (
-                      <UploadFiles {...{ handleUploadFiles, disabled, setFileUploadOpen, fileUploadOpen }} />
-                    )}
+                    {enableFileUpload && !alternativeInputActive && <UploadFiles {...{ handleUploadFiles, disabled }} />}
                     {enableVoiceInput && (
                       <AudioRecorder
                         recording={alternativeInputActive}
@@ -354,33 +350,28 @@ const OverrideSwitches = ({ setTTS, setWebsearch, tts, websearch, setAnchorEl, a
   );
 };
 
-const UploadFiles = ({ handleUploadFiles, disabled, setFileUploadOpen, fileUploadOpen }: any) => {
+const UploadFiles = ({ handleUploadFiles, disabled }: any) => {
   return (
-    <>
-      <Tooltip title='Upload File(s)'>
-        <IconButton
-          onClick={() => {
-            setFileUploadOpen(true);
-          }}
-          disabled={disabled}
-          color='primary'
-        >
-          <NoteAddOutlinedIcon />
-        </IconButton>
-      </Tooltip>
-      <MUIDialog
-        open={fileUploadOpen}
-        onClose={() => {
-          setFileUploadOpen(false);
+    <Tooltip title='Upload File(s)'>
+      <IconButton
+        component='span'
+        onClick={() => {
+          document.getElementById('contained-button-file')?.click();
         }}
+        disabled={disabled}
+        color='primary'
       >
-        <DialogTitle id='form-dialog-title'>Upload Files</DialogTitle>
-        <DialogContent>
-          <DialogContentText>Please upload the files you would like to send.</DialogContentText>
-          <input accept='*' id='contained-button-file' multiple type='file' onChange={handleUploadFiles} />
-        </DialogContent>
-      </MUIDialog>
-    </>
+        <input
+          accept='*'
+          id='contained-button-file'
+          multiple
+          type='file'
+          style={{ display: 'none' }}
+          onChange={handleUploadFiles}
+        />
+        <NoteAddOutlinedIcon />
+      </IconButton>
+    </Tooltip>
   );
 };
 
