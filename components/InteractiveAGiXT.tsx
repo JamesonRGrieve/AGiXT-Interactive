@@ -247,6 +247,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                       toUpdate={user}
                       title={`Settings for ${user?.email ?? 'User'}`}
                       excludeFields={['subscription', 'email', 'ip_address']}
+                      readOnlyFields={["input_tokens", "output_tokens"]}
                       ButtonComponent={MenuItem}
                       ButtonProps={{
                         children: (

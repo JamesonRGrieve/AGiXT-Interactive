@@ -197,7 +197,25 @@ export default function ChatBar({
                         </Popover>
                       </>
                     )}
-                    {enableFileUpload && !alternativeInputActive && <UploadFiles {...{ handleUploadFiles, disabled }} />}
+                    {enableFileUpload && !alternativeInputActive && (
+                      <>
+                        <IconButton>
+                          <label htmlFor='contained-button-file' style={{ lineHeight: '0.5rem' }}>
+                            <Tooltip title='Upload File(s)'>
+                              <NoteAddOutlinedIcon color='primary' sx={{ cursor: 'pointer' }} />
+                            </Tooltip>
+                          </label>
+                        </IconButton>
+                        <input
+                          accept='*'
+                          hidden
+                          id='contained-button-file'
+                          multiple
+                          type='file'
+                          onChange={handleUploadFiles}
+                        />
+                      </>
+                    )}
                     {enableVoiceInput && (
                       <AudioRecorder
                         recording={alternativeInputActive}
@@ -347,31 +365,6 @@ const OverrideSwitches = ({ setTTS, setWebsearch, tts, websearch, setAnchorEl, a
         </MenuList>
       </Popover>
     </>
-  );
-};
-
-const UploadFiles = ({ handleUploadFiles, disabled }: any) => {
-  return (
-    <Tooltip title='Upload File(s)'>
-      <IconButton
-        component='span'
-        onClick={() => {
-          document.getElementById('contained-button-file')?.click();
-        }}
-        disabled={disabled}
-        color='primary'
-      >
-        <input
-          accept='*'
-          id='contained-button-file'
-          multiple
-          type='file'
-          style={{ display: 'none' }}
-          onChange={handleUploadFiles}
-        />
-        <NoteAddOutlinedIcon />
-      </IconButton>
-    </Tooltip>
   );
 };
 
