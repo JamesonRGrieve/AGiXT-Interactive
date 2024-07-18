@@ -23,11 +23,15 @@ export default function MarkdownImage({ src, alt, ...props }: ImageProps): React
       }
       {...props}
     >
-      src.startsWith(process.env.NEXT_PUBLIC_AGIXT_SERVER) ? (
-      <Image src={src} alt={alt} fill style={{ objectFit: 'contain', objectPosition: 'left 50%' }} />
+      {src.startsWith(process.env.NEXT_PUBLIC_AGIXT_SERVER) ? (
+        <Image src={src} alt={alt} fill style={{ objectFit: 'contain', objectPosition: 'left 50%' }} />
       ) : (
-      <img src={src} alt={alt} style={{ objectFit: 'contain', width: '100%', height: '100%', objectPosition: 'left 50%' }} />
-      )
+        <img
+          src={src}
+          alt={alt}
+          style={{ objectFit: 'contain', width: '100%', height: '100%', objectPosition: 'left 50%' }}
+        />
+      )}
     </Box>
     /*
     <ImageDialog
