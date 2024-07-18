@@ -1,6 +1,7 @@
 {
   "name": "@agixt/interactive",
   "version": "0.1.5",
+  "main": "dist/components/InteractiveAGiXT.js",
   "scripts": {
     "dev": "rm -rf ./.next && next dev -p 3437",
     "build": "rm -rf ./.next && next build",
