@@ -65,7 +65,7 @@
     "axios": "^1.7.2",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.2.1",
-    "jrgcomponents": "^0.0.171",
+    "jrgcomponents": "^0.0.173",
     "md5": "^2.3.0",
     "mermaid": "^10.9.1",
     "next": "^14.2.4",
