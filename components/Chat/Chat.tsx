@@ -123,6 +123,7 @@ export default function Chat({
     }
     setLoading(false);
     mutate(conversationSWRPath + response);
+    mutate('/user');
     if (chatCompletion?.choices[0]?.message.content.length > 0) {
       return chatCompletion.choices[0].message.content;
     } else {
