@@ -190,6 +190,9 @@ export default function ChatBar({
                             {showOverrideSwitchesCSV.split(',').includes('tts') && (
                               <OverrideSwitch name='tts' label='Text-to-Speech' />
                             )}
+                            {showOverrideSwitchesCSV.split(',').includes('analyze-user-input') && (
+                              <OverrideSwitch name='analyze-user-input' label='Data Analysis' />
+                            )}
                             {showOverrideSwitchesCSV.split(',').includes('create-image') && (
                               <OverrideSwitch name='create-image' label='Generate an Image' />
                             )}
