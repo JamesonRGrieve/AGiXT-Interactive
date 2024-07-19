@@ -91,6 +91,7 @@ export default function Chat({
       ...(getCookie('agixt-create-image') ? { create_image: getCookie('agixt-create-image') } : {}),
       ...(getCookie('agixt-tts') ? { tts: getCookie('agixt-tts') } : {}),
       ...(getCookie('agixt-websearch') ? { websearch: getCookie('agixt-websearch') } : {}),
+      ...(getCookie('agixt-analyze-user-input') ? { analyze_user_input: getCookie('agixt-analyze-user-input') } : {}),
     });
 
     const toOpenAI = {
