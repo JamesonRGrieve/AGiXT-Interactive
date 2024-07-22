@@ -40,6 +40,19 @@ export type MessageProps = {
   rlhf?: boolean;
   setLoading: (loading: boolean) => void;
 };
+
+const checkUserMsgJustText = (chatItem: { role: string; message: string }) => {
+  if (chatItem.role !== 'USER') return false;
+
+  const message = chatItem.message;
+  return !(
+    message.includes('```') ||
+    message.includes('`') ||
+    message.includes('![') ||
+    (message.includes('[') && message.includes(']('))
+  );
+};
+
 export default function Message({
   chatItem,
   lastUserMessage,
@@ -85,8 +98,7 @@ export default function Message({
   const [feedback, setFeedback] = useState('');
   const theme = useTheme();
 
-  const isUserMsgJustText =
-    chatItem.role === 'USER' && !/(\[(.*?)]\((.*?)\)|!\[(.*?)]\((.*?)\)|```|`{1,3})/.test(chatItem.message);
+  const isUserMsgJustText = checkUserMsgJustText(chatItem);
 
   return (
     <Box
