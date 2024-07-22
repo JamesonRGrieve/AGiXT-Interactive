@@ -12,7 +12,6 @@ export default function MarkdownImage({ src, alt, ...props }: ImageProps): React
   // Since AGIXT Server is included in static optimization by default, we include it as a NextImage.
 
   return (
-    /*
     <Box
       position='relative'
       width='100%'
@@ -20,22 +19,20 @@ export default function MarkdownImage({ src, alt, ...props }: ImageProps): React
       sx={
         {
           /*cursor: 'pointer'*/
-    /*
         }
       }
       {...props}
     >
-    */
-    src.startsWith(process.env.NEXT_PUBLIC_AGIXT_SERVER) ? (
-      <Image src={src} alt={alt} /*fill style={{ objectFit: 'contain', objectPosition: 'left 50%' }}*/ />
-    ) : (
-      <img
-        src={src}
-        alt={alt}
-        /*style={{ objectFit: 'contain', width: '100%', height: '100%', objectPosition: 'left 50%' }}*/
-      />
-    )
-    /*</Box>*/
+      {src.startsWith(process.env.NEXT_PUBLIC_AGIXT_SERVER) ? (
+        <Image src={src} alt={alt} fill style={{ objectFit: 'contain', objectPosition: 'left 50%' }} />
+      ) : (
+        <img
+          src={src}
+          alt={alt}
+          style={{ objectFit: 'contain', width: '100%', height: '100%', objectPosition: 'left 50%' }}
+        />
+      )}
+    </Box>
     /*
     <ImageDialog
       imageSrc={src}
