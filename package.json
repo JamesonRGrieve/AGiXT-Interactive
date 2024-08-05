@@ -1,6 +1,6 @@
 {
   "name": "@agixt/interactive",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "scripts": {
     "dev": "rm -rf ./.next && next dev -p 3437",
     "build": "rm -rf ./.next && next build",
@@ -65,7 +65,7 @@
     "axios": "^1.7.2",
     "clipboard-copy": "^4.0.1",
     "cookies-next": "^4.2.1",
-    "jrgcomponents": "^0.0.173",
+    "jrgcomponents": "^0.0.175",
     "md5": "^2.3.0",
     "mermaid": "^10.9.1",
     "next": "^14.2.4",
