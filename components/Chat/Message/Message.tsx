@@ -40,6 +40,19 @@ export type MessageProps = {
   rlhf?: boolean;
   setLoading: (loading: boolean) => void;
 };
+
+const checkUserMsgJustText = (chatItem: { role: string; message: string }) => {
+  if (chatItem.role !== 'USER') return false;
+
+  const message = chatItem.message;
+  return !(
+    message.includes('```') ||
+    message.includes('`') ||
+    message.includes('![') ||
+    (message.includes('[') && message.includes(']('))
+  );
+};
+
 export default function Message({
   chatItem,
   lastUserMessage,
@@ -84,6 +97,9 @@ export default function Message({
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
   const theme = useTheme();
+
+  const isUserMsgJustText = checkUserMsgJustText(chatItem);
+
   return (
     <Box
       sx={{
@@ -91,7 +107,7 @@ export default function Message({
         overflow: 'hidden',
         position: 'center',
         color: theme.palette.text.primary,
-        ...(chatItem.role === 'USER' && {
+        ...(isUserMsgJustText && {
           maxWidth: '60%',
           alignSelf: 'flex-end',
         }),
@@ -136,6 +152,7 @@ export default function Message({
           style={{
             width: '100%',
             display: 'inline-block',
+            ...(chatItem.role === 'USER' && { textAlign: 'right' }),
           }}
         >
           <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> •{' '}
@@ -144,170 +161,181 @@ export default function Message({
           </Tooltip>
         </Typography>
       )}
-      {(audios?.message?.trim() || !audios) && (
-        <>
-          {chatItem.role !== 'USER' && process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
-            <>
-              {rlhf && (
-                <>
-                  <Tooltip title='Provide Positive Feedback'>
-                    <IconButton
-                      onClick={() => {
-                        setVote(1);
-                        setOpen(true);
-                      }}
-                    >
-                      <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
-                    </IconButton>
-                  </Tooltip>
-                  <Tooltip title='Provide Negative Feedback'>
-                    <IconButton
-                      onClick={() => {
-                        setVote(-1);
-                        setOpen(true);
-                      }}
-                    >
-                      <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
-                    </IconButton>
-                  </Tooltip>
-                </>
-              )}
-            </>
-          )}
+      <Box
+        sx={{
+          ...(chatItem.role === 'USER' && {
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            gap: '5px',
+          }),
+        }}
+      >
+        {(audios?.message?.trim() || !audios) && (
+          <>
+            {chatItem.role !== 'USER' && process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
+              <>
+                {rlhf && (
+                  <>
+                    <Tooltip title='Provide Positive Feedback'>
+                      <IconButton
+                        onClick={() => {
+                          setVote(1);
+                          setOpen(true);
+                        }}
+                      >
+                        <ThumbUp color={vote === 1 ? 'success' : 'inherit'} />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title='Provide Negative Feedback'>
+                      <IconButton
+                        onClick={() => {
+                          setVote(-1);
+                          setOpen(true);
+                        }}
+                      >
+                        <ThumbDown color={vote === -1 ? 'error' : 'inherit'} />
+                      </IconButton>
+                    </Tooltip>
+                  </>
+                )}
+              </>
+            )}
 
-          <Tooltip title='Copy Message'>
-            <IconButton
-              onClick={() => {
-                clipboardCopy(formattedMessage);
-              }}
-            >
-              <ContentCopyIcon />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title='Download Message'>
-            <IconButton
-              onClick={() => {
-                const element = document.createElement('a');
-                const file = new Blob([formattedMessage], {
-                  type: 'text/plain;charset=utf-8',
-                });
-                element.href = URL.createObjectURL(file);
-                element.download = `${chatItem.role}-${chatItem.timestamp}.md`;
-                document.body.appendChild(element);
-                element.click();
-              }}
-            >
-              <DownloadIcon />
-            </IconButton>
-          </Tooltip>
-          {enableMessageEditing && (
-            <Tooltip title='Edit Message'>
-              <JRGDialog
-                ButtonComponent={IconButton}
-                ButtonProps={{ children: <EditNote /> }}
-                title='Edit Message'
-                onConfirm={async () => {
-                  await state.agixt.updateConversationMessage(
-                    state.overrides.conversation,
-                    chatItem.message,
-                    updatedMessage,
-                  );
-                  mutate('/conversation/' + state.overrides.conversation);
-                }}
-                content={
-                  <TextField
-                    multiline
-                    fullWidth
-                    value={updatedMessage}
-                    onChange={(event) => {
-                      setUpdatedMessage(event.target.value);
-                    }}
-                  />
-                }
-                sx={{ width: '70%', maxWidth: 'unset' }}
-              />
-            </Tooltip>
-          )}
-          {enableMessageDeletion && (
-            <Tooltip title='Delete Message'>
-              <JRGDialog
-                ButtonComponent={IconButton}
-                ButtonProps={{ children: <DeleteForever /> }}
-                title='Delete Message'
-                onConfirm={async () => {
-                  await state.agixt.deleteConversationMessage(state.overrides.conversation, chatItem.message);
-                  mutate('/conversation/' + state.overrides.conversation);
-                }}
-                content={`Are you sure you'd like to permanently delete this message from the conversation?`}
-              />
-            </Tooltip>
-          )}
-          {chatItem.rlhf && (
-            <Typography variant='caption' color={chatItem.rlhf.positive ? 'success' : 'error'}>
-              {chatItem.rlhf.feedback}
-            </Typography>
-          )}
-
-          <Dialog
-            open={open}
-            onClose={() => {
-              setOpen(false);
-            }}
-            aria-labelledby='form-dialog-title'
-          >
-            <DialogTitle id='form-dialog-title'>Provide Feedback</DialogTitle>
-            <DialogContent>
-              <DialogContentText>Please provide some feedback regarding the message.</DialogContentText>
-              <TextField
-                margin='dense'
-                id='name'
-                label='Feedback'
-                type='text'
-                fullWidth
-                value={feedback}
-                onChange={(e) => setFeedback(e.target.value)}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button
+            <Tooltip title='Copy Message'>
+              <IconButton
                 onClick={() => {
-                  setOpen(false);
+                  clipboardCopy(formattedMessage);
                 }}
-                color='error'
               >
-                Cancel
-              </Button>
-              <Button
+                <ContentCopyIcon />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='Download Message'>
+              <IconButton
                 onClick={() => {
-                  setOpen(false);
-                  if (vote === 1) {
-                    state.agixt.addConversationFeedback(
-                      true,
-                      chatItem.role,
-                      chatItem.message,
-                      lastUserMessage,
-                      feedback,
+                  const element = document.createElement('a');
+                  const file = new Blob([formattedMessage], {
+                    type: 'text/plain;charset=utf-8',
+                  });
+                  element.href = URL.createObjectURL(file);
+                  element.download = `${chatItem.role}-${chatItem.timestamp}.md`;
+                  document.body.appendChild(element);
+                  element.click();
+                }}
+              >
+                <DownloadIcon />
+              </IconButton>
+            </Tooltip>
+            {enableMessageEditing && (
+              <Tooltip title='Edit Message'>
+                <JRGDialog
+                  ButtonComponent={IconButton}
+                  ButtonProps={{ children: <EditNote /> }}
+                  title='Edit Message'
+                  onConfirm={async () => {
+                    await state.agixt.updateConversationMessage(
                       state.overrides.conversation,
-                    );
-                  } else {
-                    state.agixt.addConversationFeedback(
-                      false,
-                      chatItem.role,
                       chatItem.message,
-                      lastUserMessage,
-                      feedback,
-                      state.overrides.conversation,
+                      updatedMessage,
                     );
+                    mutate('/conversation/' + state.overrides.conversation);
+                  }}
+                  content={
+                    <TextField
+                      multiline
+                      fullWidth
+                      value={updatedMessage}
+                      onChange={(event) => {
+                        setUpdatedMessage(event.target.value);
+                      }}
+                    />
                   }
-                }}
-                color='info'
-              >
-                Submit
-              </Button>
-            </DialogActions>
-          </Dialog>
-        </>
-      )}
+                  sx={{ width: '70%', maxWidth: 'unset' }}
+                />
+              </Tooltip>
+            )}
+            {enableMessageDeletion && (
+              <Tooltip title='Delete Message'>
+                <JRGDialog
+                  ButtonComponent={IconButton}
+                  ButtonProps={{ children: <DeleteForever /> }}
+                  title='Delete Message'
+                  onConfirm={async () => {
+                    await state.agixt.deleteConversationMessage(state.overrides.conversation, chatItem.message);
+                    mutate('/conversation/' + state.overrides.conversation);
+                  }}
+                  content={`Are you sure you'd like to permanently delete this message from the conversation?`}
+                />
+              </Tooltip>
+            )}
+            {chatItem.rlhf && (
+              <Typography variant='caption' color={chatItem.rlhf.positive ? 'success' : 'error'}>
+                {chatItem.rlhf.feedback}
+              </Typography>
+            )}
+
+            <Dialog
+              open={open}
+              onClose={() => {
+                setOpen(false);
+              }}
+              aria-labelledby='form-dialog-title'
+            >
+              <DialogTitle id='form-dialog-title'>Provide Feedback</DialogTitle>
+              <DialogContent>
+                <DialogContentText>Please provide some feedback regarding the message.</DialogContentText>
+                <TextField
+                  margin='dense'
+                  id='name'
+                  label='Feedback'
+                  type='text'
+                  fullWidth
+                  value={feedback}
+                  onChange={(e) => setFeedback(e.target.value)}
+                />
+              </DialogContent>
+              <DialogActions>
+                <Button
+                  onClick={() => {
+                    setOpen(false);
+                  }}
+                  color='error'
+                >
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => {
+                    setOpen(false);
+                    if (vote === 1) {
+                      state.agixt.addConversationFeedback(
+                        true,
+                        chatItem.role,
+                        chatItem.message,
+                        lastUserMessage,
+                        feedback,
+                        state.overrides.conversation,
+                      );
+                    } else {
+                      state.agixt.addConversationFeedback(
+                        false,
+                        chatItem.role,
+                        chatItem.message,
+                        lastUserMessage,
+                        feedback,
+                        state.overrides.conversation,
+                      );
+                    }
+                  }}
+                  color='info'
+                >
+                  Submit
+                </Button>
+              </DialogActions>
+            </Dialog>
+          </>
+        )}
+      </Box>
     </Box>
   );
 }

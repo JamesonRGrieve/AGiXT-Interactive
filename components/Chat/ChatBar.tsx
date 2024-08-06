@@ -57,7 +57,6 @@ export default function ChatBar({
   const state = useContext(InteractiveConfigContext);
   const [timer, setTimer] = useState<number>(-1);
   const [uploadedFiles, setUploadedFiles] = useState<{ [x: string]: string }>({});
-  const [fileUploadOpen, setFileUploadOpen] = useState(false);
   const [message, setMessage] = useState('');
   const [alternativeInputActive, setAlternativeInputActive] = useState(false);
   useEffect(() => {
@@ -67,7 +66,6 @@ export default function ChatBar({
     for (const file of event.target.files) {
       uploadFile(file);
     }
-    setFileUploadOpen(false);
   };
   const uploadFile = async (file: File) => {
     const newUploadedFiles: { [x: string]: string } = {};
