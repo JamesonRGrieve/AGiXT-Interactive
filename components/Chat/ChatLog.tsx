@@ -39,6 +39,7 @@ export default function ChatLog({
         flexGrow: '1',
         backgroundColor: theme.palette.background.default,
         overflow: 'auto',
+        boxShadow: 0,
       }}
     >
       <Box display='flex' minHeight='min-content' flexDirection='column'>
