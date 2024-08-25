@@ -1,5 +1,6 @@
 import type { StorybookConfig } from '@storybook/nextjs';
 const path = require('path');
+import '../app/globals.css';
 
 const config: StorybookConfig = {
   stories: ['../Welcome.mdx', '../**/*.stories.@(js|jsx|mjs|ts|tsx)', '../**/*.mdx'],
