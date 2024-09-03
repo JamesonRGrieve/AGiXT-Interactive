@@ -105,6 +105,7 @@
     "@types/react": "^18.3.3",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
+    "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.5",
     "eslint-config-prettier": "^9.1.0",
@@ -122,8 +123,11 @@
     "eslint-plugin-storybook": "^0.6.15",
     "eslint-plugin-unused-imports": "^3.2.0",
     "gh-pages": "^6.1.1",
+    "postcss": "^8.4.44",
+    "postcss-cli": "^11.0.0",
     "prettier": "^3.3.3",
     "storybook": "^8.2.9",
+    "tailwind": "^4.0.0",
     "typescript": "^5.5.4"
   }
 }

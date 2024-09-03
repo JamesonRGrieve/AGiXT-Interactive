@@ -5,6 +5,7 @@ import theme from '../app/theme';
 import { Title, Subtitle, Description, Primary, Controls, Stories } from '@storybook/blocks';
 import ReferenceGrid from 'jrgcomponents/Storybook/ReferenceGrid';
 import ComparisonGrid from 'jrgcomponents/Storybook/ComparisonGrid';
+import '../app/globals.css';
 
 export const globalTypes = {
   theme: {
