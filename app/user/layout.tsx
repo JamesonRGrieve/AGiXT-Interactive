@@ -15,9 +15,6 @@ export default function UserLayout({ children }: { children: ReactNode }): React
         overflowY: 'scroll',
       }}
     >
-      <Typography variant='h4' component='h2'>
-        Authentication
-      </Typography>
       {children}
     </Box>
   );
