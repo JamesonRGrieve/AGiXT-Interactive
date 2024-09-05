@@ -38,6 +38,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
             key={segment.content}
             remarkPlugins={[[remarkGfm]]}
             className='react-markdown'
+            disallowedElements={['code']}
             components={{
               h1({ children }) {
                 return <MarkdownHeading tag='h1'>{children}</MarkdownHeading>;
