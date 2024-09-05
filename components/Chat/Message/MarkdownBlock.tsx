@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import CodeBlock from './Markdown/CodeBlock';
 import remarkGfm from 'remark-gfm';
 import ListItem from '@mui/material/ListItem';
-import { List, Typography } from '@mui/material';
+import { Box, List, Typography } from '@mui/material';
 import MarkdownHeading from './Markdown/Heading';
 import MarkdownLink from './Markdown/Link';
 import MarkdownImage from './Markdown/Image';
@@ -109,8 +109,9 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
                   </ListItem>
                 );
               },
-              code({ ...props }) {
-                throw new Error('Code resolved by ReactMarkdown should not happen in this context.');
+              code({ children }) {
+                console.warn('Code resolved by ReactMarkdown should not happen in this context.');
+                return <Box sx={{ backgroundColor: 'firebrick' }}>{children}</Box>;
               },
               img({ src, alt }) {
                 return <MarkdownImage src={src} alt={alt} />;
