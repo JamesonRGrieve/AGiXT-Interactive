@@ -60,7 +60,7 @@ export default function Activity({
     padding: '10px',
     overflow: 'hidden',
     position: 'center',
-    color: theme.palette.text.primary,
+    // color: theme.palette.text.primary,
     display: 'flex',
     alignItems: 'center',
     gap: '0.5rem',
@@ -98,6 +98,7 @@ export default function Activity({
         borderTop: '1px solid',
         borderColor: theme.palette.divider,
       }}
+      className='text-primary'
     >
       <AccordionSummary
         sx={{
