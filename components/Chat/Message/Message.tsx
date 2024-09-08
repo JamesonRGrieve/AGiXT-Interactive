@@ -123,7 +123,7 @@ export default function Message({
         <div
           className={cn(
             chatItem.role === 'USER'
-              ? 'bg-accent-foreground rounded-[10px_10px_0_10px] py-3 px-5 text-accent'
+              ? 'bg-accent rounded-[10px_10px_0_10px] py-3 px-5 text-accent-foreground'
               : 'p-0 pt-8 text-primary',
           )}
         >
@@ -132,11 +132,8 @@ export default function Message({
       )}
 
       {chatItem.timestamp !== '' && (
-        <p className={cn('text-sm text-gray-500 dark:text-gray-300 flex gap-1', chatItem.role === 'USER' && 'text-right')}>
-          <p className='inline font-bold text-gray-700 dark:text-gray-200'>
-            {chatItem.role === 'USER' ? 'You' : chatItem.role}
-          </p>
-          •
+        <p className={cn('text-sm text-muted-foreground flex gap-1', chatItem.role === 'USER' && 'self-end')}>
+          <p className='inline font-bold text-muted-foreground'>{chatItem.role === 'USER' ? 'You' : chatItem.role}</p>•
           <Tooltip title={formatDate(chatItem.timestamp, false)}>
             <span>{chatItem.timestamp === undefined ? 'Just Now...' : formatDate(chatItem.timestamp)}</span>
           </Tooltip>
