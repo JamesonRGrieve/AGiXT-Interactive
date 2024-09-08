@@ -60,12 +60,19 @@ const fileExtensions = {
   qml: 'qml',
   racket: 'rkt',
   sas: 'sas',
+  tsv: 'tsv',
+  flow: 'flow',
+  mermaid: 'mermaid',
+  sequence: 'sequence',
+  gantt: 'gantt',
   verilog: 'v',
   vhdl: 'vhd',
   apex: 'cls',
   matlab: 'm',
   nim: 'nim',
   csv: 'csv',
+  xml: 'xml',
+  latex: 'latex',
 };
 const languageRenders = {
   markdown: (content) => <MarkdownBlock content={content} />,
@@ -101,15 +108,15 @@ const languageRenders = {
 
 export type CodeBlockProps = {
   inline?: boolean;
-  children?: ReactNode;
-  className?: string;
+  children?: string;
+  language?: string;
   fileName?: string;
   setLoading?: (loading: boolean) => void;
 };
 export default function CodeBlock({
   inline = false,
   children,
-  className,
+  language = 'Text',
   fileName,
   setLoading,
   ...props
@@ -120,14 +127,20 @@ export default function CodeBlock({
   // console.log(fileName);
   // console.log(inline);
   const theme = useTheme();
-
+  if (!language || language === 'Text') {
+    const languages = Object.entries(fileExtensions).flat();
+    const potentialLanguage = children.split('\n')[0].trim();
+    if (languages.includes(potentialLanguage)) {
+      language = potentialLanguage;
+      children = children.substring(children.indexOf('\n') + 1);
+    }
+  }
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const codeBlockRef = React.useRef(null);
-  const language = className?.replace(/language-/, '') || 'Text';
   const fileNameWithExtension = `${fileName || 'code'}.${fileExtensions[String(language.toLowerCase())] || 'txt'}`;
   const [tab, setTab] = React.useState(0);
   //console.log(language);
-  return className || children.toString().includes('\n') ? (
+  return language || children.toString().includes('\n') ? (
     <Box
       my='0.5rem'
       sx={{
