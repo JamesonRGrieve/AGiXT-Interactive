@@ -10,6 +10,7 @@ import 'katex/dist/katex.min.css';
 import XSV from './Code/XSV';
 import Mermaid from './Code/Mermaid';
 import Latex from 'react-latex-next';
+
 const fileExtensions = {
   '': 'txt',
   text: 'txt',
@@ -146,6 +147,9 @@ export default function CodeBlock({
       sx={{
         border: '1px solid ' + theme.palette.divider,
         backgroundColor: theme.palette.mode === 'dark' ? a11yDark.hljs.background : a11yLight.hljs.background,
+        borderRadius: '0.5rem',
+        overflow: 'hidden',
+        color: theme.palette.mode === 'dark' ? a11yDark.hljs.color : a11yLight.hljs.color,
       }}
     >
       <Box

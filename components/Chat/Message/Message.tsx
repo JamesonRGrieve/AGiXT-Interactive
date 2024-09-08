@@ -4,7 +4,6 @@ import {
   Paper,
   Box,
   Typography,
-  IconButton,
   Dialog,
   DialogActions,
   DialogContent,
@@ -30,6 +29,8 @@ import formatDate from './formatDate';
 import JRGDialog from 'jrgcomponents/Dialog';
 import { maxWidth } from '@mui/system';
 import { mutate } from 'swr';
+import { cn } from '@/lib/utils';
+import { MessageIcons as IconButton } from './MessageIcons';
 
 export type MessageProps = {
   chatItem: { role: string; message: string; timestamp: string; rlhf?: { positive: boolean; feedback: string } };
@@ -101,18 +102,7 @@ export default function Message({
   const isUserMsgJustText = checkUserMsgJustText(chatItem);
 
   return (
-    <Box
-      sx={{
-        margin: '10px',
-        overflow: 'hidden',
-        position: 'center',
-        color: theme.palette.text.primary,
-        ...(isUserMsgJustText && {
-          maxWidth: '60%',
-          alignSelf: 'flex-end',
-        }),
-      }}
-    >
+    <div className={cn('m-3 overflow-hidden flex flex-col gap-2', isUserMsgJustText && 'max-w-[60%] self-end')}>
       {audios?.sources?.length > 0 ? (
         <>
           {audios?.message?.trim() && (
@@ -130,47 +120,30 @@ export default function Message({
           ))}
         </>
       ) : (
-        <Box
-          sx={{
-            ...(chatItem.role === 'USER' && {
-              backgroundColor: theme.palette[String(alternateBackground)][theme.palette.mode],
-              borderRadius: '10px 10px 0 10px',
-              padding: '10px 20px',
-            }),
-            ...(chatItem.role !== 'USER' && {
-              padding: '0px 30px 0px 0px',
-            }),
-          }}
+        <div
+          className={cn(
+            chatItem.role === 'USER'
+              ? 'bg-accent-foreground rounded-[10px_10px_0_10px] py-3 px-5 text-accent'
+              : 'p-0 pt-8 text-primary',
+          )}
         >
           <MarkdownBlock content={formattedMessage} chatItem={chatItem} setLoading={setLoading} />
-        </Box>
+        </div>
       )}
 
       {chatItem.timestamp !== '' && (
-        <Typography
-          variant='caption'
-          style={{
-            width: '100%',
-            display: 'inline-block',
-            ...(chatItem.role === 'USER' && { textAlign: 'right' }),
-          }}
-        >
-          <b>{chatItem.role === 'USER' ? 'You' : chatItem.role}</b> •{' '}
+        <p className={cn('text-sm text-gray-500 dark:text-gray-300 flex gap-1', chatItem.role === 'USER' && 'text-right')}>
+          <p className='inline font-bold text-gray-700 dark:text-gray-200'>
+            {chatItem.role === 'USER' ? 'You' : chatItem.role}
+          </p>
+          •
           <Tooltip title={formatDate(chatItem.timestamp, false)}>
             <span>{chatItem.timestamp === undefined ? 'Just Now...' : formatDate(chatItem.timestamp)}</span>
           </Tooltip>
-        </Typography>
+        </p>
       )}
-      <Box
-        sx={{
-          ...(chatItem.role === 'USER' && {
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'center',
-            gap: '5px',
-          }),
-        }}
-      >
+
+      <div className={cn(chatItem.role === 'USER' && 'flex justify-end items-center gap-1')}>
         {(audios?.message?.trim() || !audios) && (
           <>
             {chatItem.role !== 'USER' && process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
@@ -335,7 +308,7 @@ export default function Message({
             </Dialog>
           </>
         )}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 }
