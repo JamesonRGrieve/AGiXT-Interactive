@@ -123,8 +123,8 @@ export default function Message({
         <div
           className={cn(
             chatItem.role === 'USER'
-              ? 'bg-accent rounded-[10px_10px_0_10px] py-3 px-5 text-accent-foreground'
-              : 'p-0 pt-8 text-primary',
+              ? 'bg-primary rounded-[10px_10px_0_10px] py-3 px-5 text-primary-foreground'
+              : 'p-0 pt-8 text-foreground',
           )}
         >
           <MarkdownBlock content={formattedMessage} chatItem={chatItem} setLoading={setLoading} />
