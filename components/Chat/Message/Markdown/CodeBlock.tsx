@@ -1,5 +1,5 @@
 import { ContentCopy, Download } from '@mui/icons-material';
-import { Box, IconButton, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { Box, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import clipboardCopy from 'clipboard-copy';
 import React, { ReactNode } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
@@ -10,6 +10,7 @@ import 'katex/dist/katex.min.css';
 import XSV from './Code/XSV';
 import Mermaid from './Code/Mermaid';
 import Latex from 'react-latex-next';
+import { MessageIcons as IconButton } from '../MessageIcons';
 
 const fileExtensions = {
   '': 'txt',
@@ -142,16 +143,7 @@ export default function CodeBlock({
   const [tab, setTab] = React.useState(0);
   //console.log(language);
   return language || children.toString().includes('\n') ? (
-    <Box
-      my='0.5rem'
-      sx={{
-        border: '1px solid ' + theme.palette.divider,
-        backgroundColor: theme.palette.mode === 'dark' ? a11yDark.hljs.background : a11yLight.hljs.background,
-        borderRadius: '0.5rem',
-        overflow: 'hidden',
-        color: theme.palette.mode === 'dark' ? a11yDark.hljs.color : a11yLight.hljs.color,
-      }}
-    >
+    <Box my='0.5rem' className='overflow-hidden border rounded-lg bg-accent text-accent-foreground'>
       <Box
         position='relative'
         display='flex'
