@@ -30,7 +30,7 @@ export default function ChatLog({
   }, [conversation]);
 
   return (
-    <div className='flex flex-col-reverse flex-grow overflow-auto' style={{ flexBasis: '0px' }}>
+    <div className='flex flex-col-reverse flex-grow overflow-auto bg-background' style={{ flexBasis: '0px' }}>
       <Box display='flex' minHeight='min-content' flexDirection='column'>
         {conversation.length > 0 && conversation.map ? (
           conversation.map((chatItem, index: number) => {
