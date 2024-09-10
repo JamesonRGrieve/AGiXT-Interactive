@@ -8,6 +8,7 @@ import theme from './theme';
 import Head from 'jrgcomponents/Head';
 import React, { ReactNode } from 'react';
 const inter = Inter({ subsets: ['latin'] });
+import './globals.css';
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME,

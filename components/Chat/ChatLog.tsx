@@ -30,17 +30,7 @@ export default function ChatLog({
   }, [conversation]);
 
   return (
-    <Paper
-      elevation={5}
-      sx={{
-        display: 'flex',
-        flexDirection: 'column-reverse',
-        flex: '1 1 0',
-        flexGrow: '1',
-        backgroundColor: theme.palette.background.default,
-        overflow: 'auto',
-      }}
-    >
+    <div className='flex flex-col-reverse flex-grow overflow-auto bg-background' style={{ flexBasis: '0px' }}>
       <Box display='flex' minHeight='min-content' flexDirection='column'>
         {conversation.length > 0 && conversation.map ? (
           conversation.map((chatItem, index: number) => {
@@ -103,6 +93,6 @@ export default function ChatLog({
 
         <div ref={messagesEndRef} />
       </Box>
-    </Paper>
+    </div>
   );
 }

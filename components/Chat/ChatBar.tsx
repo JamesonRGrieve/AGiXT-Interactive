@@ -101,7 +101,14 @@ export default function ChatBar({
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
   return (
-    <Box px='1rem' display='flex' flexDirection='column' justifyContent='space-between' alignItems='center'>
+    <Box
+      px='1rem'
+      display='flex'
+      flexDirection='column'
+      justifyContent='space-between'
+      alignItems='center'
+      className='bg-card'
+    >
       <Dropzone
         noClick
         onDrop={(acceptedFiles) => {
@@ -136,7 +143,36 @@ export default function ChatBar({
                 }
               }}
               onChange={(e) => setMessage(e.target.value)}
-              sx={{ my: 2 }}
+              // Temporary until this mui component is replaced
+              sx={{
+                my: 2,
+                '& .MuiOutlinedInput-root': {
+                  color: 'hsl(var(--foreground))',
+                  backgroundColor: 'hsl(var(--background))',
+                  '& .MuiOutlinedInput-notchedOutline': {
+                    borderColor: 'hsl(var(--border))',
+                    borderWidth: '0.5px',
+                  },
+                  '&.Mui-focused': {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'hsl(var(--primary))',
+                      borderWidth: '1px',
+                    },
+                  },
+                  '&:hover:not(.Mui-focused)': {
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderColor: 'hsl(var(--primary))',
+                      borderWidth: '1px',
+                    },
+                  },
+                },
+                '& .MuiInputLabel-outlined': {
+                  color: 'hsl(var(--muted-foreground))',
+                  '&.Mui-focused': {
+                    color: 'hsl(var(--primary))',
+                  },
+                },
+              }}
               disabled={disabled}
               InputProps={{
                 endAdornment: (
