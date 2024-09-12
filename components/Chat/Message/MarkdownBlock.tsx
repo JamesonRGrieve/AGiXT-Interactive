@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import CodeBlock from './Markdown/CodeBlock';
 import remarkGfm from 'remark-gfm';
 import ListItem from '@mui/material/ListItem';
-import { Box, List, Typography } from '@mui/material';
+import { Box, List, Typography, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import MarkdownHeading from './Markdown/Heading';
 import MarkdownLink from './Markdown/Link';
 import MarkdownImage from './Markdown/Image';
@@ -109,6 +109,25 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
                     {children}
                   </ListItem>
                 );
+              },
+
+              table({ children }) {
+                return <Table className='border border-muted'>{children}</Table>;
+              },
+              thead({ children }) {
+                return <TableHead>{children}</TableHead>;
+              },
+              tbody({ children }) {
+                return <TableBody>{children}</TableBody>;
+              },
+              tr({ children }) {
+                return <TableRow>{children}</TableRow>;
+              },
+              th({ children }) {
+                return <TableCell className='border text-bold border-muted'>{children}</TableCell>;
+              },
+              td({ children }) {
+                return <TableCell className='border border-muted'>{children}</TableCell>;
               },
               code({ children }) {
                 console.warn('Code resolved by ReactMarkdown should not happen in this context.');
