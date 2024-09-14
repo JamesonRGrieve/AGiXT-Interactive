@@ -29,7 +29,7 @@ import formatDate from './formatDate';
 import JRGDialog from 'jrgcomponents/Dialog';
 import { maxWidth } from '@mui/system';
 import { mutate } from 'swr';
-import { cn } from '@/lib/utils';
+import { cn } from '../../../lib/utils';
 import { MessageIcons as IconButton } from './MessageIcons';
 
 export type MessageProps = {
