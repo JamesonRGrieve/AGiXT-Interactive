@@ -129,6 +129,22 @@ export default function CodeBlock({
   // console.log(fileName);
   // console.log(inline);
   const theme = useTheme();
+  if (inline) {
+    return (
+      <Typography
+        component='span'
+        sx={{
+          backgroundColor: theme.palette.divider,
+          borderRadius: '0.5rem',
+          padding: '0.1rem 0.25rem',
+          fontFamily: 'monospace',
+        }}
+      >
+        {children}
+      </Typography>
+    );
+  }
+
   if (!language || language === 'Text') {
     const languages = Object.entries(fileExtensions).flat();
     const potentialLanguage = children.split('\n')[0].trim();
