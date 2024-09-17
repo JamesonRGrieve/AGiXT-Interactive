@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "rm -rf ./.next && next dev -p 3437",
     "build": "rm -rf ./.next && next build",
-    "compile": "tsc --jsx react-jsx --project tsconfig.compile.json",
+    "compile": "tsc --jsx react-jsx --project tsconfig.compile.json && mkdir -p ./dist/style && npx postcss ./app/globals.css -o ./dist/style/globals.css",
     "start": "next start -p 3437",
     "lint": "next lint",
     "lint-fix": "next lint --fix",
@@ -52,7 +52,8 @@
     "./Selector/Command": "./dist/components/Selectors/CommandSelector.js",
     "./Context": "./dist/types/InteractiveConfigContext.js",
     "./Context/Wrapper": "./dist/components/ContextWrapper.js",
-    "./Config/Hooks": "./dist/config/Hooks.js"
+    "./Config/Hooks": "./dist/config/Hooks.js",
+    "./Style/Global": "./dist/style/globals.css"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -106,6 +107,7 @@
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "autoprefixer": "^10.4.20",
+    "cssnano": "^6.1.2",
     "eslint": "^8.57.0",
     "eslint-config-next": "^14.2.9",
     "eslint-config-prettier": "^9.1.0",
