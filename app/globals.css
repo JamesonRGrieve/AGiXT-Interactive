@@ -5,6 +5,9 @@
 /* Generate themes here https://zippystarter.com/tools/shadcn-ui-theme-generator */
 
 @layer base {
+  /* importing styles here rather than layout to avoid FOUC and improve minification */
+  @import 'jrgcomponents/Style/Global';
+
   :root {
     --background: 262.1 28% 95%;
     --foreground: 262.1 5% 4%;

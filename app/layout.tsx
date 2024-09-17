@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
-// eslint-disable-next-line import/no-unassigned-import
-import 'jrgcomponents/Style/Global';
 import ThemeWrapper from 'jrgcomponents/Theming/ThemeWrapper';
 import theme from './theme';
 import Head from 'jrgcomponents/Head';
