@@ -34,7 +34,7 @@ function splitUnEscaped(text: string, delimiter: string) {
 }
 export default function textToMarkdown(text: string) {
   const splitCodeBlocks = reprocess([{ content: text }], (content: string) => splitUnEscaped(content, '```'), 'codeblock');
-  const splitCode = reprocess(splitCodeBlocks, (content: string) => splitUnEscaped(content, '`'), 'code');
-  console.log('Split message into sections: ', splitCode);
-  return splitCode;
+  // Only split code on code blocks (not inline code)
+  // const splitCode = reprocess(splitCodeBlocks, (content: string) => splitUnEscaped(content, '`'), 'code');
+  return splitCodeBlocks;
 }

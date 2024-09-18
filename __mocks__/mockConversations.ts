@@ -390,6 +390,15 @@ export const moreMockConversations = [
     timestamp: '2024-07-03T14:22:00Z',
     children: [],
   },
+  { role: 'USER', message: "Inline code:\n`print('Hello, World!')`", timestamp: '2024-07-03T14:22:00Z', children: [] },
+  { role: 'XT', message: "Inline code:\n`print('Hello, World!')`", timestamp: '2024-07-03T14:22:00Z', children: [] },
+  { role: 'USER', message: "Inline code:`print('Hello, World!')`", timestamp: '2024-07-03T14:22:00Z', children: [] },
+  {
+    role: 'XT',
+    message: '1. **Install ngrok:**\n- Type `ngrok tpc 22` and press `Enter`',
+    timestamp: '2024-07-03T14:22:00Z',
+    children: [],
+  },
 ];
 
 export const mockConversation = [...mockUITestConversations, ...moreMockConversations];
