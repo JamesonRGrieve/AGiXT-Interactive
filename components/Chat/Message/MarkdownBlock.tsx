@@ -38,7 +38,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
             key={segment.content}
             remarkPlugins={[[remarkGfm]]}
             className='react-markdown'
-            disallowedElements={['code']}
+            // disallowedElements={['code']}
             components={{
               h1({ children }) {
                 return <MarkdownHeading tag='h1'>{children}</MarkdownHeading>;
@@ -111,8 +111,9 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
                 );
               },
               code({ children }) {
-                console.warn('Code resolved by ReactMarkdown should not happen in this context.');
-                return <Box sx={{ backgroundColor: 'firebrick' }}>{children}</Box>;
+                return (
+                  <span className='inline p-1 mx-1 font-mono rounded-lg text-muted-foreground bg-muted'>{children}</span>
+                );
               },
               img({ src, alt }) {
                 return <MarkdownImage src={src} alt={alt} />;

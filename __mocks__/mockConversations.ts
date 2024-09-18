@@ -376,6 +376,29 @@ export const moreMockConversations = [
     timestamp: '2024-07-03T14:21:00Z',
     children: [],
   },
+  {
+    role: 'BOT',
+    message:
+      'This has the word markdown after the 3 backticks\n\n```markdown\n| Header 1    | Header 2    | Header 3    |\n|-------------|-------------|-------------|\n| Row 1 Col 1 | Row 1 Col 2 | Row 1 Col 3 |\n| Row 2 Col 1 | Row 2 Col 2 | Row 2 Col 3 |\n| Row 3 Col 1 | Row 3 Col 2 | Row 3 Col 3 |\n```\n\n',
+    timestamp: '2024-07-03T14:22:00Z',
+    children: [],
+  },
+  {
+    role: 'BOT',
+    message:
+      "This doesn't have the word markdown after the 3 backticks\n\n```\n| Header 1    | Header 2    | Header 3    |\n|-------------|-------------|-------------|\n| Row 1 Col 1 | Row 1 Col 2 | Row 1 Col 3 |\n| Row 2 Col 1 | Row 2 Col 2 | Row 2 Col 3 |\n| Row 3 Col 1 | Row 3 Col 2 | Row 3 Col 3 |\n```\n\n",
+    timestamp: '2024-07-03T14:22:00Z',
+    children: [],
+  },
+  { role: 'USER', message: "Inline code:\n`print('Hello, World!')`", timestamp: '2024-07-03T14:22:00Z', children: [] },
+  { role: 'XT', message: "Inline code:\n`print('Hello, World!')`", timestamp: '2024-07-03T14:22:00Z', children: [] },
+  { role: 'USER', message: "Inline code:`print('Hello, World!')`", timestamp: '2024-07-03T14:22:00Z', children: [] },
+  {
+    role: 'XT',
+    message: '1. **Install ngrok:**\n- Type `ngrok tpc 22` and press `Enter`',
+    timestamp: '2024-07-03T14:22:00Z',
+    children: [],
+  },
 ];
 
 export const mockConversation = [...mockUITestConversations, ...moreMockConversations];
