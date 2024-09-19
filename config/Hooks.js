@@ -1,4 +1,4 @@
-const InteractiveConfigDefault = require('../types/InteractiveConfigDefault');
+const InteractiveConfigDefault = require('../types/AGiXTConfigContext');
 
 exports.useAGiXTConfig = () => ({
   env: {

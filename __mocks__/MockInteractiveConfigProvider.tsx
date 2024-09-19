@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import AGiXTSDK from 'agixt';
 import OpenAI from 'openai';
-import { InteractiveConfigContext, InteractiveConfigDefault, InteractiveConfig } from '../types/InteractiveConfigContext';
+import { InteractiveConfigContext, InteractiveConfigDefault, InteractiveConfig } from '../types/AGiXTConfigContext';
 
 const mockState = {
   agent: 'mock-agent',

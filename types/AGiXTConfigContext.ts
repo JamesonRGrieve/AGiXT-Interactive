@@ -4,7 +4,7 @@ import OpenAI from 'openai';
 import { Context, createContext, useContext } from 'react';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const ConfigDefault = require('./InteractiveConfigDefault');
+const ConfigDefault = require('./AGiXTConfigDefault');
 
 export type ChainConfig = {
   chainArgs: object;
@@ -32,23 +32,21 @@ export type Overrides = {
   insightAgentName?: string;
   enableMemory?: boolean;
 };
-export type InteractiveConfig = {
+export type AGiXTConfig = {
   agent: string;
   agixt: AGiXTSDK;
   openai?: OpenAI;
   overrides?: Overrides;
-  mutate?: (InteractiveConfig) => void | ((previous: InteractiveConfig) => InteractiveConfig);
+  mutate?: (AGiXTConfig) => void | ((previous: AGiXTConfig) => AGiXTConfig);
 };
-export const InteractiveConfigContext: Context<InteractiveConfig> = createContext<InteractiveConfig>(
-  ConfigDefault as unknown as InteractiveConfig,
-);
-export const InteractiveConfigDefault = ConfigDefault;
+export const AGiXTConfigContext: Context<AGiXTConfig> = createContext<AGiXTConfig>(ConfigDefault as unknown as AGiXTConfig);
+export const AGiXTConfigDefault = ConfigDefault;
 
-export const useInteractiveConfig = (): InteractiveConfig => {
-  const context = useContext(InteractiveConfigContext);
+export const useAGiXTConfig = (): AGiXTConfig => {
+  const context = useContext(AGiXTConfigContext);
 
   if (context === undefined) {
-    throw new Error('No InteractiveConfigContext found');
+    throw new Error('No AGiXTConfigContext found');
   }
 
   return context;

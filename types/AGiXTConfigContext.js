@@ -1,4 +1,4 @@
-const InteractiveConfigDefault = {
+const AGiXTConfigDefault = {
   agent: 'gpt4free',
   agixt: null,
   openai: null,
@@ -30,4 +30,4 @@ const InteractiveConfigDefault = {
   mutate: null,
 };
 
-module.exports = InteractiveConfigDefault;
+module.exports = AGiXTConfigDefault;
