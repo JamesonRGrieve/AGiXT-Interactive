@@ -1,6 +1,7 @@
 {
-  "name": "@agixt/interactive",
-  "version": "0.1.9",
+  "name": "boilerplate-gt",
+  "version": "0.0.0",
+  "private": true,
   "scripts": {
     "dev": "rm -rf ./.next && next dev -p 3437",
     "build": "rm -rf ./.next && next build",

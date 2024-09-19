@@ -1,0 +1,44 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title='Configuration' />
+
+# Configuration
+
+AGiXT Interactive is configurable in three ways: 
+- Through environment variables
+- Through the props of the AGiXTInteractive component
+- Through search params (if enabled in the environment)
+
+## General Options
+
+|    Configuration Option     |                                        Option Description                                         |      Default Value      |   Environment Variable    |           Component Prop           |    Query Param    |
+| :-------------------------: | :-----------------------------------------------------------------------------------------------: | :---------------------: | :-----------------------: | :--------------------------------: | :---------------: |
+| (Default) Conversation Name | Controls the conversation that is selected if there is no cookie. Use '-' for a new conversation. |           '-'           |    AGIXT_CONVERSATION     |       overrides.conversation       |   conversation    |
+|      Conversation Mode      |                             Determines how conversations are managed                              |        'static'         |  AGIXT_CONVERSATION_MODE  |                 -                  |         -         |
+|        AGiXT API Key        |                                         API key for AGiXT                                         |           ''            |       AGIXT_API_KEY       |                 -                  |         -         |
+|        AGiXT Server         |                                       Server URL for AGiXT                                        | 'http://localhost:7437' |       AGIXT_SERVER        |                 -                  |         -         |
+|         Auth Server         |                                     Authentication server URL                                     |           ''            |        AUTH_SERVER        |                 -                  |         -         |
+|            Agent            |                                       Default agent to use                                        |       'gpt4free'        |        AGIXT_AGENT        |               agent                |       agent       |
+|        Insight Agent        |                                      Agent used for insights                                      |            -            |    AGIXT_INSIGHT_AGENT    |     overrides.insightAgentName     |   insightAgent    |
+|            Mode             |                           Interaction mode (prompt, chain, or command)                            |        'prompt'         |        AGIXT_MODE         |           overrides.mode           |       mode        |
+|         Prompt Name         |                                     Name of the prompt to use                                     |        undefined        |     AGIXT_PROMPT_NAME     |          overrides.prompt          |      prompt       |
+|       Prompt Category       |                                      Category of the prompt                                       |        'Default'        |   AGIXT_PROMPT_CATEGORY   |      overrides.promptCategory      |  promptCategory   |
+|           Command           |                                        Command to execute                                         |           ''            |       AGIXT_COMMAND       |         overrides.command          |      command      |
+|  Command Message Argument   |                           Argument name for the message in command mode                           |        'message'        | AGIXT_COMMAND_MESSAGE_ARG |    overrides.commandMessageArg     | commandMessageArg |
+|            Chain            |                                         Chain to execute                                          |           ''            |        AGIXT_CHAIN        |          overrides.chain           |       chain       |
+|       Chain Arguments       |                                      Arguments for the chain                                      |           {}            |     AGIXT_CHAIN_ARGS      | overrides.chainRunConfig.chainArgs |     chainArgs     |
+
+## User Interface Options
+|        UI Option        |         Option Description          |   Default Value    |     Environment Variable      |    Component Prop    | 
+| :---------------------: | :---------------------------------: | :----------------: | :---------------------------: | :------------------: | 
+|     Interactive UI      |    Type of interactive UI to use    |       'chat'       |        INTERACTIVE_UI         |          -           | 
+|      Show App Bar       |     Whether to show the app bar     |       'true'       |      AGIXT_SHOW_APP_BAR       |      showAppBar      |   
+|     Show Selection      |   What selection options to show    |         ''         |     AGIXT_SHOW_SELECTION      |          -           |     
+|     Footer Message      |  Message to display in the footer   | 'Powered by AGiXT' |     AGIXT_FOOTER_MESSAGE      |    footerMessage     |      
+|          RLHF           |       Whether to enable RLHF        |      'false'       |          AGIXT_RLHF           |       showRLHF       |     
+| Show Chat Theme Toggles | Whether to show chat theme toggles  |      'false'       | AGIXT_SHOW_CHAT_THEME_TOGGLES | showChatThemeToggles |     
+|   File Upload Enabled   |   Whether file upload is enabled    |         -          |   AGIXT_FILE_UPLOAD_ENABLED   |   enableFileUpload   |  
+|   Voice Input Enabled   |   Whether voice input is enabled    |         -          |   AGIXT_VOICE_INPUT_ENABLED   |   enableVoiceInput   |     
+|  Allow Message Editing  | Whether message editing is allowed  |         -          |  AGIXT_ALLOW_MESSAGE_EDITING  |          -           |     
+| Allow Message Deletion  | Whether message deletion is allowed |         -          | AGIXT_ALLOW_MESSAGE_DELETION  |          -           | 
+| Show Override Switches  |   Which override switches to show   |  'tts,websearch'   | AGIXT_SHOW_OVERRIDE_SWITCHES  | showOverrideSwitchesCSV |   
