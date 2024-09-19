@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": false, // TODO Make this work.
+    "forceConsistentCasingInFileNames": true,
+    "strictNullChecks": false, // TODO Make this work.
+    "esModuleInterop": true,
+    "module": "esnext",
+    "declaration": true,
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "incremental": true,
+    "noEmit": true
+  },
+  "include": ["new-types.d.ts", "next-env.d.ts", ".next/types/**/*.ts", "**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx", ".storybook/**/*.ts", ".storybook/**/*.tsx", ".storybook/**/*.js", ".storybook/**/*.jsx", "next.config.js", "jest.config.js", "config/Hooks.js"],
+  "exclude": ["node_modules"]
+}

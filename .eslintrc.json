@@ -1,0 +1,243 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json" // Adjust the path to your tsconfig.json file
+  },
+  "extends": [
+    "next/core-web-vitals",
+    "prettier",
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:eslint-comments/recommended",
+    "plugin:import/errors",
+    "plugin:import/typescript",
+    "plugin:import/warnings",
+    "plugin:jsx-a11y/recommended",
+    "plugin:no-use-extend-native/recommended",
+    "plugin:optimize-regex/recommended",
+    "plugin:prettier/recommended",
+    "plugin:promise/recommended",
+    "plugin:react-hooks/recommended",
+    "plugin:react/recommended",
+    "plugin:sonarjs/recommended",
+    "plugin:storybook/recommended"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "eslint-comments",
+    "import",
+    "jsx-a11y",
+    "no-use-extend-native",
+    "optimize-regex",
+    "prettier",
+    "promise",
+    "react-hooks",
+    "react",
+    "security",
+    "sonarjs",
+    "storybook",
+    "unused-imports"
+  ],
+  "rules": {
+    "@typescript-eslint/no-this-alias": "warn", // Disallow aliases for 'this'.
+    "@typescript-eslint/prefer-for-of": "warn", // Prefer a ‘for-of’ loop over a standard ‘for’ loop if the index is not needed.
+    "import/no-named-as-default-member": "warn", // Warn on accessing named export as a member of default export.
+    "import/no-named-as-default": "warn", // Warn on using named export as the default export.
+    "jsx-a11y/aria-role": "warn", // Enforce the use of valid values for the role attribute.
+    "jsx-a11y/no-redundant-roles": "warn", // Enforce that elements with ARIA roles must use a valid, non-abstract ARIA role.
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "prettier/prettier": [
+      "warn",
+      {
+        "printWidth": 125,
+        "tabWidth": 2,
+        "useTabs": false,
+        "semi": true,
+        "singleQuote": true,
+        "quoteProps": "as-needed",
+        "jsxSingleQuote": true,
+        "trailingComma": "all",
+        "bracketSpacing": true,
+        "jsxBracketSameLine": false,
+        "arrowParens": "always",
+        "singleAttributePerLine": false,
+        "endOfLine": "lf"
+      }
+    ], // Ensure code conforms to Prettier style, setting line endings to auto.
+    "react-hooks/exhaustive-deps": [
+      "warn",
+      {
+        "additionalHooks": "useRecoilCallback"
+      }
+    ], // Extend the exhaustive-deps rule to include additional hooks like useRecoilCallback.
+    "react/no-set-state": "warn", // Disallow using setState in React.
+    "react/no-string-refs": "warn", // Prevent string usage in ref attribute.
+    "security/detect-object-injection": "warn", // Warn on potential object injection vulnerabilities.
+    "sonarjs/no-duplicated-branches": "warn", // Warn on code duplication in different branches of a conditional.
+    "unused-imports/no-unused-vars": "off", // Off in favor of @typescript-eslint/no-unused-vars.
+    "@typescript-eslint/ban-types": "warn", // Bans specific types from being used.
+    "@typescript-eslint/explicit-function-return-type": "warn", // Require explicit return type on functions.
+    "@typescript-eslint/explicit-module-boundary-types": "warn", // Require explicit boundary types on exported modules.
+    "@typescript-eslint/no-empty-function": "warn", // Disallow empty functions.
+    "@typescript-eslint/no-inferrable-types": "warn", // Disallows explicit type declarations for variables or parameters initialized to a number, string, or boolean.
+    "@typescript-eslint/no-magic-numbers": "off", // Disallow magic numbers.
+    "@typescript-eslint/no-namespace": "warn", // Disallow the use of custom TypeScript modules and namespaces.
+    "@typescript-eslint/no-unused-expressions": "warn", // Disallow unused expressions.
+    "@typescript-eslint/no-var-requires": "warn", // Disallow the use of `require` statements except in import statements.
+    "curly": ["warn", "all"], // Require consistent brace style for all control statements.
+    "eqeqeq": ["warn", "always"], // Enforce the use of === and !== over == and !=.
+    "eslint-comments/no-unused-disable": "warn", // Disallow unused eslint-disable comments.
+    "import/newline-after-import": "warn", // Enforce a newline after import statements.
+    "import/no-absolute-path": "warn", // Disallow import statements with absolute paths.
+    "import/no-dynamic-require": "warn", // Disallow require() calls with expressions.
+    "import/no-extraneous-dependencies": "warn", // Disallow unnecessary dependencies.
+    "import/no-unresolved": "warn", // Ensure imports resolve to a file/module.
+    "import/no-useless-path-segments": "warn", // Prevent unnecessary path segments in import and require statements.
+    "jsx-a11y/accessible-emoji": "warn", // Enforce accessibility of emojis.
+    "jsx-a11y/alt-text": "warn", // Enforce alt attribute for img, area, input[type="image"], and object elements.
+    "jsx-a11y/anchor-is-valid": "warn", // Enforce all anchors to be valid, navigable elements.
+    "jsx-a11y/label-has-associated-control": "warn", // Assert that a label tag has a text label and an associated control.
+    "no-alert": "warn", // Disallow the use of `alert`, `confirm`, and `prompt`.
+    "no-console": "off", // Disallow the use of `console` methods.
+    "no-constant-condition": "warn", // Disallow constant expressions in conditions.
+    "no-debugger": "warn", // Disallow the use of `debugger`.
+    "no-eq-null": "warn", // Disallow null comparisons without type-checking operators.
+    "no-eval": "warn", // Disallow the use of eval().
+    "no-implied-eval": "warn", // Disallow the use of eval()-like methods.
+    "no-iterator": "warn", // Disallow the use of the __iterator__ property.
+    "no-lone-blocks": "warn", // Disallow unnecessary nested blocks.
+    "no-loop-func": "warn", // Disallow function declarations and expressions inside loop statements.
+    "no-magic-numbers": "off", // Off in favor of @typescript-eslint/no-magic-numbers.
+    "no-multi-str": "warn", // Disallow multiline strings.
+    "no-new-func": "warn", // Disallow new operators with the Function object.
+    "no-param-reassign": "warn", // Disallow reassigning function parameters.
+    "no-return-assign": "warn", // Disallow assignment operators in `return` statements.
+    "no-script-url": "warn", // Disallow javascript: urls.
+    "no-self-compare": "warn", // Disallow comparisons where both sides are exactly the same.
+    "no-sequences": "warn", // Disallow comma operators.
+    "no-underscore-dangle": "warn", // Disallow dangling underscores in identifiers.
+    "no-unmodified-loop-condition": "warn", // Disallow unmodified loop conditions.
+    "no-unused-expressions": "warn", // Disallow unused expressions.
+    "no-unused-vars": "off", // Off in favor of @typescript-eslint/no-unused-vars.
+    "no-useless-concat": "warn", // Disallow unnecessary concatenation of literals or template literals.
+    "no-useless-return": "warn", // Disallow redundant return statements.
+    "no-with": "warn", // Disallow with statements.
+    "optimize-regex/optimize-regex": "warn", // Optimize regular expressions.
+    "promise/always-return": "warn", // Ensure promises always return.
+    "promise/catch-or-return": "warn", // Ensure promises are either caught or returned.
+    "promise/no-callback-in-promise": "warn", // Avoid using callbacks in promises.
+    "promise/no-nesting": "warn", // Avoid nesting promises.
+    "promise/no-promise-in-callback": "warn", // Avoid using promises inside of callbacks.
+    "promise/no-return-in-finally": "warn", // Avoid returning values from finally blocks in promises.
+    "promise/no-return-wrap": "warn", // Avoid wrapping values in Promise.resolve or Promise.reject when not needed.
+    "react-hooks/rules-of-hooks": "warn", // Checks rules of Hooks.
+    "react/react-in-jsx-scope": "off", // Prevent missing React when using JSX.
+    "react/jsx-boolean-value": "warn", // Enforce shorthand for boolean values in JSX.
+    "react/jsx-closing-bracket-location": "warn", // Enforce the closing bracket location for JSX multiline elements.
+    "react/jsx-closing-tag-location": "warn", // Enforce closing tag location in JSX.
+    "react/jsx-filename-extension": [
+      "warn",
+      {
+        "extensions": [".jsx", ".tsx"]
+      }
+    ], // Restrict file extensions that may contain JSX.
+    "react/jsx-key": "error", // Require key prop for elements in arrays or iterators.
+    "react/jsx-no-bind": "off", // Disallow '.bind()' or arrow functions in JSX props.
+    "react/jsx-no-comment-textnodes": "warn", // Comments inside children section of tag should be placed inside braces.
+    "react/jsx-no-duplicate-props": "warn", // Disallow duplicate props in JSX.
+    "react/jsx-no-target-blank": "warn", // Disallow target="_blank" attribute without rel="noreferrer".
+    "react/jsx-no-undef": "error", // Disallow undeclared variables in JSX.
+    "react/jsx-no-useless-fragment": "warn", // Disallow unnecessary fragments.
+    "react/jsx-pascal-case": "warn", // Enforce PascalCase for user-defined JSX components.
+    "react/jsx-props-no-spreading": "off", // Disallow JSX prop spreading.
+    "react/jsx-uses-react": "warn", // Prevent React to be incorrectly marked as unused.
+    "react/jsx-uses-vars": "warn", // Prevent variables used in JSX to be incorrectly marked as unused.
+    "react/no-array-index-key": "warn", // Prevent using Array index in key props.
+    "react/no-children-prop": "warn", // Disallow children as props.
+    "react/no-danger-with-children": "warn", // Disallow children with dangerouslySetInnerHTML.
+    "react/no-deprecated": "warn", // Disallow usage of deprecated methods.
+    "react/no-direct-mutation-state": "warn", // Disallow direct mutation of this.state.
+    "react/no-multi-comp": "off", // Prevent multiple component definitions per file.
+    "react/no-unescaped-entities": "warn", // Disallow unescaped entities in JSX.
+    "react/no-unstable-nested-components": "warn", // Prevent creating unstable components inside components.
+    "react/no-unused-state": "warn", // Prevents unused state values.
+    "react/prefer-stateless-function": "warn", // Enforce stateless React Components to be written as pure functions.
+    "react/prop-types": "off", // Turn off prop-types rule, as TypeScript's types are used instead.
+    "react/self-closing-comp": "warn", // Enforce component closing tag style.
+    "security/detect-buffer-noassert": "warn", // Warn on use of the buffer constructor without a noassert flag.
+    "security/detect-child-process": "warn", // Warn on use of child processes.
+    "security/detect-disable-mustache-escape": "warn", // Warn on disabling mustache escaping.
+    "security/detect-eval-with-expression": "warn", // Warn on use of eval() with an expression.
+    "security/detect-new-buffer": "warn", // Warn on use of the new Buffer() constructor.
+    "security/detect-no-csrf-before-method-override": "warn", // Warn on CSRF (Cross-Site Request Forgery) vulnerabilities.
+    "security/detect-non-literal-fs-filename": "warn", // Warn on non-literal file names in fs methods.
+    "security/detect-non-literal-regexp": "warn", // Warn on non-literal regular expressions.
+    "security/detect-non-literal-require": "warn", // Warn on non-literal require expressions.
+    "security/detect-possible-timing-attacks": "warn", // Warn on possible timing attacks.
+    "security/detect-pseudoRandomBytes": "warn", // Warn on use of pseudo-random bytes.
+    "security/detect-unsafe-regex": "warn", // Warn on potentially unsafe regular expressions.
+    "sonarjs/cognitive-complexity": "warn", // Warn on high cognitive complexity.
+    "sonarjs/no-all-duplicated-branches": "warn", // Warn on duplicated branches in switch cases and if-else chains.
+    "sonarjs/no-duplicate-string": "warn", // Disallow duplicating strings.
+    "sonarjs/no-element-overwrite": "warn", // Warn on overwriting elements in arrays.
+    "sonarjs/no-extra-arguments": "warn", // Warn on passing extra arguments to functions.
+    "sonarjs/no-identical-conditions": "warn", // Warn on identical conditions in if-else chains.
+    "sonarjs/no-identical-expressions": "warn", // Warn on identical expressions on both sides of a binary operator.
+    "sonarjs/no-identical-functions": "warn", // Warn on identical functions.
+    "sonarjs/no-inverted-boolean-check": "warn", // Disallow inverted boolean checks in if-else blocks.
+    "sonarjs/no-one-iteration-loop": "warn", // Warn on loops that will iterate only once.
+    "sonarjs/no-redundant-boolean": "warn", // Warn on redundant boolean expressions.
+    "sonarjs/no-small-switch": "warn", // Warn on small switch statements.
+    "sonarjs/no-unused-collection": "warn", // Warn on collections that are not used.
+    "sonarjs/no-use-of-empty-return-value": "warn", // Warn on using empty return values.
+    "sonarjs/no-useless-catch": "warn", // Warn on catch blocks that only rethrow the caught error.
+    "sonarjs/prefer-immediate-return": "warn", // Suggest returning values immediately.
+    "sonarjs/prefer-object-literal": "warn", // Suggest using object literals.
+    "sonarjs/prefer-single-boolean-return": "warn", // Suggest using a single boolean return.
+    "sonarjs/prefer-while": "warn", // Suggest using while instead of for when the index is not needed.
+
+    "yoda": ["warn", "never"], // Require or disallow “Yoda” conditions.
+    "@typescript-eslint/consistent-type-assertions": "warn", // Enforce consistent type assertions.
+    "@typescript-eslint/no-empty-interface": "warn", // Disallow the declaration of empty interfaces.
+    "@typescript-eslint/no-explicit-any": "warn", // Warn against the use of the 'any' type.
+    "@typescript-eslint/no-for-in-array": "warn", // Disallow iterating over an array with a for-in loop.
+    "@typescript-eslint/no-non-null-assertion": "warn", // Disallow non-null assertions using the '!' postfix operator.
+    "@typescript-eslint/no-unnecessary-type-assertion": "warn", // Disallow unnecessary type assertions.
+    "@typescript-eslint/no-unused-vars": "warn", // Warn on unused variables.
+    "import/extensions": ["warn", "never"], // Ensure consistent use of file extension within the import path.
+    "import/first": "warn", // Ensure all imports appear before other statements.
+    "import/no-duplicates": "warn", // Report repeated import of the same module in multiple places.
+    "import/order": "warn", // Enforce a convention in the order of import statements.
+    "jsx-a11y/media-has-caption": "warn", // Enforces captions on <audio> and <video> elements.
+    "jsx-a11y/mouse-events-have-key-events": "warn", // Enforce that mouse event handlers are accompanied by corresponding keyboard event handlers.
+    "jsx-a11y/no-static-element-interactions": "warn", // Enforce interactive elements are not assigned non-interactive roles.
+    "no-use-extend-native/no-use-extend-native": "warn", // Prevent extending native objects.
+    "react/no-danger": "warn", // Disallow use of the dangerous property.
+    "unused-imports/no-unused-imports": "warn", // Warn on unused imports.
+    "import/no-unassigned-import": "warn", // Warns about importing modules without using them.
+    "jsx-a11y/no-autofocus": "warn", // Enforce no autofocus on elements.
+    "react/no-access-state-in-setstate": "warn" // Warns about using state in setState calls.
+  },
+  "overrides": [
+    {
+      "files": [".storybook/*"],
+      "rules": {
+        "storybook/await-interactions": "warn",
+        "storybook/context-in-play-function": "warn",
+        "storybook/default-exports": "warn",
+        "storybook/hierarchy-separator": "warn",
+        "storybook/no-redundant-story-name": "warn",
+        "storybook/no-uninstalled-addons": "warn",
+        "storybook/prefer-pascal-case": "warn",
+        "storybook/story-exports": "warn",
+        "storybook/use-storybook-expect": "warn",
+        "storybook/use-storybook-testing-library": "warn"
+      }
+    }
+  ],
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+# URL Params
+
+- `mode`: Determines the mode of the chat interface, either "prompt" or "chain".
+- `agent`: Specifies the selected agent for the chat.
+- `contextResults`: Number of context results to be used.
+- `shots`: Number of shots (attempts or interactions) for the chat.
+- `websearchDepth`: Depth for web search functionality.
+- `injectMemoriesFromCollectionNumber`: Specifies a collection number for injecting memories.
+- `results`: Number of conversation results.
+- `conversation`: Name of the conversation.
+- `browseLinks`: Boolean to enable or disable browsing links.
+- `webSearch`: Boolean to enable or disable web search.
+- `insightAgent`: Name of the insight agent.
+- `memory`: Boolean to enable or disable memory feature.
+- `fileUpload`: Boolean to enable or disable file upload feature.
+- `useSelectedAgent`: Boolean to determine if the selected agent should be used.
+- `chainArgs`: Arguments for the chain mode.
+- `singleStep`: Boolean to enable or disable single step in chain mode.
+- `fromStep`: Specifies the starting step in chain mode.
+- `allResponses`: Boolean to determine if all responses should be shown in chain mode.
+- `prompt`: The initial prompt for the chat.
+- `promptCategory`: Category of the prompt.
+- `conversation`: Name of the specific conversation.
+- `chain`: Specifies the chain configuration.
