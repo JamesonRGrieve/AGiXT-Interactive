@@ -8,6 +8,8 @@ import MarkdownHeading from './Markdown/Heading';
 import MarkdownLink from './Markdown/Link';
 import MarkdownImage from './Markdown/Image';
 import textToMarkdown from './Markdown/Preprocessor';
+import { DataGrid } from '@mui/x-data-grid/DataGrid';
+
 export type MarkdownBlockProps = {
   content: string;
   chatItem?: { role: string; timestamp: string; message: string };
@@ -29,6 +31,36 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
     ? chatItem.timestamp.replace(/ /g, '-').replace(/:/g, '-').replace(/,/g, '')
     : new Date().toLocaleString().replace(/\D/g, '');
   const fileName = chatItem ? `${chatItem.role}-${timestamp.split('.')[0]}` : `${timestamp.split('.')[0]}`;
+
+  function parseMarkdownTable(markdown: string) {
+    const tableLines = markdown.split('\n').filter((line) => line.includes('|'));
+    if (tableLines.length === 0) return { columns: [], rows: [] };
+
+    const headers = tableLines[0]
+      .split('|')
+      .map((header) => header.trim())
+      .filter(Boolean);
+
+    const rows = tableLines.slice(2).map((rowLine, rowIndex) => ({
+      id: rowIndex + 1,
+      ...Object.fromEntries(
+        rowLine
+          .split('|')
+          .map((cell) => cell.trim())
+          .filter(Boolean)
+          .map((cell, cellIndex) => [`col${cellIndex}`, cell]),
+      ),
+    }));
+
+    const columns = headers.map((header, index) => ({
+      field: `col${index}`,
+      headerName: header,
+      width: 150,
+    }));
+
+    return { columns, rows };
+  }
+
   try {
     return (
       // Switch to https://github.com/ariabuckles/simple-markdown ?
@@ -108,6 +140,14 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
                   >
                     {children}
                   </ListItem>
+                );
+              },
+              table() {
+                const { columns, rows } = parseMarkdownTable(segment.content);
+                return (
+                  <div className='w-full'>
+                    <DataGrid rows={rows} columns={columns} />
+                  </div>
                 );
               },
               code({ children }) {
