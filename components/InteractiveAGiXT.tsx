@@ -30,7 +30,6 @@ import EditDialog from 'jrgcomponents/EditDialog';
 import useSWR from 'swr';
 import axios from 'axios';
 import Gravatar from './Gravatar';
-import '../style/globals.css';
 
 export type FormProps = {
   fieldOverrides?: { [key: string]: ReactNode };
