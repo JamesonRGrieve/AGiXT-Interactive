@@ -241,7 +241,7 @@ export default function ConversationSelector(): React.JSX.Element {
           <Button onClick={() => setOpenRenameConversation(false)} color='error'>
             Cancel
           </Button>
-          <Button onClick={() => handleRenameConversation()} color='info'>
+          <Button onClick={() => handleRenameConversation(false)} color='info'>
             Rename
           </Button>
           <Button onClick={() => handleRenameConversation(true)} color='info'>
