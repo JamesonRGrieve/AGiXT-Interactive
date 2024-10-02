@@ -4,7 +4,7 @@
   "scripts": {
     "dev": "rm -rf ./.next && next dev -p 3437",
     "build": "rm -rf ./.next && next build",
-    "compile": "tsc --jsx react-jsx --project tsconfig.compile.json && mkdir -p ./dist/style && npx postcss ./app/globals.css -o ./dist/style/globals.css",
+    "compile": "tsc --jsx react-jsx --project tsconfig.compile.json && shx mkdir -p ./dist/style && npx postcss ./app/globals.css -o ./dist/style/globals.css",
     "start": "next start -p 3437",
     "lint": "next lint",
     "lint-fix": "next lint --fix",
