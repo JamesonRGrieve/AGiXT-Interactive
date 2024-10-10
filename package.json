@@ -1,6 +1,6 @@
 {
   "name": "@agixt/interactive",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "scripts": {
     "dev": "rm -rf ./.next && next dev -p 3437",
     "build": "rm -rf ./.next && next build",
@@ -127,6 +127,7 @@
     "postcss": "^8.4.45",
     "postcss-cli": "^11.0.0",
     "prettier": "^3.3.3",
+    "shx": "^0.3.4",
     "storybook": "^8.2.9",
     "tailwindcss": "^3.4.13",
     "typescript": "^5.6.2"
