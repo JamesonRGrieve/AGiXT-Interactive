@@ -78,21 +78,21 @@ export default function Message({
   }, [chatItem]);
   const audios = useMemo(() => {
     if (
-      chatItem?.message &&
-      typeof chatItem.message === 'string' &&
-      chatItem.message.includes('<audio controls><source src=')
+      !chatItem?.message ||
+      typeof chatItem.message !== 'string' ||
+      !chatItem.message.includes('<audio controls><source src=')
     ) {
-      // Replace the html audio control with a link to the audio
-      const matches = [...chatItem.message.matchAll(/<audio controls><source src="(.*?)" type="audio\/wav"><\/audio>/g)];
-      const audioSources = matches.map((match) => match[1]);
-      // We can reformat it any way we want for testing like this.
-      return {
-        message: chatItem.message.replaceAll(/<audio controls><source src="(.*?)" type="audio\/wav"><\/audio>/g, ''),
-        sources: audioSources,
-      };
-    } else {
       return null;
     }
+
+    // Replace the html audio control with a link to the audio
+    const matches = [...chatItem.message.matchAll(/<audio controls><source src="([^"]+)" type="audio\/wav"><\/audio>/g)];
+    const audioSources = matches.map((match) => match[1]);
+    // We can reformat it any way we want for testing like this.
+    return {
+      message: chatItem.message.replaceAll(/<audio controls><source src="[^"]+" type="audio\/wav"><\/audio>/g, ''),
+      sources: audioSources,
+    };
   }, [chatItem]);
   const [vote, setVote] = useState(chatItem.rlhf ? (chatItem.rlhf.positive ? 1 : -1) : 0);
   const [open, setOpen] = useState(false);
