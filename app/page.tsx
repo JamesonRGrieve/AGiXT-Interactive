@@ -1,9 +1,29 @@
-import React from 'react';
+import AGiXTInteractive from '@agixt/interactive';
 import { cookies } from 'next/headers';
+
 export default function Home() {
-  const apiKey = process.env.NEXT_PUBLIC_AGIXT_API_KEY || cookies().get('jwt')?.value || '';
-  if (process.env.NEXT_PUBLIC_ENV === 'development') {
-    console.log('Server-Side API Key: ', apiKey);
-  }
-  <h1>Welcome to The Boilerplate!</h1>;
+  const cookieStore = cookies();
+  const apiKey = cookieStore.get('jwt')?.value ?? '';
+
+  return (
+    <AGiXTInteractive
+      uiConfig={{
+        showAppBar: false,
+        showChatThemeToggles: false,
+        enableVoiceInput: true,
+        showRLHF: false,
+        footerMessage: '',
+        alternateBackground: 'primary',
+        showOverrideSwitchesCSV: '',
+      }}
+      serverConfig={{
+        agixtServer: process.env.NEXT_PUBLIC_AGIXT_SERVER || '',
+        apiKey,
+      }}
+      agent='XT'
+      overrides={{
+        conversation: new Date().toISOString().split('T')[0],
+      }}
+    />
+  );
 }

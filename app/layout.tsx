@@ -1,14 +1,14 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
-// eslint-disable-next-line import/no-unassigned-import
-import 'jrgcomponents/Style/Global';
-import ThemeWrapper from 'jrgcomponents/Theming/ThemeWrapper';
-import theme from './theme';
+import { ReactNode } from 'react';
 import Head from 'jrgcomponents/Head';
-import React, { ReactNode } from 'react';
-const inter = Inter({ subsets: ['latin'] });
+import { AppWrapper } from 'jrgcomponents/Wrapper';
+import { cn } from '@/lib/utils';
+import Header from '@/components/header';
 import './globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME,
@@ -17,22 +17,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: ReactNode }): ReactNode {
   const cookieStore = cookies();
+  const theme = cookieStore.get('theme')?.value ?? '';
 
   return (
     <html lang='en'>
       <Head />
-      <body className={inter.className}>
-        <ThemeWrapper
-          themeInjection={{ theme: theme }}
-          defaultTheme={{
-            dark: cookieStore.get('dark')?.value
-              ? cookieStore.get('dark')?.value === 'true'
-              : process.env.NEXT_PUBLIC_DEFAULT_THEME_MODE === 'dark',
-            colorblind: cookieStore.get('colorblind')?.value === 'true',
-          }}
-        >
+      <body className={cn(inter.className, theme)}>
+        <AppWrapper>
+          <Header />
           {children}
-        </ThemeWrapper>
+        </AppWrapper>
       </body>
     </html>
   );

@@ -1,31 +1,27 @@
 /** @type {import('next').NextConfig} */
-const { useAGiXTConfig } = require('./config/Hooks.js');
+const { useAGiXTConfig } = require('@agixt/interactive/Config/Hooks');
 const {
-  mergeConfigs,
-  useBasicConfig,
-  useAuthConfig,
-  useOAuth2Config,
-  useStripeConfig,
-  useProductionSkipLintingConfig,
-  useCookiesConfig,
+	mergeConfigs,
+	useBasicConfig,
+	useAuthConfig,
+	useProductionSkipLintingConfig,
+	useCookiesConfig,
 } = require('jrgcomponents/Config/Hooks');
+const configs = [useBasicConfig, useAuthConfig, useCookiesConfig, useAGiXTConfig, useProductionSkipLintingConfig];
 
-// THIS FILE ONLY APPLIES TO RELEASES DONE USING THIS REPOSITORY AS A NEXTJS APP, IT DOES NOT APPLY WHEN THIS REPOSITORY IS USED AS A PACKAGE/COMPONENT.
-
-const configs = [
-  useBasicConfig,
-  useAuthConfig,
-  useOAuth2Config,
-  useCookiesConfig,
-  useStripeConfig,
-  useAGiXTConfig,
-  useProductionSkipLintingConfig,
-];
-
-const nextConfig = configs.reduce((accumulator, config) => mergeConfigs(accumulator, config()), {});
+const nextConfig = configs.reduce((accumulator, config) => mergeConfigs(accumulator, config()), {
+	env: {},
+	experimental: {
+		serverActions: {
+			allowedOrigins: ['*'],
+			allowedForwardedHosts: ['*'],
+			retryOnError: false, // or a number to set max retries
+		},
+	},
+});
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: true,
+	enabled: true,
 });
 module.exports = process.env.NEXT_ANALYZE === 'true' ? withBundleAnalyzer(nextConfig) : nextConfig;

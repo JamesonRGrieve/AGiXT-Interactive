@@ -2,55 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Generate themes here https://zippystarter.com/tools/shadcn-ui-theme-generator */
-
 @layer base {
+  @import 'jrgcomponents/Style/Global';
+  @import '@agixt/interactive/Style/Global';
+
   :root {
-    --background: 262.1 28% 95%;
-    --foreground: 262.1 5% 4%;
-    --card: 262.1 28% 90%;
-    --card-foreground: 262.1 5% 10%;
-    --popover: 262.1 28% 95%;
-    --popover-foreground: 262.1 95% 4%;
-    --primary: 262.1 88.3% 57.8%;
+    --background: 220 8% 100%;
+    --foreground: 220 5% 10%;
+    --card: 220 8% 100%;
+    --card-foreground: 220 5% 15%;
+    --popover: 220 8% 100%;
+    --popover-foreground: 220 95% 10%;
+    --primary: 220 100% 48%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 262.1 28% 70%;
+    --secondary: 220 10% 90%;
     --secondary-foreground: 0 0% 0%;
-    --muted: 224.10000000000002 28% 85%;
-    --muted-foreground: 262.1 5% 35%;
-    --accent: 224.10000000000002 28% 80%;
-    --accent-foreground: 262.1 5% 10%;
-    --destructive: 0 50% 30%;
-    --destructive-foreground: 262.1 5% 90%;
-    --border: 262.1 28% 50%;
-    --input: 262.1 28% 18%;
-    --ring: 262.1 88.3% 57.8%;
+    --muted: 182 10% 95%;
+    --muted-foreground: 220 5% 40%;
+    --accent: 182 10% 90%;
+    --accent-foreground: 220 5% 15%;
+    --destructive: 0 50% 50%;
+    --destructive-foreground: 220 5% 100%;
+    --border: 220 20% 82%;
+    --input: 220 20% 50%;
+    --ring: 220 100% 48%;
     --radius: 0.3rem;
   }
   .dark {
-    --background: 262.1 28% 5%;
-    --foreground: 262.1 5% 90%;
-    --card: 262.1 28% 4%;
-    --card-foreground: 262.1 5% 90%;
-    --popover: 262.1 28% 5%;
-    --popover-foreground: 262.1 5% 90%;
-    --primary: 262.1 88.3% 57.8%;
+    --background: 220 10% 10%;
+    --foreground: 220 5% 100%;
+    --card: 220 8% 10%;
+    --card-foreground: 220 5% 100%;
+    --popover: 220 10% 5%;
+    --popover-foreground: 220 5% 100%;
+    --primary: 220 100% 48%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 262.1 28% 10%;
+    --secondary: 220 10% 20%;
     --secondary-foreground: 0 0% 100%;
-    --muted: 224.10000000000002 28% 15%;
-    --muted-foreground: 262.1 5% 60%;
-    --accent: 224.10000000000002 28% 15%;
-    --accent-foreground: 262.1 5% 90%;
-    --destructive: 0 50% 30%;
-    --destructive-foreground: 262.1 5% 90%;
-    --border: 262.1 28% 18%;
-    --input: 262.1 28% 18%;
-    --ring: 262.1 88.3% 57.8%;
+    --muted: 182 10% 25%;
+    --muted-foreground: 220 5% 65%;
+    --accent: 182 10% 25%;
+    --accent-foreground: 220 5% 95%;
+    --destructive: 0 50% 50%;
+    --destructive-foreground: 220 5% 100%;
+    --border: 220 20% 50%;
+    --input: 220 20% 50%;
+    --ring: 220 100% 48%;
     --radius: 0.3rem;
   }
 }
-
 @layer base {
   * {
     @apply border-border;
