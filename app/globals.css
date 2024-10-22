@@ -4,7 +4,6 @@
 
 @layer base {
   @import 'jrgcomponents/Style/Global';
-  @import '@agixt/interactive/Style/Global';
 
   :root {
     --background: 220 8% 100%;
