@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   xtsystems-web:
-    image: ghcr.io/we-foresee-it/xtsystems_web:main
+    image: ghcr.io/gt-umbrella/boilerplate_web:main
     init: true
     environment:
       - NEXT_TELEMETRY_DISABLED=1
