@@ -16,7 +16,7 @@
     "storybook-build": "storybook build"
   },
   "dependencies": {
-    "@agixt/interactive": "^0.1.13",
+    "@agixt/interactive": "^0.1.14",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.20",
@@ -35,7 +35,7 @@
     "clsx": "^2.1.1",
     "cookies-next": "^4.2.1",
     "dayjs": "^1.11.11",
-    "jrgcomponents": "^0.0.187",
+    "jrgcomponents": "^0.0.188",
     "lucide-react": "^0.451.0",
     "next": "^14.2.4",
     "react": "^18.3.1",
