@@ -1,6 +1,5 @@
-const jrgComponentsConfig = require('jrgcomponents/tailwind.config.js');
-
 /** @type {import('tailwindcss').Config} */
+import jrgTailwindConfig from 'jrgcomponents/tailwind.config.js';
 module.exports = {
-  ...jrgComponentsConfig,
+  ...jrgTailwindConfig,
 };
