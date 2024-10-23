@@ -1,5 +1,5 @@
 import JRGAuthRouter from 'jrgcomponents/AuthRouter';
-export default function AuthRouter(props) {
+export default function AuthRouter(props: any) {
   return (
     <JRGAuthRouter
       {...props}
