@@ -1,9 +1,8 @@
-import { Link } from '@mui/material';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
-const handleAnchorClick = (e): void => {
-  const href = e.target.getAttribute('href');
-  if (href.startsWith('#')) {
+const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
+  const href = e.currentTarget.getAttribute('href');
+  if (href?.startsWith('#')) {
     e.preventDefault();
     const id = href.slice(1);
     const element = document.getElementById(id);
@@ -13,16 +12,25 @@ const handleAnchorClick = (e): void => {
   }
 };
 
-export default function MarkdownLink({ children, ...props }): ReactNode {
-  const isExternal = props.href && !props.href.startsWith('#');
+interface MarkdownLinkProps {
+  href: string;
+  children: ReactNode;
+  className?: string;
+}
+
+export default function MarkdownLink({ children, href, className, ...props }: MarkdownLinkProps): ReactNode {
+  const isExternal = href && !href.startsWith('#');
+
   return (
-    <Link
-      {...props}
+    <a
+      href={href}
+      className={`text-blue-600 hover:text-blue-800 underline ${className || ''}`}
       target={isExternal ? '_blank' : undefined}
       rel={isExternal ? 'noopener noreferrer' : undefined}
       onClick={isExternal ? undefined : handleAnchorClick}
+      {...props}
     >
       {children}
-    </Link>
+    </a>
   );
 }
