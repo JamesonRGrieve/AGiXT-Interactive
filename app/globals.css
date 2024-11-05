@@ -6,7 +6,7 @@
 
 @layer base {
   /* importing styles here rather than layout to avoid FOUC and improve minification */
-  @import 'jrgcomponents/Style/Global';
+  @import '../components/Style/globals.css';
 
   :root {
     --background: 262.1 28% 95%;
