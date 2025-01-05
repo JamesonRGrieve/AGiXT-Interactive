@@ -1,46 +1,24 @@
 'use client';
-import {
-  Select,
-  MenuItem,
-  FormControl,
-  Button,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  TextField,
-  DialogActions,
-  Tooltip,
-  Box,
-  useTheme,
-  IconButton,
-  InputAdornment,
-} from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import FileDownloadOutlinedIcon from '@mui/icons-material/FileDownloadOutlined';
-import React, { use, useContext, useEffect, useState } from 'react';
-import useSWR, { mutate } from 'swr';
-import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
-import { Add, ArrowDropDown, ArrowDropUp, DriveFileRenameOutline } from '@mui/icons-material';
+
+import React, { useContext, useEffect, useState } from 'react';
+import { mutate } from 'swr';
 import { setCookie } from 'cookies-next';
-import { getAndFormatConversastion } from '../Chat/Chat';
+import { InteractiveConfigContext } from '../InteractiveConfigContext';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { LuPlus, LuPencil, LuDownload, LuTrash2, LuChevronDown, LuChevronUp } from 'react-icons/lu';
+import { useConversation, useConversations } from '../hooks';
 
 export default function ConversationSelector(): React.JSX.Element {
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const state = useContext(InteractiveConfigContext);
-  const theme = useTheme();
-  const { data: conversationData } = useSWR<string[]>(`/conversation`, async () =>
-    ((await state.agixt.getConversations()) as string[]).filter((conv) => conv !== '-'),
-  );
-  const { data: currentConversation } = useSWR(
-    '/conversation/' + state.overrides.conversation,
-    async () => await getAndFormatConversastion(state),
-    {
-      fallbackData: [],
-    },
-  );
+  const { data: conversationData } = useConversations();
+  const { data: currentConversation } = useConversation();
   const [openRenameConversation, setOpenRenameConversation] = useState(false);
   const [changedConversation, setChangedConversation] = useState('-');
-  // Make a confirmation dialog for deleting conversations
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
 
   useEffect(() => {
@@ -49,12 +27,14 @@ export default function ConversationSelector(): React.JSX.Element {
       domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
     });
   }, [state.overrides.conversation]);
+
   const handleAddConversation = async (): Promise<void> => {
     state.mutate((oldState) => ({
       ...oldState,
       overrides: { ...oldState.overrides, conversation: '-' },
     }));
   };
+
   const handleRenameConversation = async (magic: boolean = true): Promise<void> => {
     if (state.overrides.conversation) {
       const response = await state.agixt.renameConversation(
@@ -63,17 +43,7 @@ export default function ConversationSelector(): React.JSX.Element {
         magic ? '-' : changedConversation,
       );
       await mutate('/conversation');
-      //console.log(response);
       if (!response.startsWith('Error')) {
-        state.mutate((oldState) => {
-          return {
-            ...oldState,
-            overrides: {
-              ...oldState.overrides,
-              conversation: response,
-            },
-          };
-        });
         setOpenRenameConversation(false);
       }
     }
@@ -83,15 +53,13 @@ export default function ConversationSelector(): React.JSX.Element {
     if (state.overrides.conversation) {
       await state.agixt.deleteConversation(state.overrides.conversation);
       await mutate('/conversation');
-      state.mutate((oldState) => {
-        return {
-          ...oldState,
-          overrides: {
-            ...oldState.overrides,
-            conversation: '-',
-          },
-        };
-      });
+      state.mutate((oldState) => ({
+        ...oldState,
+        overrides: {
+          ...oldState.overrides,
+          conversation: '-',
+        },
+      }));
       setOpenDeleteConversation(false);
     }
   };
@@ -104,151 +72,148 @@ export default function ConversationSelector(): React.JSX.Element {
       });
       element.href = URL.createObjectURL(file);
       element.download = `${state.overrides.conversation}.json`;
-      document.body.appendChild(element); // Required for this to work in FireFox
+      document.body.appendChild(element);
       element.click();
     }
   };
+
   const [loaded, setLoaded] = useState(false);
   useEffect(() => {
     setLoaded(true);
   }, []);
+
   return (
-    <>
-      <FormControl
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'end',
-          mr: '1rem',
-        }}
-        fullWidth
-        size='small'
-      >
+    <div className='flex items-center flex-grow w-full'>
+      <div className='relative w-full'>
         <Select
-          sx={{
-            color: theme.palette.mode === 'dark' ? 'white' : 'black',
-            '.MuiOutlinedInput-notchedOutline': { borderColor: theme.palette.mode === 'dark' ? '#CCC' : '#333' },
-            '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: theme.palette.mode === 'dark' ? 'white' : 'black' },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              borderColor: theme.palette.mode === 'dark' ? 'white' : 'black',
-            },
-            '.MuiSvgIcon-root ': {
-              fill: (theme.palette.mode === 'dark' ? 'white' : 'black') + ' !important',
-            },
-            '.MuiOutlinedInput-notchedOutline legend span': {
-              // Targeting the floating label specifically
-              color: theme.palette.mode === 'dark' ? 'white' : 'black',
-              opacity: '1',
-            },
-            fontSize: '12px',
-            paddingRight: '0px',
-          }}
-          fullWidth
           open={dropDownOpen}
-          onOpen={() => setDropDownOpen(true)}
-          onClose={() => setDropDownOpen(false)}
-          IconComponent={() => null}
-          variant='outlined'
-          labelId='conversation-label'
-          label='Select a Conversation'
+          onOpenChange={setDropDownOpen}
           disabled={conversationData?.length === 0}
           value={changedConversation}
-          onChange={(e) =>
+          onValueChange={(value) =>
             state.mutate((oldState) => ({
               ...oldState,
-              overrides: { ...oldState.overrides, conversation: e.target.value },
+              overrides: { ...oldState.overrides, conversation: value },
             }))
           }
-          endAdornment={
-            <InputAdornment position='end'>
-              <Tooltip title='Add Conversation'>
-                <IconButton onClick={() => handleAddConversation()} color='info' sx={{ minWidth: '20px' }}>
-                  <Add sx={{ minWidth: '20px' }} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title='Rename Conversation'>
-                <IconButton onClick={() => setOpenRenameConversation(true)} color='info' sx={{ minWidth: '20px' }}>
-                  <DriveFileRenameOutline sx={{ minWidth: '20px' }} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title='Export Conversation'>
-                <IconButton onClick={handleExportConversation} color='info' sx={{ minWidth: '20px' }}>
-                  <FileDownloadOutlinedIcon sx={{ minWidth: '20px' }} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title='Delete Conversation'>
-                <IconButton onClick={() => setOpenDeleteConversation(true)} color='error' sx={{ minWidth: '20px' }}>
-                  <DeleteIcon sx={{ minWidth: '20px' }} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title='Open Dropdown'>
-                <IconButton onClick={() => setDropDownOpen((prev) => !prev)} color='error' sx={{ minWidth: '20px' }}>
-                  {dropDownOpen ? <ArrowDropUp fontSize='medium' /> : <ArrowDropDown fontSize='medium' />}
-                </IconButton>
-              </Tooltip>
-            </InputAdornment>
-          }
         >
-          <MenuItem key='-' value='-'>
-            - New Conversation -
-          </MenuItem>
-          {loaded && state.overrides.conversation !== '-' && !conversationData?.includes(state.overrides.conversation) && (
-            <MenuItem key={state.overrides.conversation} value={state.overrides.conversation}>
-              {state.overrides.conversation}
-            </MenuItem>
-          )}
-          {conversationData &&
-            conversationData.map &&
-            conversationData?.map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))}
+          <SelectTrigger className=''>
+            <SelectValue placeholder='Select a Conversation' />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value='-'>- New Conversation -</SelectItem>
+            {conversationData &&
+              conversationData.map((conversation) => (
+                <SelectItem key={conversation.id} value={conversation.id}>
+                  {conversation.has_notifications ? '(-) ' : ''}
+                  {conversation.name}
+                </SelectItem>
+              ))}
+          </SelectContent>
         </Select>
-      </FormControl>
+        <div className='absolute top-0 bottom-0 right-0 flex items-center h-full pr-2 space-x-1'>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' className='w-6 h-6' onClick={handleAddConversation}>
+                  <LuPlus />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Add Conversation</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
 
-      <Dialog open={openDeleteConversation} onClose={() => setOpenDeleteConversation(false)}>
-        <DialogTitle>Delete Conversation</DialogTitle>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' className='w-6 h-6' onClick={() => setOpenRenameConversation(true)}>
+                  <LuPencil />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Rename Conversation</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' className='w-6 h-6' onClick={handleExportConversation}>
+                  <LuDownload />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Export Conversation</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' className='w-6 h-6' onClick={() => setOpenDeleteConversation(true)}>
+                  <LuTrash2 />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Delete Conversation</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' className='w-6 h-6' onClick={() => setDropDownOpen((prev) => !prev)}>
+                  {dropDownOpen ? <LuChevronUp /> : <LuChevronDown />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Open Dropdown</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
+      </div>
+
+      <Dialog open={openDeleteConversation} onOpenChange={setOpenDeleteConversation}>
         <DialogContent>
-          <DialogContent>Are you sure you want to delete this conversation?</DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Conversation</DialogTitle>
+            <DialogDescription>Are you sure you want to delete this conversation?</DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant='outline' onClick={() => setOpenDeleteConversation(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleDeleteConversation}>Delete</Button>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDeleteConversation(false)} color='error'>
-            Cancel
-          </Button>
-          <Button onClick={handleDeleteConversation} color='info'>
-            Delete
-          </Button>
-        </DialogActions>
       </Dialog>
-      <Dialog open={openRenameConversation} onClose={() => setOpenRenameConversation(false)} disableRestoreFocus>
-        <DialogTitle>Rename Conversation</DialogTitle>
+
+      <Dialog open={openRenameConversation} onOpenChange={setOpenRenameConversation}>
         <DialogContent>
-          <TextField
-            margin='dense'
+          <DialogHeader>
+            <DialogTitle>Rename Conversation</DialogTitle>
+          </DialogHeader>
+          <Input
             id='name'
-            label='New Conversation Name'
-            type='text'
-            fullWidth
             value={changedConversation}
             onChange={(e) => setChangedConversation(e.target.value)}
-            variant='outlined'
-            color='info'
+            placeholder='New Conversation Name'
           />
+          <DialogFooter>
+            <Button variant='outline' onClick={() => setOpenRenameConversation(false)}>
+              Cancel
+            </Button>
+            <Button onClick={() => handleRenameConversation(false)}>Rename</Button>
+            <Button onClick={() => handleRenameConversation(true)}>Generate a Name</Button>
+          </DialogFooter>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenRenameConversation(false)} color='error'>
-            Cancel
-          </Button>
-          <Button onClick={() => handleRenameConversation(false)} color='info'>
-            Rename
-          </Button>
-          <Button onClick={() => handleRenameConversation(true)} color='info'>
-            Generate a Name
-          </Button>
-        </DialogActions>
       </Dialog>
-    </>
+    </div>
   );
 }

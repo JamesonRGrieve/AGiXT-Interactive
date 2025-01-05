@@ -2,13 +2,12 @@ import React, { ReactNode } from 'react';
 import ReactMarkdown from 'react-markdown';
 import CodeBlock from './Markdown/CodeBlock';
 import remarkGfm from 'remark-gfm';
-import ListItem from '@mui/material/ListItem';
-import { Box, List, Typography } from '@mui/material';
 import MarkdownHeading from './Markdown/Heading';
 import MarkdownLink from './Markdown/Link';
 import MarkdownImage from './Markdown/Image';
 import textToMarkdown from './Markdown/Preprocessor';
-import { DataGrid } from '@mui/x-data-grid/DataGrid';
+import { DataTable } from './data-table';
+import { createColumns } from './data-table/data-table-columns';
 
 export type MarkdownBlockProps = {
   content: string;
@@ -60,7 +59,7 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
 
     return { columns, rows };
   }
-
+  console.log(content, renderMessage(content));
   try {
     return (
       // Switch to https://github.com/ariabuckles/simple-markdown ?
@@ -91,62 +90,25 @@ export default function MarkdownBlock({ content, chatItem, setLoading }: Markdow
                 return <MarkdownHeading tag='h6'>{children}</MarkdownHeading>;
               },
               p({ children }) {
-                return (
-                  <Typography variant='body1' my='0.5rem'>
-                    {children}
-                  </Typography>
-                );
+                return <p className='my-4'>{children}</p>;
               },
               a({ children, ...props }) {
                 return <MarkdownLink {...props}>{children}</MarkdownLink>;
               },
               ul({ children }) {
-                return (
-                  <List
-                    dense
-                    sx={{
-                      listStyle: 'disc',
-                      ml: '2rem',
-                      padding: '0',
-                    }}
-                  >
-                    {children}
-                  </List>
-                );
+                return <ul className='p-0 ml-6 list-disc list-outside'>{children}</ul>;
               },
               ol({ children }) {
-                return (
-                  <List
-                    dense
-                    sx={{
-                      listStyle: 'decimal',
-                      ml: '2rem',
-                      padding: '0',
-                    }}
-                  >
-                    {children}
-                  </List>
-                );
+                return <ol className='p-0 ml-8 list-decimal list-outside'>{children}</ol>;
               },
               li({ children }) {
-                return (
-                  <ListItem
-                    sx={{
-                      display: 'list-item',
-                      '& .MuiTypography-body1': {
-                        my: '0.25rem',
-                      },
-                    }}
-                  >
-                    {children}
-                  </ListItem>
-                );
+                return <li className='my-1'>{children}</li>;
               },
               table() {
                 const { columns, rows } = parseMarkdownTable(segment.content);
                 return (
                   <div className='w-full'>
-                    <DataGrid rows={rows} columns={columns} />
+                    <DataTable columns={createColumns(columns)} data={rows} />
                   </div>
                 );
               },

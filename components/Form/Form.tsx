@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
-import { Alert, Typography } from '@mui/material';
 import { v4 as uuidv4 } from 'uuid';
 import { UIProps } from '../InteractiveAGiXT';
-import { InteractiveConfigContext, Overrides } from '../../types/InteractiveConfigContext';
+import { InteractiveConfigContext, Overrides } from '../InteractiveConfigContext';
 import ConversationBar from '../Chat/ChatBar';
 import FormInput from './FormInput';
 import FormOutput from './FormOutput';
@@ -110,18 +109,14 @@ export default function Form({
           setLoading={setLoading}
         />
       )}
-      {loading && (
-        <Alert sx={{ my: '1rem' }} severity='info'>
-          Fetching response...
-        </Alert>
-      )}
+      {loading && <p className='text-sm text-muted-foreground'>Fetching response...</p>}
       <FormOutput results={results} showIndex={1} selectedUUID={uuid} setSelectedUUID={setUUID} />
       {followUp && results[uuid.toString()].length < 3 && results[uuid.toString()].length > 1 && (
         <FormInput disabled={loading} argValues={argValues} setArgValues={setArgValues} />
       )}
       {followUp && results[uuid.toString()].length >= 3 && (
         <>
-          <Typography variant='h6'>{results[uuid.toString()][2].message}</Typography>
+          <p>{results[uuid.toString()][2].message}</p>
           <FormOutput results={results} showIndex={3} selectedUUID={uuid} setSelectedUUID={setUUID} />
         </>
       )}

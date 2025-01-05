@@ -2,12 +2,13 @@
 import React, { useState, ReactNode, useEffect } from 'react';
 import AGiXTSDK from 'agixt';
 import OpenAI from 'openai';
-import { InteractiveConfigContext, InteractiveConfigDefault, InteractiveConfig } from '../types/InteractiveConfigContext';
+import { InteractiveConfigContext, InteractiveConfigDefault, InteractiveConfig } from './InteractiveConfigContext';
+import { getCookie } from 'cookies-next';
 
 export default function InteractiveConfigContextWrapper({
   initialState = InteractiveConfigDefault,
-  apiKey = null,
-  agixtServer = '',
+  apiKey = getCookie('jwt') || '',
+  agixtServer = process.env.NEXT_PUBLIC_AGIXT_SERVER,
   children,
 }: {
   requireKey?: boolean;

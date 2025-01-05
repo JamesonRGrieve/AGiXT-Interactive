@@ -1,9 +1,12 @@
 'use client';
-import { Box, Checkbox, FormControlLabel, MenuItem, Switch, Tooltip, Typography } from '@mui/material';
-import { deleteCookie, getCookie, setCookie } from 'cookies-next';
-import { useEffect, useState } from 'react';
 
-export default function OverrideSwitch({ name, label }: { name: string; label: string }): React.JSX.Element {
+import { useEffect, useState } from 'react';
+import { deleteCookie, getCookie, setCookie } from 'cookies-next';
+import { Switch } from '@/components/ui/switch';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Checkbox } from '@/components/ui/checkbox';
+
+export function OverrideSwitch({ name, label }: { name: string; label: string }): React.JSX.Element {
   const [state, setState] = useState<boolean | null>(
     getCookie('agixt-' + name) === undefined ? null : getCookie('agixt-' + name) !== 'false',
   );
@@ -18,35 +21,25 @@ export default function OverrideSwitch({ name, label }: { name: string; label: s
     }
   }, [state, name]);
   return (
-    <MenuItem sx={{ py: '0.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      <Typography variant='h6' component='span'>
-        {label}
-      </Typography>
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={state === null}
-            onClick={() => {
-              setState((old) => (old === null ? false : null));
-            }}
-          />
-        }
-        label='Use Default'
-      />
+    <div className='flex flex-col items-center gap-1'>
+      <span className='text-lg'>{label}</span>
+      <div className='flex items-center gap-2'>
+        <Checkbox checked={state === null} onClick={() => setState((old) => (old === null ? false : null))} />
+        <p>Use Default</p>
+      </div>
       {state !== null && (
-        <Box display='flex' flexDirection='row' alignItems='center'>
-          <Typography variant='caption'>{state === null ? null : state ? 'Always' : 'Never'}</Typography>
-          <Tooltip title={label}>
-            <Switch
-              color='primary'
-              checked={state}
-              onClick={() => {
-                setState((old) => !old);
-              }}
-            />
-          </Tooltip>
-        </Box>
+        <Tooltip>
+          <TooltipTrigger>
+            <div className='flex flex-row items-center space-x-2'>
+              <p>{state === null ? null : state ? 'Allowed' : 'Never'}</p>
+              <Switch id={label} checked={state} onClick={() => setState((old) => !old)} />
+            </div>
+          </TooltipTrigger>
+          <TooltipContent>
+            <p>{label}</p>
+          </TooltipContent>
+        </Tooltip>
       )}
-    </MenuItem>
+    </div>
   );
 }
