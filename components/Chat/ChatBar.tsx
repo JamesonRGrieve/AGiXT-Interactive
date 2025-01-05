@@ -1,35 +1,28 @@
 'use client';
+
 import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react';
-import NoteAddOutlinedIcon from '@mui/icons-material/NoteAddOutlined';
-import Box from '@mui/material/Box';
-import Tooltip from '@mui/material/Tooltip';
+import { LuPaperclip, LuSend, LuArrowUp, LuCheckCircle, LuLoader, LuTrash2 } from 'react-icons/lu';
+import { setCookie } from 'cookies-next';
+import { InteractiveConfigContext } from '../InteractiveConfigContext';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Badge } from '@/components/ui/badge';
 import {
-  TextField,
-  InputAdornment,
-  Dialog as MUIDialog,
-  DialogTitle,
+  Dialog,
   DialogContent,
-  DialogContentText,
-  IconButton,
-  Chip,
-  Typography,
-  Popover,
-  MenuList,
-  MenuItem,
-  Switch,
-  FormControlLabel,
-  Checkbox,
-} from '@mui/material';
-import Dropzone from 'react-dropzone';
-import SendIcon from '@mui/icons-material/Send';
-import { deleteCookie, getCookie, setCookie } from 'cookies-next';
-import { ArrowDropUp, CheckCircle, DeleteForever, Pending } from '@mui/icons-material';
-import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
-import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
-import Dialog from 'jrgcomponents/Dialog';
-import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
-import AudioRecorder from './AudioRecorder';
-import OverrideSwitch from './OverrideSwitch';
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { DropZone } from '@/components/jrg/DropZone';
+import SwitchDark from '@/components/jrg/theme/SwitchDark';
+import SwitchColorblind from '@/components/jrg/theme/SwitchColorblind';
+import { OverrideSwitch } from './OverrideSwitch';
+import { VoiceRecorder } from './VoiceRecorder';
 
 export default function ChatBar({
   onSend,
@@ -59,32 +52,31 @@ export default function ChatBar({
   const [uploadedFiles, setUploadedFiles] = useState<{ [x: string]: string }>({});
   const [message, setMessage] = useState('');
   const [alternativeInputActive, setAlternativeInputActive] = useState(false);
+
   useEffect(() => {
     console.log(uploadedFiles);
   }, [uploadedFiles]);
-  const handleUploadFiles = async (event): Promise<void> => {
-    for (const file of event.target.files) {
-      uploadFile(file);
+
+  const handleUploadFiles = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
+    if (event.target.files) {
+      for (const file of event.target.files) {
+        await uploadFile(file);
+      }
     }
   };
+
   const uploadFile = async (file: File) => {
     const newUploadedFiles: { [x: string]: string } = {};
-    const fileContent = await new Promise((resolve, reject) => {
+    const fileContent = await new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
       reader.onloadend = (): void => resolve(reader.result as string);
       reader.onerror = reject;
       reader.readAsDataURL(file);
     });
-    newUploadedFiles[file.name] = fileContent as string;
+    newUploadedFiles[file.name] = fileContent;
     setUploadedFiles((previous) => ({ ...previous, ...newUploadedFiles }));
   };
-  const handleSave = useCallback((audio) => {
-    const newUploadedFiles = {
-      [`${new Date().getHours()}.${new Date().getMinutes()}.${new Date().getSeconds()}.recording.wav`]: audio,
-    };
-    console.log(newUploadedFiles);
-    setUploadedFiles((previous) => ({ ...previous, ...newUploadedFiles }));
-  }, []);
+
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (loading) {
@@ -93,336 +85,220 @@ export default function ChatBar({
         setTimer((prev) => prev + 1);
       }, 100);
     }
-    // Cleanup function
     return () => {
       clearInterval(interval);
     };
   }, [loading]);
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
 
   return (
-    <Box
-      px='1rem'
-      display='flex'
-      flexDirection='column'
-      justifyContent='space-between'
-      alignItems='center'
-      className='bg-card'
-    >
-      <Dropzone
-        noClick
-        onDrop={(acceptedFiles) => {
-          if (enableFileUpload) {
-            for (const file of acceptedFiles) {
-              uploadFile(file);
+    <DropZone onUpload={(files: File[]) => files.map((file) => uploadFile(file))}>
+      <div className='flex items-center justify-between gap-2 p-4 bg-background'>
+        <Textarea
+          placeholder='Enter your message here...'
+          id='message'
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={async (event) => {
+            if (event.key === 'Enter' && !event.shiftKey && message) {
+              event.preventDefault();
+              await onSend(message, uploadedFiles);
+              setMessage('');
             }
-          }
-        }}
-      >
-        {({ getRootProps, getInputProps }) => (
-          <Box
-            display='flex'
-            flexDirection='row'
-            justifyContent='space-between'
-            alignItems='center'
-            width='100%'
-            {...getRootProps()}
-          >
-            <TextField
-              label={`Enter your message to ${state.agent} here.`}
-              placeholder={`Hello, ${state.agent}!`}
-              multiline
-              maxRows={12}
-              fullWidth
-              value={message}
-              onKeyDown={async (event) => {
-                if (event.key === 'Enter' && !event.shiftKey && message) {
-                  event.preventDefault();
-                  await onSend(message, uploadedFiles);
-                  setMessage('');
-                }
-              }}
-              onChange={(e) => setMessage(e.target.value)}
-              // Temporary until this mui component is replaced
-              sx={{
-                my: 2,
-                '& .MuiOutlinedInput-root': {
-                  color: 'hsl(var(--foreground))',
-                  backgroundColor: 'hsl(var(--background))',
-                  '& .MuiOutlinedInput-notchedOutline': {
-                    borderColor: 'hsl(var(--border))',
-                    borderWidth: '0.5px',
-                  },
-                  '&.Mui-focused': {
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'hsl(var(--primary))',
-                      borderWidth: '1px',
-                    },
-                  },
-                  '&:hover:not(.Mui-focused)': {
-                    '& .MuiOutlinedInput-notchedOutline': {
-                      borderColor: 'hsl(var(--primary))',
-                      borderWidth: '1px',
-                    },
-                  },
-                },
-                '& .MuiInputLabel-outlined': {
-                  color: 'hsl(var(--muted-foreground))',
-                  '&.Mui-focused': {
-                    color: 'hsl(var(--primary))',
-                  },
-                },
-              }}
+          }}
+          disabled={disabled}
+          className='resize-none'
+        />
+
+        <div className='flex items-center space-x-2'>
+          {timer > -1 && <Timer loading={loading} timer={timer} />}
+          {showOverrideSwitchesCSV && <OverrideSwitches showOverrideSwitches={showOverrideSwitchesCSV} />}
+          {enableFileUpload && !alternativeInputActive && (
+            <UploadFiles
+              handleUploadFiles={handleUploadFiles}
+              message={message}
+              uploadedFiles={uploadedFiles}
               disabled={disabled}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position='end'>
-                    {timer > -1 && (
-                      <Tooltip
-                        title={
-                          loading
-                            ? `Your most recent interation has been underway (including all activities) for ${(timer / 10).toFixed(1)} seconds.`
-                            : `Your last interaction took ${(timer / 10).toFixed(1)} seconds to completely resolve.`
-                        }
-                      >
-                        <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
-                          <Typography variant='caption' display='flex' position='relative' top='0.15rem'>
-                            {(timer / 10).toFixed(1)}s
-                          </Typography>
-                          {loading ? <Pending color='info' /> : <CheckCircle color='success' />}
-                        </Box>
-                      </Tooltip>
-                    )}
-                    {showOverrideSwitchesCSV && (
-                      <>
-                        <Tooltip title='Override Settings'>
-                          <IconButton
-                            color='primary'
-                            onClick={(event) => {
-                              setAnchorEl(event.currentTarget);
-                            }}
-                          >
-                            <ArrowDropUp />
-                          </IconButton>
-                        </Tooltip>
-                        <Popover
-                          open={Boolean(anchorEl)}
-                          anchorEl={anchorEl}
-                          onClose={() => setAnchorEl(null)}
-                          anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                          }}
-                          transformOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'center',
-                          }}
-                        >
-                          <MenuList dense>
-                            {showOverrideSwitchesCSV.split(',').includes('websearch') && (
-                              <OverrideSwitch name='websearch' label='Websearch' />
-                            )}
-                            {showOverrideSwitchesCSV.split(',').includes('tts') && (
-                              <OverrideSwitch name='tts' label='Text-to-Speech' />
-                            )}
-                            {showOverrideSwitchesCSV.split(',').includes('analyze-user-input') && (
-                              <OverrideSwitch name='analyze-user-input' label='Data Analysis' />
-                            )}
-                            {showOverrideSwitchesCSV.split(',').includes('create-image') && (
-                              <OverrideSwitch name='create-image' label='Generate an Image' />
-                            )}
-                          </MenuList>
-                        </Popover>
-                      </>
-                    )}
-                    {enableFileUpload && !alternativeInputActive && (
-                      <>
-                        <IconButton>
-                          <label htmlFor='contained-button-file' style={{ lineHeight: '0.5rem' }}>
-                            <Tooltip title='Upload File(s)'>
-                              <NoteAddOutlinedIcon color='primary' sx={{ cursor: 'pointer' }} />
-                            </Tooltip>
-                          </label>
-                        </IconButton>
-                        <input
-                          accept='*'
-                          hidden
-                          id='contained-button-file'
-                          multiple
-                          type='file'
-                          onChange={handleUploadFiles}
-                        />
-                      </>
-                    )}
-                    {enableVoiceInput && (
-                      <AudioRecorder
-                        recording={alternativeInputActive}
-                        setRecording={setAlternativeInputActive}
-                        disabled={disabled}
-                        onSave={handleSave}
-                      />
-                    )}
-                    {!alternativeInputActive && (
-                      <SendMessage
-                        {...{
-                          handleSend: () => {
-                            if (clearOnSend) {
-                              setMessage('');
-                              setUploadedFiles({});
-                            }
-                            onSend(message, uploadedFiles);
-                          },
-                          message,
-                          uploadedFiles,
-                          disabled,
-                        }}
-                      />
-                    )}
-                  </InputAdornment>
-                ),
-              }}
             />
-            {showResetConversation && <ResetConversation {...{ state, setCookie }} />}
-            {showChatThemeToggles && <ThemeToggles />}
-          </Box>
+          )}
+
+          {enableVoiceInput && <VoiceRecorder onSend={onSend} disabled={disabled} />}
+        </div>
+        <div className='flex items-center space-x-2'>
+          {showResetConversation && <ResetConversation state={state} setCookie={setCookie} />}
+          {showChatThemeToggles && <ThemeToggles />}
+          {!alternativeInputActive && (
+            <SendMessage
+              handleSend={() => {
+                if (clearOnSend) {
+                  setMessage('');
+                  setUploadedFiles({});
+                }
+                onSend(message, uploadedFiles);
+              }}
+              message={message}
+              uploadedFiles={uploadedFiles}
+              disabled={disabled}
+            />
+          )}
+        </div>
+
+        {Object.keys(uploadedFiles).length > 0 && (
+          <ListUploadedFiles uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} />
         )}
-      </Dropzone>
-      {Object.keys(uploadedFiles).length > 0 && <ListUploadedFiles {...{ uploadedFiles, setUploadedFiles }} />}
-    </Box>
+      </div>
+    </DropZone>
   );
 }
 
-// Extracted for better readability of the chat bar component and testing in Storybook
-const Timer = ({ loading, timer }: any) => {
+const Timer = ({ loading, timer }: { loading: boolean; timer: number }) => {
   return (
-    <Tooltip
-      title={
-        loading
-          ? `Your most recent interation has been underway (including all activities) for ${(timer / 10).toFixed(1)} seconds.`
-          : `Your last interaction took ${(timer / 10).toFixed(1)} seconds to completely resolve.`
-      }
-    >
-      <Box display='flex' gap='0.5rem' mx='0.5rem' alignItems='center'>
-        <Typography variant='caption' display='flex' position='relative' top='0.15rem'>
-          {(timer / 10).toFixed(1)}s
-        </Typography>
-        {loading ? <Pending color='info' /> : <CheckCircle color='success' />}
-      </Box>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div className='flex items-center space-x-1'>
+          <span className='text-sm'>{(timer / 10).toFixed(1)}s</span>
+          {loading ? <LuLoader className='animate-spin' /> : <LuCheckCircle className='text-green-500' />}
+        </div>
+      </TooltipTrigger>
+      <TooltipContent>
+        {loading
+          ? `Your most recent interaction has been underway (including all activities) for ${(timer / 10).toFixed(1)} seconds.`
+          : `Your last interaction took ${(timer / 10).toFixed(1)} seconds to completely resolve.`}
+      </TooltipContent>
     </Tooltip>
   );
 };
 
-const OverrideSwitches = ({ setAnchorEl, anchorEl, showOverrideSwitches }: any) => {
+const OverrideSwitches = ({ showOverrideSwitches }: { showOverrideSwitches: string }) => {
   return (
-    <>
-      <Tooltip title='Override Settings'>
-        <IconButton
-          color='primary'
-          onClick={(event) => {
-            setAnchorEl(event.currentTarget);
-          }}
-        >
-          <ArrowDropUp />
-        </IconButton>
-      </Tooltip>
-      <Popover
-        open={Boolean(anchorEl)}
-        anchorEl={anchorEl}
-        onClose={() => setAnchorEl(null)}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'center',
-        }}
-        transformOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
-        }}
-      >
-        <MenuList dense>
+    <Popover>
+      <PopoverTrigger asChild>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button size='icon'>
+              <LuArrowUp className='w-4 h-4' />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Overrides</TooltipContent>
+        </Tooltip>
+      </PopoverTrigger>
+      <PopoverContent className='w-56'>
+        <div className='space-y-4'>
           {showOverrideSwitches.split(',').includes('tts') && <OverrideSwitch name='tts' label='Text-to-Speech' />}
           {showOverrideSwitches.split(',').includes('websearch') && <OverrideSwitch name='websearch' label='Websearch' />}
-        </MenuList>
-      </Popover>
-    </>
+          {showOverrideSwitches.split(',').includes('create-image') && (
+            <OverrideSwitch name='create-image' label='Generate an Image' />
+          )}
+          {showOverrideSwitches.split(',').includes('analyze-user-input') && (
+            <OverrideSwitch name='analyze-user-input' label='Analyze' />
+          )}
+        </div>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+const UploadFiles = ({ handleUploadFiles, message, uploadedFiles, disabled }: any) => {
+  return (
+    <Tooltip>
+      <TooltipTrigger>
+        <Button size='icon' onClick={() => document.getElementById('file-upload')?.click()}>
+          <LuPaperclip />
+        </Button>
+        <label id='trigger-file-upload' htmlFor='file-upload' className='hidden'></label>
+        <input id='file-upload' type='file' multiple className='hidden' onChange={handleUploadFiles} disabled={disabled} />
+      </TooltipTrigger>
+      <TooltipContent>Upload Files</TooltipContent>
+    </Tooltip>
   );
 };
 
 const SendMessage = ({ handleSend, message, uploadedFiles, disabled }: any) => {
   return (
-    <Tooltip title='Send Message'>
-      <span>
-        <IconButton
+    <Tooltip>
+      <TooltipTrigger>
+        <Button
+          id='send-message'
           onClick={(event) => {
             event.preventDefault();
             handleSend(message, uploadedFiles);
           }}
           disabled={(message.trim().length === 0 && Object.keys(uploadedFiles).length === 0) || disabled}
-          color='primary'
-          sx={{
-            height: '56px',
-            padding: '0.5rem',
-          }}
-          data-testid='send-message-button'
+          size='icon'
         >
-          <SendIcon />
-        </IconButton>
-      </span>
+          <LuSend className='w-4 h-4' />
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>Send Message</TooltipContent>
     </Tooltip>
   );
 };
 
 const ResetConversation = ({ state, setCookie }: any) => {
   return (
-    <Dialog
-      ButtonComponent={IconButton}
-      ButtonProps={{
-        children: <DeleteForever />,
-        disabled: false,
-        color: 'primary',
-        sx: {
-          height: '56px',
-          padding: '1rem',
-        },
-      }}
-      title='Are you sure you want to reset the conversation? This cannot be undone.'
-      onConfirm={() => {
-        const uuid = crypto.randomUUID();
-        setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
-        state.mutate((oldState) => ({
-          ...oldState,
-          overrides: { ...oldState.overrides, conversation: uuid },
-        }));
-      }}
-    />
+    <Dialog>
+      <DialogTrigger>
+        <Tooltip>
+          <TooltipTrigger>
+            <Button variant='outline' size='icon'>
+              <LuTrash2 className='w-4 h-4' />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent>Reset Conversation</TooltipContent>
+        </Tooltip>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Reset Conversation</DialogTitle>
+          <DialogDescription>Are you sure you want to reset the conversation? This cannot be undone.</DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            onClick={() => {
+              const uuid = crypto.randomUUID();
+              setCookie('uuid', uuid, { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
+              state.mutate((oldState: any) => ({
+                ...oldState,
+                overrides: { ...oldState.overrides, conversation: uuid },
+              }));
+            }}
+          >
+            Reset
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 
 const ThemeToggles = (): ReactNode => {
   return (
-    <Box display='flex' flexDirection='column' alignItems='center'>
+    <div className='flex flex-col items-center'>
       <SwitchDark />
       <SwitchColorblind />
-    </Box>
+    </div>
   );
 };
 
 const ListUploadedFiles = ({ uploadedFiles, setUploadedFiles }: any): ReactNode => {
   return (
-    <Box display='flex' flexDirection='row' justifyContent='start' width='100%' mb='1rem' gap='0.5rem' alignItems='center'>
-      <Typography variant='caption'>Uploaded Files: </Typography>
+    <div className='flex flex-wrap gap-2 mt-2'>
+      <span className='text-sm text-muted-foreground'>Uploaded Files:</span>
       {Object.entries(uploadedFiles).map(([fileName]) => (
-        <Chip
+        <Badge
           key={fileName}
-          label={fileName}
-          onDelete={() => {
-            setUploadedFiles((prevFiles) => {
+          variant='secondary'
+          className='cursor-pointer'
+          onClick={() => {
+            setUploadedFiles((prevFiles: any) => {
               const newFiles = { ...prevFiles };
               delete newFiles[String(fileName)];
               return newFiles;
             });
           }}
-        />
+        >
+          {fileName}
+        </Badge>
       ))}
-    </Box>
+    </div>
   );
 };

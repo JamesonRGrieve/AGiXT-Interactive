@@ -1,22 +1,11 @@
 'use client';
 import { deleteCookie, getCookie, setCookie } from 'cookies-next';
-import React, { ReactNode, useMemo } from 'react';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import AppWrapper from 'jrgcomponents/AppWrapper/Wrapper';
-import { Logout, Menu, Settings } from '@mui/icons-material';
-import {
-  Box,
-  IconButton,
-  ListItemIcon,
-  ListItemText,
-  MenuItem,
-  MenuList,
-  Popover,
-  Tooltip,
-  Typography,
-  useMediaQuery,
-} from '@mui/material';
-import { InteractiveConfigDefault, InteractiveConfig, Overrides } from '../types/InteractiveConfigContext';
+import AppWrapper from '../jrg/wrapper/AppWrapper';
+import { LuLogOut as LogOut, LuMenu as Menu, LuSettings as Settings } from 'react-icons/lu';
+
+import { InteractiveConfigDefault, InteractiveConfig, Overrides } from './InteractiveConfigContext';
 import ContextWrapper from './ContextWrapper';
 import Chat from './Chat/Chat';
 import Form from './Form/Form';
@@ -24,13 +13,14 @@ import ConversationSelector from './Selectors/ConversationSelector';
 
 import AgentSelector from './Selectors/AgentSelector';
 import PromptSelector from './Selectors/PromptSelector';
-import SwitchDark from 'jrgcomponents/Theming/SwitchDark';
-import SwitchColorblind from 'jrgcomponents/Theming/SwitchColorblind';
-import EditDialog from 'jrgcomponents/EditDialog';
+import SwitchDark from '@/components/jrg/theme/SwitchDark';
+import SwitchColorblind from '@/components/jrg/theme/SwitchColorblind';
+import EditDialog from '@/components/jrg/dialog/Edit/EditDialog';
 import useSWR from 'swr';
 import axios from 'axios';
-import Gravatar from './Gravatar';
-
+import Gravatar from '@/components/jrg/auth/management/Gravatar';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Button } from '@/components/ui/button';
 export type FormProps = {
   fieldOverrides?: { [key: string]: ReactNode };
   formContext?: object;
@@ -42,11 +32,8 @@ export type UIProps = {
   showAppBar?: boolean;
   showSelectorsCSV?: string;
   showChatThemeToggles?: boolean;
-  showRLHF?: boolean;
   enableFileUpload?: boolean;
   enableVoiceInput?: boolean;
-  enableMessageEditing?: boolean;
-  enableMessageDeletion?: boolean;
   alternateBackground?: 'primary' | 'secondary';
   footerMessage?: string;
   showOverrideSwitchesCSV?: string;
@@ -107,6 +94,7 @@ const generateSearchParamConfig = (searchParams: URLSearchParams): InteractiveCo
       injectMemoriesFromCollectionNumber: Number(searchParams.get('injectMemoriesFromCollectionNumber')) || undefined,
       conversationResults: Number(searchParams.get('results')) || undefined,
       conversation: searchParams.get('conversation') || undefined,
+      conversationID: searchParams.get('conversationID') || undefined,
       browseLinks: Boolean(searchParams.get('browseLinks')) || undefined,
       webSearch: Boolean(searchParams.get('webSearch')) || undefined,
       insightAgentName: searchParams.get('insightAgent') || undefined,
@@ -114,6 +102,24 @@ const generateSearchParamConfig = (searchParams: URLSearchParams): InteractiveCo
     },
     mutate: undefined,
   }) as InteractiveConfig;
+
+function useMediaQuery(query: string) {
+  const [matches, setMatches] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia(query);
+    setMatches(mediaQuery.matches);
+
+    const handler = (event: MediaQueryListEvent) => {
+      setMatches(event.matches);
+    };
+
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, [query]);
+
+  return matches;
+}
 const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
   const searchParams = useSearchParams();
   const searchParamConfig = generateSearchParamConfig(searchParams);
@@ -161,9 +167,9 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
 const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
   const mobile = useMediaQuery('(max-width: 1100px)');
   const menuItem = (): ReactNode => (
-    <Box p='0.5rem' display='flex' flexDirection='column' gap='0.5rem'>
+    <div className='flex flex-col gap-2 p-2'>
       {props.showSelectorsCSV?.split(',').map((selector) => selectionBars[String(selector)])}
-    </Box>
+    </div>
   );
   const {
     data: user,
@@ -171,7 +177,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
     error,
   } = useSWR('/user', async () => {
     return (
-      await axios.get(`${process.env.NEXT_PUBLIC_AUTH_SERVER}/v1/user`, {
+      await axios.get(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/user`, {
         headers: {
           Authorization: `${getCookie('jwt')}`,
         },
@@ -210,19 +216,31 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
               <>
                 {props.showSelectorsCSV &&
                   (!mobile && props.showSelectorsCSV.includes('conversation') && props.showSelectorsCSV.includes(',') ? (
-                    <Box minWidth='12rem' width='100%' display='flex'>
-                      {selectionBars['conversation']}
-                    </Box>
+                    <div className='w-full flex min-w-48'>{selectionBars['conversation']}</div>
                   ) : undefined)}
-                <Tooltip title='Menu'>
-                  <IconButton
-                    onClick={(event) => {
-                      setAnchorEl(event.currentTarget);
-                    }}
-                  >
-                    {user?.email ? <Gravatar email={user?.email} sx={{ width: '2rem', height: '2rem' }} /> : <Menu />}
-                  </IconButton>
+
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Button
+                      variant='ghost'
+                      size='icon'
+                      onClick={(event) => {
+                        setAnchorEl(event.currentTarget);
+                      }}
+                      className='p-0'
+                    >
+                      {user?.email ? (
+                        <Gravatar email={user.email} className='w-8 h-8 rounded-full' />
+                      ) : (
+                        <Menu className='w-5 h-5' />
+                      )}
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Menu</p>
+                  </TooltipContent>
                 </Tooltip>
+
                 <Popover
                   open={Boolean(anchorEl)}
                   anchorEl={anchorEl}
@@ -232,12 +250,8 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                     horizontal: 'left',
                   }}
                 >
-                  <MenuList dense sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    {user?.email && (
-                      <Typography variant='h6' sx={{ px: '1rem', py: '0.5rem' }}>
-                        {user?.email ?? 'User'}
-                      </Typography>
-                    )}
+                  <ul className='menu menu-compact flex flex-col align-center'>
+                    {user?.email && <p className='font-bold px-4 py-2'>{user?.email ?? 'User'}</p>}
 
                     <EditDialog
                       onConfirm={(data) => {
@@ -249,20 +263,18 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                       excludeFields={['subscription', 'email', 'ip_address']}
                       readOnlyFields={['input_tokens', 'output_tokens']}
                       submitButtonText='Update'
-                      ButtonComponent={MenuItem}
+                      ButtonComponent={<li />}
                       ButtonProps={{
                         children: (
                           <>
-                            <ListItemIcon>
-                              <Settings />
-                            </ListItemIcon>
-                            <ListItemText>Settings</ListItemText>
+                            <Settings />
+                            <p>Settings</p>
                           </>
                         ),
                       }}
                     />
 
-                    <MenuItem
+                    <li
                       onClick={() => {
                         deleteCookie('jwt', {
                           domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
@@ -270,17 +282,16 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                         window.location.reload();
                       }}
                     >
-                      <ListItemIcon>
-                        <Logout />
-                      </ListItemIcon>
-                      <ListItemText>Logout</ListItemText>
-                    </MenuItem>
+                      <LogOut />
 
-                    <MenuItem sx={{ py: '0.5rem' }}>
+                      <p>Logout</p>
+                    </li>
+
+                    <li className='py-2'>
                       <SwitchDark />
                       <SwitchColorblind />
-                    </MenuItem>
-                  </MenuList>
+                    </li>
+                  </ul>
                 </Popover>
               </>
             ),
@@ -292,11 +303,9 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
           ? {
               components: {
                 center: (
-                  <Box textAlign='center'>
-                    <Typography sx={{ margin: 0 }} variant='caption'>
-                      {props.footerMessage}
-                    </Typography>
-                  </Box>
+                  <div className='text-center'>
+                    <p className='text-sm m-0'>{props.footerMessage}</p>
+                  </div>
                 ),
               },
             }
@@ -314,13 +323,10 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
       ) : (
         <Chat
           mode={props.mode}
-          showRLHF={props.showRLHF}
           showChatThemeToggles={props.showChatThemeToggles}
           alternateBackground={props.alternateBackground}
           enableFileUpload={props.enableFileUpload}
           enableVoiceInput={props.enableVoiceInput}
-          enableMessageDeletion={props.enableMessageDeletion}
-          enableMessageEditing={props.enableMessageEditing}
           showOverrideSwitchesCSV={props.showOverrideSwitchesCSV}
         />
       )}
