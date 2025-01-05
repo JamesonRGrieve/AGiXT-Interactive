@@ -1,16 +1,18 @@
-import { ContentCopy, Download } from '@mui/icons-material';
-import { Box, Tab, Tabs, Typography, useTheme } from '@mui/material';
-import clipboardCopy from 'clipboard-copy';
-import React, { ReactNode } from 'react';
+'use client';
+import React, { ReactNode, useState, useRef } from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { a11yLight, a11yDark } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-import TabPanel from 'jrgcomponents/Tabs/Panel';
+import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { LuCopy as Copy, LuDownload as Download } from 'react-icons/lu';
+
 import MarkdownBlock from '../MarkdownBlock';
 import 'katex/dist/katex.min.css';
-import XSV from './Code/XSV';
 import Mermaid from './Code/Mermaid';
 import Latex from 'react-latex-next';
-import { MessageIcons as IconButton } from '../MessageIcons';
+import TabPanel from '@/components/jrg/TabPanel';
+import { getCookie } from 'cookies-next';
+import { DataTable } from '../data-table';
+import { createColumns } from '../data-table/data-table-columns';
+import { parseXSVData } from './Code/ParseXSVData';
 
 const fileExtensions = {
   '': 'txt',
@@ -92,14 +94,27 @@ const languageRenders = {
     )
       .filter((row) => row.trim())
       .map((row) => row.trim());
-    return <XSV xsvData={csvData} setLoading={setLoading} />;
+
+    const result = parseXSVData(csvData, ',');
+
+    if ('error' in result) {
+      return <div>Error: {result.error}</div>;
+    }
+
+    return <DataTable columns={createColumns(result.columns)} data={result.rows} />;
   },
   tsv: (content, setLoading) => {
     const tsvData = (content.constructor === Array ? (content.length > 1 ? content : content[0]) : content.split('\n'))
       .filter((row) => row.trim())
       .map((row) => row.trim());
-    //console.log(tsvData);
-    return <XSV xsvData={tsvData} setLoading={setLoading} separator={/\t/} />;
+
+    const result = parseXSVData(tsvData, '\t');
+
+    if ('error' in result) {
+      return <div>Error: {result.error}</div>;
+    }
+
+    return <DataTable columns={createColumns(result.columns)} data={result.rows} />;
   },
   gantt: (content) => <Mermaid chart={'gantt\n' + content} />,
   sequence: (content) => <Mermaid chart={'sequenceDiagram\n' + content} />,
@@ -115,6 +130,7 @@ export type CodeBlockProps = {
   fileName?: string;
   setLoading?: (loading: boolean) => void;
 };
+
 export default function CodeBlock({
   inline = false,
   children,
@@ -123,26 +139,11 @@ export default function CodeBlock({
   setLoading,
   ...props
 }: CodeBlockProps): ReactNode {
-  // console.log(props);
-  // console.log(children);
-  // console.log(className);
-  // console.log(fileName);
-  // console.log(inline);
-  const theme = useTheme();
+  const codeBlockRef = useRef<HTMLDivElement>(null);
+  const [tab, setTab] = useState(0);
+
   if (inline) {
-    return (
-      <Typography
-        component='span'
-        sx={{
-          backgroundColor: theme.palette.divider,
-          borderRadius: '0.5rem',
-          padding: '0.1rem 0.25rem',
-          fontFamily: 'monospace',
-        }}
-      >
-        {children}
-      </Typography>
-    );
+    return <span className='bg-gray-200 dark:bg-gray-700 rounded-md px-1 py-0.5 font-mono'>{children}</span>;
   }
 
   if (!language || language === 'Text') {
@@ -153,112 +154,84 @@ export default function CodeBlock({
       children = children.substring(children.indexOf('\n') + 1);
     }
   }
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const codeBlockRef = React.useRef(null);
-  const fileNameWithExtension = `${fileName || 'code'}.${fileExtensions[String(language.toLowerCase())] || 'txt'}`;
-  const [tab, setTab] = React.useState(0);
-  //console.log(language);
-  return language || children.toString().includes('\n') ? (
-    <Box my='0.5rem' className='overflow-hidden border rounded-lg bg-accent text-accent-foreground'>
-      <Box
-        position='relative'
-        display='flex'
-        alignItems='center'
-        justifyContent='space-between'
-        pr='1rem'
-        sx={{
-          borderBottom: '2px solid ' + theme.palette.divider,
-        }}
-      >
-        {Object.keys(languageRenders).includes(language) && (
-          <Tabs value={tab} onChange={(event, newValue) => setTab(newValue)}>
-            {Object.keys(languageRenders).includes(language) && <Tab label='Rendered' />}
-            <Tab label='Source' />
-          </Tabs>
-        )}
-        <Box>
-          <IconButton
-            onClick={() => {
-              //console.log(codeBlockRef.current);
-              if (codeBlockRef.current) {
-                const actualCode = codeBlockRef.current.querySelector('code').cloneNode(true);
-                for (const lineNumber of actualCode.querySelectorAll('.react-syntax-highlighter-line-number')) {
-                  lineNumber.remove();
-                }
-                //console.log(actualCode.innerText);
-                clipboardCopy(actualCode.innerText);
-                actualCode.remove();
-              }
-            }}
-          >
-            <ContentCopy />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              //console.log(codeBlockRef.current);
-              if (codeBlockRef.current) {
-                const actualCode = codeBlockRef.current.querySelector('code').cloneNode(true);
-                for (const lineNumber of actualCode.querySelectorAll('.react-syntax-highlighter-line-number')) {
-                  lineNumber.remove();
-                }
-                //console.log(actualCode.innerText);
-                const element = document.createElement('a');
-                const file = new Blob([actualCode.innerText], {
-                  type: 'text/plain;charset=utf-8',
-                });
-                element.href = URL.createObjectURL(file);
 
-                element.download = fileNameWithExtension;
-                document.body.appendChild(element);
-                element.click();
-                actualCode.remove();
-              }
-            }}
-          >
-            <Download />
-          </IconButton>
-          {fileNameWithExtension} | {language}
-        </Box>
-      </Box>
+  const fileNameWithExtension = `${fileName || 'code'}.${fileExtensions[String(language.toLowerCase())] || 'txt'}`;
+
+  const copyCode = () => {
+    if (codeBlockRef.current) {
+      const actualCode = codeBlockRef.current.querySelector('code')?.cloneNode(true) as HTMLElement;
+      actualCode.querySelectorAll('.react-syntax-highlighter-line-number').forEach((el) => el.remove());
+      navigator.clipboard.writeText(actualCode.innerText);
+    }
+  };
+
+  const downloadCode = () => {
+    if (codeBlockRef.current) {
+      const actualCode = codeBlockRef.current.querySelector('code')?.cloneNode(true) as HTMLElement;
+      actualCode.querySelectorAll('.react-syntax-highlighter-line-number').forEach((el) => el.remove());
+      const element = document.createElement('a');
+      const file = new Blob([actualCode.innerText], { type: 'text/plain;charset=utf-8' });
+      element.href = URL.createObjectURL(file);
+      element.download = fileNameWithExtension;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    }
+  };
+
+  return language || children.toString().includes('\n') ? (
+    <div className='my-2 overflow-hidden border rounded-lg bg-background'>
+      <div className='relative flex items-center justify-between pr-4 border-b-2 border-border'>
+        {Object.keys(languageRenders).includes(language) && (
+          <div className='flex'>
+            <button className={`px-4 py-2 ${tab === 0 ? 'bg-muted' : ''}`} onClick={() => setTab(0)}>
+              Rendered
+            </button>
+            <button className={`px-4 py-2 ${tab === 1 ? 'bg-muted' : ''}`} onClick={() => setTab(1)}>
+              Source
+            </button>
+          </div>
+        )}
+        <div className='flex items-center'>
+          <button onClick={copyCode} className='p-2 rounded-full hover:bg-muted'>
+            <Copy className='w-5 h-5' />
+          </button>
+          <button onClick={downloadCode} className='p-2 rounded-full hover:bg-muted'>
+            <Download className='w-5 h-5' />
+          </button>
+          <span className='ml-2 text-sm'>
+            {fileNameWithExtension} | {language}
+          </span>
+        </div>
+      </div>
 
       {Object.keys(languageRenders).includes(language) && (
-        <TabPanel value={tab} index={0} className='code-block'>
-          <Box className='code-container'>{languageRenders[language.toString()](children, setLoading)}</Box>
+        <TabPanel value={tab} index={0}>
+          <div className='code-container'>{languageRenders[language.toString()](children, setLoading)}</div>
         </TabPanel>
       )}
 
-      <TabPanel value={tab} index={Object.keys(languageRenders).includes(language) ? 1 : 0} className='code-block'>
-        <Box className='code-container' ref={codeBlockRef}>
+      <TabPanel value={tab} index={Object.keys(languageRenders).includes(language) ? 1 : 0}>
+        <div className='code-container' ref={codeBlockRef}>
           {language.toLowerCase() in fileExtensions ? (
             <SyntaxHighlighter
               {...props}
-              // eslint-disable-next-line react/no-children-prop
-              children={children}
               language={language.toLowerCase()}
-              PreTag='div'
-              style={theme.palette.mode === 'dark' ? a11yDark : a11yLight}
+              style={getCookie('theme')?.includes('dark') ? a11yDark : a11yLight}
               showLineNumbers
               wrapLongLines
-            />
+            >
+              {children}
+            </SyntaxHighlighter>
           ) : (
-            <code className={'code-block'} {...props}>
+            <code className='code-block' {...props}>
               {children}
             </code>
           )}
-        </Box>
+        </div>
       </TabPanel>
-    </Box>
+    </div>
   ) : (
-    <Typography
-      component='span'
-      sx={{
-        backgroundColor: theme.palette.divider,
-        borderRadius: '0.5rem',
-        padding: '0.1rem 0.25rem',
-        fontFamily: 'monospace',
-      }}
-    >
-      {children}
-    </Typography>
+    <span className='bg-muted rounded-md px-1 py-0.5 font-mono'>{children}</span>
   );
 }

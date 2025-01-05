@@ -1,34 +1,37 @@
-import { Select, MenuItem, InputLabel, FormControl, Box } from '@mui/material';
+'use client';
 
 import { useSearchParams } from 'next/navigation';
 import { useContext } from 'react';
-import useSWR from 'swr';
-import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { InteractiveConfigContext } from '../InteractiveConfigContext';
+import { usePromptCategories } from '../hooks';
 
-export default function PromptSelector({
+export default function PromptCategorySelector({
   categoryMutate,
   category,
 }: {
-  categoryMutate: (e: string) => void;
+  categoryMutate: (value: string) => void;
   category: string;
 }) {
   const context = useContext(InteractiveConfigContext);
   const searchParams = useSearchParams();
-  const { data: categoryData } = useSWR('/prompts/categories', async () => await context.agixt.getPromptCategories());
+  const { data: categoryData } = usePromptCategories();
 
   return (
-    <Box display='grid' gridTemplateColumns='1fr 1fr' gap='1rem'>
-      <FormControl fullWidth sx={{ gridColumn: '1 / span 1' }}>
-        <InputLabel id='prompt-category-label'>Select a Prompt Category</InputLabel>
-        <Select labelId='prompt-category-label' value={category} onChange={(e) => categoryMutate(e.target.value)}>
+    <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+      <Select value={category} onValueChange={categoryMutate}>
+        <SelectTrigger className='w-full'>
+          <SelectValue placeholder='Select a Prompt Category' />
+        </SelectTrigger>
+        <SelectContent>
           {categoryData &&
             (categoryData as string[]).map((category) => (
-              <MenuItem key={category} value={category}>
+              <SelectItem key={category} value={category}>
                 {category}
-              </MenuItem>
+              </SelectItem>
             ))}
-        </Select>
-      </FormControl>
-    </Box>
+        </SelectContent>
+      </Select>
+    </div>
   );
 }
