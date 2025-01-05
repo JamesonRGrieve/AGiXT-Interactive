@@ -1,16 +1,15 @@
 'use client';
-import { useCallback, useContext, useEffect, useState } from 'react';
+
+import { useContext, useEffect, useState } from 'react';
+import { getCookie } from 'cookies-next';
 import useSWR, { mutate } from 'swr';
 import { UIProps } from '../InteractiveAGiXT';
-import { InteractiveConfigContext, Overrides } from '../../types/InteractiveConfigContext';
+import { InteractiveConfigContext, Overrides } from '../InteractiveConfigContext';
 import ChatLog from './ChatLog';
-import ChatBar from './ChatBar';
-import { RuleFolderRounded } from '@mui/icons-material';
-import { get } from 'http';
-import { getCookie } from 'cookies-next';
+import ChatBar from './ChatInput';
 
 export async function getAndFormatConversastion(state): Promise<any[]> {
-  const rawConversation = await state.agixt.getConversation(state.overrides.conversation, 100, 1);
+  const rawConversation = await state.agixt.getConversation('', state.overrides.conversation, 100, 1);
   //console.log('Raw conversation: ', rawConversation);
   return rawConversation.reduce((accumulator, currentMessage: { id: string; message: string }) => {
     const messageType = currentMessage.message.split(' ')[0];
@@ -54,10 +53,7 @@ export default function Chat({
   alternateBackground,
   enableFileUpload,
   enableVoiceInput,
-  enableMessageDeletion,
-  enableMessageEditing,
   showOverrideSwitchesCSV,
-  showRLHF,
 }: Overrides & UIProps): React.JSX.Element {
   // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
@@ -88,6 +84,7 @@ export default function Chat({
           },
         })), // Spread operator to include all file contents
       ],
+      ...(getCookie('agixt-company-id') ? { company_id: getCookie('agixt-company-id') } : {}),
       ...(getCookie('agixt-create-image') ? { create_image: getCookie('agixt-create-image') } : {}),
       ...(getCookie('agixt-tts') ? { tts: getCookie('agixt-tts') } : {}),
       ...(getCookie('agixt-websearch') ? { websearch: getCookie('agixt-websearch') } : {}),
@@ -105,22 +102,32 @@ export default function Chat({
     await new Promise((resolve) => setTimeout(resolve, 100));
     mutate(conversationSWRPath + state.overrides.conversation);
     const chatCompletion = await req;
+    console.log('RESPONSE: ', chatCompletion);
+    state.mutate((oldState) => ({
+      ...oldState,
+      overrides: {
+        ...oldState.overrides,
+        conversation: chatCompletion.id,
+      },
+    }));
     let response;
     if (state.overrides.conversation === '-') {
       response = await state.agixt.renameConversation(state.agent, state.overrides.conversation);
+      // response = await axios.put(
+      //   `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation`,
+      //   {
+      //     agent_name: state.agent,
+      //     conversation_name: state.overrides?.conversation,
+      //     new_name: '-',
+      //   },
+      //   {
+      //     headers: {
+      //       Authorization: getCookie('jwt'),
+      //     },
+      //   },
+      // );
       await mutate('/conversation');
       console.log(response);
-      if (!response.startsWith('Error')) {
-        state.mutate((oldState) => {
-          return {
-            ...oldState,
-            overrides: {
-              ...oldState.overrides,
-              conversation: response,
-            },
-          };
-        });
-      }
     }
     setLoading(false);
     mutate(conversationSWRPath + response);
@@ -149,9 +156,6 @@ export default function Chat({
         alternateBackground={alternateBackground}
         setLoading={setLoading}
         loading={loading}
-        showRLHF={showRLHF}
-        enableMessageDeletion={enableMessageDeletion}
-        enableMessageEditing={enableMessageEditing}
       />
       <ChatBar
         onSend={chat}

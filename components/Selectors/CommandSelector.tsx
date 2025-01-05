@@ -1,9 +1,7 @@
 'use client';
-import { Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 
-import { useContext } from 'react';
-import useSWR from 'swr';
-import { InteractiveConfigContext } from '../../types/InteractiveConfigContext';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useAgentCommands } from '../hooks';
 
 export default function CommandSelector({
   agentName,
@@ -12,33 +10,23 @@ export default function CommandSelector({
 }: {
   agentName: string;
   value: string;
-  mutate: (e: string) => void;
+  mutate: (value: string) => void;
 }) {
-  const context = useContext(InteractiveConfigContext);
-  const { data: commandData } = useSWR(
-    `/agent/commands?agent=${agentName}`,
-    async () => await context.agixt.getCommands(agentName),
-  );
+  const { data: commandData } = useAgentCommands(agentName);
 
   return (
-    <FormControl fullWidth>
-      <InputLabel id='command-label'>Select a Command</InputLabel>
-      <Select
-        labelId='command-label'
-        value={value}
-        onChange={(e) => {
-          mutate(e.target.value);
-        }}
-        disabled={false}
-      >
-        {commandData
-          ? Object.keys(commandData).map((c) => (
-              <MenuItem key={c} value={c}>
-                {c}
-              </MenuItem>
-            ))
-          : null}
-      </Select>
-    </FormControl>
+    <Select value={value} onValueChange={mutate} disabled={!commandData}>
+      <SelectTrigger className='w-full'>
+        <SelectValue placeholder='Select a Command' />
+      </SelectTrigger>
+      <SelectContent>
+        {commandData &&
+          Object.keys(commandData).map((c) => (
+            <SelectItem key={c} value={c}>
+              {c}
+            </SelectItem>
+          ))}
+      </SelectContent>
+    </Select>
   );
 }

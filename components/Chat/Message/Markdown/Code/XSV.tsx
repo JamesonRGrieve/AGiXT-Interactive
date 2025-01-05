@@ -1,48 +1,20 @@
-import { DataGrid, GridToolbar, gridClasses } from '@mui/x-data-grid';
-import {
-  Button,
-  Box,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  TextField,
-  TextFieldProps,
-  Typography,
-} from '@mui/material';
-import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
-import { alpha, styled } from '@mui/material/styles';
-import React, { useState, useEffect, ReactNode, useContext } from 'react';
-import { InteractiveConfigContext } from '../../../../../types/InteractiveConfigContext';
-const ODD_OPACITY = 1;
+'use client';
 
-const StripedDataGrid = styled(DataGrid)(({ theme }) => ({
-  [`& .${gridClasses.row}.even`]: {
-    backgroundColor: theme.palette.mode === 'dark' ? '#333' : '#696a6b',
-    '&:hover, &.Mui-hovered': {
-      backgroundColor: theme.palette.action.hover,
-      '@media (hover: none)': {
-        backgroundColor: 'transparent',
-      },
-    },
-    '&.Mui-selected': {
-      backgroundColor: alpha(theme.palette.primary.main, Math.min(1, ODD_OPACITY + theme.palette.action.selectedOpacity)),
-      '&:hover, &.Mui-hovered': {
-        backgroundColor: alpha(
-          theme.palette.primary.main,
-          Math.min(1, ODD_OPACITY + theme.palette.action.selectedOpacity + theme.palette.action.hoverOpacity),
-        ),
-        // Reset on touch devices, it doesn't add specificity
-        '@media (hover: none)': {
-          backgroundColor: alpha(
-            theme.palette.primary.main,
-            Math.min(1, ODD_OPACITY + theme.palette.action.selectedOpacity),
-          ),
-        },
-      },
-    },
-  },
-}));
+import React, { useState, useEffect, ReactNode, useContext } from 'react';
+import { InteractiveConfigContext } from '../../../../InteractiveConfigContext';
+import { LuLightbulb as LightBulbIcon } from 'react-icons/lu';
+
+interface Column {
+  field: string;
+  width: number;
+  flex: number;
+  headerName: string;
+}
+
+interface Row {
+  id: string | number;
+  [key: string]: string | number;
+}
 
 export const RendererXSV = ({
   xsvData,
@@ -55,12 +27,16 @@ export const RendererXSV = ({
 }): ReactNode => {
   const [open, setOpen] = useState(false);
   const [userMessage, setUserMessage] = useState('Surprise me!');
-  const [rows, setRows] = useState([]);
+  const [rows, setRows] = useState<Row[]>([]);
   const [error, setError] = useState('');
-  const [filteredRows, setFilteredRows] = useState([]);
-  const [filteredColumns, setFilteredColumns] = useState([]);
-  const [columns, setColumns] = useState([]);
-  // console.log('Rendering XSV', XSVData);
+  const [filteredRows, setFilteredRows] = useState<Row[]>([]);
+  const [filteredColumns, setFilteredColumns] = useState<Column[]>([]);
+  const [columns, setColumns] = useState<Column[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+
+  const context = useContext(InteractiveConfigContext);
+
   useEffect(() => {
     if (!xsvData) {
       setError('No data provided.');
@@ -71,15 +47,12 @@ export const RendererXSV = ({
           .map((cell) => cell.trim().replaceAll('"', ''))
           .filter((cell) => cell),
       );
-      console.log(separator);
-      console.log(rawData);
-      // console.log('rawData', rawData);
+
       if (
         !rawData.every((row) => row.length === rawData[0].length) ||
         !rawData[0] ||
         rawData.some((row) => [0, 1].includes(row.length))
       ) {
-        // TODO: This doesn't seem to work, it produces a blank placeholder instead of the raw code and an error in the data grid.
         setError('XSV data is not valid.');
       } else {
         setError('');
@@ -89,17 +62,10 @@ export const RendererXSV = ({
             field: header,
             width: Math.max(160, header.length * 10),
             flex: 1,
-            resizeable: true,
             headerName: header,
-            sx: {
-              '& .MuiDataGrid-cell': {
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-              },
-            },
           })),
         );
+
         setRows(
           rawData.slice(1).map((row, index) =>
             rawData[0][0].toLowerCase().includes('id')
@@ -109,21 +75,23 @@ export const RendererXSV = ({
                 }
               : {
                   id: index,
-                  ...Object.fromEntries(row.map((cell, index) => [rawData[0][index.toString()], cell])),
+                  ...Object.fromEntries(row.map((cell, index) => [rawData[0][index], cell])),
                 },
           ),
         );
       }
     }
-  }, [xsvData]);
-  const context = useContext(InteractiveConfigContext);
+  }, [xsvData, separator]);
+
   useEffect(() => {
     setFilteredRows(rows);
   }, [rows]);
+
   useEffect(() => {
     setFilteredColumns(columns);
   }, [columns]);
-  const getInsights = async (userMessage): Promise<void> => {
+
+  const getInsights = async (userMessage: string): Promise<void> => {
     setLoading(true);
     const stringifiedColumns = filteredColumns.map((header) => header.field);
     const stringifiedRows = filteredRows.map((row) =>
@@ -141,116 +109,133 @@ export const RendererXSV = ({
     });
     setLoading(false);
   };
-  const gridChange = (state): void => {
-    setFilteredRows(
-      rows.filter((row) =>
-        Object.keys(state.filter.filteredRowsLookup)
-          .filter((key) => state.filter.filteredRowsLookup[key.toString()])
-          .includes(row.id),
-      ),
-    );
-    setFilteredColumns(
-      columns.filter(
-        (column) =>
-          !Object.keys(state.columns.columnVisibilityModel)
-            .filter((key) => !state.columns.columnVisibilityModel[key.toString()])
-            .includes(column.field),
-      ),
-    );
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage);
   };
+
+  const handlePageSizeChange = (newPageSize: number) => {
+    setPageSize(newPageSize);
+    setCurrentPage(1);
+  };
+
   return rows.length > 0 ? (
-    <Box display='flex' flexDirection='column' gap='1rem'>
+    <div className='flex flex-col gap-4'>
       {error ? (
-        <Typography color='error'>{error}</Typography>
+        <p className='text-red-500'>{error}</p>
       ) : (
         <>
-          <StripedDataGrid
-            density='compact'
-            rows={rows}
-            columns={columns}
-            components={{ Toolbar: GridToolbar }}
-            pageSizeOptions={[5, 10, 20]}
-            initialState={{
-              pagination: {
-                paginationModel: {
-                  pageSize: 5,
-                },
-              },
-            }}
-            getRowClassName={(params) => (params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd')}
-            onStateChange={gridChange}
-          />
+          <div className='overflow-x-auto'>
+            <table className='min-w-full divide-y divide-gray-200'>
+              <thead className='bg-gray-50'>
+                <tr>
+                  {filteredColumns.map((column) => (
+                    <th
+                      key={column.field}
+                      scope='col'
+                      className='px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider'
+                    >
+                      {column.headerName}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className='bg-white divide-y divide-gray-200'>
+                {filteredRows.slice((currentPage - 1) * pageSize, currentPage * pageSize).map((row, rowIndex) => (
+                  <tr key={row.id} className={rowIndex % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                    {filteredColumns.map((column) => (
+                      <td key={`${row.id}-${column.field}`} className='px-6 py-4 whitespace-nowrap'>
+                        {row[column.field]}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className='flex justify-between items-center'>
+            <div>
+              <select
+                className='border rounded px-2 py-1'
+                value={pageSize}
+                onChange={(e) => handlePageSizeChange(Number(e.target.value))}
+              >
+                {[5, 10, 20].map((size) => (
+                  <option key={size} value={size}>
+                    Show {size}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <button
+                className='px-2 py-1 border rounded mr-2'
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </button>
+              <span>
+                Page {currentPage} of {Math.ceil(filteredRows.length / pageSize)}
+              </span>
+              <button
+                className='px-2 py-1 border rounded ml-2'
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === Math.ceil(filteredRows.length / pageSize)}
+              >
+                Next
+              </button>
+            </div>
+          </div>
           {setLoading && (
-            <>
-              <Box
-                sx={{
-                  display: 'flex',
-                }}
+            <div className='mt-4'>
+              <button
+                className='flex items-center px-4 py-2 border border-blue-500 text-blue-500 rounded hover:bg-blue-100'
+                onClick={() => setOpen(true)}
               >
-                <Button
-                  color='info'
-                  variant='outlined'
+                <LightBulbIcon className='w-5 h-5 mr-2' />
+                Get Insights
+              </button>
+            </div>
+          )}
+          {open && (
+            <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center'>
+              <div className='bg-white p-6 rounded-lg'>
+                <h2 className='text-xl font-bold mb-4'>Get Insights</h2>
+                <input
+                  className='w-full p-2 border rounded mb-4'
+                  value={userMessage}
+                  onChange={(e) => setUserMessage(e.target.value)}
                   onClick={() => {
-                    setOpen(true);
+                    if (userMessage === 'Surprise me!') {
+                      setUserMessage('');
+                    }
                   }}
-                >
-                  <TipsAndUpdatesOutlinedIcon />
-                  Get Insights
-                </Button>
-              </Box>
-              <Dialog
-                open={open}
-                onClose={() => {
-                  setOpen(false);
-                }}
-              >
-                <DialogTitle>Get Insights</DialogTitle>
-                <DialogContent>
-                  <TextField
-                    margin='dense'
-                    id='name'
-                    label='What would you like insights on?'
-                    fullWidth
-                    value={userMessage}
-                    onChange={(event) => {
-                      setUserMessage(event.target.value);
-                    }}
-                    onClick={(e) => {
-                      if ((e.target as TextFieldProps).value === 'Surprise me!') {
-                        setUserMessage('');
-                      }
-                    }}
-                    variant='outlined'
-                    color='info'
-                  />
-                </DialogContent>
-                <DialogActions>
-                  <Button
-                    color='error'
-                    onClick={() => {
-                      setOpen(false);
-                    }}
-                  >
+                  placeholder='What would you like insights on?'
+                />
+                <div className='flex justify-end'>
+                  <button className='px-4 py-2 text-red-500 mr-2' onClick={() => setOpen(false)}>
                     Cancel
-                  </Button>
-                  <Button
-                    color='info'
+                  </button>
+                  <button
+                    className='px-4 py-2 bg-blue-500 text-white rounded'
                     onClick={() => {
                       getInsights(userMessage);
                       setOpen(false);
                     }}
                   >
                     Get Insights
-                  </Button>
-                </DialogActions>
-              </Dialog>
-            </>
+                  </button>
+                </div>
+              </div>
+            </div>
           )}
         </>
       )}
-    </Box>
+    </div>
   ) : (
-    xsvData
+    <>{xsvData}</>
   );
 };
+
 export default RendererXSV;
