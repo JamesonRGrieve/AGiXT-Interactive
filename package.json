@@ -4,17 +4,15 @@
   "scripts": {
     "dev": "rm -rf ./.next && next dev -p 3437",
     "build": "rm -rf ./.next && next build",
+    "clean-build": "rm -rf ./.next & rm -rf ./node_nodules && npm install && npm run build && npm start",
     "compile": "tsc --jsx react-jsx --project tsconfig.compile.json && shx mkdir -p ./dist/style && npx postcss ./app/globals.css -o ./dist/style/globals.css",
     "start": "next start -p 3437",
+    "docker": "docker-compose down && docker-compose pull && docker-compose build && docker-compose up -d",
     "lint": "next lint",
     "lint-fix": "next lint --fix",
     "prettier": "prettier .",
     "prettier-fix": "prettier --write .",
-    "fix": "prettier --write . && next lint --fix",
-    "storybook": "storybook dev -p 6009",
-    "storybook-build": "storybook build",
-    "test-storybook": "test-storybook --url http://localhost:6009",
-    "storybook-deploy": "storybook build && gh-pages -d storybook-static"
+    "fix": "prettier --write . && next lint --fix"
   },
   "repository": {
     "type": "git",
