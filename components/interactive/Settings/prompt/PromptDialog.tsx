@@ -38,7 +38,7 @@ export default function NewPromptDialog({ open, setOpen }: { open: boolean; setO
       }
       await context.agixt.addPrompt(newPromptName, fileContent, promptCategory);
       setOpen(false);
-      router.push(`/prompt?category=${promptCategory}&prompt=${newPromptName}`);
+      router.push(`/settings/prompts?category=${promptCategory}&prompt=${newPromptName}`);
     }
   };
 
