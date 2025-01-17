@@ -27,7 +27,7 @@ const useBasicConfig = () => ({
   env: {
     NEXT_PUBLIC_APP_NAME: process.env.APP_NAME || 'AGiXT',
     NEXT_PUBLIC_APP_DESCRIPTION: process.env.APP_DESCRIPTION || 'An AGiXT application.',
-    APP_URI: (APP_URI = process.env.APP_URI || 'http://localhost:3051'),
+    APP_URI: (APP_URI = process.env.APP_URI || 'http://localhost:3437'),
     NEXT_PUBLIC_APP_URI: APP_URI,
     NEXT_PUBLIC_THEME_DEFAULT_MODE: process.env.DEFAULT_THEME_MODE || 'dark',
     NEXT_PUBLIC_TZ: process.env.TZ || 'America/New_York', // Server timezone

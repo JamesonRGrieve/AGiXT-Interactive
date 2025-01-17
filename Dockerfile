@@ -3,5 +3,5 @@ WORKDIR /app
 RUN apk add --no-cache libc6-compat git curl
 COPY . .
 RUN chmod +x /app/launch.sh
-EXPOSE 3051
+EXPOSE 3437
 ENTRYPOINT ["/app/launch.sh"]
