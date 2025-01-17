@@ -16,6 +16,14 @@ jobs:
     steps:
       - name: Verify Required Secrets
         run: |
+          # Debug info (safe to display)
+          echo "Current repository: ${{ github.repository }}"
+          echo "GitHub actor: ${{ github.actor }}"
+          # Verify secret format
+          if [[ ! "${{ secrets.SECRET_TARGET }}" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]; then
+            echo "::error::SECRET_TARGET must be in the format 'owner/repo'"
+            exit 1
+          fi
           if [ -z "${{ secrets.SECRET_TARGET }}" ]; then
             echo "::error::SECRET_TARGET is not set"
             exit 1
@@ -44,7 +52,7 @@ jobs:
         run: |
           # Add target remote using PAT
           echo "Adding target remote..."
-          git remote add target https://x-access-token:${{ secrets.SECRET_PAT }}@github.com/${{ secrets.SECRET_TARGET }}.git
+          git remote add target "https://${{ secrets.SECRET_PAT }}@github.com/${{ secrets.SECRET_TARGET }}.git"
 
           # Fetch target repository
           echo "Fetching target repository..."
