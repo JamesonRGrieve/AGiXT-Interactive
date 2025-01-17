@@ -1,39 +1,59 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { InteractiveConfigContext } from '../InteractiveConfigContext';
 import { usePromptCategories } from '../hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function PromptCategorySelector({
-  categoryMutate,
-  category,
+  value,
+  onChange,
 }: {
-  categoryMutate: (value: string) => void;
-  category: string;
-}) {
-  const context = useContext(InteractiveConfigContext);
+  value?: string;
+  onChange?: (value: string) => void;
+}): React.JSX.Element | null {
   const searchParams = useSearchParams();
-  const { data: categoryData } = usePromptCategories();
+  const router = useRouter();
+  const { data: categoryData = [] } = usePromptCategories();
 
+  // Don't render if there are 1 or fewer categories
+  if (categoryData.length <= 1) {
+    return null;
+  }
+  console.log('Category Data: ', categoryData);
   return (
-    categoryData.length > 1 && (
-      <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
-        <Select value={category} onValueChange={categoryMutate}>
-          <SelectTrigger className='w-full'>
-            <SelectValue placeholder='Select a Prompt Category' />
-          </SelectTrigger>
-          <SelectContent>
-            {categoryData &&
-              (categoryData as string[]).map((category) => (
-                <SelectItem key={category} value={category}>
-                  {category}
-                </SelectItem>
-              ))}
-          </SelectContent>
-        </Select>
-      </div>
-    )
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className='w-full'>
+            <Select
+              disabled={categoryData.length <= 1}
+              value={value || searchParams.get('category') || 'Default'}
+              onValueChange={
+                onChange
+                  ? (value) => onChange(value)
+                  : (value) => router.push(`/settings/prompts?category=${value}&prompt=${searchParams.get('prompt') || ''}`)
+              }
+            >
+              <SelectTrigger className='w-full text-xs'>
+                <SelectValue placeholder='Select a Category' />
+              </SelectTrigger>
+              <SelectContent>
+                {categoryData.map((category) => (
+                  <SelectItem key={category} value={category}>
+                    {category}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Select a Prompt Category</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
