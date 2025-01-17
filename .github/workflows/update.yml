@@ -24,30 +24,33 @@ jobs:
           TARGET_REPO: ${{ secrets.SECRET_TARGET }}
           GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
         run: |
-          # Debug check (safely)
-          echo "Target repo format analysis:"
-          echo "Length of TARGET_REPO: ${#TARGET_REPO}"
-          echo "Number of slashes: $(echo $TARGET_REPO | tr -cd '/' | wc -c)"
-          echo "Contains http: $(echo $TARGET_REPO | grep -c 'http')"
-          echo "Contains github.com: $(echo $TARGET_REPO | grep -c 'github.com')"
-          echo "Pattern check: $(echo $TARGET_REPO | sed 's/[^a-zA-Z0-9\/_-]/#/g')"
-          
           # Extract org/repo if full URL was provided
           if [[ "$TARGET_REPO" == *"github.com"* ]]; then
-            TARGET_REPO=$(echo "$TARGET_REPO" | sed 's/.*github.com[\/:]\(.*\)\.git/\1/' | sed 's/\.git$//')
-            echo "Extracted org/repo format: $(echo $TARGET_REPO | sed 's/[^a-zA-Z0-9\/_-]/#/g')"
+            TARGET_REPO=$(echo "$TARGET_REPO" | sed 's/.*github.com[\/:]\(.*\)\.git*/\1/' | sed 's/\.git$//')
           fi
           
-          # Verify format
-          if [[ ! "$TARGET_REPO" =~ ^[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+$ ]]; then
-            echo "Error: TARGET_REPO format is incorrect. Should be 'org/repo'"
+          # Remove any trailing .git if present
+          TARGET_REPO=$(echo "$TARGET_REPO" | sed 's/\.git$//')
+          
+          echo "Using repository: ${TARGET_REPO}"
+          
+          # Test repository access
+          echo "Testing repository access..."
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${GITHUB_TOKEN}" \
+            "https://api.github.com/repos/${TARGET_REPO}")
+          
+          if [ "$HTTP_CODE" == "404" ]; then
+            echo "Error: Cannot access repository ${TARGET_REPO}"
+            echo "Please verify the PAT has 'repo' access to this repository"
+            exit 1
+          elif [ "$HTTP_CODE" != "200" ]; then
+            echo "Error: Unexpected response from GitHub API (HTTP ${HTTP_CODE})"
             exit 1
           fi
           
           # Add the target repository as a remote
           echo "Adding remote..."
           REMOTE_URL="https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git"
-          
           git remote add target "$REMOTE_URL"
           
           # Print remotes (safely)
