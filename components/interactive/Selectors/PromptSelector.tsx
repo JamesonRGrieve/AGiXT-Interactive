@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useContext, useEffect } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { InteractiveConfigContext } from '../InteractiveConfigContext';
 import { usePrompts } from '../hooks';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 export default function PromptSelector({ value, onChange }): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);

@@ -1,7 +1,6 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { deleteCookie } from 'cookies-next';
 import { Button } from '@/components/ui/button';
 
 export type ErrorPageProps = {

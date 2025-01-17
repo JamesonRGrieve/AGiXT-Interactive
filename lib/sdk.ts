@@ -1,4 +1,5 @@
 import axios, { AxiosRequestConfig } from 'axios';
+
 type Conversation = {
   id: string;
   name: string;
@@ -192,7 +193,7 @@ export default class AGiXTSDK {
     }
   }
 
-  async getConversations(objects: boolean = false, agentName?: string) {
+  async getConversations(objects = false, agentName?: string) {
     const url = objects
       ? `${this.baseUri}/v1/conversations`
       : agentName
@@ -280,7 +281,7 @@ export default class AGiXTSDK {
     }
   }
 
-  async renameConversation(agentName: string, conversationName: string, newName: string = '-') {
+  async renameConversation(agentName: string, conversationName: string, newName = '-') {
     try {
       const response = await axios.put<{ conversation_name: string }>(
         `${this.baseUri}/api/conversation`,
@@ -397,7 +398,7 @@ export default class AGiXTSDK {
     }
   }
 
-  async wipeAgentMemories(agentName: string, collectionNumber: string = '0') {
+  async wipeAgentMemories(agentName: string, collectionNumber = '0') {
     try {
       const response = await axios.delete(`${this.baseUri}/api/agent/${agentName}/memory/${collectionNumber}`, {
         headers: this.headers,
@@ -838,7 +839,7 @@ export default class AGiXTSDK {
     }
   }
 
-  async learnText(agentName: string, userInput: string, text: string, collectionNumber: string = '0') {
+  async learnText(agentName: string, userInput: string, text: string, collectionNumber = '0') {
     try {
       const response = await axios.post(
         `${this.baseUri}/api/agent/${agentName}/learn/text`,
@@ -855,7 +856,7 @@ export default class AGiXTSDK {
     }
   }
 
-  async learnUrl(agentName: string, url: string, collectionNumber: string = '0') {
+  async learnUrl(agentName: string, url: string, collectionNumber = '0') {
     try {
       const response = await axios.post(
         `${this.baseUri}/api/agent/${agentName}/learn/url`,
@@ -868,7 +869,7 @@ export default class AGiXTSDK {
     }
   }
 
-  async learnFile(agentName: string, fileName: string, fileContent: string, collectionNumber: string = '0') {
+  async learnFile(agentName: string, fileName: string, fileContent: string, collectionNumber = '0') {
     try {
       const response = await axios.post(
         `${this.baseUri}/api/agent/${agentName}/learn/file`,
@@ -947,13 +948,7 @@ export default class AGiXTSDK {
     }
   }
 
-  async getAgentMemories(
-    agentName: string,
-    userInput: string,
-    limit = 5,
-    minRelevanceScore = 0.5,
-    collectionNumber: string = '0',
-  ) {
+  async getAgentMemories(agentName: string, userInput: string, limit = 5, minRelevanceScore = 0.5, collectionNumber = '0') {
     try {
       const response = await axios.post(
         `${this.baseUri}/api/agent/${agentName}/memory/${collectionNumber}/query`,
@@ -970,7 +965,7 @@ export default class AGiXTSDK {
     }
   }
 
-  async deleteAgentMemory(agentName: string, memoryId: string, collectionNumber: string = '0') {
+  async deleteAgentMemory(agentName: string, memoryId: string, collectionNumber = '0') {
     try {
       const response = await axios.delete(`${this.baseUri}/api/agent/${agentName}/memory/${collectionNumber}/${memoryId}`, {
         headers: this.headers,
@@ -1037,23 +1032,11 @@ export default class AGiXTSDK {
     }
   }
 
-  async positiveFeedback(
-    agentName: string,
-    message: string,
-    userInput: string,
-    feedback: string,
-    conversationName: string = '',
-  ) {
+  async positiveFeedback(agentName: string, message: string, userInput: string, feedback: string, conversationName = '') {
     return this.provideFeedback(agentName, message, userInput, feedback, true, conversationName);
   }
 
-  async negativeFeedback(
-    agentName: string,
-    message: string,
-    userInput: string,
-    feedback: string,
-    conversationName: string = '',
-  ) {
+  async negativeFeedback(agentName: string, message: string, userInput: string, feedback: string, conversationName = '') {
     return this.provideFeedback(agentName, message, userInput, feedback, false, conversationName);
   }
 
@@ -1083,7 +1066,7 @@ export default class AGiXTSDK {
     }
   }
 
-  async getBrowsedLinks(agentName: string, collectionNumber: string = '0') {
+  async getBrowsedLinks(agentName: string, collectionNumber = '0') {
     try {
       const response = await axios.get<{ links: string[] }>(
         `${this.baseUri}/api/agent/${agentName}/browsed_links/${collectionNumber}`,
@@ -1095,7 +1078,7 @@ export default class AGiXTSDK {
     }
   }
 
-  async deleteBrowsedLink(agentName: string, link: string, collectionNumber: string = '0') {
+  async deleteBrowsedLink(agentName: string, link: string, collectionNumber = '0') {
     try {
       const response = await axios.delete<{ message: string }>(`${this.baseUri}/api/agent/${agentName}/browsed_links`, {
         headers: this.headers,
@@ -1237,12 +1220,12 @@ export default class AGiXTSDK {
   async planTask(
     agentName: string,
     userInput: string,
-    websearch: boolean = false,
-    websearchDepth: number = 3,
-    conversationName: string = '',
-    logUserInput: boolean = true,
-    logOutput: boolean = true,
-    enableNewCommand: boolean = true,
+    websearch = false,
+    websearchDepth = 3,
+    conversationName = '',
+    logUserInput = true,
+    logOutput = true,
+    enableNewCommand = true,
   ) {
     try {
       const response = await axios.post<{ response: string }>(

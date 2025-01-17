@@ -1,5 +1,3 @@
-import { ReactNode, useMemo } from 'react';
-
 export type MarkdownBlockProps = {
   children: string;
 };
@@ -33,8 +31,7 @@ function splitUnEscaped(text: string, delimiter: string) {
     .map((section) => section.replaceAll('´', '\\' + delimiter));
 }
 export default function textToMarkdown(text: string) {
-  const splitCodeBlocks = reprocess([{ content: text }], (content: string) => splitUnEscaped(content, '```'), 'codeblock');
   // Only split code on code blocks (not inline code)
   // const splitCode = reprocess(splitCodeBlocks, (content: string) => splitUnEscaped(content, '`'), 'code');
-  return splitCodeBlocks;
+  return reprocess([{ content: text }], (content: string) => splitUnEscaped(content, '```'), 'codeblock');
 }

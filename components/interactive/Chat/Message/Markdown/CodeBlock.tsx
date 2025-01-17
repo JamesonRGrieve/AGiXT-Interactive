@@ -4,15 +4,15 @@ import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 import { LuCopy as Copy, LuDownload as Download } from 'react-icons/lu';
 
-import MarkdownBlock from '../MarkdownBlock';
 import 'katex/dist/katex.min.css';
-import Mermaid from './Code/Mermaid';
 import Latex from 'react-latex-next';
-import TabPanel from '@/components/jrg/TabPanel';
 import { getCookie } from 'cookies-next';
+import MarkdownBlock from '../MarkdownBlock';
 import { DataTable } from '../data-table';
 import { createColumns } from '../data-table/data-table-columns';
+import Mermaid from './Code/Mermaid';
 import { parseXSVData } from './Code/ParseXSVData';
+import TabPanel from '@/components/jrg/TabPanel';
 
 const fileExtensions = {
   '': 'txt',

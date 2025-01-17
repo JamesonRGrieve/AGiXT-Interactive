@@ -1,33 +1,20 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import { getCookie } from 'cookies-next';
 import axios from 'axios';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { useActiveCompany, useAgent, useProviders } from '../hooks';
+import Extension from './extension';
+import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { LuUnlink as Unlink } from 'react-icons/lu';
 import { ConnectedServices } from '@/components/jrg/auth/management/ConnectedServices';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
-import { Wrench, Plus, MinusCircle } from 'lucide-react';
+
 import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
-import { cn } from '@/lib/utils';
-import { useActiveCompany, useAgent, useProviders } from '../hooks';
-import Extension from './extension';
 
 // Types remain the same
 type Command = {
@@ -303,7 +290,7 @@ export function Extensions() {
               <Extension
                 key={extension.extension_name}
                 extension={extension}
-                connected={true}
+                connected
                 onDisconnect={handleDisconnect}
                 settings={settings}
                 onConnect={handleSaveSettings}

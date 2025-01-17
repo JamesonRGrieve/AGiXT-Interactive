@@ -1,7 +1,7 @@
 'use client';
-import AGiXTSDK from '@/lib/sdk';
 import OpenAI from 'openai';
 import { Context, createContext, useContext } from 'react';
+import AGiXTSDK from '@/lib/sdk';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ConfigDefault = require('./InteractiveConfigDefault');

@@ -1,9 +1,9 @@
 'use client';
 import React, { useState, ReactNode, useEffect } from 'react';
-import AGiXTSDK from '@/lib/sdk';
 import OpenAI from 'openai';
-import { InteractiveConfigContext, InteractiveConfigDefault, InteractiveConfig } from './InteractiveConfigContext';
 import { getCookie } from 'cookies-next';
+import { InteractiveConfigContext, InteractiveConfigDefault, InteractiveConfig } from './InteractiveConfigContext';
+import AGiXTSDK from '@/lib/sdk';
 
 export default function InteractiveConfigContextWrapper({
   initialState = InteractiveConfigDefault,

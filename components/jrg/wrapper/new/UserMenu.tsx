@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
+import { MoonIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -22,10 +23,7 @@ import { cn } from '@/lib/utils';
 import { useTheme } from '@/components/jrg/theme/useTheme';
 import useUser from '@/auth/hooks/useUser';
 import { getGravatarUrl } from '@/lib/gravatar';
-import { MoonIcon } from 'lucide-react';
-import { useCompanies, useActiveCompany } from '@/components/interactive/hooks';
-import { getCookie, setCookie } from 'cookies-next';
-import { mutate } from 'swr';
+import { useActiveCompany } from '@/components/interactive/hooks';
 
 type MenuItem = {
   name: string;

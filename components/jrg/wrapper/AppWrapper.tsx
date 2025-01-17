@@ -2,11 +2,11 @@
 
 import React, { ReactNode, useState, useEffect } from 'react';
 import { LuPalette as Palette } from 'react-icons/lu';
+import SwitchDark from '../theme/SwitchDark';
+import SwitchColorblind from '../theme/SwitchColorblind';
 import HeaderFooter, { HeaderFooterProps } from './HeaderFooter';
 import PopoutDrawer from './Drawer';
 import PopoutButton from './Button';
-import SwitchDark from '../theme/SwitchDark';
-import SwitchColorblind from '../theme/SwitchColorblind';
 
 type Menu =
   | {

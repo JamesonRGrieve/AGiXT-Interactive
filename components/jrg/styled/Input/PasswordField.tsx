@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import TextField from './TextField';
 
 interface PasswordFieldProps {

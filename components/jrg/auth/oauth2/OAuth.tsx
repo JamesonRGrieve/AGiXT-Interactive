@@ -1,14 +1,14 @@
 'use client';
 
 import React, { ReactNode, useCallback, useMemo } from 'react';
-import deepMerge from '@/lib/objects';
 import OAuth2Login from 'react-simple-oauth2-login';
 
 import { useRouter } from 'next/navigation';
-import { deleteCookie, getCookie } from 'cookies-next';
 
 import providers from './OAuthProviders';
+import deepMerge from '@/lib/objects';
 import { Button } from '@/components/ui/button';
+
 export type OAuthProps = {
   overrides?: any;
 };

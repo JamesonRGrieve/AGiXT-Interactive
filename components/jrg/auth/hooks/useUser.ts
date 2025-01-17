@@ -3,7 +3,6 @@ import axios from 'axios';
 import { getCookie, setCookie } from 'cookies-next';
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 // Create a custom SWR hook for a specific endpoint
 export default function useUser() {

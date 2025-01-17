@@ -5,8 +5,6 @@ import { getCookie } from 'cookies-next';
 import { usePathname } from 'next/navigation';
 import { ViewVerticalIcon } from '@radix-ui/react-icons';
 
-import { NavMain } from '@/components/layout/nav-main';
-import { NavUser } from '@/components/layout/nav-user';
 import {
   Sidebar,
   SidebarContent,
@@ -16,8 +14,6 @@ import {
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { AgentSwitcher } from './agent-switcher';
-import { ChatHistory } from './chat-history';
 
 export function ContextSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [hasStarted, setHasStarted] = useState(false);
@@ -36,7 +32,7 @@ export function ContextSidebar({ ...props }: React.ComponentProps<typeof Sidebar
       <SidebarHeader>
         <h3>Context Sidebar</h3>
       </SidebarHeader>
-      <SidebarContent></SidebarContent>
+      <SidebarContent />
       <SidebarFooter>
         <SidebarMenuButton tooltip='Hide Sidebar' side='right' onClick={toggleSidebar}>
           <ViewVerticalIcon />

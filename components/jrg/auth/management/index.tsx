@@ -4,15 +4,12 @@ import { getCookie } from 'cookies-next';
 import { ReactNode, useState } from 'react';
 import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
-import { DynamicFormFieldValueTypes } from '@/components/jrg/DynamicForm';
 import { useAuthentication } from '../Router';
+import { Profile } from './Profile';
+import { DynamicFormFieldValueTypes } from '@/components/jrg/DynamicForm';
 import { validateURI } from '@/lib/validation';
 import { useAssertion } from '@/lib/assert';
 import { Button } from '@/components/ui/button';
-
-import { cn } from '@/lib/utils';
-import { useActiveCompany } from '@/components/interactive/hooks';
-import { Profile } from './Profile';
 
 export type ManageProps = {
   userDataSWRKey?: string;

@@ -2,8 +2,8 @@
 
 import React from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useChains } from '../hooks';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function ChainSelector({ value, mutate }: { value?: string; mutate?: (value: string) => void }) {
   const router = useRouter();

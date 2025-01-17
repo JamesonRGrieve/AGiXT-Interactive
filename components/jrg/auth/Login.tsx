@@ -6,15 +6,15 @@ import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import QRCode from 'react-qr-code';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { LuCheck as Check, LuCopy as Copy } from 'react-icons/lu';
 import { useAuthentication } from './Router';
+import AuthCard from './AuthCard';
+import { AuthenticatorHelp as MissingAuthenticator } from './mfa/MissingAuthenticator';
 import PasswordField from '@/components/jrg/styled/Input/PasswordField';
 import { validateURI } from '@/lib/validation';
 import { useAssertion } from '@/lib/assert';
 import { Button } from '@/components/ui/button';
 import TextField from '@/components/jrg/styled/Input/TextField';
-import { LuCheck as Check, LuCopy as Copy } from 'react-icons/lu';
-import AuthCard from './AuthCard';
-import { AuthenticatorHelp as MissingAuthenticator } from './mfa/MissingAuthenticator';
 
 export type LoginProps = {
   userLoginEndpoint?: string;

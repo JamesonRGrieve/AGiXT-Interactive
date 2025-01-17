@@ -1,12 +1,12 @@
 import useSWR from 'swr';
 import { useContext } from 'react';
-import { InteractiveConfigContext } from './InteractiveConfigContext';
-import { getAndFormatConversastion } from './Chat/Chat';
 import { getCookie } from 'cookies-next';
 import axios from 'axios';
 import { GraphQLClient } from 'graphql-request';
-import { Agent, AgentSchema } from './types';
 import { z } from 'zod';
+import { Agent, AgentSchema } from './types';
+import { getAndFormatConversastion } from './Chat/Chat';
+import { InteractiveConfigContext } from './InteractiveConfigContext';
 import { createGraphQLQuery } from '@/lib/graphql';
 
 const DataSchema = z.object({
@@ -182,14 +182,9 @@ export type Conversation = {
 };
 export function useProvider(provider: string) {
   const state = useContext(InteractiveConfigContext);
-  const result = useSWR(
-    `/provider/${provider}`,
-    async () => (provider ? await state.agixt.getProviderSettings(provider) : {}),
-    {
-      fallbackData: {},
-    },
-  );
-  return result;
+  return useSWR(`/provider/${provider}`, async () => (provider ? await state.agixt.getProviderSettings(provider) : {}), {
+    fallbackData: {},
+  });
 }
 type Conversations = Record<string, Conversation>;
 // Hook for getting conversations
@@ -257,8 +252,7 @@ export function useCompanies() {
   return useSWR<string[]>(
     `/companies`,
     async () => {
-      const companies = await state.agixt.getCompanies();
-      return companies;
+      return await state.agixt.getCompanies();
     },
     {
       fallbackData: [],
@@ -270,7 +264,7 @@ export function useInvitations(company_id?: string) {
   const state = useContext(InteractiveConfigContext);
   return useSWR<string[]>(
     company_id ? `/invitations/${company_id}` : '/invitations',
-    async () => (await state.agixt.getInvitations(company_id)) as any[],
+    async () => await state.agixt.getInvitations(company_id),
     {
       fallbackData: [],
     },

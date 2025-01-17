@@ -1,7 +1,7 @@
 import React from 'react';
 import md5 from 'md5';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { LuUserRound } from 'react-icons/lu';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // This component should be deleted
 const Gravatar = ({ email, size = 40, ...props }: any) => {

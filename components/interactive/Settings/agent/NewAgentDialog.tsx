@@ -2,13 +2,13 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useProviders } from '../../hooks';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { useProviders } from '../../hooks';
 
 export default function NewAgentDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
   const router = useRouter();

@@ -2,15 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
+import { LuPlus, LuCheck, LuDownload, LuPencil, LuTrash2 } from 'react-icons/lu';
+import { mutate } from 'swr';
+import { getCookie, setCookie } from 'cookies-next';
+import axios from 'axios';
+import { useActiveCompany, useAgent } from '../../hooks';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { LuPlus, LuCheck, LuDownload, LuPencil, LuTrash2 } from 'react-icons/lu';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { mutate } from 'swr';
-import { useActiveCompany, useAgent } from '../../hooks';
-import { getCookie, setCookie } from 'cookies-next';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import axios from 'axios';
 
 export default function AgentPanel({ setShowCreateDialog }) {
   const [renaming, setRenaming] = useState(false);

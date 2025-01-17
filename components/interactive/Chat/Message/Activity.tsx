@@ -1,21 +1,20 @@
 'use client';
 
-import {
-  LuRefreshCw as AutorenewOutlined,
-  LuChevronDown as ExpandMore,
-  LuInfo as Info,
-  LuPencil as Pencil,
-} from 'react-icons/lu';
+import { LuRefreshCw as AutorenewOutlined, LuInfo as Info, LuPencil as Pencil } from 'react-icons/lu';
 import { FaRunning } from 'react-icons/fa';
 import { Ban as Error, CircleCheck, TriangleAlert } from 'lucide-react';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import formatDate from './formatDate';
 import { TfiThought } from 'react-icons/tfi';
 import { GiMirrorMirror } from 'react-icons/gi';
 
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
 import MarkdownBlock from './MarkdownBlock';
+import formatDate from './formatDate';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+
 function getTimeDifference(timestamp1, timestamp2) {
   // Convert timestamps to Date objects
   const date1 = new Date(timestamp1);
@@ -143,9 +142,6 @@ export type ActivityProps = {
   nextTimestamp: string;
   children?: any[];
 };
-import dayjs from 'dayjs';
-import timezone from 'dayjs/plugin/timezone';
-import utc from 'dayjs/plugin/utc';
 
 // Extend dayjs with plugins
 dayjs.extend(timezone);
@@ -189,7 +185,7 @@ export default function Activity({
                     severities[activityType].icon
                   )}
                   {activityType !== 'info' && <div>{getTimeDifference(timestamp, nextTimestamp || currentTime)}</div>}
-                  <div className={`mx-1 w-1 h-4 border-l-2`}></div>
+                  <div className={`mx-1 w-1 h-4 border-l-2`} />
                 </div>
 
                 <MarkdownBlock content={title /*+ (!nextTimestamp ? dots : '')*/} />
@@ -208,7 +204,7 @@ export default function Activity({
                 severities[activityType].icon
               )}
               {activityType !== 'info' && <div>{getTimeDifference(timestamp, nextTimestamp || currentTime)}</div>}
-              <div className={`mx-1 w-1 h-4 border-l-2`}></div>
+              <div className={`mx-1 w-1 h-4 border-l-2`} />
             </div>
 
             <MarkdownBlock content={title /* + (!nextTimestamp ? dots : '')*/} />

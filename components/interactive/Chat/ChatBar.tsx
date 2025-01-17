@@ -1,10 +1,12 @@
 'use client';
 
-import React, { ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import { CheckCircle as LuCheckCircle } from 'lucide-react';
 import { LuPaperclip, LuSend, LuArrowUp, LuLoader, LuTrash2 } from 'react-icons/lu';
 import { setCookie } from 'cookies-next';
 import { InteractiveConfigContext } from '../InteractiveConfigContext';
+import { OverrideSwitch } from './OverrideSwitch';
+import { VoiceRecorder } from './VoiceRecorder';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
@@ -22,8 +24,6 @@ import {
 import { DropZone } from '@/components/jrg/DropZone';
 import SwitchDark from '@/components/jrg/theme/SwitchDark';
 import SwitchColorblind from '@/components/jrg/theme/SwitchColorblind';
-import { OverrideSwitch } from './OverrideSwitch';
-import { VoiceRecorder } from './VoiceRecorder';
 
 export default function ChatBar({
   onSend,
@@ -205,7 +205,7 @@ const UploadFiles = ({ handleUploadFiles, message, uploadedFiles, disabled }: an
         <Button size='icon' onClick={() => document.getElementById('file-upload')?.click()}>
           <LuPaperclip />
         </Button>
-        <label id='trigger-file-upload' htmlFor='file-upload' className='hidden'></label>
+        <label id='trigger-file-upload' htmlFor='file-upload' className='hidden' />
         <input id='file-upload' type='file' multiple className='hidden' onChange={handleUploadFiles} disabled={disabled} />
       </TooltipTrigger>
       <TooltipContent>Upload Files</TooltipContent>

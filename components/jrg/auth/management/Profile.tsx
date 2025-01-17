@@ -3,9 +3,9 @@
 import axios from 'axios';
 import { deleteCookie, getCookie } from 'cookies-next';
 import { mutate } from 'swr';
+import VerifySMS from '../mfa/SMS';
 import DynamicForm from '@/components/jrg/DynamicForm';
 import { Separator } from '@/components/ui/separator';
-import VerifySMS from '../mfa/SMS';
 import { Button } from '@/components/ui/button';
 
 export const Profile = ({

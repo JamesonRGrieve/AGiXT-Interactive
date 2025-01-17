@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 export function zodToGraphQL(schema: z.ZodObject<any>, depth = 0, maxDepth = 10): string {
   if (depth > maxDepth) {
     return ''; // Prevent infinite recursion

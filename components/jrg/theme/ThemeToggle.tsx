@@ -1,9 +1,9 @@
 'use client';
 
 import { LuEye as Eye, LuMoon as Moon, LuSun as Sun } from 'react-icons/lu';
+import { useTheme } from './useTheme';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { useTheme } from './useTheme';
 
 const icons = {
   dark: <Moon className='h-[1.2rem] w-[1.2rem]' />,

@@ -10,12 +10,12 @@ import { setCookie } from 'cookies-next';
 import { LuUser } from 'react-icons/lu';
 import OAuth from './oauth2/OAuth';
 import { useAuthentication } from './Router';
+import AuthCard from './AuthCard';
 import { useAssertion } from '@/lib/assert';
 import { validateURI } from '@/lib/validation';
 import TextField from '@/components/jrg/styled/Input/TextField';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
-import AuthCard from './AuthCard';
 
 const schema = z.object({
   email: z.string().email({ message: 'Please enter a valid E-Mail address.' }),

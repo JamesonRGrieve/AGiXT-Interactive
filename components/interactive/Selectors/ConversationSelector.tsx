@@ -3,14 +3,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { mutate } from 'swr';
 import { setCookie } from 'cookies-next';
+import { LuPlus, LuPencil, LuDownload, LuTrash2, LuChevronDown, LuChevronUp } from 'react-icons/lu';
 import { InteractiveConfigContext } from '../InteractiveConfigContext';
+import { useConversation, useConversations } from '../hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { LuPlus, LuPencil, LuDownload, LuTrash2, LuChevronDown, LuChevronUp } from 'react-icons/lu';
-import { useConversation, useConversations } from '../hooks';
 
 export default function ConversationSelector(): React.JSX.Element {
   const [dropDownOpen, setDropDownOpen] = useState(false);
@@ -35,7 +35,7 @@ export default function ConversationSelector(): React.JSX.Element {
     }));
   };
 
-  const handleRenameConversation = async (magic: boolean = true): Promise<void> => {
+  const handleRenameConversation = async (magic = true): Promise<void> => {
     if (state.overrides.conversation) {
       const response = await state.agixt.renameConversation(
         state.agent,

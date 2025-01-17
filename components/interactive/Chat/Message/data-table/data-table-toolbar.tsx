@@ -1,11 +1,11 @@
 'use client';
 
 import { Table } from '@tanstack/react-table';
-import { LuDownload as Download, LuX as X } from 'react-icons/lu';
-import { Button } from '@/components/ui/button';
+import { LuX as X } from 'react-icons/lu';
 import { DataTableViewOptions } from './data-table-view-options';
 import { DataTableFilter } from './data-table-filter';
 import { DataTableExport } from './data-table-export';
+import { Button } from '@/components/ui/button';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

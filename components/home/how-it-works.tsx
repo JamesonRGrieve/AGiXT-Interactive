@@ -6,9 +6,9 @@ import {
   LuFileText as FileText,
   LuSend as Send,
 } from 'react-icons/lu';
+import { BarChart3 } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
-import { BarChart3 } from 'lucide-react';
 
 export function HowItWorks() {
   return (

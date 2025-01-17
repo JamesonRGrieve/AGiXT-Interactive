@@ -1,9 +1,9 @@
 'use client';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
-import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+
 export default function useLoggedIn() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const router = useRouter();

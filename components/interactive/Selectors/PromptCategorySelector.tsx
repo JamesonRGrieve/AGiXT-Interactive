@@ -2,9 +2,9 @@
 
 import { useSearchParams } from 'next/navigation';
 import { useContext } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { InteractiveConfigContext } from '../InteractiveConfigContext';
 import { usePromptCategories } from '../hooks';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function PromptCategorySelector({
   categoryMutate,

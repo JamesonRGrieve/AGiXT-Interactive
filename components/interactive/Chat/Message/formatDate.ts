@@ -1,4 +1,4 @@
-export default function formatDate(timestamp: string, short: boolean = true): string {
+export default function formatDate(timestamp: string, short = true): string {
   // Create a date object from the timestamp
   const date = new Date(timestamp);
 
