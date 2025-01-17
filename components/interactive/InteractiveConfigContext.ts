@@ -1,5 +1,5 @@
 'use client';
-import AGiXTSDK from 'agixt';
+import AGiXTSDK from '@/lib/sdk';
 import OpenAI from 'openai';
 import { Context, createContext, useContext } from 'react';
 

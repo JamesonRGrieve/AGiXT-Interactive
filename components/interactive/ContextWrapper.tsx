@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, ReactNode, useEffect } from 'react';
-import AGiXTSDK from 'agixt';
+import AGiXTSDK from '@/lib/sdk';
 import OpenAI from 'openai';
 import { InteractiveConfigContext, InteractiveConfigDefault, InteractiveConfig } from './InteractiveConfigContext';
 import { getCookie } from 'cookies-next';
