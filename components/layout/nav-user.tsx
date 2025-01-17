@@ -1,8 +1,11 @@
 'use client';
 
-import { BadgeCheck, Bell, LogOut, Sparkles } from 'lucide-react';
-import { ButtonIcon, CaretRightIcon, CaretSortIcon, ComponentPlaceholderIcon } from '@radix-ui/react-icons';
+import { BadgeCheck, Bell, LogOut } from 'lucide-react';
+import { CaretRightIcon, ComponentPlaceholderIcon } from '@radix-ui/react-icons';
 
+import { useRouter } from 'next/navigation';
+import { Skeleton } from '../ui/skeleton';
+import { Button } from '../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -16,10 +19,7 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import { Appearance } from '@/components/jrg/wrapper/new/UserMenu';
 import useUser from '@/components/jrg/auth/hooks/useUser';
-import { useRouter } from 'next/navigation';
 import { getGravatarUrl } from '@/lib/gravatar';
-import { Skeleton } from '../ui/skeleton';
-import { Button } from '../ui/button';
 
 const user = {
   name: 'shadcn',

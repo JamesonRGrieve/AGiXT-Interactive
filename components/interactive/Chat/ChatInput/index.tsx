@@ -3,19 +3,10 @@
 import React, { ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { setCookie } from 'cookies-next';
 import { InteractiveConfigContext } from '../../InteractiveConfigContext';
+import { VoiceRecorder } from '../VoiceRecorder';
+import { ListUploadedFiles, OverrideSwitches, ResetConversation, SendMessage, Timer, UploadFiles } from './Adornments';
 import { Textarea } from '@/components/ui/textarea';
 import { DropZone } from '@/components/jrg/DropZone';
-import { VoiceRecorder } from '../VoiceRecorder';
-import {
-  ListUploadedFiles,
-  OverrideSwitches,
-  ResetConversation,
-  SendMessage,
-  ThemeToggles,
-  Timer,
-  UploadFiles,
-} from './Adornments';
-import { LuMic, LuPaperclip, LuSend } from 'react-icons/lu';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -193,7 +184,7 @@ export default function ChatBar({
   );
 }
 
-export function useDynamicInput(initialValue: string = '', uploadedFiles: { [x: string]: string }) {
+export function useDynamicInput(initialValue = '', uploadedFiles: { [x: string]: string }) {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const [isActive, setIsActive] = useState(false);
   const [value, setValue] = useState(initialValue);

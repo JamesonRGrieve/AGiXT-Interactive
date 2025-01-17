@@ -1,7 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { LuPlus } from 'react-icons/lu';
+import { Button } from '@/components/ui/button';
 
 export default function PromptPanel({ setShowCreateDialog }) {
   return (

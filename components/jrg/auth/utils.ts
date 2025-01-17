@@ -1,5 +1,5 @@
-import axios from 'axios';
-import { NextResponse, NextRequest } from 'next/server';
+import { NextRequest } from 'next/server';
+
 export const AuthMode = {
   None: 0,
   GTAuth: 1,
@@ -34,7 +34,7 @@ export const verifyJWT = async (jwt: string): Promise<Response> => {
   }
   const containerNames = process.env.SERVERSIDE_AGIXT_SERVER.split(',');
   const responses = {} as any;
-  let authEndpoint = `${process.env.AGIXT_SERVER}/v1/user`;
+  const authEndpoint = `${process.env.AGIXT_SERVER}/v1/user`;
   let response;
   for (const containerName of containerNames) {
     const testEndpoint = authEndpoint.replace('localhost', containerName);

@@ -5,6 +5,8 @@ import { getCookie } from 'cookies-next';
 import { usePathname } from 'next/navigation';
 import { ViewVerticalIcon } from '@radix-ui/react-icons';
 
+import { AgentSwitcher } from './agent-switcher';
+import { ChatHistory } from './chat-history';
 import { NavMain } from '@/components/layout/nav-main';
 import { NavUser } from '@/components/layout/nav-user';
 import {
@@ -16,8 +18,6 @@ import {
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { AgentSwitcher } from './agent-switcher';
-import { ChatHistory } from './chat-history';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [hasStarted, setHasStarted] = useState(false);

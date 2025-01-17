@@ -3,17 +3,16 @@ import axios, { AxiosError } from 'axios';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
 import React, { FormEvent, ReactNode, useEffect, useState, useRef } from 'react';
+import { ReCAPTCHA } from 'react-google-recaptcha';
 import { useAuthentication } from './Router';
+import AuthCard from './AuthCard';
 import { toTitleCase } from '@/components/jrg/DynamicForm';
 import PasswordField from '@/components/jrg/styled/Input/PasswordField';
-import { ReCAPTCHA } from 'react-google-recaptcha';
-import assert, { useAssertion } from '@/lib/assert';
+import { useAssertion } from '@/lib/assert';
 import { validateURI } from '@/lib/validation';
-import AuthCard from './AuthCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { get } from 'http';
 
 export type RegisterProps = {
   additionalFields?: string[];

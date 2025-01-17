@@ -1,28 +1,21 @@
 'use client';
 
-import { BadgeCheck, Bell, BuildingIcon, LogOut, Sparkles } from 'lucide-react';
-import { CaretSortIcon, ComponentPlaceholderIcon } from '@radix-ui/react-icons';
+import { CaretSortIcon } from '@radix-ui/react-icons';
 
+import { useRouter } from 'next/navigation';
+import { getCookie, setCookie } from 'cookies-next';
+import { useActiveCompany, useCompanies } from '../interactive/hooks';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuSub,
-  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
-import { Appearance } from '@/components/jrg/wrapper/new/UserMenu';
 import useUser from '@/components/jrg/auth/hooks/useUser';
-import { useRouter } from 'next/navigation';
 import { getGravatarUrl } from '@/lib/gravatar';
-import { Skeleton } from '../ui/skeleton';
-import { useActiveCompany, useCompanies } from '../interactive/hooks';
-import { getCookie, setCookie } from 'cookies-next';
 import { cn } from '@/lib/utils';
 
 const user = {

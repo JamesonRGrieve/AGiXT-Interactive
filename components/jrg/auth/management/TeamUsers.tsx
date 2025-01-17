@@ -1,28 +1,14 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { Separator } from '@/components/ui/separator';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { getCookie, setCookie } from 'cookies-next';
-import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { LuTrash2, LuPencil, LuCheck, LuPlus } from 'react-icons/lu';
-import { useAuthentication } from '../Router';
-import { NavCompany } from '@/components/layout/nav-company';
-import { useActiveCompany, useCompanies, useInvitations } from '@/components/interactive/hooks';
-
 import { useRouter } from 'next/navigation';
 import { ColumnDef } from '@tanstack/react-table';
 import { Check, Mail, MoreHorizontal, X } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { useActiveCompany, useCompanies, useInvitations } from '@/components/interactive/hooks';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -119,7 +105,7 @@ const users_columns: ColumnDef<User>[] = [
     accessorKey: 'role',
     header: ({ column }) => <DataTableColumnHeader column={column} title='Role' />,
     cell: ({ row }) => {
-      const role = row.getValue('role') as string;
+      const role = row.getValue('role');
       return (
         <div className='flex items-center'>
           <Badge variant='outline' className='capitalize'>

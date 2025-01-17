@@ -1,12 +1,12 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Separator } from '@/components/ui/separator';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
-import { Button } from '@/components/ui/button';
 import OAuth2Login from 'react-simple-oauth2-login';
-import oAuth2Providers from '../oauth2/OAuthProviders';
 import { LuPlus as Plus, LuUnlink as Unlink } from 'react-icons/lu';
+import oAuth2Providers from '../oauth2/OAuthProviders';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 

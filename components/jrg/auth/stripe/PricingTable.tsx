@@ -1,15 +1,15 @@
 'use client';
 import Link from 'next/link';
+import { LuCheck as CheckIcon, LuMinus as MinusIcon } from 'react-icons/lu';
+import { getCookie } from 'cookies-next';
+import axios from 'axios';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { LuCheck as CheckIcon, LuMinus as MinusIcon } from 'react-icons/lu';
 import { cn } from '@/lib/utils';
 // import { Label } from '@/components/ui/label';
 // import { Switch } from '@/components/ui/switch';
 import useProducts from '@/components/jrg/auth/hooks/useProducts';
-import { getCookie } from 'cookies-next';
-import axios from 'axios';
 // const defaultPricingData = [
 //   {
 //     name: 'Free',

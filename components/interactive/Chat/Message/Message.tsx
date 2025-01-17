@@ -1,25 +1,17 @@
 'use client';
 
 import React, { useContext, useState, useMemo } from 'react';
-import { LuCopy, LuDownload, LuThumbsUp, LuThumbsDown, LuPen as LuEdit, LuTrash2, LuVolume2 } from 'react-icons/lu';
+import { LuCopy, LuDownload, LuThumbsUp, LuThumbsDown, LuPen as LuEdit, LuTrash2 } from 'react-icons/lu';
 import clipboardCopy from 'clipboard-copy';
+import { mutate } from 'swr';
 import { InteractiveConfigContext } from '../../InteractiveConfigContext';
 import MarkdownBlock from './MarkdownBlock';
 import formatDate from './formatDate';
 import JRGDialog from '@/components/jrg/dialog/Dialog';
-import { mutate } from 'swr';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipBasic, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 
 export type MessageProps = {
@@ -33,7 +25,7 @@ const checkUserMsgJustText = (chatItem: { role: string; message: string }) => {
   if (chatItem.role !== 'USER') return false;
 
   const message = chatItem.message;
-  const hasMarkdownTable = /\n\|.*\|\n(\|[-]+\|.*\n)?/.test(message);
+  const hasMarkdownTable = /\n\|.*\|\n(\|-+\|.*\n)?/.test(message);
   return !(
     message.includes('```') ||
     message.includes('`') ||

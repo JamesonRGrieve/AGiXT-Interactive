@@ -2,19 +2,19 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { LuArrowUp, LuArrowDown, LuSave, LuX } from 'react-icons/lu';
+import useSWR, { mutate } from 'swr';
+import PromptSelector from '../../Selectors/PromptSelector';
+import PromptCategorySelector from '../../Selectors/PromptCategorySelector';
+import CommandSelector from '../../Selectors/CommandSelector';
+import ChainSelector from '../../Selectors/ChainSelector';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
-import { LuArrowUp, LuArrowDown, LuSave, LuX } from 'react-icons/lu';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import PromptSelector from '../../Selectors/PromptSelector';
-import PromptCategorySelector from '../../Selectors/PromptCategorySelector';
-import CommandSelector from '../../Selectors/CommandSelector';
-import ChainSelector from '../../Selectors/ChainSelector';
-import useSWR, { mutate } from 'swr';
-import { useCommandArgs, usePromptArgs } from '../../hooks';
+
 const ignoreArgs = [
   'prompt_name',
   'prompt_category',

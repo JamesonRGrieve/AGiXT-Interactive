@@ -2,15 +2,14 @@
 
 import { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { LuDownload, LuTrash2 } from 'react-icons/lu';
-import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
+import { mutate } from 'swr';
 import PromptSelector from '../../Selectors/PromptSelector';
 import PromptCategorySelector from '../../Selectors/PromptCategorySelector';
-import useSWR, { mutate } from 'swr';
 import { usePrompt } from '../../hooks';
 import { AutoResizeTextarea } from '../training';
+import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
+import { Button } from '@/components/ui/button';
 
 export default function PromptAdmin() {
   const context = useInteractiveConfig();

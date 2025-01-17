@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, ReactNode, useContext } from 'react';
-import { InteractiveConfigContext } from '../../../../InteractiveConfigContext';
 import { LuLightbulb as LightBulbIcon } from 'react-icons/lu';
+import { InteractiveConfigContext } from '../../../../InteractiveConfigContext';
 
 interface Column {
   field: string;

@@ -282,7 +282,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         """Handle MFA screenshot"""
         # Decode QR code from screenshot
         await asyncio.sleep(2)
-        self.take_screenshot(f"Screenshot prior to attempting to decode QR code")
+        await self.take_screenshot(f"Screenshot prior to attempting to decode QR code")
         nparr = np.frombuffer(await self.page.screenshot(), np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         otp_uri = None

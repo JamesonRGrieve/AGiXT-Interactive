@@ -1,4 +1,5 @@
 import { Plus, Unlink, Wrench } from 'lucide-react';
+import MarkdownBlock from '../Chat/Message/MarkdownBlock';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Dialog,
@@ -12,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import MarkdownBlock from '../Chat/Message/MarkdownBlock';
 
 // Single Extension component that handles both connected and disconnected states
 export default function Extension({

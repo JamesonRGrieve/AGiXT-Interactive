@@ -1,8 +1,8 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import { Separator } from '@/components/ui/separator';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { getCookie, setCookie } from 'cookies-next';
+import { LuPencil, LuCheck, LuPlus } from 'react-icons/lu';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,11 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { LuTrash2, LuPencil, LuCheck, LuPlus } from 'react-icons/lu';
-import { useAuthentication } from '../Router';
-import { NavCompany } from '@/components/layout/nav-company';
 import { useActiveCompany, useCompanies } from '@/components/interactive/hooks';
 
 const ROLES = [

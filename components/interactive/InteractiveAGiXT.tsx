@@ -2,8 +2,10 @@
 import { deleteCookie, getCookie, setCookie } from 'cookies-next';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import AppWrapper from '../jrg/wrapper/AppWrapper';
 import { LuLogOut as LogOut, LuMenu as Menu, LuSettings as Settings } from 'react-icons/lu';
+import useSWR from 'swr';
+import axios from 'axios';
+import AppWrapper from '../jrg/wrapper/AppWrapper';
 
 import { InteractiveConfigDefault, InteractiveConfig, Overrides } from './InteractiveConfigContext';
 import ContextWrapper from './ContextWrapper';
@@ -16,11 +18,10 @@ import PromptSelector from './Selectors/PromptSelector';
 import SwitchDark from '@/components/jrg/theme/SwitchDark';
 import SwitchColorblind from '@/components/jrg/theme/SwitchColorblind';
 import EditDialog from '@/components/jrg/dialog/Edit/EditDialog';
-import useSWR from 'swr';
-import axios from 'axios';
 import Gravatar from '@/components/jrg/auth/management/Gravatar';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
+
 export type FormProps = {
   fieldOverrides?: { [key: string]: ReactNode };
   formContext?: object;

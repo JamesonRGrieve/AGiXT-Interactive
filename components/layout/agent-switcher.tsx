@@ -3,10 +3,10 @@
 import { useState, useEffect } from 'react';
 import { getCookie, setCookie } from 'cookies-next';
 import { ChevronsUpDown, Plus } from 'lucide-react';
-import { createClient } from 'graphql-ws';
 import { FaRobot } from 'react-icons/fa';
 import { z } from 'zod';
 
+import { useActiveCompany, useAgent, useAgents } from '../interactive/hooks';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,7 +16,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
-import { useActiveCompany, useAgent, useAgents } from '../interactive/hooks';
 
 const AgentSchema = z.object({
   id: z.string(),

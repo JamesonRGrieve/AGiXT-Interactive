@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import ReactMarkdown from 'react-markdown';
-import CodeBlock from './Markdown/CodeBlock';
 import remarkGfm from 'remark-gfm';
+import CodeBlock from './Markdown/CodeBlock';
 import MarkdownHeading from './Markdown/Heading';
 import MarkdownLink from './Markdown/Link';
 import MarkdownImage from './Markdown/Image';

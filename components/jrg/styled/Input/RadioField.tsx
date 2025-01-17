@@ -31,7 +31,7 @@ export default function RadioField({ id, value, onChange, items, name }: RadioFi
               className={`w-5 h-5 border rounded-full mr-2 flex items-center justify-center
               ${value === itemValue ? 'border-blue-500' : 'border-gray-300'}`}
             >
-              {value === itemValue && <div className='w-3 h-3 bg-blue-500 rounded-full'></div>}
+              {value === itemValue && <div className='w-3 h-3 bg-blue-500 rounded-full' />}
             </div>
             <span className='text-gray-700'>{itemLabel}</span>
           </label>

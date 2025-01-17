@@ -1,6 +1,6 @@
-import { generateCookieString, getQueryParams, getRequestedURI } from '@/lib/utils';
-import { NextResponse, NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { AuthMode, getAuthMode, getJWT, verifyJWT } from './utils';
+import { generateCookieString, getQueryParams, getRequestedURI } from '@/lib/utils';
 import { MiddlewareHook } from '@/types/MiddlewareHook';
 
 export const useAuth: MiddlewareHook = async (req) => {

@@ -2,9 +2,9 @@
 import { Table } from '@tanstack/react-table';
 import { X } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import { DataTableViewOptions } from './data-table-view-options';
 import { DataTableFilter } from './data-table-filter';
+import { Button } from '@/components/ui/button';
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>;

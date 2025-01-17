@@ -1,18 +1,15 @@
 'use client';
 
 import { useContext } from 'react';
-import { setCookie } from 'cookies-next';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
-import { Badge } from '@/components/ui/badge';
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { usePathname, useRouter } from 'next/navigation';
 import { useConversations } from '../interactive/hooks';
 import { InteractiveConfigContext } from '../interactive/InteractiveConfigContext';
-import { usePathname, useRouter } from 'next/navigation';
-import { Skeleton } from '../ui/skeleton';
-import { cn } from '@/lib/utils';
 import { CommandInput, CommandItem, CommandList, Command } from '../ui/command';
-import { Dialog, DialogClose } from '../ui/dialog';
-import { DialogTrigger, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogClose, DialogTrigger, DialogContent } from '../ui/dialog';
+import { cn } from '@/lib/utils';
+import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { Badge } from '@/components/ui/badge';
 
 export function ChatHistory() {
   const state = useContext(InteractiveConfigContext);

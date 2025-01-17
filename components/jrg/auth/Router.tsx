@@ -9,11 +9,11 @@ import Close, { CloseProps } from './oauth2/Close';
 import Logout, { LogoutProps } from './Logout';
 import Subscribe, { SubscribeProps } from './Subscribe';
 import { AuthenticationContext } from './AuthenticationContext';
-import assert from '@/lib/assert';
 import OrganizationalUnit, { OrganizationalUnitProps } from './OU';
 import ErrorPage, { ErrorPageProps } from './ErrorPage';
-import deepMerge from '@/lib/objects';
 import oAuth2Providers from './oauth2/OAuthProviders';
+import deepMerge from '@/lib/objects';
+import assert from '@/lib/assert';
 
 type RouterPageProps = {
   path: string;

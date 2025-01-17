@@ -13,12 +13,13 @@ import {
   Settings,
   Bot,
   Users,
-  BrainCircuit,
   User,
   Puzzle,
   Building,
 } from 'lucide-react';
 
+import Link from 'next/link';
+import { useActiveCompany } from '../interactive/hooks';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   SidebarGroup,
@@ -32,8 +33,6 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
-import { useActiveCompany } from '../interactive/hooks';
-import Link from 'next/link';
 
 type Item = {
   title: string;

@@ -2,9 +2,9 @@
 
 import { ColumnDef } from '@tanstack/react-table';
 import { LuCopy as Copy } from 'react-icons/lu';
+import { DataTableColumnHeader } from './data-table-column-header';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Button } from '@/components/ui/button';
-import { DataTableColumnHeader } from './data-table-column-header';
 import { TooltipProvider, Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ColumnData {

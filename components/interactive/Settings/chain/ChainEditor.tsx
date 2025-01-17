@@ -1,10 +1,8 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import useSWR from 'swr';
-import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import ChainSteps from './ChainSteps';
 import { useChain } from '../../hooks';
+import ChainSteps from './ChainSteps';
 
 export default function ChainEditor() {
   const searchParams = useSearchParams();

@@ -1,10 +1,10 @@
 'use client';
 
 import React, { ReactNode } from 'react';
+import { useTheme } from './useTheme';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 import { Switch } from '@/components/ui/switch';
-import { useTheme } from './useTheme';
 
 export default function StyledSwitch(): ReactNode {
   const { currentTheme, setTheme } = useTheme();

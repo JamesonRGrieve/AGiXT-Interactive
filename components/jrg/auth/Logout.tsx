@@ -2,7 +2,7 @@
 
 import { deleteCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
-import React, { ReactNode, useContext, useEffect } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { useAuthentication } from './Router';
 
 export type LogoutProps = { redirectTo?: string };

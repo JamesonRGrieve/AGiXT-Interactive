@@ -8,7 +8,6 @@ import { deleteCookie, getCookie } from 'cookies-next';
 import Field from '@/components/jrg/styled/FormControl/Field';
 import log from '@/lib/log';
 import { Button } from '@/components/ui/button';
-import { set } from 'react-hook-form';
 
 export type RegisterFormProps = object;
 export default function VerifyAuthenticator({ verifiedCallback }: { verifiedCallback: any }): JSX.Element {
@@ -23,7 +22,7 @@ export default function VerifyAuthenticator({ verifiedCallback }: { verifiedCall
   const totpUri = getCookie('totpUri');
 
   useEffect(() => {
-    if (navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPod/i)) {
+    if (navigator.userAgent.match(/iphone/i) || navigator.userAgent.match(/ipod/i)) {
       setPlatformLink('https://apps.apple.com/us/app/google-authenticator/id388497605');
     }
     if (navigator.userAgent.match(/android/i)) {

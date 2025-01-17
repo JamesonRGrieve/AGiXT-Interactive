@@ -1,19 +1,27 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { getCookie } from 'cookies-next';
-import { LuTrash2 as Trash2, LuBrain as Brain, LuUpload as Upload } from 'react-icons/lu';
+import {
+  LuTrash2 as Trash2,
+  LuBrain as Brain,
+  LuUpload as Upload,
+  LuFile,
+  LuMessageSquare,
+  LuLink,
+  LuMic,
+  LuImage,
+  LuThumbsUp,
+  LuNewspaper,
+  LuYoutube,
+} from 'react-icons/lu';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useActiveCompany } from '../hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { cn } from '@/lib/utils';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { LuFile, LuMessageSquare, LuLink, LuMic, LuImage, LuThumbsUp, LuNewspaper, LuYoutube } from 'react-icons/lu';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useActiveCompany } from '../hooks';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
 
 interface SourceDisplayProps {
   source: string;

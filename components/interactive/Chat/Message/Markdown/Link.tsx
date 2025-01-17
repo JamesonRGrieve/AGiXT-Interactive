@@ -1,5 +1,5 @@
-import { cn } from '@/lib/utils';
 import React, { ReactNode } from 'react';
+import { cn } from '@/lib/utils';
 
 const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
   const href = e.currentTarget.getAttribute('href');
@@ -13,7 +13,7 @@ const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
   }
 };
 
-interface MarkdownLinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {}
+type MarkdownLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
 export default function MarkdownLink({ children, href, className, ...props }: MarkdownLinkProps): ReactNode {
   const isExternal = href && !href.startsWith('#');
