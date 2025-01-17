@@ -6,7 +6,7 @@ import axios from 'axios';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { LuUnlink as Unlink } from 'react-icons/lu';
 import { Wrench, Plus } from 'lucide-react';
-import { useActiveCompany, useAgent, useProviders } from '../hooks';
+import { useCompany, useAgent, useProviders } from '../hooks';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -61,7 +61,7 @@ export function Providers() {
   const [error, setError] = useState<ErrorState>(null);
   const [showEnabledOnly, setShowEnabledOnly] = useState(false);
   const agent_name = (getCookie('agixt-agent') || process.env.NEXT_PUBLIC_AGIXT_AGENT) ?? agent;
-  const { data: activeCompany } = useActiveCompany();
+  const { data: activeCompany } = useCompany();
   const { data: providerData } = useProviders();
   const searchParams = useSearchParams();
   // Filter extensions for the enabled commands view

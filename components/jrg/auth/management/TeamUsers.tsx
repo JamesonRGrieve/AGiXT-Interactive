@@ -8,7 +8,7 @@ import { Check, Mail, MoreHorizontal, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { useActiveCompany, useCompanies, useInvitations } from '@/components/interactive/hooks';
+import { useCompany, useCompanies, useInvitations } from '@/components/interactive/hooks';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -325,7 +325,7 @@ export const Team = () => {
   const [newName, setNewName] = useState('');
   const { data: invitationsData } = useInvitations();
   const { data: companyData } = useCompanies();
-  const { data: activeCompany, mutate } = useActiveCompany();
+  const { data: activeCompany, mutate } = useCompany();
   const [responseMessage, setResponseMessage] = useState('');
   const handleConfirm = async () => {
     if (renaming) {

@@ -68,6 +68,7 @@ export default function PromptAdmin() {
               `${pathname}?${new URLSearchParams({ category: searchParams.get('category'), prompt: newValue }).toString()}`,
             );
           }}
+          category={searchParams.get('category') ?? undefined}
         />
       </div>
       <div className='space-y-2'>

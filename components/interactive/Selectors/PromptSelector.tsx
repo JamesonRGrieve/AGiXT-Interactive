@@ -6,9 +6,11 @@ import { usePrompts } from '../hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
-export default function PromptSelector({ value, onChange }): React.JSX.Element {
+export default function PromptSelector({ category = 'Default', value, onChange }): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);
-  const { data: promptData } = usePrompts();
+  const { data: promptData, error } = usePrompts(category);
+  console.log('PROMPT DATA', promptData);
+  console.log(error);
   useEffect(() => {
     console.log('Value changed to ', value);
   }, [value]);

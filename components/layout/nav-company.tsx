@@ -4,7 +4,7 @@ import { CaretSortIcon } from '@radix-ui/react-icons';
 
 import { useRouter } from 'next/navigation';
 import { getCookie, setCookie } from 'cookies-next';
-import { useActiveCompany, useCompanies } from '../interactive/hooks';
+import { useCompany, useCompanies } from '../interactive/hooks';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -28,11 +28,11 @@ export function NavCompany() {
   const { isMobile } = useSidebar('left');
   const router = useRouter();
 
-  const { data: company } = useActiveCompany();
+  const { data: company } = useCompany();
   console.log(company);
   const { data: companies } = useCompanies();
   const { data: user, mutate: mutateUser } = useUser();
-  const { data, mutate: mutateActiveCompany } = useActiveCompany();
+  const { data, mutate: mutateActiveCompany } = useCompany();
   const handleLogout = () => {
     router.push('/user/logout');
   };

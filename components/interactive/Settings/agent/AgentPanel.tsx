@@ -6,7 +6,7 @@ import { LuPlus, LuCheck, LuDownload, LuPencil, LuTrash2 } from 'react-icons/lu'
 import { mutate } from 'swr';
 import { getCookie, setCookie } from 'cookies-next';
 import axios from 'axios';
-import { useActiveCompany, useAgent } from '../../hooks';
+import { useCompany, useAgent } from '../../hooks';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
@@ -20,7 +20,7 @@ export default function AgentPanel({ setShowCreateDialog }) {
   const context = useInteractiveConfig();
   const router = useRouter();
   const pathname = usePathname();
-  const { data: activeCompany } = useActiveCompany();
+  const { data: activeCompany } = useCompany();
   const handleConfirm = async () => {
     if (renaming) {
       try {

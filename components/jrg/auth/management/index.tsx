@@ -119,7 +119,7 @@ export default function Manage({
 }
 
 // const Nav = ({ active, setActive }: { active: ActivePage; setActive: (page: ActivePage) => void }) => {
-//   const { data } = useActiveCompany();
+//   const { data } = useCompany();
 //   console.log('DATA', data);
 //   return (
 //     <nav className='flex flex-col space-y-1'>

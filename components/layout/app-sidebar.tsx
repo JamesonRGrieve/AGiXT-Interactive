@@ -5,7 +5,7 @@ import { getCookie } from 'cookies-next';
 import { usePathname } from 'next/navigation';
 import { ViewVerticalIcon } from '@radix-ui/react-icons';
 
-import { AgentSwitcher } from './agent-switcher';
+import { AgentSelector } from '../interactive/Selectors/agent-selector';
 import { ChatHistory } from './chat-history';
 import { NavMain } from '@/components/layout/nav-main';
 import { NavUser } from '@/components/layout/nav-user';
@@ -34,7 +34,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader>
-        <AgentSwitcher />
+        <AgentSelector />
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
