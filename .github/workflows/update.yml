@@ -12,50 +12,59 @@ jobs:
     env:
       SOURCE_REPO: ${{ github.repository }}
       TARGET_REPO: ${{ secrets.SECRET_TARGET }}
+      GH_TOKEN: ${{ secrets.SECRET_PAT }}
 
     steps:
-      - name: Verify Required Secrets
+      - name: Verify Required Secrets and Permissions
         run: |
           # Debug info (safe to display)
           echo "Current repository: ${{ github.repository }}"
-          echo "GitHub actor: ${{ github.actor }}"
+          echo "Target repository: ${{ secrets.SECRET_TARGET }}"
+
           # Verify secret format
           if [[ ! "${{ secrets.SECRET_TARGET }}" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]; then
             echo "::error::SECRET_TARGET must be in the format 'owner/repo'"
             exit 1
           fi
-          if [ -z "${{ secrets.SECRET_TARGET }}" ]; then
-            echo "::error::SECRET_TARGET is not set"
-            exit 1
-          fi
-          if [ -z "${{ secrets.SECRET_PAT }}" ]; then
-            echo "::error::SECRET_PAT is not set"
-            exit 1
-          fi
-          echo "Required secrets are present"
-          # Safe logging of target repo (since it's not truly sensitive)
-          echo "Target repository: ${{ secrets.SECRET_TARGET }}"
 
-      - name: Configure Git
-        run: |
-          git config --global user.name "GitHub Action"
-          git config --global user.email "action@github.com"
+          # Test repository access using gh cli
+          echo "Testing repository access..."
+          if ! gh repo view "${{ secrets.SECRET_TARGET }}" &>/dev/null; then
+            echo "::error::Cannot access target repository. Please check PAT permissions."
+            exit 1
+          fi
 
       - name: Check out source repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+
+      - name: Clone and Setup Target
+        id: setup
+        run: |
+          # Create a temporary directory for target repo
+          TEMP_DIR=$(mktemp -d)
+          echo "TEMP_DIR=$TEMP_DIR" >> $GITHUB_OUTPUT
+
+          # Clone target repository
+          echo "Cloning target repository..."
+          gh repo clone "${{ secrets.SECRET_TARGET }}" "$TEMP_DIR"
+
+          # Setup target as remote
+          cd ${{ github.workspace }}
+          git remote add target "$TEMP_DIR"
+
       - name: Attempt Sync
         id: sync
         continue-on-error: true
         run: |
-          # Add target remote using PAT
-          echo "Adding target remote..."
-          git remote add target "https://${{ secrets.SECRET_PAT }}@github.com/${{ secrets.SECRET_TARGET }}.git"
-
           # Fetch target repository
-          echo "Fetching target repository..."
+          echo "Fetching from target..."
           git fetch target main
 
           # Attempt to merge
@@ -66,7 +75,6 @@ jobs:
           else
             echo "Merge conflicts detected"
             echo "merge_status=conflict" >> $GITHUB_OUTPUT
-            # Abort the merge to prepare for interactive branch
             git merge --abort
           fi
 
@@ -74,8 +82,11 @@ jobs:
         if: steps.sync.outputs.merge_status == 'success'
         run: |
           echo "Pushing changes to target repository..."
-          git push target main
-          echo "Successfully pushed changes to ${{ secrets.SECRET_TARGET }}"
+          cd ${{ steps.setup.outputs.TEMP_DIR }}
+          git pull origin main
+          cd ${{ github.workspace }}
+          git push target HEAD:main
+          echo "Successfully pushed changes"
 
       - name: Handle Merge Conflicts
         if: steps.sync.outputs.merge_status == 'conflict'
@@ -87,22 +98,19 @@ jobs:
           # Try to merge again on the new branch
           git merge target/main || true
 
-          # Push the conflict branch
+          # Push the conflict branch to target
           echo "Pushing interactive-merge branch..."
-          git push target interactive-merge
+          cd ${{ steps.setup.outputs.TEMP_DIR }}
+          git pull origin main
+          cd ${{ github.workspace }}
+          git push target HEAD:interactive-merge
 
       - name: Create Pull Request
         if: steps.sync.outputs.merge_status == 'conflict'
-        env:
-          GH_TOKEN: ${{ secrets.SECRET_PAT }}
         run: |
-          # Extract owner and repo from SECRET_TARGET
-          TARGET_OWNER=$(echo ${{ secrets.SECRET_TARGET }} | cut -d'/' -f1)
-          TARGET_REPO=$(echo ${{ secrets.SECRET_TARGET }} | cut -d'/' -f2)
-
-          echo "Creating pull request in $TARGET_OWNER/$TARGET_REPO..."
+          echo "Creating pull request..."
           gh pr create \
-            --repo "$TARGET_OWNER/$TARGET_REPO" \
+            --repo "${{ secrets.SECRET_TARGET }}" \
             --title "🔄 Sync Updates (Requires Resolution)" \
             --body "This PR was automatically created due to merge conflicts during the sync process. Please resolve the conflicts manually." \
             --base main \
