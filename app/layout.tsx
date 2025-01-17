@@ -9,7 +9,9 @@ import InteractiveConfigContextWrapper from '@/components/interactive/ContextWra
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { AppSidebar } from '@/components/layout/app-sidebar';
 import { ContextSidebar } from '@/components/layout/context-sidebar';
+import { Toaster } from '@/components/ui/toaster';
 import '@/lib/zodGQL';
+
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
@@ -42,6 +44,7 @@ export default function RootLayout({ children }: { children: ReactNode }): React
           <SidebarProvider>
             <AppSidebar side='left' />
             {children}
+            <Toaster />
             {/* <ContextSidebar side='right' /> */}
           </SidebarProvider>
         </InteractiveConfigContextWrapper>
