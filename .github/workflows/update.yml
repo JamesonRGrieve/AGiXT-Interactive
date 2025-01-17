@@ -1,0 +1,36 @@
+name: Push Main Branch to Target Repository
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  push-main:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@v4
+
+      - name: Configure Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Push main to target repository
+        env:
+          TARGET_REPO: ${{ secrets.SECRET_TARGET }}
+          GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
+        run: |
+          # Extract username/repo from the target URL
+          TARGET_REPO_NAME=$(echo $TARGET_REPO | sed 's/.*github.com[:\/]\(.*\).git/\1/')
+
+          # Add the target repository as a remote
+          git remote add target "https://x-access-token:${GITHUB_TOKEN}@github.com/${TARGET_REPO_NAME}.git"
+
+          # Push only the main branch
+          git push target main:main
+
+          echo "Successfully pushed main branch to target repository"
