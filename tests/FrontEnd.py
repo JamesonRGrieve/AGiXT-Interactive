@@ -362,6 +362,18 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
             lambda: self.page.click('button[type="submit"]'),
         )
 
+        await asyncio.sleep(2)
+
+        try:
+            await self.test_action(
+                "Clicking 'Register' button again",
+                lambda: self.page.click('button[type="submit"]'),
+            )
+        except:
+            pass
+
+        await asyncio.sleep(2)
+
         mfa_token = await self.test_action(
             "Capturing QR code after it appears", lambda: self.handle_mfa_screen()
         )
