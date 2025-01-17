@@ -1,38 +1,101 @@
-name: Push Main Branch to Target Repository
+name: Sync Repository
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
-  push-main:
+  sync-repos:
     runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout source repository
-        uses: actions/checkout@v4
+    env:
+      SOURCE_REPO: ${{ github.repository }}
+      TARGET_REPO: ${{ secrets.SECRET_TARGET }}
 
-      - name: Push to target repository
-        env:
-          TARGET_REPO: ${{ secrets.SECRET_TARGET }}
-          GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
+    steps:
+      - name: Verify Required Secrets
         run: |
-          # Extract org/repo if full URL was provided
-          if [[ "$TARGET_REPO" == *"github.com"* ]]; then
-            TARGET_REPO=$(echo "$TARGET_REPO" | sed 's/.*github.com[\/:]\(.*\)\.git*/\1/' | sed 's/\.git$//')
+          if [ -z "${{ secrets.SECRET_TARGET }}" ]; then
+            echo "::error::SECRET_TARGET is not set"
+            exit 1
+          fi
+          if [ -z "${{ secrets.SECRET_PAT }}" ]; then
+            echo "::error::SECRET_PAT is not set"
+            exit 1
+          fi
+          echo "Required secrets are present"
+          # Safe logging of target repo (since it's not truly sensitive)
+          echo "Target repository: ${{ secrets.SECRET_TARGET }}"
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "GitHub Action"
+          git config --global user.email "action@github.com"
+
+      - name: Check out source repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Attempt Sync
+        id: sync
+        continue-on-error: true
+        run: |
+          # Add target remote using PAT
+          echo "Adding target remote..."
+          git remote add target https://x-access-token:${{ secrets.SECRET_PAT }}@github.com/${{ secrets.SECRET_TARGET }}.git
+
+          # Fetch target repository
+          echo "Fetching target repository..."
+          git fetch target main
+
+          # Attempt to merge
+          echo "Attempting to merge changes..."
+          if git merge target/main --no-edit; then
+            echo "Merge successful"
+            echo "merge_status=success" >> $GITHUB_OUTPUT
+          else
+            echo "Merge conflicts detected"
+            echo "merge_status=conflict" >> $GITHUB_OUTPUT
+            # Abort the merge to prepare for interactive branch
+            git merge --abort
           fi
 
-          # Remove any trailing .git if present
-          TARGET_REPO=$(echo "$TARGET_REPO" | sed 's/\.git$//')
+      - name: Push Direct Changes
+        if: steps.sync.outputs.merge_status == 'success'
+        run: |
+          echo "Pushing changes to target repository..."
+          git push target main
+          echo "Successfully pushed changes to ${{ secrets.SECRET_TARGET }}"
 
-          echo "Using repository: ${TARGET_REPO}"
+      - name: Handle Merge Conflicts
+        if: steps.sync.outputs.merge_status == 'conflict'
+        run: |
+          # Create and switch to interactive-merge branch
+          echo "Creating interactive-merge branch..."
+          git checkout -b interactive-merge
 
-          # Setup git credentials
-          git config --global credential.helper store
-          echo "https://oauth2:${GITHUB_TOKEN}@github.com" > ~/.git-credentials
+          # Try to merge again on the new branch
+          git merge target/main || true
 
-          # Add remote and push
-          git remote add target "https://github.com/${TARGET_REPO}.git"
-          git push target main:main
+          # Push the conflict branch
+          echo "Pushing interactive-merge branch..."
+          git push target interactive-merge
+
+      - name: Create Pull Request
+        if: steps.sync.outputs.merge_status == 'conflict'
+        env:
+          GH_TOKEN: ${{ secrets.SECRET_PAT }}
+        run: |
+          # Extract owner and repo from SECRET_TARGET
+          TARGET_OWNER=$(echo ${{ secrets.SECRET_TARGET }} | cut -d'/' -f1)
+          TARGET_REPO=$(echo ${{ secrets.SECRET_TARGET }} | cut -d'/' -f2)
+
+          echo "Creating pull request in $TARGET_OWNER/$TARGET_REPO..."
+          gh pr create \
+            --repo "$TARGET_OWNER/$TARGET_REPO" \
+            --title "🔄 Sync Updates (Requires Resolution)" \
+            --body "This PR was automatically created due to merge conflicts during the sync process. Please resolve the conflicts manually." \
+            --base main \
+            --head interactive-merge
