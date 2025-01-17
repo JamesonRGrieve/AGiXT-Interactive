@@ -1,14 +1,14 @@
-import JRGAuthRouter from 'jrgcomponents/AuthRouter';
-export default function AuthRouter(props) {
+import AuthRouter from '@/components/jrg/auth/Router';
+
+export default function UserRouter(props: any) {
   return (
-    <JRGAuthRouter
+    <AuthRouter
       {...props}
       corePagesConfig={{
-        login: {
-          showPassword: false,
-          additionalFields: ['first_name', 'last_name'],
-          path: '/login',
-          heading: 'Please Authenticate',
+        register: {
+          props: {
+            additionalFields: ['first_name', 'last_name'],
+          },
         },
       }}
     />

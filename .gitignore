@@ -5,9 +5,9 @@ dist
 /node_modules
 /.pnp
 .pnp.js
-
-/storybook-static/
-
+*.log
+tests/test_screenshots
+public/*.js
 # testing
 /coverage
 
@@ -39,3 +39,6 @@ yarn-error.log*
 next-env.d.ts
 
 .env*
+backend.md
+output.md
+test.ipynb
