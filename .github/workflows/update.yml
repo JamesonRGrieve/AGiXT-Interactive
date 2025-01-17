@@ -9,19 +9,18 @@ on:
 jobs:
   push-main:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout source repository
         uses: actions/checkout@v4
-        
+
       - name: Configure Git
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-      
+
       - name: Push main to target repository
         env:
-          # Supports both classic PATs and fine-grained PATs
           TARGET_REPO: ${{ secrets.SECRET_TARGET }}
           GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
         run: |
@@ -29,24 +28,37 @@ jobs:
           if [[ "$TARGET_REPO" == *"github.com"* ]]; then
             TARGET_REPO=$(echo "$TARGET_REPO" | sed 's/.*github.com[\/:]\(.*\)\.git*/\1/' | sed 's/\.git$//')
           fi
-          
+
           # Remove any trailing .git if present
           TARGET_REPO=$(echo "$TARGET_REPO" | sed 's/\.git$//')
-          
+
           echo "Using repository: ${TARGET_REPO}"
-          
-          # Configure git to use the token via config instead of URL
-          git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
-          
-          # Add the target repository as a remote
+
+          # First test API access
+          echo "Testing API access..."
+          REPO_TEST=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            https://api.github.com/repos/${TARGET_REPO})
+
+          # Show repository visibility from API (if accessible)
+          echo "Repository check:"
+          echo "$REPO_TEST" | grep -i "visibility" || echo "Could not get repository info"
+
+          # Add the target repository as a remote using simple token auth
           echo "Adding remote..."
-          REMOTE_URL="https://github.com/${TARGET_REPO}.git"
+          REMOTE_URL="https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git"
           git remote add target "$REMOTE_URL"
-          
+
+          # Enable trace for git commands
+          set -x
+
+          # Try to fetch first to verify access
+          git fetch target || exit 1
+
           # Print remotes (safely)
-          echo "Configured remotes:"
           git remote -v | sed 's/https:\/\/.*@/https:\/\/***@/'
-          
+
           # Push only the main branch
           echo "Pushing to main branch..."
           git push target main:main
+
+          set +x
