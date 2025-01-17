@@ -14,12 +14,7 @@ jobs:
       - name: Checkout source repository
         uses: actions/checkout@v4
 
-      - name: Configure Git
-        run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-
-      - name: Push main to target repository
+      - name: Push to target repository
         env:
           TARGET_REPO: ${{ secrets.SECRET_TARGET }}
           GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
@@ -29,36 +24,64 @@ jobs:
             TARGET_REPO=$(echo "$TARGET_REPO" | sed 's/.*github.com[\/:]\(.*\)\.git*/\1/' | sed 's/\.git$//')
           fi
 
-          # Remove any trailing .git if present
+          # Clean repository name
           TARGET_REPO=$(echo "$TARGET_REPO" | sed 's/\.git$//')
+          IFS='/' read -r org repo <<< "$TARGET_REPO"
 
-          echo "Using repository: ${TARGET_REPO}"
+          echo "Using target: ${org}/${repo}"
 
-          # First test API access
-          echo "Testing API access..."
-          REPO_TEST=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
-            https://api.github.com/repos/${TARGET_REPO})
+          # Function to create blob
+          create_blob() {
+            local content=$1
+            local encoding=${2:-utf-8}
+            curl -s -X POST -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${TARGET_REPO}/git/blobs" \
+              -d "{\"content\":\"$content\",\"encoding\":\"${encoding}\"}"
+          }
 
-          # Show repository visibility from API (if accessible)
-          echo "Repository check:"
-          echo "$REPO_TEST" | grep -i "visibility" || echo "Could not get repository info"
+          # Get current commit SHA
+          BASE_TREE=$(curl -s -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            "https://api.github.com/repos/${TARGET_REPO}/git/refs/heads/main" | \
+            jq -r '.object.sha')
 
-          # Add the target repository as a remote using simple token auth
-          echo "Adding remote..."
-          REMOTE_URL="https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git"
-          git remote add target "$REMOTE_URL"
+          if [ -z "$BASE_TREE" ] || [ "$BASE_TREE" = "null" ]; then
+            echo "Could not get base tree. Creating initial commit..."
+            # Create an empty tree for initial commit
+            TREE_SHA=$(curl -s -X POST -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+              -H "Accept: application/vnd.github.v3+json" \
+              "https://api.github.com/repos/${TARGET_REPO}/git/trees" \
+              -d '{"tree":[]}' | jq -r '.sha')
+          else
+            TREE_SHA=$BASE_TREE
+          fi
 
-          # Enable trace for git commands
-          set -x
+          # Create new tree
+          NEW_TREE=$(curl -s -X POST -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${TARGET_REPO}/git/trees" \
+            -d "{\"base_tree\":\"${TREE_SHA}\",\"tree\":[]}")
 
-          # Try to fetch first to verify access
-          git fetch target || exit 1
+          NEW_TREE_SHA=$(echo "$NEW_TREE" | jq -r '.sha')
 
-          # Print remotes (safely)
-          git remote -v | sed 's/https:\/\/.*@/https:\/\/***@/'
+          # Create new commit
+          NEW_COMMIT=$(curl -s -X POST -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${TARGET_REPO}/git/commits" \
+            -d "{\"message\":\"Update from action\",\"tree\":\"${NEW_TREE_SHA}\",\"parents\":[\"${BASE_TREE}\"]}")
 
-          # Push only the main branch
-          echo "Pushing to main branch..."
-          git push target main:main
+          NEW_COMMIT_SHA=$(echo "$NEW_COMMIT" | jq -r '.sha')
 
-          set +x
+          # Update reference
+          UPDATE_REF=$(curl -s -X PATCH -H "Authorization: Bearer ${GITHUB_TOKEN}" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${TARGET_REPO}/git/refs/heads/main" \
+            -d "{\"sha\":\"${NEW_COMMIT_SHA}\",\"force\":true}")
+
+          if echo "$UPDATE_REF" | jq -e '.ref' > /dev/null; then
+            echo "Successfully pushed to ${TARGET_REPO}"
+          else
+            echo "Failed to push. API Response:"
+            echo "$UPDATE_REF" | jq '.'
+            exit 1
+          fi
