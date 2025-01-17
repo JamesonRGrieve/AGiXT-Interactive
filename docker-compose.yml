@@ -10,13 +10,13 @@ services:
       DATABASE_NAME: models/agixt
       ENCRYPTION_SECRET: ${ENCRYPTION_SECRET}
       UVICORN_WORKERS: ${UVICORN_WORKERS:-5}
-      AUTH_WEB: ${AUTH_WEB-http://nursegpt:3051/user}
+      AUTH_WEB: ${AUTH_WEB-http://interactive:3437/user}
       AGIXT_URI: ${AGIXT_URI-http://agixt:7437}
       AGIXT_API_KEY: ${ENCRYPTION_SECRET}
       DISABLED_PROVIDERS: ${DISABLED_PROVIDERS}
       WORKING_DIRECTORY: ${WORKING_DIRECTORY:-/agixt/WORKSPACE}
       REGISTRATION_DISABLED: ${REGISTRATION_DISABLED:-false}
-      TOKENIZERS_PARALLELISM: "false"
+      TOKENIZERS_PARALLELISM: 'false'
       AUTH_PROVIDER: magicalauth
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET}
@@ -68,6 +68,6 @@ services:
       STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY}
       TZ: ${TZ:-America/New_York}
     ports:
-      - "3051:3051"
+      - '3437:3437'
     volumes:
       - ./node_modules:/app/node_modules

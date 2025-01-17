@@ -39,3 +39,5 @@ next-env.d.ts
 backend.md
 output.md
 test.ipynb
+
+__pycache__
