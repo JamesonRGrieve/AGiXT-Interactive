@@ -21,14 +21,10 @@ jobs:
       
       - name: Push main to target repository
         env:
+          # Supports both classic PATs and fine-grained PATs
           TARGET_REPO: ${{ secrets.SECRET_TARGET }}
           GITHUB_TOKEN: ${{ secrets.SECRET_PAT }}
         run: |
-          # Debug token format (safely)
-          echo "PAT format check:"
-          echo "Starts with 'ghp_': $(echo $GITHUB_TOKEN | grep -q '^ghp_' && echo 'yes' || echo 'no')"
-          echo "Token length: ${#GITHUB_TOKEN}"
-          
           # Extract org/repo if full URL was provided
           if [[ "$TARGET_REPO" == *"github.com"* ]]; then
             TARGET_REPO=$(echo "$TARGET_REPO" | sed 's/.*github.com[\/:]\(.*\)\.git*/\1/' | sed 's/\.git$//')
@@ -39,29 +35,12 @@ jobs:
           
           echo "Using repository: ${TARGET_REPO}"
           
-          # Try a simple API test first
-          echo "Testing basic API access..."
-          if curl -s -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/user > /dev/null; then
-            echo "API authentication successful"
-          else
-            echo "API authentication failed - token may be invalid"
-            exit 1
-          fi
-          
-          # Test git clone access with more verbose output
-          echo "Testing git clone access..."
-          CLONE_TEST=$(git ls-remote "https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git" 2>&1)
-          if [ $? -eq 0 ]; then
-            echo "Git repository access verified"
-          else
-            echo "Git access failed with error:"
-            echo "$CLONE_TEST" | sed 's/'"${GITHUB_TOKEN}"'/[TOKEN]/g'
-            exit 1
-          fi
+          # Configure git to use the token via config instead of URL
+          git config --global url."https://oauth2:${GITHUB_TOKEN}@github.com/".insteadOf "https://github.com/"
           
           # Add the target repository as a remote
           echo "Adding remote..."
-          REMOTE_URL="https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git"
+          REMOTE_URL="https://github.com/${TARGET_REPO}.git"
           git remote add target "$REMOTE_URL"
           
           # Print remotes (safely)
