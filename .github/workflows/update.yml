@@ -98,12 +98,15 @@ jobs:
           # Try to merge again on the new branch
           git merge target/main || true
 
-          # Push the conflict branch to target
+          # Stage all changes (including conflicts)
+          git add .
+
+          # Commit the changes with conflicts
+          git commit -m "Sync with conflicts - needs manual resolution"
+
+          # Push using gh cli instead of git
           echo "Pushing interactive-merge branch..."
-          cd ${{ steps.setup.outputs.TEMP_DIR }}
-          git pull origin main
-          cd ${{ github.workspace }}
-          git push target HEAD:interactive-merge
+          gh repo sync ${{ github.workspace }} --source HEAD:interactive-merge --dest ${{ secrets.SECRET_TARGET }}
 
       - name: Create Pull Request
         if: steps.sync.outputs.merge_status == 'conflict'
