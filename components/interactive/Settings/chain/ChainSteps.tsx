@@ -3,7 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { LuPlusCircle } from 'react-icons/lu';
+import { PlusCircle as LuPlusCircle } from 'lucide-react';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import ChainStep from './ChainStep';
 
