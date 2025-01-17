@@ -14,7 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useActiveCompany, useCompanies } from '@/components/interactive/hooks';
+import { useCompany, useCompanies } from '@/components/interactive/hooks';
 
 const ROLES = [
   { id: 2, name: 'Admin' },
@@ -31,7 +31,7 @@ export const Team = () => {
   const [newParent, setNewParent] = useState('');
   const [newName, setNewName] = useState('');
   const { data: companyData } = useCompanies();
-  const { data: activeCompany, mutate } = useActiveCompany();
+  const { data: activeCompany, mutate } = useCompany();
   const [responseMessage, setResponseMessage] = useState('');
   const handleConfirm = async () => {
     if (renaming) {

@@ -1,6 +1,5 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
 import { PlusCircle as LuPlusCircle } from 'lucide-react';
 import ChainStep from './ChainStep';
 import { Button } from '@/components/ui/button';
@@ -9,7 +8,6 @@ import { useInteractiveConfig } from '@/components/interactive/InteractiveConfig
 
 export default function ChainSteps({ chainData, chainMutate }) {
   const context = useInteractiveConfig();
-  const searchParams = useSearchParams();
 
   const handleAdd = async () => {
     const lastStep = chainData.steps[chainData.steps.length - 1];

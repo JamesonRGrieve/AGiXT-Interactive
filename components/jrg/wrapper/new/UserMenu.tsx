@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils';
 import { useTheme } from '@/components/jrg/theme/useTheme';
 import useUser from '@/auth/hooks/useUser';
 import { getGravatarUrl } from '@/lib/gravatar';
-import { useActiveCompany } from '@/components/interactive/hooks';
+import { useCompany } from '@/components/interactive/hooks';
 
 type MenuItem = {
   name: string;
@@ -36,7 +36,7 @@ export const UserMenu = ({ userMenuItems }: { userMenuItems: UserMenuGroups }) =
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
   const { data: user, mutate: mutateUser } = useUser();
-  const { mutate: mutateActiveCompany } = useActiveCompany();
+  const { mutate: mutateActiveCompany } = useCompany();
   const handleRouting = (path: string) => {
     setIsMenuOpen(false);
     router.push(path);

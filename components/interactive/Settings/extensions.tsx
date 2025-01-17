@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { getCookie } from 'cookies-next';
 import axios from 'axios';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { useActiveCompany, useAgent, useProviders } from '../hooks';
+import { useCompany, useAgent, useProviders } from '../hooks';
 import Extension from './extension';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import { Label } from '@/components/ui/label';
@@ -54,7 +54,7 @@ export function Extensions() {
   const [error, setError] = useState<ErrorState>(null);
   const [showEnabledOnly, setShowEnabledOnly] = useState(false);
   const agent_name = (getCookie('agixt-agent') || process.env.NEXT_PUBLIC_AGIXT_AGENT) ?? agent;
-  const { data: activeCompany } = useActiveCompany();
+  const { data: activeCompany } = useCompany();
   const { data: providerData } = useProviders();
   const searchParams = useSearchParams();
   // Filter extensions for the enabled commands view
