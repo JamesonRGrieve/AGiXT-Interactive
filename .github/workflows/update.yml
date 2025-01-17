@@ -34,17 +34,16 @@ jobs:
           
           echo "Using repository: ${TARGET_REPO}"
           
-          # Test repository access
-          echo "Testing repository access..."
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${GITHUB_TOKEN}" \
-            "https://api.github.com/repos/${TARGET_REPO}")
-          
-          if [ "$HTTP_CODE" == "404" ]; then
-            echo "Error: Cannot access repository ${TARGET_REPO}"
-            echo "Please verify the PAT has 'repo' access to this repository"
-            exit 1
-          elif [ "$HTTP_CODE" != "200" ]; then
-            echo "Error: Unexpected response from GitHub API (HTTP ${HTTP_CODE})"
+          # Test git clone access
+          echo "Testing git clone access..."
+          if git ls-remote "https://${GITHUB_TOKEN}@github.com/${TARGET_REPO}.git" > /dev/null 2>&1; then
+            echo "Git repository access verified"
+          else
+            echo "Error: Cannot access git repository. Please verify:"
+            echo "1. The repository exists and is spelled correctly"
+            echo "2. The PAT has correct permissions"
+            echo "3. The PAT is properly formatted"
+            echo "Try running: git clone https://[PAT]@github.com/${TARGET_REPO}.git manually to test"
             exit 1
           fi
           
