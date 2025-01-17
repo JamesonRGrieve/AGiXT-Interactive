@@ -40,8 +40,7 @@ jobs:
     with:
       notebook: tests/FrontEnd.ipynb
       front-end-image: ${{ needs.build.outputs.primary-image }}
-      report-name: 'boilerplate-tests'
+      report-name: 'interactive-tests'
     secrets:
       GHCR_PAT: ${{ secrets.GHCR_PAT }}
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
- 
