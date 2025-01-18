@@ -38,7 +38,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
-        {pathname.includes('/chat') && <ChatHistory />}
+        <ChatHistory />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenuButton tooltip='Hide Sidebar' side='left' onClick={toggleSidebar}>
