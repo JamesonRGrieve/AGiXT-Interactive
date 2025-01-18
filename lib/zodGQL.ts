@@ -43,35 +43,23 @@ z.ZodObject.prototype.toGQL = function (
 ): string {
   const operation = operationName ? ` ${operationName}` : '';
 
-  // Format variables if present
+  // Format variables declaration
   const varsString = variables
     ? `(${Object.entries(variables)
-        .map(([key, value]) => {
-          const type = typeof value === 'string' ? 'String' : 'Int';
-          return `$${key}: ${type}!`;
-        })
+        .map(([key]) => `$${key}: String!`)
         .join(', ')})`
     : '';
 
-  // Format field arguments if present
+  // Format field arguments
   const fieldArgs = variables
     ? `(${Object.entries(variables)
         .map(([key]) => `${key}: $${key}`)
         .join(', ')})`
     : '';
 
-  const fields = this.zodToGraphQL(1);
-
-  // Handle the case where the schema has a nested data.user structure
-  if (this._def.shape()?.data instanceof z.ZodObject) {
-    return `${queryType}${operation}${varsString} {\n${fields}}`;
-  }
-
-  // For direct user queries without the data wrapper
+  // Get operation field name
   const queryField = operationName?.replace(/^Get/, '').toLowerCase();
-  if (queryField) {
-    return `${queryType}${operation}${varsString} {\n  ${queryField}${fieldArgs} {\n${fields}  }\n}`;
-  }
+  const fields = this.zodToGraphQL(2);
 
-  return `${queryType}${operation}${varsString} {\n${fields}}`;
+  return `${queryType}${operation}${varsString} {\n  ${queryField}${fieldArgs} {\n${fields}  }\n}`;
 };

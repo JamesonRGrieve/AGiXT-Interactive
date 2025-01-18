@@ -5,9 +5,10 @@ import ChainStep from './ChainStep';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
+import { useChain } from '../../hooks';
 
-export default function ChainSteps({ chainData, chainMutate }) {
-  const context = useInteractiveConfig();
+export default function ChainSteps({ chainName }) {
+  const { data: chainData, mutate: chainMutate } = useChain(chainName);
 
   const handleAdd = async () => {
     const lastStep = chainData.steps[chainData.steps.length - 1];
