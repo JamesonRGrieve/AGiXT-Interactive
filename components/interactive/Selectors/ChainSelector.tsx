@@ -1,48 +1,66 @@
 'use client';
 
-import React from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
+import React, { useContext } from 'react';
+import { InteractiveConfigContext } from '../InteractiveConfigContext';
 import { useChains } from '../hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useRouter, useSearchParams } from 'next/navigation';
+import usePathname from '@/hooks/usePathname';
 
-export default function ChainSelector({ value, mutate }: { value?: string; mutate?: (value: string) => void }) {
+export function ChainSelector({
+  value,
+  onChange,
+}: {
+  category?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+}): React.JSX.Element {
+  const { data: chainData, error } = useChains();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
-  const { data: chainData, error } = useChains();
-  console.log('CHAIN DATA', chainData);
-
-  const handleChainChange = (newValue: string) => {
-    if (mutate) {
-      mutate(newValue);
-    } else {
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
-      current.set('chain', newValue);
-      const search = current.toString();
-      const query = search ? `?${search}` : '';
-      router.push(`${pathname}${query}`);
-    }
-  };
 
   if (error) return <div>Failed to load chains</div>;
-  if (!chainData) return <div>Loading...</div>;
 
   return (
-    <Select value={value} onValueChange={handleChainChange}>
-      <SelectTrigger className='w-full'>
-        <SelectValue placeholder='Select a Chain' />
-      </SelectTrigger>
-      <SelectContent>
-        {chainData &&
-          chainData.map(
-            (chain) =>
-              chain && (
-                <SelectItem key={chain} value={chain}>
-                  {chain}
-                </SelectItem>
-              ),
-          )}
-      </SelectContent>
-    </Select>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className='w-full'>
+            <Select
+              disabled={!chainData || chainData.length === 0}
+              value={value || searchParams.get('chain') || undefined}
+              onValueChange={
+                onChange
+                  ? (value) => onChange(value)
+                  : (value) => {
+                      const current = new URLSearchParams(Array.from(searchParams.entries()));
+                      current.set('chain', value);
+                      const search = current.toString();
+                      const query = search ? `?${search}` : '';
+                      router.push(`${pathname}${query}`);
+                    }
+              }
+            >
+              <SelectTrigger className='w-full text-xs'>
+                <SelectValue placeholder='Select a Chain' />
+              </SelectTrigger>
+              <SelectContent>
+                {!pathname.includes('settings/chains') && <SelectItem value='/'>- Use Agent Default -</SelectItem>}
+                {chainData?.map((chain) => (
+                  <SelectItem key={chain} value={chain}>
+                    {chain}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Select a Chain</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

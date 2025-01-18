@@ -24,6 +24,7 @@ export function AgentSelector() {
   const { data: agentsData } = useAgents();
   console.log(agentError);
   console.log(companyError);
+  console.log(activeAgent, activeCompany);
   const switchAgents = (agent: Agent) => {
     // setActiveAgent(agent);
     setCookie('agixt-agent', agent.name, {

@@ -8,34 +8,24 @@ import useSWR, { SWRResponse } from 'swr';
 import {
   User,
   UserSchema,
-  UserResponse,
-  UserResponseSchema,
   Agent,
   AgentSchema,
   Company,
   CompanySchema,
   Prompt,
   PromptSchema,
-  PromptResponseSchema,
-  PromptCategoriesResponseSchema,
-  PromptsResponseSchema,
   Provider,
   ProviderSchema,
-  ProviderResponseSchema,
-  ProvidersResponseSchema,
   Invitation,
-  InvitationSchema,
-  InvitationsResponseSchema,
   CommandArgs,
-  CommandArgsResponseSchema,
   Chain,
   ChainSchema,
-  ChainResponseSchema,
-  ChainsResponseSchema,
   Conversation,
   ConversationSchema,
   ConversationEdge,
-  ConversationsResponseSchema,
+  InvitationSchema,
+  CommandArgSchema,
+  PromptCategorySchema,
 } from './types';
 
 // ============================================================================
@@ -136,9 +126,9 @@ export function usePromptCategories(): SWRResponse<string[]> {
   return useSWR<string[]>(
     '/promptCategories',
     async (): Promise<string[]> => {
-      const query = PromptCategoriesResponseSchema.toGQL('query', 'GetPromptCategories');
+      const query = PromptCategorySchema.toGQL('query', 'GetPromptCategories');
       const response = await client.request(query);
-      return response.promptCategories || [];
+      return response || [];
     },
     { fallbackData: [] },
   );
@@ -167,7 +157,7 @@ export function usePrompts(): SWRResponse<Prompt[]> {
   return useSWR<Prompt[]>(
     '/prompts',
     async (): Promise<Prompt[]> => {
-      const query = PromptsResponseSchema.toGQL('query', 'GetPrompts');
+      const query = PromptSchema.toGQL('query', 'GetPrompts');
       const response = await client.request(query);
       return response.prompts || [];
     },
@@ -224,10 +214,11 @@ export function useUser(): SWRResponse<User> {
   return useSWR<User>(
     '/user',
     async (): Promise<User> => {
-      const query = UserResponseSchema.toGQL('query', 'GetUser');
-      const response = await client.request<UserResponse>(query);
-      const validated = UserResponseSchema.parse(response);
-      return validated.data.user;
+      const query = UserSchema.toGQL('query', 'GetUser');
+      console.log(query);
+      const response = await client.request<{ user: User }>(query);
+      console.log(response);
+      return UserSchema.parse(response.user);
     },
     {
       fallbackData: {
@@ -256,10 +247,10 @@ export function useProvider(providerName?: string): SWRResponse<Provider | null>
   return useSWR<Provider | null>(
     providerName ? [`/provider`, providerName] : null,
     async (): Promise<Provider | null> => {
-      const query = ProviderResponseSchema.toGQL('query', 'GetProvider', { providerName });
+      const query = ProviderSchema.toGQL('query', 'GetProvider', { providerName });
       const response = await client.request<Provider>(query, { providerName });
-      const validated = ProviderResponseSchema.parse(response);
-      return validated.data.provider;
+      const validated = ProviderSchema.parse(response);
+      return validated.provider;
     },
     { fallbackData: null },
   );
@@ -275,10 +266,10 @@ export function useProviders(): SWRResponse<Provider[]> {
   return useSWR<Provider[]>(
     '/providers',
     async (): Promise<Provider[]> => {
-      const query = ProvidersResponseSchema.toGQL('query', 'GetProviders');
+      const query = ProviderSchema.toGQL('query', 'GetProviders');
       const response = await client.request<Provider[]>(query);
-      const validated = ProvidersResponseSchema.parse(response);
-      return validated.data.providers;
+      const validated = ProviderSchema.parse(response);
+      return validated.providers;
     },
     { fallbackData: [] },
   );
@@ -299,10 +290,10 @@ export function useInvitations(companyId?: string): SWRResponse<Invitation[]> {
   return useSWR<Invitation[]>(
     companyId ? [`/invitations`, companyId] : '/invitations',
     async (): Promise<Invitation[]> => {
-      const query = InvitationsResponseSchema.toGQL('query', 'GetInvitations', { companyId });
+      const query = InvitationSchema.toGQL('query', 'GetInvitations', { companyId });
       const response = await client.request<Invitation[]>(query, { companyId });
-      const validated = InvitationsResponseSchema.parse(response);
-      return validated.data.invitations;
+      const validated = InvitationSchema.parse(response);
+      return validated.invitations;
     },
     { fallbackData: [] },
   );
@@ -323,9 +314,9 @@ export function useCommandArgs(commandName: string): SWRResponse<CommandArgs | n
   return useSWR<CommandArgs | null>(
     commandName ? [`/command_args`, commandName] : null,
     async (): Promise<CommandArgs | null> => {
-      const query = CommandArgsResponseSchema.toGQL('query', 'GetCommandArgs', { commandName });
+      const query = CommandArgSchema.toGQL('query', 'GetCommandArgs', { commandName });
       const response = await client.request<CommandArgs>(query, { commandName });
-      const validated = CommandArgsResponseSchema.parse(response);
+      const validated = CommandArgSchema.parse(response);
       return validated;
     },
     { fallbackData: null },
@@ -347,10 +338,10 @@ export function useChain(chainName?: string): SWRResponse<Chain | null> {
   return useSWR<Chain | null>(
     chainName ? [`/chain`, chainName] : null,
     async (): Promise<Chain | null> => {
-      const query = ChainResponseSchema.toGQL('query', 'GetChain', { chainName });
+      const query = ChainSchema.toGQL('query', 'GetChain', { chainName });
       const response = await client.request<Chain>(query, { chainName });
-      const validated = ChainResponseSchema.parse(response);
-      return validated.data.chain;
+      const validated = ChainSchema.parse(response);
+      return validated.chain;
     },
     { fallbackData: null },
   );
@@ -366,10 +357,10 @@ export function useChains(): SWRResponse<Chain[]> {
   return useSWR<Chain[]>(
     '/chains',
     async (): Promise<Chain[]> => {
-      const query = ChainsResponseSchema.toGQL('query', 'GetChains');
+      const query = ChainSchema.toGQL('query', 'GetChains');
       const response = await client.request<Chain[]>(query);
-      const validated = ChainsResponseSchema.parse(response);
-      return validated.data.chains;
+      const validated = ChainSchema.parse(response);
+      return validated.chains;
     },
     { fallbackData: [] },
   );
@@ -392,7 +383,7 @@ export function useConversation(conversationId: string): SWRResponse<Conversatio
     async (): Promise<Conversation | null> => {
       const query = ConversationSchema.toGQL('subscription', 'WatchConversation', { conversationId });
       const response = await client.request<Conversation>(query, { conversationId });
-      return response;
+      return response.conversation;
     },
     {
       fallbackData: null,
@@ -405,16 +396,16 @@ export function useConversation(conversationId: string): SWRResponse<Conversatio
  * Hook to fetch and manage all conversations with real-time updates
  * @returns SWR response containing array of conversation edges
  */
-export function useConversations(): SWRResponse<ConversationEdge[]> {
+export function useConversations(): SWRResponse<Conversation[]> {
   const client = createGraphQLClient();
 
-  return useSWR<ConversationEdge[]>(
+  return useSWR<Conversation[]>(
     '/conversations',
     async (): Promise<ConversationEdge[]> => {
-      const query = ConversationsResponseSchema.toGQL('subscription', 'WatchConversations');
+      const query = ConversationSchema.toGQL('subscription', 'WatchConversations');
       const response = await client.request<ConversationEdge[]>(query);
-      const validated = ConversationsResponseSchema.parse(response);
-      return validated.data.conversations.edges;
+      const validated = ConversationSchema.parse(response);
+      return validated.conversations;
     },
     {
       fallbackData: [],
