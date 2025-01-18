@@ -175,6 +175,7 @@ export function useProviders() {
   });
 }
 export type Conversation = {
+  id: string;
   name: string;
   has_notifications: boolean;
   created_at: string;
