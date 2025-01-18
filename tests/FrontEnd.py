@@ -282,27 +282,60 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         """Handle MFA screenshot"""
         # Initialize otp_uri before QR code scanning
         otp_uri = None
-        max_retries = 3
+        max_retries = 5  # Increased retries
         retry_count = 0
         
+        # Wait longer initially for QR code to fully render
+        await asyncio.sleep(5)
+        
         while not otp_uri and retry_count < max_retries:
-            await asyncio.sleep(2)
-            await self.take_screenshot(f"Screenshot prior to attempting to decode QR code - Attempt {retry_count + 1}")
-            nparr = np.frombuffer(await self.page.screenshot(), np.uint8)
-            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-            decoded_objects = decode(img)
-            for obj in decoded_objects:
-                if obj.type == "QRCODE":
-                    otp_uri = obj.data.decode("utf-8")
-                    break
-            if not otp_uri:
+            try:
+                logging.info(f"Attempting to decode QR code (Attempt {retry_count + 1}/{max_retries})")
+                await self.take_screenshot(f"Screenshot prior to attempting to decode QR code - Attempt {retry_count + 1}")
+                
+                # Take a high-quality screenshot
+                screenshot = await self.page.screenshot(type='png', quality=100)
+                nparr = np.frombuffer(screenshot, np.uint8)
+                img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                
+                # Try different image processing techniques
+                decoded_objects = []
+                
+                # Attempt 1: Original image
+                decoded_objects = decode(img)
+                
+                # Attempt 2: Try with grayscale if original fails
+                if not decoded_objects:
+                    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    decoded_objects = decode(gray_img)
+                    logging.info("Attempting decode with grayscale image")
+                
+                # Attempt 3: Try with thresholding if grayscale fails
+                if not decoded_objects:
+                    _, thresh_img = cv2.threshold(gray_img, 127, 255, cv2.THRESH_BINARY)
+                    decoded_objects = decode(thresh_img)
+                    logging.info("Attempting decode with thresholded image")
+                
+                for obj in decoded_objects:
+                    if obj.type == "QRCODE":
+                        otp_uri = obj.data.decode("utf-8")
+                        logging.info("Successfully decoded QR code")
+                        break
+                        
+                if not otp_uri:
+                    retry_count += 1
+                    if retry_count == max_retries:
+                        raise Exception("Failed to decode QR code after multiple attempts and image processing techniques")
+                    logging.info(f"QR code not found, retrying in 3 seconds... ({retry_count}/{max_retries})")
+                    await asyncio.sleep(3)  # Increased wait time between attempts
+                else:
+                    logging.info(f"Retrieved OTP URI: {otp_uri}")
+            except Exception as e:
+                logging.error(f"Error during QR code decoding: {str(e)}")
                 retry_count += 1
                 if retry_count == max_retries:
-                    raise Exception("Failed to decode QR code after multiple attempts")
-                logging.info(f"QR code not found, retrying... ({retry_count}/{max_retries})")
-                await asyncio.sleep(2)
-            else:
-                logging.info(f"Retrieved OTP URI: {otp_uri}")
+                    raise Exception(f"Failed to decode QR code: {str(e)}")
+                await asyncio.sleep(3)
                 
         match = re.search(r"secret=([\w\d]+)", otp_uri)
         if match:
