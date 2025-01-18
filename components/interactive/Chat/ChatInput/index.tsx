@@ -2,6 +2,7 @@
 
 import React, { ReactNode, useContext, useEffect, useRef, useState } from 'react';
 import { setCookie } from 'cookies-next';
+import { BiCollapseVertical } from 'react-icons/bi';
 import { InteractiveConfigContext } from '../../InteractiveConfigContext';
 import { VoiceRecorder } from '../VoiceRecorder';
 import { ListUploadedFiles, OverrideSwitches, ResetConversation, SendMessage, Timer, UploadFiles } from './Adornments';
@@ -9,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { DropZone } from '@/components/jrg/DropZone';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { TooltipBasic } from '@/components/ui/tooltip';
 
 export default function ChatBar({
   onSend,
@@ -94,13 +96,14 @@ export default function ChatBar({
       )}
     >
       {isActive ? (
-        <>
+        <label className='w-full' htmlFor='message'>
           <div className='w-full'>
             <Textarea
               ref={textareaRef}
               placeholder={loading ? 'Sending...' : 'Enter your message here...'}
               className='overflow-x-hidden overflow-y-auto border-none resize-none min-h-4 ring-0 focus-visible:ring-0 max-h-96'
               rows={1}
+              name='message'
               id='message'
               value={message}
               onChange={(e) => setMessage(e.target.value)}
@@ -134,6 +137,11 @@ export default function ChatBar({
               <ListUploadedFiles uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} />
             )}
             <div className='flex-grow' />
+            <TooltipBasic title='Collapse' side='top'>
+              <Button size='icon' variant='ghost' className='rounded-full' onClick={() => handleBlur()}>
+                <BiCollapseVertical className='w-4 h-4' />
+              </Button>
+            </TooltipBasic>
             {timer > -1 && <Timer loading={loading} timer={timer} />}
             {showOverrideSwitchesCSV && <OverrideSwitches showOverrideSwitches={showOverrideSwitchesCSV} />}
             {enableVoiceInput && <VoiceRecorder onSend={onSend} disabled={disabled} />}
@@ -156,7 +164,7 @@ export default function ChatBar({
               />
             )}
           </div>
-        </>
+        </label>
       ) : (
         <>
           {enableFileUpload && !alternativeInputActive && (
