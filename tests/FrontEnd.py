@@ -1,6 +1,5 @@
 from playwright.async_api import async_playwright
 from IPython.display import Image, display
-=======
 from pyzbar.pyzbar import decode
 from datetime import datetime
 from agixtsdk import AGiXTSDK
