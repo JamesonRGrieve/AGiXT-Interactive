@@ -1,6 +1,6 @@
 from playwright.async_api import async_playwright
-from playwright_stealth import stealth_async
 from IPython.display import Image, display
+=======
 from pyzbar.pyzbar import decode
 from datetime import datetime
 from agixtsdk import AGiXTSDK
@@ -280,20 +280,30 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def handle_mfa_screen(self):
         """Handle MFA screenshot"""
-        # Decode QR code from screenshot
-        await asyncio.sleep(2)
-        await self.take_screenshot(f"Screenshot prior to attempting to decode QR code")
-        nparr = np.frombuffer(await self.page.screenshot(), np.uint8)
-        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        # Initialize otp_uri before QR code scanning
         otp_uri = None
-        decoded_objects = decode(img)
-        for obj in decoded_objects:
-            if obj.type == "QRCODE":
-                otp_uri = obj.data.decode("utf-8")
-                break
-        if not otp_uri:
-            raise Exception("Failed to decode QR code")
-        logging.info(f"Retrieved OTP URI: {otp_uri}")
+        max_retries = 3
+        retry_count = 0
+        
+        while not otp_uri and retry_count < max_retries:
+            await asyncio.sleep(2)
+            await self.take_screenshot(f"Screenshot prior to attempting to decode QR code - Attempt {retry_count + 1}")
+            nparr = np.frombuffer(await self.page.screenshot(), np.uint8)
+            img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+            decoded_objects = decode(img)
+            for obj in decoded_objects:
+                if obj.type == "QRCODE":
+                    otp_uri = obj.data.decode("utf-8")
+                    break
+            if not otp_uri:
+                retry_count += 1
+                if retry_count == max_retries:
+                    raise Exception("Failed to decode QR code after multiple attempts")
+                logging.info(f"QR code not found, retrying... ({retry_count}/{max_retries})")
+                await asyncio.sleep(2)
+            else:
+                logging.info(f"Retrieved OTP URI: {otp_uri}")
+                
         match = re.search(r"secret=([\w\d]+)", otp_uri)
         if match:
             secret_key = match.group(1)
@@ -385,8 +395,6 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def handle_google(self):
         """Handle Google OAuth scenario"""
-        await stealth_async(self.context)
-
         async def handle_oauth_async(popup):
             self.popup = popup
             logging.info(f"New popup URL: {popup.url}")
@@ -623,6 +631,10 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def run(self, headless=not is_desktop()):
         try:
+            # Wait for backend to start
+            logging.info("Waiting 60 seconds for backend to start...")
+            await asyncio.sleep(60)
+
             async with async_playwright() as self.playwright:
                 self.browser = await self.playwright.chromium.launch(headless=headless)
                 self.context = await self.browser.new_context()
