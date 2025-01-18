@@ -148,11 +148,11 @@ export const ChainStepSchema = z.object({
 });
 
 export const ChainSchema = z.object({
-  id: z.string().uuid(),
-  chainName: z.string().min(1),
-  description: z.string().optional(),
+  id: z.string(), // Re-add after chain IDs are implemented | .uuid(),
+  chainName: z.string(), // Re-add after AGiXT#1369 is solved. | .min(1),
   steps: z.array(ChainStepSchema),
 });
+export const ChainsSchema = ChainSchema.pick({ id: true, chainName: true });
 
 export type Chain = z.infer<typeof ChainSchema>;
 export type ChainStepPrompt = z.infer<typeof ChainStepPromptSchema>;

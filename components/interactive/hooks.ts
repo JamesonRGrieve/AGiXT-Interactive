@@ -26,7 +26,10 @@ import {
   InvitationSchema,
   CommandArgSchema,
   PromptCategorySchema,
+  ChainsSchema,
 } from './types';
+import { z } from 'zod';
+import { RiRhythmFill } from 'react-icons/ri';
 
 // ============================================================================
 // Utility Functions
@@ -332,16 +335,43 @@ export function useCommandArgs(commandName: string): SWRResponse<CommandArgs | n
  * @param chainName - Optional chain name to fetch specific chain
  * @returns SWR response containing chain data
  */
+// export function useChain(chainName?: string): SWRResponse<Chain | null> {
+//   const client = createGraphQLClient();
+
+//   return useSWR<Chain | null>(
+//     chainName ? [`/chain`, chainName] : null,
+//     async (): Promise<Chain | null> => {
+//       try {
+//         const query = ChainSchema.toGQL('query', 'GetChain', { chainName: chainName });
+//         console.log('QUERY', query);
+//         const response = await client.request<Chain>(query, { chainName: chainName });
+//         console.log('RESPONSE', response);
+//         const validated = ChainSchema.parse(response.data);
+//         return validated.chain;
+//       } catch (error) {
+//         console.log('ERROR:', error);
+//         return null;
+//       }
+//     },
+//     { fallbackData: null },
+//   );
+// }
 export function useChain(chainName?: string): SWRResponse<Chain | null> {
-  const client = createGraphQLClient();
+  const state = useContext(InteractiveConfigContext);
 
   return useSWR<Chain | null>(
     chainName ? [`/chain`, chainName] : null,
     async (): Promise<Chain | null> => {
-      const query = ChainSchema.toGQL('query', 'GetChain', { chainName });
-      const response = await client.request<Chain>(query, { chainName });
-      const validated = ChainSchema.parse(response);
-      return validated.chain;
+      try {
+        const response = await state.agixt.getChain(chainName);
+        response.chainName = response.chain_name;
+        delete response.chain_name;
+        const validated = ChainSchema.parse(response);
+        return validated.chain;
+      } catch (error) {
+        console.log('ERROR:', error);
+        return null;
+      }
     },
     { fallbackData: null },
   );
@@ -357,10 +387,14 @@ export function useChains(): SWRResponse<Chain[]> {
   return useSWR<Chain[]>(
     '/chains',
     async (): Promise<Chain[]> => {
-      const query = ChainSchema.toGQL('query', 'GetChains');
-      const response = await client.request<Chain[]>(query);
-      const validated = ChainSchema.parse(response);
-      return validated.chains;
+      try {
+        const query = ChainsSchema.toGQL('query', 'GetChains');
+        const response = await client.request<{ chains: Chain[] }>(query);
+        const validated = z.array(ChainsSchema).parse(response.chains);
+        return validated;
+      } catch (error) {
+        return [];
+      }
     },
     { fallbackData: [] },
   );
