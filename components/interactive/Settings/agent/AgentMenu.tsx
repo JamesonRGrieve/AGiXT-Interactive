@@ -2,7 +2,7 @@
 
 import { useSearchParams } from 'next/navigation';
 import { mutate } from 'swr';
-import { useAgentCommands } from '../../hooks';
+import { useAgent } from '../../hooks';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import { Card, CardContent } from '@/components/ui/card';
 import { Switch } from '@/components/ui/switch';
@@ -12,10 +12,10 @@ export default function AgentMenu() {
   const context = useInteractiveConfig();
   const searchParams = useSearchParams();
 
-  const { data: commandData } = useAgentCommands(context.agent);
+  const { data: agentData } = useAgent();
 
   const handleToggleAll = async () => {
-    const allEnabled = Object.values(commandData).every((command) => command);
+    const allEnabled = Object.values(agentData.commands).every((command) => command);
     await context.agixt.toggleCommand(context.agent, '*', !allEnabled);
     mutate(`/agent/commands?agent=${context.agent}`);
   };
@@ -27,12 +27,12 @@ export default function AgentMenu() {
           <Label htmlFor='toggle-all'>All Commands</Label>
           <Switch
             id='toggle-all'
-            checked={commandData && Object.values(commandData).every((command) => command)}
+            checked={agentData.commands && Object.values(agentData.commands).every((command) => command)}
             onCheckedChange={handleToggleAll}
           />
         </div>
-        {commandData &&
-          Object.entries(commandData)
+        {agentData.commands &&
+          Object.entries(agentData.commands)
             .sort()
             .map(([command, enabled]) => <AgentMenuItem key={command} name={command} enabled={enabled} />)}
       </CardContent>

@@ -7,7 +7,7 @@ import '@/lib/zodGQL';
 
 export const RoleSchema = z.enum(['user', 'system', 'assistant', 'function']);
 
-export const PromptCategorySchema = z.enum(['system', 'user', 'assistant', 'function', 'chain']);
+export const PromptCategorySchema = z.unknown();
 
 // ============================================================================
 // Agent Related Schemas
@@ -37,17 +37,6 @@ export const PromptSchema = z.object({
   content: z.string(),
   description: z.string().optional(),
   arguments: z.array(PromptArgumentSchema),
-});
-
-// Remove the nesting of PromptSchema inside a 'prompt' object
-export const PromptResponseSchema = PromptSchema;
-
-export const PromptsResponseSchema = z.object({
-  prompts: z.array(PromptSchema),
-});
-
-export const PromptCategoriesResponseSchema = z.object({
-  promptCategories: z.array(z.string()),
 });
 
 export type Prompt = z.infer<typeof PromptSchema>;
@@ -80,14 +69,7 @@ export const UserSchema = z.object({
   lastName: z.string().min(1),
 });
 
-export const UserResponseSchema = z.object({
-  data: z.object({
-    user: UserSchema,
-  }),
-});
-
 export type User = z.infer<typeof UserSchema>;
-export type UserResponse = z.infer<typeof UserResponseSchema>;
 
 // ============================================================================
 // Provider Related Schemas
@@ -114,18 +96,6 @@ export const ProviderSchema = z.object({
   settings: z.record(ProviderSettingSchema),
 });
 
-export const ProviderResponseSchema = z.object({
-  data: z.object({
-    provider: ProviderSchema,
-  }),
-});
-
-export const ProvidersResponseSchema = z.object({
-  data: z.object({
-    providers: z.array(ProviderSchema),
-  }),
-});
-
 export type Provider = z.infer<typeof ProviderSchema>;
 
 // ============================================================================
@@ -140,12 +110,6 @@ export const InvitationSchema = z.object({
   inviterId: z.string().uuid(),
   isAccepted: z.boolean(),
   roleId: z.string().uuid(),
-});
-
-export const InvitationsResponseSchema = z.object({
-  data: z.object({
-    invitations: z.array(InvitationSchema),
-  }),
 });
 
 export type Invitation = z.infer<typeof InvitationSchema>;
@@ -163,15 +127,7 @@ export const CommandArgSchema = z.object({
   value: CommandArgValueSchema,
 });
 
-export const CommandArgsResponseSchema = z.object({
-  data: z.object({
-    commandArgs: z.object({
-      args: z.array(CommandArgSchema),
-    }),
-  }),
-});
-
-export type CommandArgs = z.infer<typeof CommandArgsResponseSchema>;
+export type CommandArgs = z.infer<typeof CommandArgSchema>;
 
 // ============================================================================
 // Chain Related Schemas
@@ -196,18 +152,6 @@ export const ChainSchema = z.object({
   chainName: z.string().min(1),
   description: z.string().optional(),
   steps: z.array(ChainStepSchema),
-});
-
-export const ChainResponseSchema = z.object({
-  data: z.object({
-    chain: ChainSchema,
-  }),
-});
-
-export const ChainsResponseSchema = z.object({
-  data: z.object({
-    chains: z.array(ChainSchema),
-  }),
 });
 
 export type Chain = z.infer<typeof ChainSchema>;
@@ -253,15 +197,6 @@ export const ConversationEdgeSchema = z.object({
   name: z.string().min(1),
   summary: z.string().optional(),
   updatedAt: z.string().datetime(),
-});
-
-export const ConversationsResponseSchema = z.object({
-  data: z.object({
-    conversations: z.object({
-      edges: z.array(ConversationEdgeSchema),
-      pageInfo: z.object({}).passthrough(),
-    }),
-  }),
 });
 
 export type Conversation = z.infer<typeof ConversationSchema>;

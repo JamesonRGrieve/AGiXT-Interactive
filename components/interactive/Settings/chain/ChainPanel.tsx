@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
 import { LuPlus, LuCheck, LuDownload, LuPencil, LuTrash2 } from 'react-icons/lu';
-import ChainSelector from '../../Selectors/ChainSelector';
+import { ChainSelector } from '../../Selectors/ChainSelector';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';

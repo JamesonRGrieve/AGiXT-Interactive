@@ -6,7 +6,9 @@ import ChainSteps from './ChainSteps';
 
 export default function ChainEditor() {
   const searchParams = useSearchParams();
-  const { data: chainData, mutate } = useChain(searchParams.get('chain') ?? undefined);
+  const { data: chainData, mutate, error } = useChain(searchParams.get('chain') ?? undefined);
+  console.log(chainData);
+  console.log(error);
 
   if (!chainData) {
     return <div>Loading...</div>;

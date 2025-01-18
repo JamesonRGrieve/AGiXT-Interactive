@@ -16,7 +16,7 @@ z.ZodObject.prototype.zodToGraphQL = function (depth = 0, maxDepth = 10): string
 
   const indent = '  '.repeat(depth);
   let query = '';
-  const shape = this.shape;
+  const shape = this._def.shape();
 
   for (const [key, value] of Object.entries(shape)) {
     if (value instanceof z.ZodObject) {
@@ -43,28 +43,35 @@ z.ZodObject.prototype.toGQL = function (
 ): string {
   const operation = operationName ? ` ${operationName}` : '';
 
-  // Format variables if present, marking them as non-null (!) where appropriate
+  // Format variables if present
   const varsString = variables
     ? `(${Object.entries(variables)
-        .map(([key]) => `$${key}: String!`)
+        .map(([key, value]) => {
+          const type = typeof value === 'string' ? 'String' : 'Int';
+          return `$${key}: ${type}!`;
+        })
         .join(', ')})`
     : '';
 
   // Format field arguments if present
   const fieldArgs = variables
-    ? `(${Object.keys(variables)
-        .map((key) => `${key}: $${key}`)
+    ? `(${Object.entries(variables)
+        .map(([key]) => `${key}: $${key}`)
         .join(', ')})`
     : '';
 
-  const queryField = operationName?.replace(/^Get/, '').toLowerCase();
   const fields = this.zodToGraphQL(1);
 
-  // Special case for single prompt query - don't nest the fields
-  if (queryField === 'prompt') {
+  // Handle the case where the schema has a nested data.user structure
+  if (this._def.shape()?.data instanceof z.ZodObject) {
+    return `${queryType}${operation}${varsString} {\n${fields}}`;
+  }
+
+  // For direct user queries without the data wrapper
+  const queryField = operationName?.replace(/^Get/, '').toLowerCase();
+  if (queryField) {
     return `${queryType}${operation}${varsString} {\n  ${queryField}${fieldArgs} {\n${fields}  }\n}`;
   }
 
-  // For prompts and categories, use the field names from the schema directly
-  return `${queryType}${operation} {\n${fields}}`;
+  return `${queryType}${operation}${varsString} {\n${fields}}`;
 };

@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import NewPromptDialog from './PromptDialog';
 
-export default function PromptAdmin() {
+export default function PromptPanel() {
   const context = useInteractiveConfig();
   const router = useRouter();
   const searchParams = useSearchParams();

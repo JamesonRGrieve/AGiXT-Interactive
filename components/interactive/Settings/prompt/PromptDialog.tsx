@@ -12,7 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import { usePromptCategories } from '@/components/interactive/hooks';
 
-export default function NewPromptDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
+export default function PromptDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
   const router = useRouter();
   const context = useInteractiveConfig();
   const { data: categoryData } = usePromptCategories();

@@ -1,35 +1,72 @@
 'use client';
 
-import { useAgentCommands } from '../hooks';
+import React, { useContext } from 'react';
+import { InteractiveConfigContext } from '../InteractiveConfigContext';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useRouter, useSearchParams } from 'next/navigation';
+import usePathname from '@/hooks/usePathname';
+import { useAgent } from '../hooks';
 
-export default function CommandSelector({
-  agentName,
+export function CommandSelector({
   value,
-  mutate,
+  onChange,
+  category = 'Default',
 }: {
   agentName: string;
-  value: string;
-  mutate: (value: string) => void;
-}) {
-  const { data: commandData } = useAgentCommands(agentName);
+  value?: string;
+  onChange?: (value: string) => void;
+  category?: string;
+}): React.JSX.Element {
+  const { data: agentData, error } = useAgent();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+
+  if (error) return <div>Failed to load commands</div>;
 
   return (
-    <Select value={value} onValueChange={mutate} disabled={!commandData}>
-      <SelectTrigger className='w-full'>
-        <SelectValue placeholder='Select a Command' />
-      </SelectTrigger>
-      <SelectContent>
-        {commandData &&
-          Object.keys(commandData).map(
-            (c) =>
-              c && (
-                <SelectItem key={c} value={c}>
-                  {c}
-                </SelectItem>
-              ),
-          )}
-      </SelectContent>
-    </Select>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div className='w-full'>
+            <Select
+              disabled={!agentData.commands}
+              value={value || searchParams.get('command') || undefined}
+              onValueChange={
+                onChange
+                  ? (value) => onChange(value)
+                  : (value) => {
+                      const current = new URLSearchParams(Array.from(searchParams.entries()));
+                      current.set('command', value);
+                      const search = current.toString();
+                      const query = search ? `?${search}` : '';
+                      router.push(`${pathname}${query}`);
+                    }
+              }
+            >
+              <SelectTrigger className='w-full text-xs'>
+                <SelectValue placeholder='Select a Command' />
+              </SelectTrigger>
+              <SelectContent>
+                {!pathname.includes('settings/commands') && <SelectItem value='/'>- Use Agent Default -</SelectItem>}
+                {agentData.commands &&
+                  Object.keys(agentData.commands).map(
+                    (command) =>
+                      command && (
+                        <SelectItem key={command} value={command}>
+                          {command}
+                        </SelectItem>
+                      ),
+                  )}
+              </SelectContent>
+            </Select>
+          </div>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Select a Command</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

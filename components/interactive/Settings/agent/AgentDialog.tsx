@@ -2,15 +2,14 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useProviders } from '../../hooks';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-
-export default function NewAgentDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
+import { useProviders } from '../../hooks';
+export function AgentDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
   const router = useRouter();
   const context = useInteractiveConfig();
   const { data: providersData, isLoading } = useProviders();
@@ -20,8 +19,8 @@ export default function NewAgentDialog({ open, setOpen }: { open: boolean; setOp
 
   const handleNewAgent = async () => {
     await context.agixt.addAgent(newAgentName, { provider: provider });
-    router.push(`/agent?agent=${newAgentName}`);
     setOpen(false);
+    router.push(`/agent?agent=${newAgentName}`);
   };
 
   const handleAgentImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
