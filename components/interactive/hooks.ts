@@ -27,6 +27,10 @@ import {
   CommandArgSchema,
   PromptCategorySchema,
   ChainsSchema,
+  ConversationsSchema,
+  ConversationMetadataSchema,
+  ConversationMetadata,
+  ConversationEdgeSchema,
 } from './types';
 import { z } from 'zod';
 import { RiRhythmFill } from 'react-icons/ri';
@@ -434,16 +438,19 @@ export function useConversations(): SWRResponse<Conversation[]> {
   const client = createGraphQLClient();
 
   return useSWR<Conversation[]>(
-    '/conversations',
-    async (): Promise<ConversationEdge[]> => {
-      const query = ConversationSchema.toGQL('subscription', 'WatchConversations');
-      const response = await client.request<ConversationEdge[]>(query);
-      const validated = ConversationSchema.parse(response);
-      return validated.conversations;
+    '/chains',
+    async (): Promise<Conversation[]> => {
+      try {
+        const query = z.object({ edges: ConversationEdgeSchema }).toGQL('query', 'GetConversations');
+        console.log('QUERY', query);
+        const response = await client.request<{ conversations: { edges: ConversationEdge }[] }>(query);
+        const validated = z.array(ConversationEdgeSchema).parse(response.conversations.edges);
+        return validated;
+      } catch (error) {
+        console.log('ERROR:', error);
+        return [];
+      }
     },
-    {
-      fallbackData: [],
-      refreshInterval: 1000, // Real-time updates
-    },
+    { fallbackData: [] },
   );
 }

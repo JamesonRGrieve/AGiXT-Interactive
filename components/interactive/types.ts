@@ -190,15 +190,15 @@ export const ConversationSchema = z.object({
 
 export const ConversationEdgeSchema = z.object({
   attachmentCount: z.number().int().nonnegative(),
-  agentId: z.string().uuid(),
-  createdAt: z.string().datetime(),
+  createdAt: z.string(), // TODO Figure out why this errors: .datetime(),
   hasNotifications: z.boolean(),
   id: z.string().uuid(),
   name: z.string().min(1),
   summary: z.string().optional(),
-  updatedAt: z.string().datetime(),
+  updatedAt: z.string(), // TODO Figure out why this errors: .datetime(),.datetime(),
 });
 
 export type Conversation = z.infer<typeof ConversationSchema>;
 export type ConversationEdge = z.infer<typeof ConversationEdgeSchema>;
+export type ConversationMetadata = z.infer<typeof ConversationMetadataSchema>;
 export type Message = z.infer<typeof MessageSchema>;
