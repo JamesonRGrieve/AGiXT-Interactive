@@ -293,7 +293,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
                 await self.take_screenshot(f"Screenshot prior to attempting to decode QR code - Attempt {retry_count + 1}")
                 
                 # Take a high-quality screenshot
-                screenshot = await self.page.screenshot(type='png', quality=100)
+                screenshot = await self.page.screenshot(type='png')
                 nparr = np.frombuffer(screenshot, np.uint8)
                 img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
                 
