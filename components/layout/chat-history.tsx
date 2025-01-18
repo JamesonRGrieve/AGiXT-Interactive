@@ -10,6 +10,7 @@ import { Dialog, DialogClose, DialogTrigger, DialogContent } from '../ui/dialog'
 import { cn } from '@/lib/utils';
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 export function ChatHistory() {
   const state = useContext(InteractiveConfigContext);
@@ -38,29 +39,37 @@ export function ChatHistory() {
         {conversationData &&
           [...conversationData].splice(0, 6).map((conversation) => (
             <SidebarMenuItem key={conversation.id}>
-              <SidebarMenuButton
-                side='left'
-                onClick={() => handleOpenConversation({ conversationId: conversation.id })}
-                className={cn(
-                  'flex items-center justify-between w-full transition-colors',
-                  isActive(conversation.id) && 'bg-sidebar-accent text-sidebar-accent-foreground font-medium',
-                )}
-              >
-                <span className='truncate'>{conversation.name}</span>
-                {conversation.has_notifications && (
-                  <Badge
-                    variant='default'
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <SidebarMenuButton
+                    side='left'
+                    onClick={() => handleOpenConversation({ conversationId: conversation.id })}
                     className={cn(
-                      'ml-2',
-                      isActive(conversation.id)
-                        ? 'bg-sidebar-accent-foreground/10 text-sidebar-accent-foreground'
-                        : 'bg-primary/10 text-primary',
+                      'flex items-center justify-between w-full transition-colors',
+                      isActive(conversation.id) && 'bg-sidebar-accent text-sidebar-accent-foreground font-medium',
                     )}
                   >
-                    New
-                  </Badge>
-                )}
-              </SidebarMenuButton>
+                    <span className='truncate'>{conversation.name}</span>
+                    {conversation.has_notifications && (
+                      <Badge
+                        variant='default'
+                        className={cn(
+                          'ml-2',
+                          isActive(conversation.id)
+                            ? 'bg-sidebar-accent-foreground/10 text-sidebar-accent-foreground'
+                            : 'bg-primary/10 text-primary',
+                        )}
+                      >
+                        New
+                      </Badge>
+                    )}
+                  </SidebarMenuButton>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <div>Updated: {formatDate(conversation.updated_at)}</div>
+                  <div>Created: {formatDate(conversation.created_at)}</div>
+                </TooltipContent>
+              </Tooltip>
             </SidebarMenuItem>
           ))}
 
@@ -107,4 +116,13 @@ function ChatSearch({
       </DialogContent>
     </Dialog>
   );
+}
+
+function formatDate(timestamp: string) {
+  const date = new Date(timestamp);
+  if (date.toDateString() === new Date().toDateString()) {
+    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: 'numeric' });
+  }
+
+  return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
 }
