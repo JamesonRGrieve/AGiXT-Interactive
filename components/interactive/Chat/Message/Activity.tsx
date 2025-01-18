@@ -15,7 +15,7 @@ import formatDate from './formatDate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
-function getTimeDifference(timestamp1, timestamp2) {
+export function getTimeDifference(timestamp1, timestamp2) {
   // Convert timestamps to Date objects
   const date1 = new Date(timestamp1);
   const date2 = new Date(timestamp2);
@@ -178,7 +178,7 @@ export default function Activity({
               <AccordionTrigger
                 className={`${rootStyles} text-foreground flex items-center cursor-pointer justify-start gap-2`}
               >
-                <div className='w-20 flex items-center justify-between gap-2'>
+                <div className='flex items-center justify-between w-20 gap-2'>
                   {activityType !== 'info' && !nextTimestamp ? (
                     <AutorenewOutlined className='animate-spin text-primary' />
                   ) : (
@@ -197,7 +197,7 @@ export default function Activity({
           </Accordion>
         ) : (
           <div className={`${rootStyles} text-foreground flex items-center justify-start cursor-pointer gap-2`}>
-            <div className='w-20 flex items-center justify-between gap-2'>
+            <div className='flex items-center justify-between w-20 gap-2'>
               {activityType !== 'info' && !nextTimestamp ? (
                 <AutorenewOutlined className='animate-spin text-primary' />
               ) : (

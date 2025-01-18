@@ -3,13 +3,16 @@
 import { useContext } from 'react';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { usePathname, useRouter } from 'next/navigation';
-import { useConversations } from '../interactive/hooks';
+import dayjs from 'dayjs';
+import { type Conversation, useConversations } from '../interactive/hooks';
 import { InteractiveConfigContext } from '../interactive/InteractiveConfigContext';
 import { CommandInput, CommandItem, CommandList, Command } from '../ui/command';
 import { Dialog, DialogClose, DialogTrigger, DialogContent } from '../ui/dialog';
 import { cn } from '@/lib/utils';
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Badge } from '@/components/ui/badge';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { getTimeDifference } from '../interactive/Chat/Message/Activity';
 
 export function ChatHistory() {
   const state = useContext(InteractiveConfigContext);
@@ -20,7 +23,6 @@ export function ChatHistory() {
   const isActive = (conversationId: string) => pathname.includes('chat') && pathname.includes(conversationId);
 
   const handleOpenConversation = ({ conversationId }: { conversationId: string | number }) => {
-    console.log('conversationId', JSON.stringify(conversationId, null, 2));
     router.push(`/chat/${conversationId}`);
 
     state?.mutate((oldState) => ({
@@ -30,51 +32,70 @@ export function ChatHistory() {
   };
 
   if (!conversationData || !conversationData.length || isLoading) return null;
+  const groupedConversations = groupConversations(conversationData);
 
   return (
     <SidebarGroup className='group-data-[collapsible=icon]:hidden'>
-      <SidebarGroupLabel>Conversation History</SidebarGroupLabel>
-      <SidebarMenu className='ml-1'>
-        {conversationData &&
-          [...conversationData].splice(0, 6).map((conversation) => (
-            <SidebarMenuItem key={conversation.id}>
-              <SidebarMenuButton
-                side='left'
-                onClick={() => handleOpenConversation({ conversationId: conversation.id })}
-                className={cn(
-                  'flex items-center justify-between w-full transition-colors',
-                  isActive(conversation.id) && 'bg-sidebar-accent text-sidebar-accent-foreground font-medium',
-                )}
-              >
-                <span className='truncate'>{conversation.name}</span>
-                {conversation.has_notifications && (
-                  <Badge
-                    variant='default'
-                    className={cn(
-                      'ml-2',
-                      isActive(conversation.id)
-                        ? 'bg-sidebar-accent-foreground/10 text-sidebar-accent-foreground'
-                        : 'bg-primary/10 text-primary',
+      {Object.entries(groupedConversations).map(([label, conversations]) => (
+        <div key={label}>
+          <SidebarGroupLabel>{label}</SidebarGroupLabel>
+          <SidebarMenu className='ml-1'>
+            {conversations.map((conversation) => (
+              <SidebarMenuItem key={conversation.id}>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <SidebarMenuButton
+                      side='left'
+                      onClick={() => handleOpenConversation({ conversationId: conversation.id })}
+                      className={cn(
+                        'flex items-center justify-between w-full transition-colors',
+                        isActive(conversation.id) && 'bg-sidebar-accent text-sidebar-accent-foreground font-medium',
+                      )}
+                    >
+                      <span className='truncate'>{conversation.name}</span>
+                      {conversation.has_notifications && (
+                        <Badge
+                          variant='default'
+                          className={cn(
+                            'ml-2',
+                            isActive(conversation.id)
+                              ? 'bg-sidebar-accent-foreground/10 text-sidebar-accent-foreground'
+                              : 'bg-primary/10 text-primary',
+                          )}
+                        >
+                          New
+                        </Badge>
+                      )}
+                    </SidebarMenuButton>
+                  </TooltipTrigger>
+                  <TooltipContent side='right'>
+                    <div>{conversation.name}</div>
+                    {/* TODO: Add helper that handles all cases seconds, minutes, hours, days, weeks, months */}
+                    {label === 'Today' ? (
+                      <div>
+                        Updated: {getTimeDifference(dayjs().format('YYYY-MM-DDTHH:mm:ssZ'), conversation.updated_at)} ago
+                      </div>
+                    ) : (
+                      <div>Updated: {dayjs(conversation.updated_at).format('MMM DD YYYY')}</div>
                     )}
-                  >
-                    New
-                  </Badge>
-                )}
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
+                  </TooltipContent>
+                </Tooltip>
+              </SidebarMenuItem>
+            ))}
 
-        {conversationData && conversationData?.length > 5 && (
-          <ChatSearch {...{ conversationData, handleOpenConversation }}>
-            <SidebarMenuItem>
-              <SidebarMenuButton className='text-sidebar-foreground/70' side='left'>
-                <DotsHorizontalIcon className='text-sidebar-foreground/70' />
-                <span>More</span>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          </ChatSearch>
-        )}
-      </SidebarMenu>
+            {conversationData && conversationData?.length > 5 && (
+              <ChatSearch {...{ conversationData, handleOpenConversation }}>
+                <SidebarMenuItem>
+                  <SidebarMenuButton className='text-sidebar-foreground/70' side='left'>
+                    <DotsHorizontalIcon className='text-sidebar-foreground/70' />
+                    <span>More</span>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </ChatSearch>
+            )}
+          </SidebarMenu>
+        </div>
+      ))}
     </SidebarGroup>
   );
 }
@@ -107,4 +128,37 @@ function ChatSearch({
       </DialogContent>
     </Dialog>
   );
+}
+
+function groupConversations(conversations: Conversation[]) {
+  const today = new Date();
+  const yesterday = new Date();
+  yesterday.setDate(today.getDate() - 1);
+
+  const isToday = (date: string) => new Date(date).toDateString() === today.toDateString();
+  const isYesterday = (date: string) => new Date(date).toDateString() === yesterday.toDateString();
+  const isPastWeek = (date: string) => {
+    const d = new Date(date);
+    const weekAgo = new Date();
+    weekAgo.setDate(today.getDate() - 7);
+    return d > weekAgo && d < yesterday;
+  };
+
+  const groups = conversations.slice(0, 7).reduce(
+    (groups: { [key: string]: Conversation[] }, conversation: Conversation) => {
+      if (isToday(conversation.updated_at)) {
+        groups['Today'].push(conversation);
+      } else if (isYesterday(conversation.updated_at)) {
+        groups['Yesterday'].push(conversation);
+      } else if (isPastWeek(conversation.updated_at)) {
+        groups['Past Week'].push(conversation);
+      } else {
+        groups['Older'].push(conversation);
+      }
+      return groups;
+    },
+    { Today: [], Yesterday: [], 'Past Week': [], Older: [] },
+  );
+
+  return Object.fromEntries(Object.entries(groups).filter(([_, conversations]) => conversations.length > 0));
 }
