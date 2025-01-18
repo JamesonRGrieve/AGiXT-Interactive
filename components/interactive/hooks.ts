@@ -430,12 +430,40 @@ export function useConversation(conversationId: string): SWRResponse<Conversatio
   );
 }
 
-/**
- * Hook to fetch and manage all conversations with real-time updates
- * @returns SWR response containing array of conversation edges
- */
-export function useConversations(): SWRResponse<Conversation[]> {
-  const client = createGraphQLClient();
+// New hook for getting providers
+export function useProviders() {
+  const state = useContext(InteractiveConfigContext);
+  return useSWR('/providers', async () => await state.agixt.getAllProviders(), {
+    fallbackData: [],
+  });
+}
+export type Conversation = {
+  id: string;
+  name: string;
+  has_notifications: boolean;
+  created_at: string;
+  updated_at: string;
+};
+export function useProvider(provider: string) {
+  const state = useContext(InteractiveConfigContext);
+  return useSWR(`/provider/${provider}`, async () => (provider ? await state.agixt.getProviderSettings(provider) : {}), {
+    fallbackData: {},
+  });
+}
+type Conversations = Record<string, Conversation>;
+// Hook for getting conversations
+export function useConversations() {
+  const state = useContext(InteractiveConfigContext);
+  return useSWR<any[]>(
+    `/conversation`,
+    // Update SDK
+    async () => {
+      const conversations = await state.agixt.getConversations(true);
+      // Convert conversations object to array with IDs
+      const conversationsArray = Object.entries(conversations).map(([id, conv]) => ({
+        id,
+        ...conv,
+      }));
 
   return useSWR<Conversation[]>(
     '/chains',
