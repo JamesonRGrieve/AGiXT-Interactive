@@ -3,6 +3,7 @@
 import { useContext } from 'react';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { usePathname, useRouter } from 'next/navigation';
+import dayjs from 'dayjs';
 import { type Conversation, useConversations } from '../interactive/hooks';
 import { InteractiveConfigContext } from '../interactive/InteractiveConfigContext';
 import { CommandInput, CommandItem, CommandList, Command } from '../ui/command';
@@ -11,6 +12,7 @@ import { cn } from '@/lib/utils';
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { getTimeDifference } from '../interactive/Chat/Message/Activity';
 
 export function ChatHistory() {
   const state = useContext(InteractiveConfigContext);
@@ -67,7 +69,15 @@ export function ChatHistory() {
                     </SidebarMenuButton>
                   </TooltipTrigger>
                   <TooltipContent>
-                    <span>{conversation.name}</span>
+                    <div>{conversation.name}</div>
+                    {/* TODO: Add helper that handles all cases seconds, minutes, hours, days, weeks, months */}
+                    {label === 'Today' ? (
+                      <div>
+                        Updated: {getTimeDifference(dayjs().format('YYYY-MM-DDTHH:mm:ssZ'), conversation.updated_at)} ago
+                      </div>
+                    ) : (
+                      <div>Updated: {dayjs(conversation.updated_at).format('MMM DD YYYY')}</div>
+                    )}
                   </TooltipContent>
                 </Tooltip>
               </SidebarMenuItem>
