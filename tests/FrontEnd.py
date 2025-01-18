@@ -1,5 +1,4 @@
 from playwright.async_api import async_playwright
-from playwright_stealth import stealth_async
 from IPython.display import Image, display
 from pyzbar.pyzbar import decode
 from datetime import datetime
@@ -280,20 +279,63 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def handle_mfa_screen(self):
         """Handle MFA screenshot"""
-        # Decode QR code from screenshot
-        await asyncio.sleep(2)
-        await self.take_screenshot(f"Screenshot prior to attempting to decode QR code")
-        nparr = np.frombuffer(await self.page.screenshot(), np.uint8)
-        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+        # Initialize otp_uri before QR code scanning
         otp_uri = None
-        decoded_objects = decode(img)
-        for obj in decoded_objects:
-            if obj.type == "QRCODE":
-                otp_uri = obj.data.decode("utf-8")
-                break
-        if not otp_uri:
-            raise Exception("Failed to decode QR code")
-        logging.info(f"Retrieved OTP URI: {otp_uri}")
+        max_retries = 5  # Increased retries
+        retry_count = 0
+        
+        # Wait longer initially for QR code to fully render
+        await asyncio.sleep(5)
+        
+        while not otp_uri and retry_count < max_retries:
+            try:
+                logging.info(f"Attempting to decode QR code (Attempt {retry_count + 1}/{max_retries})")
+                await self.take_screenshot(f"Screenshot prior to attempting to decode QR code - Attempt {retry_count + 1}")
+                
+                # Take a high-quality screenshot
+                screenshot = await self.page.screenshot(type='png')
+                nparr = np.frombuffer(screenshot, np.uint8)
+                img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                
+                # Try different image processing techniques
+                decoded_objects = []
+                
+                # Attempt 1: Original image
+                decoded_objects = decode(img)
+                
+                # Attempt 2: Try with grayscale if original fails
+                if not decoded_objects:
+                    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    decoded_objects = decode(gray_img)
+                    logging.info("Attempting decode with grayscale image")
+                
+                # Attempt 3: Try with thresholding if grayscale fails
+                if not decoded_objects:
+                    _, thresh_img = cv2.threshold(gray_img, 127, 255, cv2.THRESH_BINARY)
+                    decoded_objects = decode(thresh_img)
+                    logging.info("Attempting decode with thresholded image")
+                
+                for obj in decoded_objects:
+                    if obj.type == "QRCODE":
+                        otp_uri = obj.data.decode("utf-8")
+                        logging.info("Successfully decoded QR code")
+                        break
+                        
+                if not otp_uri:
+                    retry_count += 1
+                    if retry_count == max_retries:
+                        raise Exception("Failed to decode QR code after multiple attempts and image processing techniques")
+                    logging.info(f"QR code not found, retrying in 3 seconds... ({retry_count}/{max_retries})")
+                    await asyncio.sleep(3)  # Increased wait time between attempts
+                else:
+                    logging.info(f"Retrieved OTP URI: {otp_uri}")
+            except Exception as e:
+                logging.error(f"Error during QR code decoding: {str(e)}")
+                retry_count += 1
+                if retry_count == max_retries:
+                    raise Exception(f"Failed to decode QR code: {str(e)}")
+                await asyncio.sleep(3)
+                
         match = re.search(r"secret=([\w\d]+)", otp_uri)
         if match:
             secret_key = match.group(1)
@@ -385,8 +427,6 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def handle_google(self):
         """Handle Google OAuth scenario"""
-        await stealth_async(self.context)
-
         async def handle_oauth_async(popup):
             self.popup = popup
             logging.info(f"New popup URL: {popup.url}")
@@ -623,6 +663,10 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def run(self, headless=not is_desktop()):
         try:
+            # Wait for backend to start
+            logging.info("Waiting 60 seconds for backend to start...")
+            await asyncio.sleep(60)
+
             async with async_playwright() as self.playwright:
                 self.browser = await self.playwright.chromium.launch(headless=headless)
                 self.context = await self.browser.new_context()
