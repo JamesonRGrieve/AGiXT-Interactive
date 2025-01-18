@@ -68,7 +68,7 @@ export function ChatHistory() {
                       )}
                     </SidebarMenuButton>
                   </TooltipTrigger>
-                  <TooltipContent>
+                  <TooltipContent side='right'>
                     <div>{conversation.name}</div>
                     {/* TODO: Add helper that handles all cases seconds, minutes, hours, days, weeks, months */}
                     {label === 'Today' ? (
