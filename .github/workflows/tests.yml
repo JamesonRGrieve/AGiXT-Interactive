@@ -68,7 +68,7 @@ jobs:
           --health-start-period 5m
         env:
           DATABASE_TYPE: sqlite
-          DATABASE_NAME: models/agixt
+          DATABASE_NAME: agixt
           AGIXT_API_KEY: just-a-test
           AGIXT_URI: http://agixt:7437
           APP_URI: http://localhost:3437
