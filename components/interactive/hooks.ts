@@ -60,7 +60,7 @@ export function useAgents(): SWRResponse<Agent[]> {
   const { data: companies } = useCompanies();
 
   return useSWR<Agent[]>(
-    '/agents',
+    ['/agents', companies],
     (): Agent[] =>
       companies?.flatMap((company) =>
         company.agents.map((agent) => ({
@@ -99,7 +99,7 @@ export function useAgent(name?: string): SWRResponse<{
   }
 
   return useSWR<{ agent: Agent | null; commands: string[] }>(
-    [`/agent?name=${searchName}`],
+    [`/agent?name=${searchName}`, companies],
     async (): Promise<{ agent: Agent | null; commands: string[] }> => {
       const toReturn = { agent: foundEarly, commands: [] };
       if (companies?.length && !toReturn.agent) {
@@ -182,7 +182,7 @@ export function usePrompts(): SWRResponse<Prompt[]> {
 export function useCompanies(): SWRResponse<Company[]> {
   const { data: user } = useUser();
 
-  return useSWR<Company[]>('/companies', () => user?.companies || [], { fallbackData: [] });
+  return useSWR<Company[]>(['/companies', user], () => user?.companies || [], { fallbackData: [] });
 }
 
 /**
@@ -194,7 +194,7 @@ export function useCompany(id?: string): SWRResponse<Company | null> {
   const { data: companies } = useCompanies();
 
   return useSWR<Company | null>(
-    ['/company', id],
+    [`/company?id=${id}`, companies],
     (): Company | null => {
       if (id) {
         return companies?.find((c) => c.id === id) || null;
