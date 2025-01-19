@@ -13,7 +13,7 @@ import Chat from './Chat/Chat';
 import Form from './Form/Form';
 import ConversationSelector from './Selectors/ConversationSelector';
 
-import AgentSelector from './Selectors/agent-selector';
+import { AgentSelector } from './Selectors/agent-selector';
 import PromptSelector from './Selectors/PromptSelector';
 import SwitchDark from '@/components/jrg/theme/SwitchDark';
 import SwitchColorblind from '@/components/jrg/theme/SwitchColorblind';
