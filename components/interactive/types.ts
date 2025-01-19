@@ -75,25 +75,17 @@ export type User = z.infer<typeof UserSchema>;
 // Provider Related Schemas
 // ============================================================================
 
-export const ProviderServiceSchema = z.object({
-  name: z.string().min(1),
-  type: z.string().min(1),
-  config: z.record(z.unknown()),
-});
-
 export const ProviderSettingSchema = z.object({
-  key: z.string().min(1),
+  name: z.string().min(1),
   value: z.unknown(),
-  type: z.enum(['string', 'number', 'boolean', 'object']),
-  required: z.boolean(),
 });
 
 export const ProviderSchema = z.object({
   name: z.string().min(1),
   friendlyName: z.string().min(1),
   description: z.string(),
-  services: z.array(ProviderServiceSchema),
-  settings: z.record(ProviderSettingSchema),
+  services: z.unknown(),
+  settings: z.array(ProviderSettingSchema),
 });
 
 export type Provider = z.infer<typeof ProviderSchema>;
@@ -169,7 +161,7 @@ export const ConversationMetadataSchema = z.object({
   hasNotifications: z.boolean(),
   id: z.string().uuid(),
   name: z.string().min(1),
-  summary: z.string().optional(),
+  summary: z.unknown(),
   updatedAt: z.string().datetime(),
 });
 
@@ -194,7 +186,7 @@ export const ConversationEdgeSchema = z.object({
   hasNotifications: z.boolean(),
   id: z.string().uuid(),
   name: z.string().min(1),
-  summary: z.string().optional(),
+  summary: z.unknown(),
   updatedAt: z.string(), // TODO Figure out why this errors: .datetime(),.datetime(),
 });
 
