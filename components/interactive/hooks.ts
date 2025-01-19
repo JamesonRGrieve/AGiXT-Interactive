@@ -430,50 +430,21 @@ export function useConversation(conversationId: string): SWRResponse<Conversatio
   );
 }
 
-// New hook for getting providers
-export function useProviders() {
-  const state = useContext(InteractiveConfigContext);
-  return useSWR('/providers', async () => await state.agixt.getAllProviders(), {
-    fallbackData: [],
-  });
-}
-export type Conversation = {
-  id: string;
-  name: string;
-  has_notifications: boolean;
-  created_at: string;
-  updated_at: string;
-};
-export function useProvider(provider: string) {
-  const state = useContext(InteractiveConfigContext);
-  return useSWR(`/provider/${provider}`, async () => (provider ? await state.agixt.getProviderSettings(provider) : {}), {
-    fallbackData: {},
-  });
-}
-type Conversations = Record<string, Conversation>;
-// Hook for getting conversations
-export function useConversations() {
-  const state = useContext(InteractiveConfigContext);
-  return useSWR<any[]>(
-    `/conversation`,
-    // Update SDK
-    async () => {
-      const conversations = await state.agixt.getConversations(true);
-      // Convert conversations object to array with IDs
-      const conversationsArray = Object.entries(conversations).map(([id, conv]) => ({
-        id,
-        ...conv,
-      }));
+/**
+ * Hook to fetch and manage all conversations with real-time updates
+ * @returns SWR response containing array of conversation edges
+ */
+export function useConversations(): SWRResponse<ConversationEdge[]> {
+  const client = createGraphQLClient();
 
-  return useSWR<Conversation[]>(
+  return useSWR<ConversationEdge[]>(
     '/chains',
-    async (): Promise<Conversation[]> => {
+    async (): Promise<ConversationEdge[]> => {
       try {
         const query = z.object({ edges: ConversationEdgeSchema }).toGQL('query', 'GetConversations');
         console.log('QUERY', query);
-        const response = await client.request<{ conversations: { edges: ConversationEdge }[] }>(query);
-        const validated = z.array(ConversationEdgeSchema).parse(response.conversations.edges);
-        return validated;
+        const response = await client.request<{ conversations: { edges: ConversationEdge[] } }>(query);
+        return z.array(ConversationEdgeSchema).parse(response.conversations.edges);
       } catch (error) {
         console.log('ERROR:', error);
         return [];
