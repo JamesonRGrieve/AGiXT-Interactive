@@ -273,10 +273,17 @@ export function useProviders(): SWRResponse<Provider[]> {
   return useSWR<Provider[]>(
     '/providers',
     async (): Promise<Provider[]> => {
-      const query = ProviderSchema.toGQL('query', 'GetProviders');
-      const response = await client.request<Provider[]>(query);
-      const validated = ProviderSchema.parse(response);
-      return validated.providers;
+      try {
+        const query = ProviderSchema.toGQL('query', 'GetProviders');
+        const response = await client.request<Provider[]>(query);
+        console.log('RESPONSE', response);
+        const validated = z.array(ProviderSchema).parse(response.providers);
+        console.log('VALIDATED', validated);
+        return validated;
+      } catch (error) {
+        console.log('ERROR', error);
+        return [];
+      }
     },
     { fallbackData: [] },
   );

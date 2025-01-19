@@ -70,16 +70,6 @@ export function Providers() {
     ext.commands.filter((cmd) => cmd.enabled).map((cmd) => ({ ...cmd, extension_name: ext.extension_name })),
   );
   console.log('ACTIVE COMPANY', activeCompany);
-  // Categorize extensions for the available tab
-  const categorizeExtensions = (exts: Extension[]) => {
-    return {
-      // Connected extensions are those with settings and at least one command
-      connectedExtensions: exts.filter((ext) => ext.settings?.length > 0 && ext.commands?.length > 0),
-      // Available extensions are those with settings that aren't connected yet
-      availableExtensions: exts.filter((ext) => ext.settings?.length > 0 && !ext.commands?.length),
-    };
-  };
-  // Categorize extensions for the available tab
   const categorizeProviders = (providers: any[]) => {
     console.log(agentData);
     const connected = providers.filter(
@@ -104,74 +94,6 @@ export function Providers() {
           connectedProviders: [],
           availableProviders: [],
         };
-  };
-  // Fetch extensions
-  const fetchExtensions = async () => {
-    try {
-      setError(null);
-
-      const response = await axios.get(
-        searchParams.get('mode') === 'company'
-          ? `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${getCookie('agixt-company-id')}/extensions`
-          : `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/agent/${agent_name}/extensions`,
-        {
-          headers: {
-            Authorization: getCookie('jwt'),
-          },
-        },
-      );
-
-      if (response.data?.extensions) {
-        setExtensions(response.data.extensions);
-      } else {
-        throw new Error('Invalid extensions data received');
-      }
-    } catch (error: any) {
-      console.error('Failed to fetch extensions:', error);
-      setError({
-        type: 'error',
-        message: `Failed to load extensions: ${error.message}`,
-      });
-    }
-  };
-
-  useEffect(() => {
-    fetchExtensions();
-  }, [agent_name]);
-
-  const handleToggleCommand = async (commandName: string, enabled: boolean) => {
-    try {
-      const result = await axios.patch(
-        searchParams.get('mode') === 'company'
-          ? `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${getCookie('agixt-company-id')}/command`
-          : `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/agent/${agent_name}/command`,
-
-        {
-          command_name: commandName,
-          enable: enabled,
-        },
-        {
-          headers: {
-            Authorization: getCookie('jwt'),
-          },
-        },
-      );
-
-      if (result.status === 200) {
-        setExtensions((prev) =>
-          prev.map((ext) => ({
-            ...ext,
-            commands: ext.commands.map((cmd) => (cmd.friendly_name === commandName ? { ...cmd, enabled } : cmd)),
-          })),
-        );
-      }
-    } catch (error) {
-      console.error('Failed to toggle command:', error);
-      setError({
-        type: 'error',
-        message: 'Failed to toggle command. Please try again.',
-      });
-    }
   };
 
   const handleSaveSettings = async (extensionName: string, settings: Record<string, string>) => {
@@ -211,10 +133,9 @@ export function Providers() {
     await handleSaveSettings(extension.extension_name, emptySettings);
   };
 
-  console.log(providerData);
+  console.log('PROVIDERS', providerData);
 
-  const { connectedExtensions, availableExtensions } = categorizeExtensions(extensions);
-  const { connectedProviders, availableProviders } = categorizeProviders(Object.values(providerData));
+  const { connectedProviders, availableProviders } = categorizeProviders(providerData);
   console.log(connectedProviders, availableProviders);
   return (
     <div className='space-y-6'>
@@ -252,7 +173,7 @@ export function Providers() {
               <div className='flex items-center flex-1 min-w-0 gap-3.5'>
                 <Wrench className='flex-shrink-0 w-5 h-5 text-muted-foreground' />
                 <div>
-                  <h4 className='font-medium truncate'>{provider.name}</h4>
+                  <h4 className='font-medium truncate'>{provider.friendlyName}</h4>
                   <p className='text-sm text-muted-foreground'>Not Connected</p>
                 </div>
               </div>
