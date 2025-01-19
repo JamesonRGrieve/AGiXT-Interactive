@@ -434,18 +434,17 @@ export function useConversation(conversationId: string): SWRResponse<Conversatio
  * Hook to fetch and manage all conversations with real-time updates
  * @returns SWR response containing array of conversation edges
  */
-export function useConversations(): SWRResponse<Conversation[]> {
+export function useConversations(): SWRResponse<ConversationEdge[]> {
   const client = createGraphQLClient();
 
-  return useSWR<Conversation[]>(
+  return useSWR<ConversationEdge[]>(
     '/chains',
-    async (): Promise<Conversation[]> => {
+    async (): Promise<ConversationEdge[]> => {
       try {
         const query = z.object({ edges: ConversationEdgeSchema }).toGQL('query', 'GetConversations');
         console.log('QUERY', query);
-        const response = await client.request<{ conversations: { edges: ConversationEdge }[] }>(query);
-        const validated = z.array(ConversationEdgeSchema).parse(response.conversations.edges);
-        return validated;
+        const response = await client.request<{ conversations: { edges: ConversationEdge[] } }>(query);
+        return z.array(ConversationEdgeSchema).parse(response.conversations.edges);
       } catch (error) {
         console.log('ERROR:', error);
         return [];
