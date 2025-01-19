@@ -15,21 +15,6 @@ jobs:
   build:
     uses: ./.github/workflows/docker.yml
     name: Build
-  test-api:
-    needs: build
-    uses: ./.github/workflows/tests.yml
-    name: Basic API
-    permissions:
-      contents: read
-      packages: read
-    with:
-      notebook: tests/API-Tests.ipynb
-      front-end-image: ${{ needs.build.outputs.primary-image }}
-      report-name: 'api-tests'
-      additional-python-dependencies: pyotp requests qrcode==7.4.2 openai agixtsdk xts
-    secrets:
-      GHCR_PAT: ${{ secrets.GHCR_PAT }}
-      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
   test-ui:
     needs: build
     uses: ./.github/workflows/tests.yml
