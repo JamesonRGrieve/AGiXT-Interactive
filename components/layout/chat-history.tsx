@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { usePathname, useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
-import { type Conversation, useConversations } from '../interactive/hooks';
+import { useConversations } from '../interactive/hooks';
 import { InteractiveConfigContext } from '../interactive/InteractiveConfigContext';
 import { CommandInput, CommandItem, CommandList, Command } from '../ui/command';
 import { Dialog, DialogClose, DialogTrigger, DialogContent } from '../ui/dialog';
@@ -13,6 +13,7 @@ import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, Sideba
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { getTimeDifference } from '../interactive/Chat/Message/Activity';
+import { ConversationEdge as Conversation } from '@/interactive/types';
 
 export function ChatHistory() {
   const state = useContext(InteractiveConfigContext);
@@ -25,7 +26,7 @@ export function ChatHistory() {
   const handleOpenConversation = ({ conversationId }: { conversationId: string | number }) => {
     router.push(`/chat/${conversationId}`);
 
-    state?.mutate((oldState) => ({
+    state?.mutate?.((oldState) => ({
       ...oldState,
       overrides: { ...oldState.overrides, conversation: conversationId },
     }));
@@ -53,7 +54,7 @@ export function ChatHistory() {
                       )}
                     >
                       <span className='truncate'>{conversation.name}</span>
-                      {conversation.has_notifications && (
+                      {conversation.hasNotifications && (
                         <Badge
                           variant='default'
                           className={cn(
@@ -73,10 +74,10 @@ export function ChatHistory() {
                     {/* TODO: Add helper that handles all cases seconds, minutes, hours, days, weeks, months */}
                     {label === 'Today' ? (
                       <div>
-                        Updated: {getTimeDifference(dayjs().format('YYYY-MM-DDTHH:mm:ssZ'), conversation.updated_at)} ago
+                        Updated: {getTimeDifference(dayjs().format('YYYY-MM-DDTHH:mm:ssZ'), conversation.updatedAt)} ago
                       </div>
                     ) : (
-                      <div>Updated: {dayjs(conversation.updated_at).format('MMM DD YYYY')}</div>
+                      <div>Updated: {dayjs(conversation.updatedAt).format('MMM DD YYYY')}</div>
                     )}
                   </TooltipContent>
                 </Tooltip>
@@ -146,11 +147,11 @@ function groupConversations(conversations: Conversation[]) {
 
   const groups = conversations.slice(0, 7).reduce(
     (groups: { [key: string]: Conversation[] }, conversation: Conversation) => {
-      if (isToday(conversation.updated_at)) {
+      if (isToday(conversation.updatedAt)) {
         groups['Today'].push(conversation);
-      } else if (isYesterday(conversation.updated_at)) {
+      } else if (isYesterday(conversation.updatedAt)) {
         groups['Yesterday'].push(conversation);
-      } else if (isPastWeek(conversation.updated_at)) {
+      } else if (isPastWeek(conversation.updatedAt)) {
         groups['Past Week'].push(conversation);
       } else {
         groups['Older'].push(conversation);
