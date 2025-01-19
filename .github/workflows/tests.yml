@@ -14,7 +14,7 @@ on:
       front-end-image:
         type: string
         description: 'Front end image to run'
-        default: 'ghcr.io/gt-umbrella/boilerplate_web:main'
+        default: 'ghcr.io/jamesonrgrieve/interactive:main'
         required: true
       front-end-port:
         type: string
@@ -39,14 +39,6 @@ on:
       GHCR_PAT:
         description: Optional GHCR_PAT available as os.getenv('GHCR_PAT') in your notebook
         required: true
-      SENDGRID_API_KEY:
-        description: Optional sendgrid api-key available as os.getenv('SENDGRID_API_KEY') in your notebook
-      SENDGRID_FROM_EMAIL:
-        description: Optional sendgrid from email available as os.getenv('SENDGRID_FROM_EMAIL') in your notebook
-      GOOGLE_CLIENT_ID:
-        description: Optional google client id available as os.getenv('GOOGLE_CLIENT_ID') in your notebook
-      GOOGLE_CLIENT_SECRET:
-        description: Optional google client secret available as os.getenv('GOOGLE_CLIENT_SECRET') in your notebook
       DISCORD_WEBHOOK:
         description: Optional discord webhook available as os.getenv('DISCORD_WEBHOOK') in your notebook
 
@@ -77,16 +69,16 @@ jobs:
         env:
           DATABASE_TYPE: sqlite
           DATABASE_NAME: agixt
-          ENCRYPTION_SECRET: just-a-test
           AGIXT_API_KEY: just-a-test
-          UVICORN_WORKERS: 5
-          AUTH_WEB: http://localhost:${{ inputs.front-end-port }}/user
           AGIXT_URI: http://agixt:7437
+          APP_URI: http://localhost:3437
+          AGENT_NAME: XT
           WORKING_DIRECTORY: /agixt/WORKSPACE
           TOKENIZERS_PARALLELISM: 'false'
-          AUTH_PROVIDER: magicalauth
+          UVICORN_WORKERS: 10
           LOG_LEVEL: INFO
           TZ: America/New_York
+          SEED_DATA: true
       front-end:
         image: ${{ inputs.front-end-image }}
         ports:
@@ -98,30 +90,22 @@ jobs:
           --health-retries 10
           --health-start-period 5m
         env:
-          DATABASE_TYPE: sqlite
-          LOG_LEVEL: INFO
-          MODE: production
+          mode: production
           NEXT_TELEMETRY_DISABLED: 1
           AGIXT_AGENT: XT
-          AGIXT_FOOTER_MESSAGE: 'XT 2024'
-          AGIXT_SHOW_AGENT_BAR: false
-          AGIXT_SHOW_APP_BAR: true
+          AGIXT_FOOTER_MESSAGE: 'AGiXT 2024'
           APP_DESCRIPTION: 'XT is an advanced artificial intelligence agent orchestration agent.'
           APP_NAME: XT
           AGIXT_FILE_UPLOAD_ENABLED: true
           AGIXT_VOICE_INPUT_ENABLED: true
-          AGIXT_REQUIRE_API_KEY: false
           AGIXT_RLHF: true
           AGIXT_ALLOW_MESSAGE_EDITING: true
           AGIXT_ALLOW_MESSAGE_DELETION: true
           AGIXT_SHOW_OVERRIDE_SWITCHES: tts,websearch,analyze-user-input
-          AGIXT_SHOW_SELECTION: conversation,conversation
-          AGIXT_CONVERSATION_MODE: select
           INTERACTIVE_MODE: chat
           ALLOW_EMAIL_SIGN_IN: true
           APP_URI: http://localhost:${{ inputs.front-end-port }}
           AGIXT_SERVER: http://localhost:7437
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
           LOG_VERBOSITY_SERVER: 3
           TZ: America/New_York
     steps:
