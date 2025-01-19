@@ -83,20 +83,23 @@ export function ChatHistory() {
                 </Tooltip>
               </SidebarMenuItem>
             ))}
-
-            {conversationData && conversationData?.length > 5 && (
-              <ChatSearch {...{ conversationData, handleOpenConversation }}>
-                <SidebarMenuItem>
-                  <SidebarMenuButton className='text-sidebar-foreground/70' side='left'>
-                    <DotsHorizontalIcon className='text-sidebar-foreground/70' />
-                    <span>More</span>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              </ChatSearch>
-            )}
           </SidebarMenu>
         </div>
       ))}
+      <SidebarMenu>
+        <SidebarMenuItem>
+          {conversationData && conversationData?.length > 10 && (
+            <ChatSearch {...{ conversationData, handleOpenConversation }}>
+              <SidebarMenuItem>
+                <SidebarMenuButton className='text-sidebar-foreground/70' side='left'>
+                  <DotsHorizontalIcon className='text-sidebar-foreground/70' />
+                  <span>More</span>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </ChatSearch>
+          )}
+        </SidebarMenuItem>
+      </SidebarMenu>
     </SidebarGroup>
   );
 }
