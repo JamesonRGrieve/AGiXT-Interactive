@@ -339,38 +339,18 @@ export function useCommandArgs(commandName: string): SWRResponse<CommandArgs | n
  * @param chainName - Optional chain name to fetch specific chain
  * @returns SWR response containing chain data
  */
-// export function useChain(chainName?: string): SWRResponse<Chain | null> {
-//   const client = createGraphQLClient();
-
-//   return useSWR<Chain | null>(
-//     chainName ? [`/chain`, chainName] : null,
-//     async (): Promise<Chain | null> => {
-//       try {
-//         const query = ChainSchema.toGQL('query', 'GetChain', { chainName: chainName });
-//         console.log('QUERY', query);
-//         const response = await client.request<Chain>(query, { chainName: chainName });
-//         console.log('RESPONSE', response);
-//         const validated = ChainSchema.parse(response.data);
-//         return validated.chain;
-//       } catch (error) {
-//         console.log('ERROR:', error);
-//         return null;
-//       }
-//     },
-//     { fallbackData: null },
-//   );
-// }
 export function useChain(chainName?: string): SWRResponse<Chain | null> {
-  const state = useContext(InteractiveConfigContext);
+  const client = createGraphQLClient();
 
   return useSWR<Chain | null>(
     chainName ? [`/chain`, chainName] : null,
     async (): Promise<Chain | null> => {
       try {
-        const response = await state.agixt.getChain(chainName);
-        response.chainName = response.chain_name;
-        delete response.chain_name;
-        const validated = ChainSchema.parse(response);
+        const query = ChainSchema.toGQL('query', 'GetChain', { chainName: chainName });
+        console.log('QUERY', query);
+        const response = await client.request<Chain>(query, { chainName: chainName });
+        console.log('RESPONSE', response);
+        const validated = ChainSchema.parse(response.data);
         return validated.chain;
       } catch (error) {
         console.log('ERROR:', error);
