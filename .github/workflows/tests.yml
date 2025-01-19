@@ -71,13 +71,14 @@ jobs:
           DATABASE_NAME: models/agixt
           AGIXT_API_KEY: just-a-test
           AGIXT_URI: http://agixt:7437
-          AGIXT_AGENT: XT
+          APP_URI: http://localhost:3437
           AGENT_NAME: XT
           WORKING_DIRECTORY: /agixt/WORKSPACE
           TOKENIZERS_PARALLELISM: 'false'
           UVICORN_WORKERS: 10
           LOG_LEVEL: INFO
           TZ: America/New_York
+          SEED_DATA: true
       front-end:
         image: ${{ inputs.front-end-image }}
         ports:
