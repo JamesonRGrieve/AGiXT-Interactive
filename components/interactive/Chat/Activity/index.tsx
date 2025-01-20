@@ -83,7 +83,7 @@ export function Activity({
           <Accordion type='single'>
             <AccordionItem value='an-item'>
               <AccordionTrigger
-                className={`${rootStyles} agixt-activity text-foreground flex items-center cursor-pointer justify-start gap-2`}
+                className={`${rootStyles} agixt-activity agixt-activity-${activityType.toLocaleLowerCase()} text-foreground flex items-center cursor-pointer justify-start gap-2`}
               >
                 <div className='flex items-center justify-between w-20 gap-2'>
                   {activityType !== 'info' && !nextTimestamp ? (

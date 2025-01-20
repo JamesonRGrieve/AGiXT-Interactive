@@ -530,7 +530,7 @@ class FrontEndTest:
             await self.take_screenshot("chat response")
 
             await self.test_action(
-                "expanded activities",
+                "expanded activities and scrolled into view",
                 lambda: self.page.locator(".agixt-activity")
                 .get_by_text("Completed Activities")
                 .click(),
@@ -539,13 +539,8 @@ class FrontEndTest:
                 .scroll_into_view_if_needed(),
             )
             await self.test_action(
-                "expanded diagram",
-                lambda: self.page.click(
-                    ":has-text('Generated diagram describing thoughts.')"
-                ),
-            )
-            await self.test_action(
-                "expanded diagram",
+                "expanded diagram and scrolled into view",
+                lambda: self.page.click(".agixt-activity-diagram"),
                 lambda: self.page.locator(
                     '.flowchart[id^="mermaid"]'
                 ).scroll_into_view_if_needed(),
