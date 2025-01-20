@@ -531,18 +531,23 @@ class FrontEndTest:
 
             await self.test_action(
                 "expanded activities",
-                lambda: self.page.locator("div.w-full > div.border-b")
+                lambda: self.page.locator(".agixt-activity")
                 .get_by_text("Completed Activities")
                 .click(),
-                lambda: self.page.locator("div.w-full > div.border-b")
+                lambda: self.page.locator(".agixt-activity")
                 .get_by_text("Completed Activities")
                 .scroll_into_view_if_needed(),
             )
             await self.test_action(
                 "expanded diagram",
-                lambda: self.page.click(":has-text('Generated diagram')"),
-                self.page.locator(
-                    ":has-text('Generated diagram')"
+                lambda: self.page.click(
+                    ":has-text('Generated diagram describing thoughts.')"
+                ),
+            )
+            await self.test_action(
+                "expanded diagram",
+                lambda: self.page.locator(
+                    '.flowchart[id^="mermaid"]'
                 ).scroll_into_view_if_needed(),
             )
 
