@@ -79,6 +79,7 @@ export function ChatHistory() {
                     ) : (
                       <div>Updated: {dayjs(conversation.updatedAt).format('MMM DD YYYY')}</div>
                     )}
+                    {conversation.attachmentCount > 0 && <div>Attachments: {conversation.attachmentCount}</div>}
                   </TooltipContent>
                 </Tooltip>
               </SidebarMenuItem>
