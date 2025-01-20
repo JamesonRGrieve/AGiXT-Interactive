@@ -404,12 +404,12 @@ class FrontEndTest:
         first_name = "Test"
         last_name = "User"
         await self.test_action(
-            f"The user enters their first name, in this case. {first_name}. We are using the name {first_name} {last_name} for demonstration purposes.",
+            f"The user enters their first name, in this case, {first_name}. We are using the name {first_name} {last_name} for demonstration purposes.",
             lambda: self.page.fill("#first_name", first_name),
         )
 
         await self.test_action(
-            f"The user enters their last name: {last_name}.",
+           f"The user enters their last name, {last_name}.",
             lambda: self.page.fill("#last_name", last_name),
         )
 
@@ -419,8 +419,7 @@ class FrontEndTest:
         )
 
         mfa_token = await self.test_action(
-            "After successfully entering their one time password, the user is allowed into the application.",
-            lambda: self.handle_mfa_screen(),
+            "The user scans the QR code and enrolls it in their authenticator app, then entering the one-time password therefrom.", lambda: self.handle_mfa_screen()
         )
 
         logging.info(f"MFA token {mfa_token} handled successfully")
