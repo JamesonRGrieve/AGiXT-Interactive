@@ -354,7 +354,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
             logging.info(f"Generated OTP token: {otp_token}")
             await self.page.fill("#token", otp_token)
             logging.info("Entering OTP token")
-            await self.take_screenshot("Verify OTP token entered")
+            await self.take_screenshot("OTP token entered")
             logging.info("Submitting OTP token")
             await self.page.click('button[type="submit"]')
         else:
@@ -430,47 +430,45 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
             self.popup = popup
             logging.info(f"New popup URL: {popup.url}")
             await popup.wait_for_timeout(5000)
-            await self.take_screenshot(
-                "Verify Google OAuth popup window opened correctly"
-            )
+            await self.take_screenshot("Google OAuth popup window opened correctly")
 
             await self.test_action(
-                "Verify email is entered in Google OAuth form",
+                "E-mail is entered in Google OAuth form",
                 lambda: popup.fill("#identifierId", "xtemailtesting@gmail.com"),
             )
 
             await self.test_action(
-                "Verify system advanced to password screen in Google OAuth",
+                "System advanced to password screen in Google OAuth",
                 lambda: popup.click('text="Next"'),
             )
 
             await self.test_action(
-                "Verify password is entered in Google OAuth form",
+                "Password is entered in Google OAuth form",
                 lambda: popup.fill("[type=password]", "bJBO228mp]s6"),
             )
 
             await self.test_action(
-                "Verify system showing Google safety screen",
+                "System showing Google safety screen",
                 lambda: popup.click('text="Next"'),
             )
 
             await self.test_action(
-                "Verify system showing Google access permissions screen",
+                "System showing Google access permissions screen",
                 lambda: popup.click('text="Continue"'),
             )
 
             await self.test_action(
-                "Verify system showing scope selection screen",
+                "system showing scope selection screen",
                 lambda: popup.click('text="Continue"'),
             )
 
             await self.test_action(
-                "Verify required scopes are checked for Google OAuth",
+                "required scopes are checked for Google OAuth",
                 lambda: popup.click("[type=checkbox]"),
             )
 
             await self.test_action(
-                "Verify popup closed", lambda: popup.click('text="Continue"')
+                "popup closed", lambda: popup.click('text="Continue"')
             )
 
             await popup.wait_for_timeout(20000)
@@ -484,29 +482,29 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         )
 
         await self.take_screenshot(
-            "Verify Google OAuth process completed and returned to main application"
+            "Google OAuth process completed and returned to main application"
         )
         return "xtemailtesting@gmail.com"
 
     async def handle_chat(self):
         try:
             await self.test_action(
-                "Verify chat interface is loaded and ready for interaction",
+                "chat interface is loaded and ready for interaction",
                 lambda: self.page.click("text=Chat"),
             )
             await self.test_action(
-                "Verify text prompt has been expanded",
+                "text prompt has been expanded",
                 lambda: self.page.click("#message"),
             )
             await self.test_action(
-                "Verify text prompt has been filled",
+                "text prompt has been filled",
                 lambda: self.page.fill(
                     "#message",
                     "Tell me a fictional story about a man named John Doe. Include the word 'extravagant' at least twice.",
                 ),
             )
             await self.test_action(
-                "Verify message is sent and the timer has started",
+                "message is sent and the timer has started",
                 lambda: self.page.click("#send-message"),
             )
             logging.info(
@@ -515,7 +513,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
             await asyncio.sleep(2)
 
-            await self.take_screenshot("Verify chat response")
+            await self.take_screenshot("chat response")
 
             # await self.test_action(
             #     "Record audio",
@@ -553,12 +551,12 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
             # )
 
             # await self.test_action(
-            #     "Verify message is sent and the timer has started",
+            #     "message is sent and the timer has started",
             #     lambda: self.page.click("#send-message"),
             # )
             # await asyncio.sleep(120)
 
-            # await self.take_screenshot("Verify voice response")
+            # await self.take_screenshot("voice response")
         except Exception as e:
             logging.error(f"Error nagivating to chat: {e}")
             raise Exception(f"Error nagivating to chat: {e}")
@@ -601,11 +599,9 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def handle_stripe(self):
         """Handle Stripe subscription scenario"""
-        await self.take_screenshot(
-            "Verify subscription page is loaded with available plans"
-        )
+        await self.take_screenshot("subscription page is loaded with available plans")
         await self.test_action(
-            "Verify Stripe checkout page is open",
+            "Stripe checkout page is open",
             lambda: self.page.click(".bg-card button"),
             followup_function=lambda: self.page.wait_for_url(
                 "https://checkout.stripe.com/c/**"
@@ -617,7 +613,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         )
         if sus_button:
             await self.test_action(
-                "Verify subscription confirmation button is visible", lambda: None
+                "subscription confirmation button is visible", lambda: None
             )
             await self.test_action(
                 "Click subscription confirmation button", lambda: sus_button.click()
@@ -656,9 +652,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
             lambda: self.page.click("button.SubmitButton.SubmitButton--complete"),
         )
         await self.page.wait_for_timeout(15000)
-        await self.take_screenshot(
-            "Verify payment was processed and subscription is active"
-        )
+        await self.take_screenshot("payment was processed and subscription is active")
 
     async def run(self, headless=not is_desktop()):
         try:
@@ -673,14 +667,12 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
                 logging.info(f"Navigating to {self.base_uri}")
                 await self.page.goto(self.base_uri)
                 await self.take_screenshot(
-                    "Verify application landing page loaded successfully"
+                    "application landing page loaded successfully"
                 )
 
                 logging.info("Clicking 'Register or Login' button")
                 await self.page.click('text="Login or Register"')
-                await self.take_screenshot(
-                    "Verify authentication options are displayed"
-                )
+                await self.take_screenshot("authentication options are displayed")
 
                 if "google" not in self.features:
                     try:
@@ -696,7 +688,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
                     await self.handle_stripe()
 
                 await self.take_screenshot(
-                    "Verify successful login and navigation to Chat page"
+                    "successful login and navigation to Chat page"
                 )
                 await self.handle_train_user_agent()
                 await self.handle_train_company_agent()
