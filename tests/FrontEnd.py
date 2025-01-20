@@ -351,7 +351,7 @@ class FrontEndTest:
         """Handle MFA screenshot"""
         # Decode QR code from screenshot
         await asyncio.sleep(2)
-        # await self.take_screenshot(f"Screenshot prior to attempting to decode QR code")
+        await self.take_screenshot(f"Screenshot prior to attempting to decode QR code")
         nparr = np.frombuffer(await self.page.screenshot(), np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         otp_uri = None
