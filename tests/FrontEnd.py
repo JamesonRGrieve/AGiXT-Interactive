@@ -526,10 +526,12 @@ class FrontEndTest:
 
             await asyncio.sleep(2)
 
-            await self.take_screenshot("chat response")
+            await self.take_screenshot(
+                "When the agent finishes thinking, the agent responds alongside providing its thought process and renaming the conversation contextually."
+            )
 
             await self.test_action(
-                "expanded activities and scrolled into view",
+                "The user can expand the thought process to see the thoughts, reflections and actions.",
                 lambda: self.page.locator(".agixt-activity")
                 .get_by_text("Completed Activities")
                 .click(),
@@ -538,7 +540,7 @@ class FrontEndTest:
                 .scroll_into_view_if_needed(),
             )
             await self.test_action(
-                "expanded diagram and scrolled into view",
+                "The agent also provides a visualization of its thought process.",
                 lambda: self.page.click(".agixt-activity-diagram"),
                 lambda: self.page.locator(
                     '.flowchart[id^="mermaid"]'
