@@ -14,6 +14,7 @@ import { Tooltip, TooltipBasic, TooltipContent, TooltipProvider, TooltipTrigger 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { formatTimeAgo } from '@/lib/time-ago';
 
 export type MessageProps = {
   chatItem: { role: string; message: string; timestamp: string; rlhf?: { positive: boolean; feedback: string } };
@@ -108,7 +109,7 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
         <p className={cn('text-sm text-muted-foreground flex gap-1', chatItem.role === 'USER' && 'self-end')}>
           <p className='inline font-bold text-muted-foreground'>{chatItem.role === 'USER' ? 'You' : chatItem.role}</p>•
           <TooltipBasic title={formatDate(chatItem.timestamp, false)}>
-            <span>{chatItem.timestamp === undefined ? 'Just Now...' : formatDate(chatItem.timestamp)}</span>
+            <span>{formatTimeAgo(chatItem.timestamp)}</span>
           </TooltipBasic>
         </p>
       )}
