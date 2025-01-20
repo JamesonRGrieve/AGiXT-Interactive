@@ -325,7 +325,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
             result = await action_function()
             if followup_function:
                 await followup_function()
-            await self.take_screenshot(f"Verify {action_description}")
+            await self.take_screenshot(f"{action_description}")
             return result
         except Exception as e:
             logging.error(f"Failed {action_description}: {e}")
@@ -336,29 +336,29 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         email_address = f"{uuid.uuid4()}@example.com"
 
         await self.test_action(
-            f"Entering email address in registration form: {email_address}",
+            f"The user enters their email address in the registration form. Since this e-mail address doesn't have an account yet, we proceed to the registration page.",
             lambda: self.page.fill("#email", email_address),
         )
 
         await self.test_action(
-            "Clicking 'Continue with Email' button which should advance to name input after email submission",
+            "Clicking the 'Continue with Email' button advances the process.",
             lambda: self.page.locator("text=Continue with Email").click(),
         )
 
         first_name = "Test"
         await self.test_action(
-            f"Entering first name: {first_name}",
+            f"The user enters their first name, in this case, {first_name}. We are using the name {first_name} {last_name} for demonstration purposes.",
             lambda: self.page.fill("#first_name", first_name),
         )
 
         last_name = "User"
         await self.test_action(
-            f"Entering last name: {last_name}",
+           f"The user enters their last name, {last_name}.",
             lambda: self.page.fill("#last_name", last_name),
         )
 
         await self.test_action(
-            "Clicking 'Register' button to advance to the MFA step after registration",
+            "Clicking the 'Register' button advances the login process to the multifactor authentication confirmation step after registration, ensuring the user has enrolled therein.",
             lambda: self.page.click('button[type="submit"]'),
         )
 
@@ -375,7 +375,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         await asyncio.sleep(2)
 
         mfa_token = await self.test_action(
-            "Capturing QR code after it appears", lambda: self.handle_mfa_screen()
+            "The user scans the QR code and enrolls it in their authenticator app, then entering the one-time password therefrom.", lambda: self.handle_mfa_screen()
         )
 
         logging.info(f"MFA token {mfa_token} handled successfully")
@@ -452,22 +452,22 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
     async def handle_chat(self):
         try:
             await self.test_action(
-                "Verify chat interface is loaded and ready for interaction",
+                "After the user logs in, the chat interface is loaded and ready for their first basic interaction.",
                 lambda: self.page.click("text=Chat"),
             )
             await self.test_action(
-                "Verify text prompt has been expanded",
+                "By clicking in the chat bar, the user can expand it to show more options and see their entire input.",
                 lambda: self.page.click("#message"),
             )
             await self.test_action(
-                "Verify text prompt has been filled",
+                "The user enters an input to prompt the default agent, since no advanced settings have been configured, this will use the default A G I X T thought process.",
                 lambda: self.page.fill(
                     "#message",
                     "Tell me a fictional story about a man named John Doe. Include the word 'extravagant' at least twice.",
                 ),
             )
             await self.test_action(
-                "Verify message is sent and the timer has started",
+                "When the user hits send, or the enter key, the message is sent to the agent and it begins thinking.",
                 lambda: self.page.click("#send-message"),
             )
             logging.info(
