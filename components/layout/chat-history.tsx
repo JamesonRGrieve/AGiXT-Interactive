@@ -33,7 +33,7 @@ export function ChatHistory() {
   };
 
   if (!conversationData || !conversationData.length || isLoading) return null;
-  const groupedConversations = groupConversations(conversationData);
+  const groupedConversations = groupConversations(conversationData.filter((conversation) => conversation.name !== '-'));
 
   return (
     <SidebarGroup className='group-data-[collapsible=icon]:hidden'>
