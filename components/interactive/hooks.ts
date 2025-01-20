@@ -34,6 +34,7 @@ import {
 } from './types';
 import { z } from 'zod';
 import { RiRhythmFill } from 'react-icons/ri';
+import { agent } from './InteractiveConfigDefault';
 
 // ============================================================================
 // Utility Functions
@@ -77,7 +78,10 @@ export function useAgents(): SWRResponse<Agent[]> {
  * @param name - Optional agent name to fetch
  * @returns SWR response containing agent data and commands
  */
-export function useAgent(name?: string): SWRResponse<{
+export function useAgent(
+  withSettings: boolean = false,
+  name?: string,
+): SWRResponse<{
   agent: Agent | null;
   commands: string[];
 }> {
@@ -97,23 +101,39 @@ export function useAgent(name?: string): SWRResponse<{
       });
     }
   }
-
+  console.log('SEARCH NAME', searchName);
   return useSWR<{ agent: Agent | null; commands: string[] }>(
-    [`/agent?name=${searchName}`, companies],
+    [`/agent?name=${searchName}`, companies, withSettings],
     async (): Promise<{ agent: Agent | null; commands: string[] }> => {
-      const toReturn = { agent: foundEarly, commands: [] };
-      if (companies?.length && !toReturn.agent) {
-        for (const company of companies) {
-          const agent = company.agents.find((a) => a.name === searchName);
-          if (agent) {
-            toReturn.agent = agent;
+      try {
+        if (withSettings) {
+          const client = createGraphQLClient();
+          const query = AgentSchema.toGQL('query', 'GetAgent', { name: searchName });
+          console.log(query);
+          const response = await client.request<Agent>(query, { name: searchName });
+          console.log(response);
+          return AgentSchema.parse(response.agent);
+        } else {
+          const toReturn = { agent: foundEarly, commands: [] };
+          if (companies?.length && !toReturn.agent) {
+            for (const company of companies) {
+              console.log('CHECKING COMPANY', company);
+              const agent = company.agents.find((a) => a.name === searchName);
+              if (agent) {
+                toReturn.agent = agent;
+              }
+            }
           }
+          if (toReturn.agent) {
+            toReturn.commands = await state.agixt.getCommands(toReturn.agent.name);
+          }
+          console.log('GOT AGENT', toReturn);
+          return toReturn;
         }
+      } catch (error) {
+        console.log('Failed to fetch agent data:', error);
+        return { agent: null, commands: [] };
       }
-      if (toReturn.agent) {
-        toReturn.commands = await state.agixt.getCommands(toReturn.agent.name);
-      }
-      return toReturn;
     },
     { fallbackData: { agent: null, commands: [] } },
   );

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { getCookie } from 'cookies-next';
 import axios from 'axios';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
@@ -53,7 +53,7 @@ interface ExtensionSettings {
 export function Providers() {
   const { agent } = useInteractiveConfig();
   const pathname = usePathname();
-  const { data: agentData } = useAgent();
+  const { data: agentData } = useAgent(true);
   const router = useRouter();
   const [extensions, setExtensions] = useState<Extension[]>([]);
   const [selectedExtension, setSelectedExtension] = useState<string>('');
@@ -70,31 +70,50 @@ export function Providers() {
     ext.commands.filter((cmd) => cmd.enabled).map((cmd) => ({ ...cmd, extension_name: ext.extension_name })),
   );
   console.log('ACTIVE COMPANY', activeCompany);
-  const categorizeProviders = (providers: any[]) => {
-    console.log(agentData);
-    const connected = providers.filter(
-      (provider) =>
-        provider.settings &&
-        Object.entries(provider.settings).every(
-          ([key, defaultValue]) =>
-            !['KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((this_key) => key.endsWith(this_key)) ||
-            (['KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((this_key) => key.endsWith(this_key)) &&
-              agentData?.settings[key] &&
-              agentData?.settings[key] === 'HIDDEN'),
-        ),
-    );
-    return agentData && agentData.settings
-      ? {
-          // Connected providers have all their settings fields present with non-default values
-          connectedProviders: connected,
-          // Available providers are those that have settings but at least one field is missing or has default value
-          availableProviders: providers.filter((provider) => !connected.includes(provider)),
-        }
-      : {
-          connectedProviders: [],
-          availableProviders: [],
-        };
-  };
+
+  // Filter connected providers
+  const providers = useMemo(() => {
+    console.log('Starting categorization...');
+    console.log('Agent settings length:', agentData?.settings?.length);
+    console.log('Provider data length:', providerData?.length);
+    console.log('AGENT DATA', agentData);
+    console.log('PROVIDER DATA', providerData);
+    // Return empty arrays if no data
+    if (!agentData?.settings || !providerData?.length) {
+      return {
+        connected: [],
+        available: [],
+      };
+    }
+
+    const connected = providerData.filter((provider) => {
+      console.log(`\nChecking provider: ${provider.name}`);
+      // Skip providers without settings
+      if (!provider.settings?.length) return false;
+
+      // Find sensitive settings that exist in both provider and agent settings
+      const relevantSettings = provider.settings.filter((setting) => {
+        const isSensitive = ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) => setting.name.includes(keyword));
+
+        // Only include if it exists in agent settings
+        return isSensitive && agentData.settings.some((s) => s.name === setting.name);
+      });
+
+      // If no relevant settings found, provider is not connected
+      if (relevantSettings.length === 0) return false;
+
+      // Check if ALL relevant settings are HIDDEN
+      return relevantSettings.every((setting) => {
+        const agentSetting = agentData.settings.find((s) => s.name === setting.name);
+        return agentSetting && agentSetting.value === 'HIDDEN';
+      });
+    });
+
+    return {
+      connected,
+      available: providerData.filter((provider) => !connected.includes(provider)),
+    };
+  }, [agentData, providerData]);
 
   const handleSaveSettings = async (extensionName: string, settings: Record<string, string>) => {
     try {
@@ -135,120 +154,123 @@ export function Providers() {
 
   console.log('PROVIDERS', providerData);
 
-  const { connectedProviders, availableProviders } = categorizeProviders(providerData);
-  console.log(connectedProviders, availableProviders);
+  console.log(providers);
   return (
     <div className='space-y-6'>
       <div className='grid gap-4'>
-        {connectedProviders.map((provider) => (
-          <div
-            key={provider.name}
-            className='flex flex-col gap-4 p-4 transition-colors border rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
-          >
-            <div className='flex items-center gap-4'>
-              <div className='flex items-center flex-1 min-w-0 gap-3.5'>
-                <Wrench className='flex-shrink-0 w-5 h-5 text-muted-foreground' />
-                <div>
-                  <h4 className='font-medium truncate'>{provider.name}</h4>
-                  <p className='text-sm text-muted-foreground'>Connected</p>
-                </div>
-              </div>
-              <Button variant='outline' size='sm' className='gap-2' onClick={() => handleDisconnect(provider.name)}>
-                <Unlink className='w-4 h-4' />
-                Disconnect
-              </Button>
-            </div>
-            <div className='text-sm text-muted-foreground'>
-              <MarkdownBlock content={provider.description} />
-            </div>
-          </div>
-        ))}
-
-        {availableProviders.map((provider) => (
-          <div
-            key={provider.name}
-            className='flex flex-col gap-4 p-4 transition-colors border rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
-          >
-            <div className='flex items-center gap-4'>
-              <div className='flex items-center flex-1 min-w-0 gap-3.5'>
-                <Wrench className='flex-shrink-0 w-5 h-5 text-muted-foreground' />
-                <div>
-                  <h4 className='font-medium truncate'>{provider.friendlyName}</h4>
-                  <p className='text-sm text-muted-foreground'>Not Connected</p>
-                </div>
-              </div>
-              <Dialog>
-                <DialogTrigger asChild>
-                  <Button
-                    variant='outline'
-                    size='sm'
-                    className='gap-2'
-                    onClick={() => {
-                      setSelectedExtension(provider.name);
-                      // Initialize settings with the default values from provider.settings
-                      setSettings(
-                        Object.entries(provider.settings).reduce(
-                          (acc, [key, defaultValue]) => ({
-                            ...acc,
-                            [key]: defaultValue,
-                          }),
-                          {},
-                        ),
-                      );
-                    }}
-                  >
-                    <Plus className='w-4 h-4' />
-                    Connect
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className='sm:max-w-[425px]'>
-                  <DialogHeader>
-                    <DialogTitle>Configure {provider.name}</DialogTitle>
-                    <DialogDescription>
-                      Enter the required credentials to enable this service. {provider.description}
-                    </DialogDescription>
-                  </DialogHeader>
-
-                  <div className='grid gap-4 py-4'>
-                    {Object.entries(provider.settings).map(([key, defaultValue]) => (
-                      <div key={key} className='grid gap-2'>
-                        <Label htmlFor={key}>{key}</Label>
-                        <Input
-                          id={key}
-                          type={
-                            key.toLowerCase().includes('key') || key.toLowerCase().includes('password') ? 'password' : 'text'
-                          }
-                          defaultValue={defaultValue}
-                          value={settings[key]}
-                          onChange={(e) =>
-                            setSettings((prev) => ({
-                              ...prev,
-                              [key]: e.target.value,
-                            }))
-                          }
-                          placeholder={`Enter ${key.toLowerCase()}`}
-                        />
-                      </div>
-                    ))}
+        {providers.connected?.map &&
+          providers.connected.map((provider) => (
+            <div
+              key={provider.name}
+              className='flex flex-col gap-4 p-4 transition-colors border rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
+            >
+              <div className='flex items-center gap-4'>
+                <div className='flex items-center flex-1 min-w-0 gap-3.5'>
+                  <Wrench className='flex-shrink-0 w-5 h-5 text-muted-foreground' />
+                  <div>
+                    <h4 className='font-medium truncate'>{provider.name}</h4>
+                    <p className='text-sm text-muted-foreground'>Connected</p>
                   </div>
-
-                  <DialogFooter>
-                    <Button onClick={() => handleSaveSettings(provider.name, settings)}>Connect Provider</Button>
-                  </DialogFooter>
-
-                  {error && (
-                    <Alert variant={error.type === 'success' ? 'default' : 'destructive'}>
-                      <AlertDescription>{error.message}</AlertDescription>
-                    </Alert>
-                  )}
-                </DialogContent>
-              </Dialog>
+                </div>
+                <Button variant='outline' size='sm' className='gap-2' onClick={() => handleDisconnect(provider.name)}>
+                  <Unlink className='w-4 h-4' />
+                  Disconnect
+                </Button>
+              </div>
+              <div className='text-sm text-muted-foreground'>
+                <MarkdownBlock content={provider.description} />
+              </div>
             </div>
-            <div className='text-sm text-muted-foreground'>
-              <MarkdownBlock content={provider.description || 'No description available'} />
+          ))}
+
+        {providers.available?.map &&
+          providers.available.map((provider) => (
+            <div
+              key={provider.name}
+              className='flex flex-col gap-4 p-4 transition-colors border rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
+            >
+              <div className='flex items-center gap-4'>
+                <div className='flex items-center flex-1 min-w-0 gap-3.5'>
+                  <Wrench className='flex-shrink-0 w-5 h-5 text-muted-foreground' />
+                  <div>
+                    <h4 className='font-medium truncate'>{provider.friendlyName}</h4>
+                    <p className='text-sm text-muted-foreground'>Not Connected</p>
+                  </div>
+                </div>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button
+                      variant='outline'
+                      size='sm'
+                      className='gap-2'
+                      onClick={() => {
+                        setSelectedExtension(provider.name);
+                        // Initialize settings with the default values from provider.settings
+                        setSettings(
+                          Object.entries(provider.settings).reduce(
+                            (acc, [key, defaultValue]) => ({
+                              ...acc,
+                              [key]: defaultValue,
+                            }),
+                            {},
+                          ),
+                        );
+                      }}
+                    >
+                      <Plus className='w-4 h-4' />
+                      Connect
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className='sm:max-w-[425px]'>
+                    <DialogHeader>
+                      <DialogTitle>Configure {provider.name}</DialogTitle>
+                      <DialogDescription>
+                        Enter the required credentials to enable this service. {provider.description}
+                      </DialogDescription>
+                    </DialogHeader>
+
+                    <div className='grid gap-4 py-4'>
+                      {Object.entries(provider.settings).map(([key, defaultValue]) => (
+                        <div key={key} className='grid gap-2'>
+                          <Label htmlFor={key}>{key}</Label>
+                          <Input
+                            id={key}
+                            type={
+                              key.toLowerCase().includes('key') || key.toLowerCase().includes('password')
+                                ? 'password'
+                                : 'text'
+                            }
+                            defaultValue={defaultValue}
+                            value={settings[key]}
+                            onChange={(e) =>
+                              setSettings((prev) => ({
+                                ...prev,
+                                [key]: e.target.value,
+                              }))
+                            }
+                            placeholder={`Enter ${key.toLowerCase()}`}
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <DialogFooter>
+                      <Button onClick={() => handleSaveSettings(provider.name, settings)}>Connect Provider</Button>
+                    </DialogFooter>
+
+                    {error && (
+                      <Alert variant={error.type === 'success' ? 'default' : 'destructive'}>
+                        <AlertDescription>{error.message}</AlertDescription>
+                      </Alert>
+                    )}
+                  </DialogContent>
+                </Dialog>
+              </div>
+              <div className='text-sm text-muted-foreground'>
+                <MarkdownBlock content={provider.description || 'No description available'} />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
     </div>
   );

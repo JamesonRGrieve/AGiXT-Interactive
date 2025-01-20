@@ -19,6 +19,7 @@ export const AgentSchema = z.object({
   id: z.string().uuid(),
   name: z.string().min(1),
   status: z.union([z.boolean(), z.literal(null)]),
+  settings: z.array(z.object({ name: z.string(), value: z.string() })),
 });
 
 export type Agent = z.infer<typeof AgentSchema>;
@@ -47,7 +48,15 @@ export type PromptArgument = z.infer<typeof PromptArgumentSchema>;
 // ============================================================================
 
 export const CompanySchema = z.object({
-  agents: z.array(AgentSchema),
+  agents: z.array(
+    AgentSchema.pick({
+      companyId: true,
+      default: true,
+      id: true,
+      name: true,
+      status: true,
+    }),
+  ),
   id: z.string().uuid(),
   companyId: z.union([z.string().uuid(), z.null()]),
   name: z.string().min(1),
