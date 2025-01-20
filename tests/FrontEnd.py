@@ -1,3 +1,4 @@
+import shutil
 from playwright.async_api import async_playwright
 from IPython.display import Image, display
 from pyzbar.pyzbar import decode
@@ -107,10 +108,13 @@ class FrontEndTest:
         display(Image(filename=str(screenshot_path)))
         return screenshot_path
 
-    def create_video_report(self):
+    def create_video_report(self, max_size_mb=10):
         """
         Creates a video from all screenshots taken during the test run with Google TTS narration
-        using OpenCV and FFMPEG for video processing.
+        using OpenCV and FFMPEG for video processing. Adjusts framerate if output exceeds size limit.
+
+        Args:
+            max_size_mb (int): Maximum size of the output video in MB. Defaults to 10.
         """
         if is_desktop():
             return None
@@ -133,24 +137,36 @@ class FrontEndTest:
             temp_dir = tempfile.mkdtemp()
             logging.info("Creating temporary directory for audio files...")
 
+            def create_video(fps):
+                """Helper function to create video at specified FPS"""
+                video_path = os.path.join(temp_dir, "video_no_audio.mp4")
+                fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+                out = cv2.VideoWriter(video_path, fourcc, fps, (width, height))
+                total_frames = 0
+
+                for idx, (screenshot_path, _) in enumerate(
+                    self.screenshots_with_actions
+                ):
+                    frames_needed = int(max(all_audio_lengths[idx], 2.0) * fps)
+                    img = cv2.imread(screenshot_path)
+                    for _ in range(frames_needed):
+                        out.write(img)
+                        total_frames += 1
+
+                out.release()
+                return video_path, total_frames
+
             # Create paths for our files
-            silent_video_path = os.path.join(temp_dir, "video_no_audio.mp4")
             final_video_path = os.path.abspath(os.path.join(os.getcwd(), "report.mp4"))
             concatenated_audio_path = os.path.join(temp_dir, "combined_audio.wav")
-
-            # Initialize video writer
-            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-            fps = 30
-            out = cv2.VideoWriter(silent_video_path, fourcc, fps, (width, height))
 
             # Lists to store audio data and durations
             all_audio_data = []
             all_audio_lengths = []
-            total_frames = 0
 
             # First pass: Generate audio files and calculate durations
             logging.info("Generating audio narrations...")
-            for idx, (screenshot_path, action_name) in enumerate(
+            for idx, (_, action_name) in enumerate(
                 tqdm(
                     self.screenshots_with_actions,
                     desc="Generating audio files",
@@ -181,9 +197,9 @@ class FrontEndTest:
                             "-ar",
                             "44100",
                             wav_path,
-                            "-y",  # Overwrite if exists
+                            "-y",
                             "-loglevel",
-                            "error",  # Suppress output
+                            "error",
                         ]
                     )
 
@@ -201,34 +217,20 @@ class FrontEndTest:
                         max(audio_duration, 2.0)
                     )  # Minimum 2 seconds
 
-                    # Calculate frames needed for this segment
-                    frames_needed = int(max(audio_duration, 2.0) * fps)
-
-                    # Read and write frames
-                    img = cv2.imread(screenshot_path)
-                    for _ in range(frames_needed):
-                        out.write(img)
-                        total_frames += 1
-
                 except Exception as e:
                     logging.error(f"Error processing clip {idx}: {e}")
-                    # Use minimum duration for failed clips
                     all_audio_lengths.append(2.0)
-                    frames_needed = int(2.0 * fps)
-                    img = cv2.imread(screenshot_path)
-                    for _ in range(frames_needed):
-                        out.write(img)
-                        total_frames += 1
-
-            out.release()
 
             # Combine all audio
             logging.info("Combining audio tracks...")
             combined_audio = np.concatenate(all_audio_data)
             sf.write(concatenated_audio_path, combined_audio, 44100)
 
-            # Use FFMPEG to combine video and audio
-            logging.info("Merging video and audio...")
+            # Initial attempt with 30 fps
+            initial_fps = 30
+            silent_video_path, total_frames = create_video(initial_fps)
+
+            # Check file size after combining with audio
             subprocess.run(
                 [
                     "ffmpeg",
@@ -241,23 +243,61 @@ class FrontEndTest:
                     "-c:a",
                     "aac",
                     final_video_path,
-                    "-y",  # Overwrite if exists
+                    "-y",
                     "-loglevel",
-                    "error",  # Suppress output
+                    "error",
                 ]
             )
 
+            # Get file size in MB
+            file_size_mb = os.path.getsize(final_video_path) / (1024 * 1024)
+
+            # If file is too large, reduce fps and recreate
+            if file_size_mb > max_size_mb:
+                logging.info(
+                    f"Video size ({file_size_mb:.2f}MB) exceeds limit of {max_size_mb}MB. Adjusting framerate..."
+                )
+
+                # Calculate new fps based on size ratio
+                new_fps = int(
+                    initial_fps * (max_size_mb / file_size_mb) * 0.95
+                )  # 5% buffer
+                new_fps = max(new_fps, 10)  # Don't go below 10 fps
+
+                logging.info(f"Recreating video with {new_fps} fps...")
+                silent_video_path, total_frames = create_video(new_fps)
+
+                # Combine video and audio again
+                subprocess.run(
+                    [
+                        "ffmpeg",
+                        "-i",
+                        silent_video_path,
+                        "-i",
+                        concatenated_audio_path,
+                        "-c:v",
+                        "copy",
+                        "-c:a",
+                        "aac",
+                        final_video_path,
+                        "-y",
+                        "-loglevel",
+                        "error",
+                    ]
+                )
+
             # Cleanup
             logging.info("Cleaning up temporary files...")
-            import shutil
-
             shutil.rmtree(temp_dir)
 
             if not os.path.exists(final_video_path):
                 logging.error("Video file was not created successfully")
                 return None
 
-            logging.info(f"Video report created successfully at: {final_video_path}")
+            final_size_mb = os.path.getsize(final_video_path) / (1024 * 1024)
+            logging.info(
+                f"Video report created successfully at: {final_video_path} (Size: {final_size_mb:.2f}MB)"
+            )
             return final_video_path
 
         except Exception as e:
