@@ -1,4 +1,5 @@
 from playwright.async_api import async_playwright
+from playwright_stealth import stealth_async
 from IPython.display import Image, display
 from pyzbar.pyzbar import decode
 from datetime import datetime
@@ -21,17 +22,6 @@ import platform
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
-
-
-async def print_args(msg):
-    for arg in msg.args:
-        try:
-            value = await arg.json_value()
-            print("CONSOLE MESSAGE:", value)
-        except Exception as e:
-            # Fall back to text() if json_value() fails
-            text_value = await arg.text()
-            print("CONSOLE MESSAGE:", text_value)
 
 
 def is_desktop():
@@ -370,18 +360,17 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         await self.test_action(
             "Clicking 'Register' button to advance to the MFA step after registration",
             lambda: self.page.click('button[type="submit"]'),
-            lambda: asyncio.sleep(10),
         )
 
         await asyncio.sleep(2)
 
-        # try:
-        #     await self.test_action(
-        #         "Clicking 'Register' button again",
-        #         lambda: self.page.click('button[type="submit"]'),
-        #     )
-        # except:
-        #     pass
+        try:
+            await self.test_action(
+                "Clicking 'Register' button again",
+                lambda: self.page.click('button[type="submit"]'),
+            )
+        except:
+            pass
 
         await asyncio.sleep(2)
 
@@ -396,6 +385,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def handle_google(self):
         """Handle Google OAuth scenario"""
+        await stealth_async(self.context)
 
         async def handle_oauth_async(popup):
             self.popup = popup
@@ -633,16 +623,10 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def run(self, headless=not is_desktop()):
         try:
-            # Wait for backend to start
-            if headless:
-                logging.info("Waiting 60 seconds for backend to start...")
-                await asyncio.sleep(60)
-
             async with async_playwright() as self.playwright:
                 self.browser = await self.playwright.chromium.launch(headless=headless)
                 self.context = await self.browser.new_context()
                 self.page = await self.browser.new_page()
-                self.page.on("console", print_args)
                 self.page.set_default_timeout(20000)
                 await self.page.set_viewport_size({"width": 1367, "height": 924})
 
