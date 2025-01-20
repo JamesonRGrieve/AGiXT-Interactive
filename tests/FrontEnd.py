@@ -397,12 +397,12 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         )
 
         first_name = "Test"
+        last_name = "User"
         await self.test_action(
             f"The user enters their first name, in this case, {first_name}. We are using the name {first_name} {last_name} for demonstration purposes.",
             lambda: self.page.fill("#first_name", first_name),
         )
 
-        last_name = "User"
         await self.test_action(
             f"The user enters their last name, {last_name}.",
             lambda: self.page.fill("#last_name", last_name),
@@ -695,12 +695,14 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
                 logging.info(f"Navigating to {self.base_uri}")
                 await self.page.goto(self.base_uri)
                 await self.take_screenshot(
-                    "application landing page loaded successfully"
+                    "The landing page of the application is the first thing the user sees."
                 )
 
                 logging.info("Clicking 'Register or Login' button")
                 await self.page.click('text="Login or Register"')
-                await self.take_screenshot("authentication options are displayed")
+                await self.take_screenshot(
+                    "The user has multiple authentication options including several o auth options such as Google and Microsoft."
+                )
 
                 if "google" not in self.features:
                     try:
