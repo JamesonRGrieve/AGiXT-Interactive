@@ -699,12 +699,14 @@ class FrontEndTest:
                 logging.info(f"Navigating to {self.base_uri}")
                 await self.page.goto(self.base_uri)
                 await self.take_screenshot(
-                    "application landing page loaded successfully"
+                    "The landing page of the application is the first thing the user sees."
                 )
 
                 logging.info("Clicking 'Register or Login' button")
                 await self.page.click('text="Login or Register"')
-                await self.take_screenshot("authentication options are displayed")
+                await self.take_screenshot(
+                    "The user has multiple authentication options including several o auth options such as Google and Microsoft."
+                )
 
                 if "google" not in self.features:
                     try:
