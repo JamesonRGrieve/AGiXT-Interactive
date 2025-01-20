@@ -23,6 +23,11 @@ logging.basicConfig(
 )
 
 
+def print_args(msg):
+    for arg in msg.args:
+        print("CONSOLE MESSAGE: ", arg.json_value())
+
+
 def is_desktop():
     return not platform.system() == "Linux"
 
@@ -283,49 +288,57 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         otp_uri = None
         max_retries = 5  # Increased retries
         retry_count = 0
-        
+
         # Wait longer initially for QR code to fully render
         await asyncio.sleep(5)
-        
+
         while not otp_uri and retry_count < max_retries:
             try:
-                logging.info(f"Attempting to decode QR code (Attempt {retry_count + 1}/{max_retries})")
-                await self.take_screenshot(f"Screenshot prior to attempting to decode QR code - Attempt {retry_count + 1}")
-                
+                logging.info(
+                    f"Attempting to decode QR code (Attempt {retry_count + 1}/{max_retries})"
+                )
+                await self.take_screenshot(
+                    f"Screenshot prior to attempting to decode QR code - Attempt {retry_count + 1}"
+                )
+
                 # Take a high-quality screenshot
-                screenshot = await self.page.screenshot(type='png')
+                screenshot = await self.page.screenshot(type="png")
                 nparr = np.frombuffer(screenshot, np.uint8)
                 img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-                
+
                 # Try different image processing techniques
                 decoded_objects = []
-                
+
                 # Attempt 1: Original image
                 decoded_objects = decode(img)
-                
+
                 # Attempt 2: Try with grayscale if original fails
                 if not decoded_objects:
                     gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                     decoded_objects = decode(gray_img)
                     logging.info("Attempting decode with grayscale image")
-                
+
                 # Attempt 3: Try with thresholding if grayscale fails
                 if not decoded_objects:
                     _, thresh_img = cv2.threshold(gray_img, 127, 255, cv2.THRESH_BINARY)
                     decoded_objects = decode(thresh_img)
                     logging.info("Attempting decode with thresholded image")
-                
+
                 for obj in decoded_objects:
                     if obj.type == "QRCODE":
                         otp_uri = obj.data.decode("utf-8")
                         logging.info("Successfully decoded QR code")
                         break
-                        
+
                 if not otp_uri:
                     retry_count += 1
                     if retry_count == max_retries:
-                        raise Exception("Failed to decode QR code after multiple attempts and image processing techniques")
-                    logging.info(f"QR code not found, retrying in 3 seconds... ({retry_count}/{max_retries})")
+                        raise Exception(
+                            "Failed to decode QR code after multiple attempts and image processing techniques"
+                        )
+                    logging.info(
+                        f"QR code not found, retrying in 3 seconds... ({retry_count}/{max_retries})"
+                    )
                     await asyncio.sleep(3)  # Increased wait time between attempts
                 else:
                     logging.info(f"Retrieved OTP URI: {otp_uri}")
@@ -335,7 +348,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
                 if retry_count == max_retries:
                     raise Exception(f"Failed to decode QR code: {str(e)}")
                 await asyncio.sleep(3)
-                
+
         match = re.search(r"secret=([\w\d]+)", otp_uri)
         if match:
             secret_key = match.group(1)
@@ -427,6 +440,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def handle_google(self):
         """Handle Google OAuth scenario"""
+
         async def handle_oauth_async(popup):
             self.popup = popup
             logging.info(f"New popup URL: {popup.url}")
@@ -671,6 +685,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
                 self.browser = await self.playwright.chromium.launch(headless=headless)
                 self.context = await self.browser.new_context()
                 self.page = await self.browser.new_page()
+                self.page.on("console", print_args)
                 self.page.set_default_timeout(20000)
                 await self.page.set_viewport_size({"width": 1367, "height": 924})
 

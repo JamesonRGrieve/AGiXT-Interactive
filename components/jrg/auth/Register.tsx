@@ -47,6 +47,7 @@ export default function Register({ additionalFields = [], userRegisterEndpoint =
     }
     let registerResponse;
     let registerResponseData;
+    console.log('AUTH PROCESS START');
     try {
       // TODO fix the stupid double submission.
       registerResponse = await axios
@@ -54,6 +55,7 @@ export default function Register({ additionalFields = [], userRegisterEndpoint =
           ...formData,
         })
         .catch((exception: AxiosError) => exception.response);
+      console.log('AUTH REQUEST SUCCESS');
       registerResponseData = registerResponse?.data;
     } catch (exception) {
       console.error(exception);
@@ -73,7 +75,10 @@ export default function Register({ additionalFields = [], userRegisterEndpoint =
       loginParams.push(`verify_sms=true`);
     }
     if ([200, 201].includes(registerResponse?.status || 500)) {
+      console.log('AUTH PUSHING TO LOGIN');
       router.push(loginParams.length > 0 ? `/user/login?${loginParams.join('&')}` : '/user/login');
+    } else {
+      console.log('AUTH NO WORK HELP');
     }
   };
   useEffect(() => {
