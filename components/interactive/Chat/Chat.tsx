@@ -7,7 +7,8 @@ import { UIProps } from '../InteractiveAGiXT';
 import { InteractiveConfigContext, Overrides } from '../InteractiveConfigContext';
 import ChatLog from './ChatLog';
 import ChatBar from './ChatInput';
-import log from '@/components/jrg/next-log/log';
+import { useConversations } from '../hooks';
+import { useRouter } from 'next/navigation';
 
 export async function getAndFormatConversastion(state): Promise<any[]> {
   const rawConversation = await state.agixt.getConversation('', state.overrides.conversation, 100, 1);
@@ -49,6 +50,9 @@ export default function Chat({
   enableVoiceInput,
   showOverrideSwitchesCSV,
 }: Overrides & UIProps): React.JSX.Element {
+  const router = useRouter();
+  const { mutate: mutateConversations } = useConversations();
+  // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
   const state = useContext(InteractiveConfigContext);
   const conversation = useSWR(
@@ -94,14 +98,8 @@ export default function Chat({
     await new Promise((resolve) => setTimeout(resolve, 100));
     mutate(conversationSWRPath + state.overrides.conversation);
     const chatCompletion = await req;
-    log(['RESPONSE: ', chatCompletion], { client: 1 });
-    state.mutate((oldState) => ({
-      ...oldState,
-      overrides: {
-        ...oldState.overrides,
-        conversation: chatCompletion.id,
-      },
-    }));
+    console.log('RESPONSE: ', chatCompletion);
+    router.push(`/chat/${chatCompletion.id}`);
     let response;
     if (state.overrides.conversation === '-') {
       response = await state.agixt.renameConversation(state.agent, state.overrides.conversation);
@@ -118,8 +116,8 @@ export default function Chat({
       //     },
       //   },
       // );
-      await mutate('/conversation');
-      log([response], { client: 1 });
+      mutateConversations();
+      console.log(response);
     }
     setLoading(false);
     mutate(conversationSWRPath + response);
