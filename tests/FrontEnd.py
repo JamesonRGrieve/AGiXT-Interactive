@@ -23,9 +23,15 @@ logging.basicConfig(
 )
 
 
-def print_args(msg):
+async def print_args(msg):
     for arg in msg.args:
-        print("CONSOLE MESSAGE: ", arg.json_value())
+        try:
+            value = await arg.json_value()
+            print("CONSOLE MESSAGE:", value)
+        except Exception as e:
+            # Fall back to text() if json_value() fails
+            text_value = await arg.text()
+            print("CONSOLE MESSAGE:", text_value)
 
 
 def is_desktop():
@@ -678,8 +684,9 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
     async def run(self, headless=not is_desktop()):
         try:
             # Wait for backend to start
-            logging.info("Waiting 60 seconds for backend to start...")
-            await asyncio.sleep(60)
+            if headless:
+                logging.info("Waiting 60 seconds for backend to start...")
+                await asyncio.sleep(60)
 
             async with async_playwright() as self.playwright:
                 self.browser = await self.playwright.chromium.launch(headless=headless)
