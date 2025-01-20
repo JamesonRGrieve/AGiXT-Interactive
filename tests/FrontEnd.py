@@ -1,6 +1,4 @@
-import base64
 import shutil
-import openai
 from playwright.async_api import async_playwright
 from IPython.display import Image, display
 from pyzbar.pyzbar import decode
@@ -115,7 +113,7 @@ class FrontEndTest:
     def create_video_report(self, max_size_mb=10):
         """
         Creates a video from all screenshots taken during the test run with Google TTS narration
-        using OpenCV and FFMPEG for video processing. Adjusts framerate and compression if output exceeds size limit.
+        using OpenCV and FFMPEG for video processing. Adjusts framerate if output exceeds size limit.
 
         Args:
             max_size_mb (int): Maximum size of the output video in MB. Defaults to 10.
@@ -160,34 +158,6 @@ class FrontEndTest:
                 out.release()
                 return video_path, total_frames
 
-            def combine_video_audio(silent_video_path, audio_path, output_path, crf=23):
-                """Helper function to combine video and audio with compression"""
-                subprocess.run(
-                    [
-                        "ffmpeg",
-                        "-i",
-                        silent_video_path,
-                        "-i",
-                        audio_path,
-                        "-c:v",
-                        "libx264",  # Use H.264 codec
-                        "-crf",
-                        str(
-                            crf
-                        ),  # Compression quality (18-28 is good, higher = more compression)
-                        "-preset",
-                        "medium",  # Encoding speed preset
-                        "-c:a",
-                        "aac",
-                        "-b:a",
-                        "128k",  # Compress audio bitrate
-                        output_path,
-                        "-y",
-                        "-loglevel",
-                        "error",
-                    ]
-                )
-
             # Create paths for our files
             final_video_path = os.path.abspath(os.path.join(os.getcwd(), "report.mp4"))
             concatenated_audio_path = os.path.join(temp_dir, "combined_audio.wav")
@@ -214,11 +184,25 @@ class FrontEndTest:
                     cleaned_action = re.sub(r"([a-z])([A-Z])", r"\1 \2", cleaned_action)
 
                     # Generate TTS audio
-                    tts = openai.audio.speech.create(
-                        model="tts-1",
-                        voice="HAL9000",
-                        input=cleaned_action,
-                        extra_body={"language": "en"},
+                    tts = gTTS(text=cleaned_action, lang="en", slow=False)
+                    tts.save(temp_audio_path)
+
+                    # Convert MP3 to WAV using FFMPEG
+                    wav_path = os.path.join(temp_dir, f"audio_{idx}.wav")
+                    subprocess.run(
+                        [
+                            "ffmpeg",
+                            "-i",
+                            temp_audio_path,
+                            "-acodec",
+                            "pcm_s16le",
+                            "-ar",
+                            "44100",
+                            wav_path,
+                            "-y",
+                            "-loglevel",
+                            "error",
+                        ]
                     )
                     audio_content = base64.b64decode(tts.content)
 
@@ -236,73 +220,76 @@ class FrontEndTest:
                     # Store audio data and sample rate
                     all_audio_data.append((audio_data, sample_rate))
                     audio_duration = len(audio_data) / sample_rate
-                    all_audio_lengths.append(max(audio_duration, 2.0))
+                    all_audio_lengths.append(
+                        max(audio_duration, 2.0)
+                    )  # Minimum 2 seconds
 
                 except Exception as e:
                     logging.error(f"Error processing clip {idx}: {e}")
                     all_audio_lengths.append(2.0)
-            if all_audio_data:
-                # Use the sample rate from the first audio clip
-                target_sample_rate = all_audio_data[0][1]
-
-                # Resample all audio to match the first clip's sample rate if needed
-                resampled_audio = []
-                for audio_data, sr in all_audio_data:
-                    if sr != target_sample_rate:
-                        # You might need to add a resampling library like librosa here
-                        # resampled = librosa.resample(audio_data, orig_sr=sr, target_sr=target_sample_rate)
-                        resampled = audio_data  # Placeholder for actual resampling
-                    else:
-                        resampled = audio_data
-                    resampled_audio.append(resampled)
 
                 # Combine the resampled audio
                 combined_audio = np.concatenate(resampled_audio)
 
-                # Write with the correct sample rate
-                sf.write(concatenated_audio_path, combined_audio, target_sample_rate)
-
-            # Initial attempt with 30 fps and moderate compression
+            # Initial attempt with 30 fps
             initial_fps = 30
             silent_video_path, total_frames = create_video(initial_fps)
-            combine_video_audio(
-                silent_video_path, concatenated_audio_path, final_video_path, crf=23
+
+            # Check file size after combining with audio
+            subprocess.run(
+                [
+                    "ffmpeg",
+                    "-i",
+                    silent_video_path,
+                    "-i",
+                    concatenated_audio_path,
+                    "-c:v",
+                    "copy",
+                    "-c:a",
+                    "aac",
+                    final_video_path,
+                    "-y",
+                    "-loglevel",
+                    "error",
+                ]
             )
 
             # Get file size in MB
             file_size_mb = os.path.getsize(final_video_path) / (1024 * 1024)
 
-            # If file is still too large, try increasing compression and reducing fps
+            # If file is too large, reduce fps and recreate
             if file_size_mb > max_size_mb:
                 logging.info(
-                    f"Video size ({file_size_mb:.2f}MB) exceeds limit of {max_size_mb}MB. Adjusting settings..."
+                    f"Video size ({file_size_mb:.2f}MB) exceeds limit of {max_size_mb}MB. Adjusting framerate..."
                 )
 
-                # First try stronger compression
-                logging.info("Attempting stronger compression...")
-                combine_video_audio(
-                    silent_video_path, concatenated_audio_path, final_video_path, crf=28
-                )
-                file_size_mb = os.path.getsize(final_video_path) / (1024 * 1024)
+                # Calculate new fps based on size ratio
+                new_fps = int(
+                    initial_fps * (max_size_mb / file_size_mb) * 0.95
+                )  # 5% buffer
+                new_fps = max(new_fps, 10)  # Don't go below 10 fps
 
-                # If still too large, reduce fps and maintain high compression
-                if file_size_mb > max_size_mb:
-                    # Calculate new fps based on size ratio with some extra buffer
-                    new_fps = int(
-                        initial_fps * (max_size_mb / file_size_mb) * 0.85
-                    )  # 15% buffer
-                    new_fps = max(new_fps, 10)  # Don't go below 10 fps
+                logging.info(f"Recreating video with {new_fps} fps...")
+                silent_video_path, total_frames = create_video(new_fps)
 
-                    logging.info(
-                        f"Recreating video with {new_fps} fps and high compression..."
-                    )
-                    silent_video_path, total_frames = create_video(new_fps)
-                    combine_video_audio(
+                # Combine video and audio again
+                subprocess.run(
+                    [
+                        "ffmpeg",
+                        "-i",
                         silent_video_path,
+                        "-i",
                         concatenated_audio_path,
+                        "-c:v",
+                        "copy",
+                        "-c:a",
+                        "aac",
                         final_video_path,
-                        crf=28,
-                    )
+                        "-y",
+                        "-loglevel",
+                        "error",
+                    ]
+                )
 
             # Cleanup
             logging.info("Cleaning up temporary files...")
