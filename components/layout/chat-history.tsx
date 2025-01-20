@@ -71,7 +71,7 @@ export function ChatHistory() {
                   </TooltipTrigger>
                   <TooltipContent side='right'>
                     <div>{conversation.name}</div>
-                    {/* TODO: Add helper that handles all cases seconds, minutes, hours, days, weeks, months */}
+                    {/* TODO: Modify helper to handle all cases seconds, minutes, hours, days, weeks, months */}
                     {label === 'Today' ? (
                       <div>
                         Updated: {getTimeDifference(dayjs().format('YYYY-MM-DDTHH:mm:ssZ'), conversation.updatedAt)} ago
