@@ -1,4 +1,6 @@
+import base64
 import shutil
+import openai
 from playwright.async_api import async_playwright
 from IPython.display import Image, display
 from pyzbar.pyzbar import decode
@@ -23,6 +25,8 @@ import platform
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
+openai.base_url = os.getenv("EZLOCALAI_URI")
+openai.api_key = os.getenv("EZLOCALAI_API_KEY", "none")
 
 
 async def print_args(msg):
@@ -202,7 +206,7 @@ class FrontEndTest:
                 )
             ):
                 # Generate audio file for this action
-                temp_audio_path = os.path.join(temp_dir, f"audio_{idx}.mp3")
+                audio_path = os.path.join(temp_dir, f"audio_{idx}.wav")
 
                 try:
                     # Clean up the action name for better narration
@@ -210,26 +214,16 @@ class FrontEndTest:
                     cleaned_action = re.sub(r"([a-z])([A-Z])", r"\1 \2", cleaned_action)
 
                     # Generate TTS audio
-                    tts = gTTS(text=cleaned_action, lang="en", slow=False)
-                    tts.save(temp_audio_path)
-
-                    # Convert MP3 to WAV using FFMPEG
-                    wav_path = os.path.join(temp_dir, f"audio_{idx}.wav")
-                    subprocess.run(
-                        [
-                            "ffmpeg",
-                            "-i",
-                            temp_audio_path,
-                            "-acodec",
-                            "pcm_s16le",
-                            "-ar",
-                            "44100",
-                            wav_path,
-                            "-y",
-                            "-loglevel",
-                            "error",
-                        ]
+                    tts = openai.audio.speech.create(
+                        model="tts-1",
+                        voice="HAL9000",
+                        input=cleaned_action,
+                        extra_body={"language": "en"},
                     )
+                    audio_content = base64.b64decode(tts.content)
+                    audio_path.write_bytes(audio_content)
+                    with open(audio_path, "wb") as audio_file:
+                        audio_file.write(audio_content)
 
                     # Read the WAV file
                     audio_data, sample_rate = sf.read(wav_path)
