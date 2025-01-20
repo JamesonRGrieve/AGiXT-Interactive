@@ -25,6 +25,7 @@ export function getTimeDifference(timestamp1, timestamp2) {
 
   // Convert milliseconds to seconds
   const diffInSeconds = Math.floor(diffInMs / 1000);
+  if (diffInSeconds === 0) return '<1s';
 
   // Calculate minutes and seconds
   const minutes = Math.floor(diffInSeconds / 60);
