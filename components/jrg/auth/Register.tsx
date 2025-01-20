@@ -50,15 +50,21 @@ export default function Register({ additionalFields = [], userRegisterEndpoint =
     console.log('AUTH PROCESS START');
     try {
       // TODO fix the stupid double submission.
+      console.log('AUTH SENDING REQUEST');
       registerResponse = await axios
         .post(`${authConfig.authServer}${userRegisterEndpoint}`, {
           ...formData,
         })
-        .catch((exception: AxiosError) => exception.response);
+        .catch((exception: AxiosError) => {
+          console.log('AUTH REQUEST ERROR');
+          console.log(exception);
+          return exception.response;
+        });
       console.log('AUTH REQUEST SUCCESS');
       registerResponseData = registerResponse?.data;
     } catch (exception) {
-      console.error(exception);
+      console.log('ERROR OCCURRED DURING AUTH PROCESS');
+      console.log(exception);
       registerResponse = null;
     }
 
