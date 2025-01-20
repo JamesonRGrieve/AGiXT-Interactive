@@ -529,6 +529,23 @@ class FrontEndTest:
 
             await self.take_screenshot("chat response")
 
+            await self.test_action(
+                "expanded activities",
+                lambda: self.page.locator("div.w-full > div.border-b")
+                .get_by_text("Completed Activities")
+                .click(),
+                lambda: self.page.locator("div.w-full > div.border-b")
+                .get_by_text("Completed Activities")
+                .scroll_into_view_if_needed(),
+            )
+            await self.test_action(
+                "expanded diagram",
+                lambda: self.page.click(":has-text('Generated diagram')"),
+                self.page.locator(
+                    ":has-text('Generated diagram')"
+                ).scroll_into_view_if_needed(),
+            )
+
             # await self.test_action(
             #     "Record audio",
             #     lambda: self.page.click("#audio-start-recording"),
