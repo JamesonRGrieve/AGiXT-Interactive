@@ -111,7 +111,7 @@ class FrontEndTest:
     def create_video_report(self, max_size_mb=10):
         """
         Creates a video from all screenshots taken during the test run with Google TTS narration
-        using OpenCV and FFMPEG for video processing. Adjusts framerate if output exceeds size limit.
+        using OpenCV and FFMPEG for video processing. Adjusts framerate and compression if output exceeds size limit.
 
         Args:
             max_size_mb (int): Maximum size of the output video in MB. Defaults to 10.
@@ -155,6 +155,34 @@ class FrontEndTest:
 
                 out.release()
                 return video_path, total_frames
+
+            def combine_video_audio(silent_video_path, audio_path, output_path, crf=23):
+                """Helper function to combine video and audio with compression"""
+                subprocess.run(
+                    [
+                        "ffmpeg",
+                        "-i",
+                        silent_video_path,
+                        "-i",
+                        audio_path,
+                        "-c:v",
+                        "libx264",  # Use H.264 codec
+                        "-crf",
+                        str(
+                            crf
+                        ),  # Compression quality (18-28 is good, higher = more compression)
+                        "-preset",
+                        "medium",  # Encoding speed preset
+                        "-c:a",
+                        "aac",
+                        "-b:a",
+                        "128k",  # Compress audio bitrate
+                        output_path,
+                        "-y",
+                        "-loglevel",
+                        "error",
+                    ]
+                )
 
             # Create paths for our files
             final_video_path = os.path.abspath(os.path.join(os.getcwd(), "report.mp4"))
@@ -226,65 +254,47 @@ class FrontEndTest:
             combined_audio = np.concatenate(all_audio_data)
             sf.write(concatenated_audio_path, combined_audio, 44100)
 
-            # Initial attempt with 30 fps
+            # Initial attempt with 30 fps and moderate compression
             initial_fps = 30
             silent_video_path, total_frames = create_video(initial_fps)
-
-            # Check file size after combining with audio
-            subprocess.run(
-                [
-                    "ffmpeg",
-                    "-i",
-                    silent_video_path,
-                    "-i",
-                    concatenated_audio_path,
-                    "-c:v",
-                    "copy",
-                    "-c:a",
-                    "aac",
-                    final_video_path,
-                    "-y",
-                    "-loglevel",
-                    "error",
-                ]
+            combine_video_audio(
+                silent_video_path, concatenated_audio_path, final_video_path, crf=23
             )
 
             # Get file size in MB
             file_size_mb = os.path.getsize(final_video_path) / (1024 * 1024)
 
-            # If file is too large, reduce fps and recreate
+            # If file is still too large, try increasing compression and reducing fps
             if file_size_mb > max_size_mb:
                 logging.info(
-                    f"Video size ({file_size_mb:.2f}MB) exceeds limit of {max_size_mb}MB. Adjusting framerate..."
+                    f"Video size ({file_size_mb:.2f}MB) exceeds limit of {max_size_mb}MB. Adjusting settings..."
                 )
 
-                # Calculate new fps based on size ratio
-                new_fps = int(
-                    initial_fps * (max_size_mb / file_size_mb) * 0.95
-                )  # 5% buffer
-                new_fps = max(new_fps, 10)  # Don't go below 10 fps
+                # First try stronger compression
+                logging.info("Attempting stronger compression...")
+                combine_video_audio(
+                    silent_video_path, concatenated_audio_path, final_video_path, crf=28
+                )
+                file_size_mb = os.path.getsize(final_video_path) / (1024 * 1024)
 
-                logging.info(f"Recreating video with {new_fps} fps...")
-                silent_video_path, total_frames = create_video(new_fps)
+                # If still too large, reduce fps and maintain high compression
+                if file_size_mb > max_size_mb:
+                    # Calculate new fps based on size ratio with some extra buffer
+                    new_fps = int(
+                        initial_fps * (max_size_mb / file_size_mb) * 0.85
+                    )  # 15% buffer
+                    new_fps = max(new_fps, 10)  # Don't go below 10 fps
 
-                # Combine video and audio again
-                subprocess.run(
-                    [
-                        "ffmpeg",
-                        "-i",
+                    logging.info(
+                        f"Recreating video with {new_fps} fps and high compression..."
+                    )
+                    silent_video_path, total_frames = create_video(new_fps)
+                    combine_video_audio(
                         silent_video_path,
-                        "-i",
                         concatenated_audio_path,
-                        "-c:v",
-                        "copy",
-                        "-c:a",
-                        "aac",
                         final_video_path,
-                        "-y",
-                        "-loglevel",
-                        "error",
-                    ]
-                )
+                        crf=28,
+                    )
 
             # Cleanup
             logging.info("Cleaning up temporary files...")
@@ -308,12 +318,12 @@ class FrontEndTest:
 
         prompt = f"""The goal will be to view the screenshot and determine if the action was successful or not.
 
-The action we were trying to perform was: {action_name}
+        The action we were trying to perform was: {action_name}
 
-This screenshot shows the result of the action.
+        This screenshot shows the result of the action.
 
-In your <answer> block, respond with only one word `True` if the screenshot is as expected, to indicate if the action was successful. If the action was not successful, explain why in the <answer> block, this will be sent to the developers as the error in the test.
-"""
+        In your <answer> block, respond with only one word `True` if the screenshot is as expected, to indicate if the action was successful. If the action was not successful, explain why in the <answer> block, this will be sent to the developers as the error in the test.
+        """
         with open(screenshot_path, "rb") as f:
             screenshot = f.read().decode("utf-8")
         screenshot = f"data:image/png;base64,{screenshot}"
