@@ -7,7 +7,7 @@ export default function useProducts() {
   return useSWR(
     '/products',
     async () =>
-      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+      process.env.STRIPE_PUBLISHABLE_KEY
         ? (
             await axios.get(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/products`, {
               headers: {
