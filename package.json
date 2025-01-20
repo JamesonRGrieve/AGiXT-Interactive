@@ -84,6 +84,7 @@
     "graphql-request": "^7.1.2",
     "graphql-ws": "^5.16.1",
     "input-otp": "^1.4.2",
+    "javascript-time-ago": "^2.5.11",
     "katex": "^0.16.20",
     "lucide-react": "^0.469.0",
     "md5": "^2.3.0",
