@@ -177,7 +177,7 @@ export default function Activity({
           <Accordion type='single'>
             <AccordionItem value='an-item'>
               <AccordionTrigger
-                className={`${rootStyles} text-foreground flex items-center cursor-pointer justify-start gap-2`}
+                className={`${rootStyles} agixt-activity text-foreground flex items-center cursor-pointer justify-start gap-2`}
               >
                 <div className='flex items-center justify-between w-20 gap-2'>
                   {activityType !== 'info' && !nextTimestamp ? (
@@ -197,7 +197,9 @@ export default function Activity({
             </AccordionItem>
           </Accordion>
         ) : (
-          <div className={`${rootStyles} text-foreground flex items-center justify-start cursor-pointer gap-2`}>
+          <div
+            className={`${rootStyles} agixt-activity text-foreground flex items-center justify-start cursor-pointer gap-2`}
+          >
             <div className='flex items-center justify-between w-20 gap-2'>
               {activityType !== 'info' && !nextTimestamp ? (
                 <AutorenewOutlined className='animate-spin text-primary' />
