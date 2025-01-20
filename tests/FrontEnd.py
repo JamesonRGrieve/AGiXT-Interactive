@@ -494,22 +494,22 @@ class FrontEndTest:
     async def handle_chat(self):
         try:
             await self.test_action(
-                "chat interface is loaded and ready for interaction",
+                "After the user logs in, the chat interface is loaded and ready for their first basic interaction.",
                 lambda: self.page.click("text=Chat"),
             )
             await self.test_action(
-                "text prompt has been expanded",
+                "By clicking in the chat bar, the user can expand it to show more options and see their entire input.",
                 lambda: self.page.click("#message"),
             )
             await self.test_action(
-                "text prompt has been filled",
+                "The user enters an input to prompt the default agent, since no advanced settings have been configured, this will use the default A G I X T thought process.",
                 lambda: self.page.fill(
                     "#message",
                     "Tell me a fictional story about a man named John Doe. Include the word 'extravagant' at least twice.",
                 ),
             )
             await self.test_action(
-                "message is sent and the timer has started",
+                "When the user hits send, or the enter key, the message is sent to the agent and it begins thinking.",
                 lambda: self.page.click("#send-message"),
             )
             while not await self.page.locator(
