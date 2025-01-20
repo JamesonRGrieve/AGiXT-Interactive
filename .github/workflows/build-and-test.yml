@@ -29,3 +29,5 @@ jobs:
     secrets:
       GHCR_PAT: ${{ secrets.GHCR_PAT }}
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      EZLOCALAI_URI: ${{ secrets.EZLOCALAI_URI }}
+      EZLOCALAI_API_KEY: ${{ secrets.EZLOCALAI_API_KEY }}
