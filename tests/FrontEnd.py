@@ -421,17 +421,18 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         await self.test_action(
             "Clicking 'Register' button to advance to the MFA step after registration",
             lambda: self.page.click('button[type="submit"]'),
+            lambda: asyncio.sleep(10),
         )
 
         await asyncio.sleep(2)
 
-        try:
-            await self.test_action(
-                "Clicking 'Register' button again",
-                lambda: self.page.click('button[type="submit"]'),
-            )
-        except:
-            pass
+        # try:
+        #     await self.test_action(
+        #         "Clicking 'Register' button again",
+        #         lambda: self.page.click('button[type="submit"]'),
+        #     )
+        # except:
+        #     pass
 
         await asyncio.sleep(2)
 
