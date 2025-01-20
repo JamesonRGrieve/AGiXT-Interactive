@@ -348,7 +348,7 @@ class FrontEndTest:
         """Handle MFA screenshot"""
         # Decode QR code from screenshot
         await asyncio.sleep(2)
-        await self.take_screenshot(f"Screenshot prior to attempting to decode QR code")
+        # await self.take_screenshot(f"Screenshot prior to attempting to decode QR code")
         nparr = np.frombuffer(await self.page.screenshot(), np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         otp_uri = None
@@ -369,7 +369,9 @@ class FrontEndTest:
             logging.info(f"Generated OTP token: {otp_token}")
             await self.page.fill("#token", otp_token)
             logging.info("Entering OTP token")
-            await self.take_screenshot("OTP token entered")
+            await self.take_screenshot(
+                "The user scans the QR code and enrolls it in their authenticator app, then entering the one-time password therefrom."
+            )
             logging.info("Submitting OTP token")
             await self.page.click('button[type="submit"]')
         else:
@@ -414,12 +416,12 @@ class FrontEndTest:
         first_name = "Test"
         last_name = "User"
         await self.test_action(
-            f"The user enters their first name, in this case, {first_name}. We are using the name {first_name} {last_name} for demonstration purposes.",
+            f"The user enters their first name, in this case. {first_name}. We are using the name {first_name} {last_name} for demonstration purposes.",
             lambda: self.page.fill("#first_name", first_name),
         )
 
         await self.test_action(
-           f"The user enters their last name, {last_name}.",
+            f"The user enters their last name: {last_name}.",
             lambda: self.page.fill("#last_name", last_name),
         )
 
@@ -429,7 +431,8 @@ class FrontEndTest:
         )
 
         mfa_token = await self.test_action(
-            "The user scans the QR code and enrolls it in their authenticator app, then entering the one-time password therefrom.", lambda: self.handle_mfa_screen()
+            "After successfully entering their one time password, the user is allowed into the application.",
+            lambda: self.handle_mfa_screen(),
         )
 
         logging.info(f"MFA token {mfa_token} handled successfully")
@@ -715,7 +718,7 @@ class FrontEndTest:
                 logging.info("Clicking 'Register or Login' button")
                 await self.page.click('text="Login or Register"')
                 await self.take_screenshot(
-                    "The user has multiple authentication options including several o auth options such as Google and Microsoft."
+                    "The user has multiple authentication options if enabled, including several o auth options such as Microsoft or Google. For this test, we will use the basic email authentication."
                 )
 
                 if "google" not in self.features:
@@ -731,9 +734,6 @@ class FrontEndTest:
                 if "stripe" in self.features:
                     await self.handle_stripe()
 
-                await self.take_screenshot(
-                    "successful login and navigation to Chat page"
-                )
                 await self.handle_train_user_agent()
                 await self.handle_train_company_agent()
                 await self.handle_chat()
