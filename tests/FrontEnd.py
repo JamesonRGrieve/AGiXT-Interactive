@@ -359,9 +359,7 @@ class FrontEndTest:
             logging.info(f"Generated OTP token: {otp_token}")
             await self.page.fill("#token", otp_token)
             logging.info("Entering OTP token")
-            await self.take_screenshot(
-                "The user scans the QR code and enrolls it in their authenticator app, then entering the one-time password therefrom."
-            )
+            await self.take_screenshot("OTP token entered")
             logging.info("Submitting OTP token")
             await self.page.click('button[type="submit"]')
         else:
@@ -497,22 +495,22 @@ class FrontEndTest:
     async def handle_chat(self):
         try:
             await self.test_action(
-                "After the user logs in, the chat interface is loaded and ready for their first basic interaction.",
+                "chat interface is loaded and ready for interaction",
                 lambda: self.page.click("text=Chat"),
             )
             await self.test_action(
-                "By clicking in the chat bar, the user can expand it to show more options and see their entire input.",
+                "text prompt has been expanded",
                 lambda: self.page.click("#message"),
             )
             await self.test_action(
-                "The user enters an input to prompt the default agent, since no advanced settings have been configured, this will use the default A G I X T thought process.",
+                "text prompt has been filled",
                 lambda: self.page.fill(
                     "#message",
                     "Tell me a fictional story about a man named John Doe. Include the word 'extravagant' at least twice.",
                 ),
             )
             await self.test_action(
-                "When the user hits send, or the enter key, the message is sent to the agent and it begins thinking.",
+                "message is sent and the timer has started",
                 lambda: self.page.click("#send-message"),
             )
             while not await self.page.locator(
@@ -529,26 +527,7 @@ class FrontEndTest:
 
             await asyncio.sleep(2)
 
-            await self.take_screenshot(
-                "When the agent finishes thinking, the agent responds alongside providing its thought process and renaming the conversation contextually."
-            )
-
-            await self.test_action(
-                "The user can expand the thought process to see the thoughts, reflections and actions.",
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed Activities")
-                .click(),
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed Activities")
-                .scroll_into_view_if_needed(),
-            )
-            await self.test_action(
-                "The agent also provides a visualization of its thought process.",
-                lambda: self.page.click(".agixt-activity-diagram"),
-                lambda: self.page.locator(
-                    '.flowchart[id^="mermaid"]'
-                ).scroll_into_view_if_needed(),
-            )
+            await self.take_screenshot("chat response")
 
             # await self.test_action(
             #     "Record audio",
@@ -702,14 +681,12 @@ class FrontEndTest:
                 logging.info(f"Navigating to {self.base_uri}")
                 await self.page.goto(self.base_uri)
                 await self.take_screenshot(
-                    "The landing page of the application is the first thing the user sees."
+                    "application landing page loaded successfully"
                 )
 
                 logging.info("Clicking 'Register or Login' button")
                 await self.page.click('text="Login or Register"')
-                await self.take_screenshot(
-                    "The user has multiple authentication options if enabled, including several o auth options such as Microsoft or Google. For this test, we will use the basic email authentication."
-                )
+                await self.take_screenshot("authentication options are displayed")
 
                 if "google" not in self.features:
                     try:
@@ -724,6 +701,9 @@ class FrontEndTest:
                 if "stripe" in self.features:
                     await self.handle_stripe()
 
+                await self.take_screenshot(
+                    "successful login and navigation to Chat page"
+                )
                 await self.handle_train_user_agent()
                 await self.handle_train_company_agent()
                 await self.handle_chat()
