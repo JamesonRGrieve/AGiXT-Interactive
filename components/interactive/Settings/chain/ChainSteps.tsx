@@ -6,17 +6,20 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import { useChain } from '../../hooks';
+import { useSearchParams } from 'next/navigation';
 
-export default function ChainSteps({ chainName }) {
-  const { data: chainData, mutate: chainMutate } = useChain(chainName);
+export default function ChainSteps() {
+  const searchParams = useSearchParams();
+  const context = useInteractiveConfig();
+  const { data: chainData, mutate, error } = useChain(searchParams.get('chain') ?? undefined);
 
   const handleAdd = async () => {
-    const lastStep = chainData.steps[chainData.steps.length - 1];
+    const lastStep = chainData.steps.length === 0 ? undefined : chainData.steps[chainData.steps.length - 1];
     await context.agixt.addStep(
-      chainData.chain_name,
+      chainData.chainName,
       chainData.steps.length + 1,
-      lastStep ? lastStep.agent_name : context.agent,
-      lastStep ? lastStep.prompt_type : 'Prompt',
+      lastStep ? lastStep.agentName : context.agent,
+      lastStep ? lastStep?.prompt?.promptCategory : 'Prompt',
       lastStep
         ? lastStep.prompt
         : {
@@ -24,7 +27,7 @@ export default function ChainSteps({ chainName }) {
             prompt_category: 'Default',
           },
     );
-    chainMutate();
+    mutate();
   };
 
   return (
