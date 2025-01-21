@@ -24,6 +24,7 @@ import { Badge } from '@/components/ui/badge';
 
 import { DataTable } from '@/components/wais/data/data-table';
 import { DataTableColumnHeader } from '@/components/wais/data/data-table-column-header';
+import log from '../../next-log/log';
 
 interface User {
   email: string;

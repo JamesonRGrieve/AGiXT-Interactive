@@ -7,6 +7,7 @@ import { UIProps } from '../InteractiveAGiXT';
 import { InteractiveConfigContext, Overrides } from '../InteractiveConfigContext';
 import ChatLog from './ChatLog';
 import ChatBar from './ChatInput';
+import log from '@/components/jrg/next-log/log';
 
 export async function getAndFormatConversastion(state): Promise<any[]> {
   const rawConversation = await state.agixt.getConversation('', state.overrides.conversation, 100, 1);
@@ -48,7 +49,6 @@ export default function Chat({
   enableVoiceInput,
   showOverrideSwitchesCSV,
 }: Overrides & UIProps): React.JSX.Element {
-  // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
   const state = useContext(InteractiveConfigContext);
   const conversation = useSWR(
@@ -94,7 +94,7 @@ export default function Chat({
     await new Promise((resolve) => setTimeout(resolve, 100));
     mutate(conversationSWRPath + state.overrides.conversation);
     const chatCompletion = await req;
-    console.log('RESPONSE: ', chatCompletion);
+    log(['RESPONSE: ', chatCompletion], { client: 1 });
     state.mutate((oldState) => ({
       ...oldState,
       overrides: {
@@ -119,7 +119,7 @@ export default function Chat({
       //   },
       // );
       await mutate('/conversation');
-      console.log(response);
+      log([response], { client: 1 });
     }
     setLoading(false);
     mutate(conversationSWRPath + response);
