@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 
 import Link from 'next/link';
-import { useCompany } from '../../../interactive/hooks';
+import { useCompany } from '../../interactive/hooks';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   SidebarGroup,

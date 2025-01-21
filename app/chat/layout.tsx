@@ -1,8 +1,8 @@
 'use client';
-import { AppSidebar } from '@/components/jrg/appwrapper/nav/app-sidebar';
+import { SidebarMain } from '@/components/jrg/appwrapper/SidebarMain';
 import { SidebarInset } from '@/components/ui/sidebar';
-import { SidebarHeader, SidebarMain } from '@/components/jrg/appwrapper/nav/sidebar-header';
-import { useConversation, useConversations } from '@/components/interactive/hooks';
+import { SidebarHeader } from '@/components/jrg/appwrapper/SidebarHeader';
+import { useConversations } from '@/components/interactive/hooks';
 import { EditIcon, Edit2, Trash2, Download, Paperclip } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useContext, useState } from 'react';

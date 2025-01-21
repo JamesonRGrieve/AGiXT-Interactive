@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { ReactNode } from 'react';
-import Head from '@/components/jrg/appwrapper/Head';
+import Head from '@/components/jrg/appwrapper/old/Head';
 import { cn } from '@/lib/utils';
 import './globals.css';
 import InteractiveConfigContextWrapper from '@/components/interactive/ContextWrapper';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/jrg/appwrapper/nav/app-sidebar';
-import { ContextSidebar } from '@/components/jrg/appwrapper/nav/context-sidebar';
+import { SidebarMain } from '@/components/jrg/appwrapper/SidebarMain';
+import { SidebarContext } from '@/components/jrg/appwrapper/SidebarContext';
 import { Toaster } from '@/components/ui/toaster';
 import '@/components/jrg/zod2gql/zod2gql';
 
@@ -42,7 +42,7 @@ export default function RootLayout({ children }: { children: ReactNode }): React
       <body className={cn(inter.className, theme)}>
         <InteractiveConfigContextWrapper>
           <SidebarProvider>
-            <AppSidebar side='left' />
+            <SidebarMain side='left' />
             {children}
             <Toaster />
             {/* <ContextSidebar side='right' /> */}

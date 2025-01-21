@@ -5,10 +5,6 @@ import { getCookie } from 'cookies-next';
 import { usePathname } from 'next/navigation';
 import { ViewVerticalIcon } from '@radix-ui/react-icons';
 
-import { AgentSelector } from '../../../interactive/Selectors/agent-selector';
-import { ChatHistory } from '../../../interactive/Layout/chat-history';
-import { NavMain } from '@/components/jrg/appwrapper/nav/nav-main';
-import { NavUser } from '@/components/jrg/appwrapper/nav/nav-user';
 import {
   Sidebar,
   SidebarContent,
@@ -19,9 +15,9 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function SidebarContext({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [hasStarted, setHasStarted] = useState(false);
-  const { toggleSidebar } = useSidebar('left');
+  const { toggleSidebar } = useSidebar('right');
   const pathname = usePathname();
   if (pathname === '/' || (pathname.startsWith('/user') && pathname !== '/user/manage')) return null;
 
@@ -32,22 +28,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   }, [getCookie('agixt-has-started')]);
 
   return (
-    <Sidebar collapsible='icon' {...props}>
+    <Sidebar collapsible='icon' side='right' {...props}>
       <SidebarHeader>
-        <AgentSelector />
+        <h3>Context Sidebar</h3>
       </SidebarHeader>
-      <SidebarContent>
-        <NavMain />
-        <ChatHistory />
-      </SidebarContent>
+      <SidebarContent />
       <SidebarFooter>
-        <SidebarMenuButton tooltip='Hide Sidebar' side='left' onClick={toggleSidebar}>
+        <SidebarMenuButton tooltip='Hide Sidebar' side='right' onClick={toggleSidebar}>
           <ViewVerticalIcon />
           <span className='sr-only'>Toggle Sidebar</span>
         </SidebarMenuButton>
-        <NavUser />
       </SidebarFooter>
-      <SidebarRail side='left' />
+      <SidebarRail side='right' />
     </Sidebar>
   );
 }
