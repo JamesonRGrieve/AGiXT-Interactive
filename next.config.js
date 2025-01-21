@@ -33,6 +33,7 @@ const useBasicConfig = () => ({
     NEXT_PUBLIC_TZ: process.env.TZ || 'America/New_York', // Server timezone
     NEXT_PUBLIC_ADSENSE_ACCOUNT: process.env.ADSENSE_ACCOUNT || '',
     NEXT_PUBLIC_ENV: ENV,
+    NEXT_PUBLIC_LOG_VERBOSITY_CLIENT: process.env.NEXT_PUBLIC_LOG_VERBOSITY_CLIENT || "3",
   },
 });
 const useProductionSkipLintingConfig = () => ({
