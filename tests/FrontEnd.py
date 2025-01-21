@@ -226,7 +226,7 @@ class FrontEndTest:
                         audio_file.write(audio_content)
 
                     # Read the WAV file
-                    audio_data, sample_rate = sf.read(wav_path)
+                    audio_data, sample_rate = sf.read(audio_path)
 
                     # Add small silence padding at the end (0.5 seconds)
                     padding = int(0.5 * sample_rate)
