@@ -1,0 +1,51 @@
+{
+  "name": "XT",
+  "short_name": "XT",
+  "description": "XT is an artificial intelligence assistant.",
+  "start_url": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#fff",
+  "theme_color": "#fff",
+  "icons": [
+    {
+      "src": "/XTIcon_128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "/XTIcon_180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/XTIcon_192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/XTIcon_256.png",
+      "sizes": "256x256",
+      "type": "image/png"
+    },
+    {
+      "src": "/XTIcon_512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/XTIcon_1024.png",
+      "sizes": "1024x1024",
+      "type": "image/png"
+    }
+  ],
+  "serviceworker": {
+    "src": "/sw.js",
+    "scope": "/",
+    "type": "",
+    "update_via_cache": "none"
+  }
+}
