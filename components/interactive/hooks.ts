@@ -453,12 +453,15 @@ export function useChain(chainName?: string): SWRResponse<Chain | null> {
         log(['GQL useChain() Query', query], {
           client: 3,
         });
-        const response = await client.request<Chain>(query, { chainName: chainName });
+        const response = await client.request<{ chain: Chain }>(query, { chainName: chainName });
         log(['GQL useChain() Response', response], {
           client: 3,
         });
-        const validated = ChainSchema.parse(response.data);
-        return validated.chain;
+        const validated = ChainSchema.parse(response.chain);
+        log(['GQL useChain() Validated', validated], {
+          client: 3,
+        });
+        return validated;
       } catch (error) {
         log(['GQL useChain() Error', error], {
           client: 1,
