@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { DialogProps } from '../Dialog';
-import DynamicForm, { DynamicFormProps } from '@/components/jrg/DynamicForm';
+import DynamicForm, { DynamicFormProps } from '@/components/jrg/ui/DynamicForm';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 
 export type EditDialogProps = DialogProps & DynamicFormProps & { excludeFields?: string[] };

@@ -1,8 +1,8 @@
 import timezones from 'timezones-list';
 
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import Field from '@/components/jrg/styled/FormControl/Field';
-import TextField from '@/components/jrg/styled/Input/TextField';
+import Field from '@/components/jrg/ui/styled/FormControl/Field';
+import TextField from '@/components/jrg/ui/styled/Input/TextField';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 

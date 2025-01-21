@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import '@/lib/zodGQL';
+import '@/components/jrg/zod2gql/zod2gql';
 
 // ============================================================================
 // Base Types and Enums

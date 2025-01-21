@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
-import { Appearance } from '@/components/jrg/wrapper/new/UserMenu';
+import { Appearance } from '@/components/jrg/ui/wrapper/new/UserMenu';
 import useUser from '@/components/jrg/auth/hooks/useUser';
 import { getGravatarUrl } from '@/lib/gravatar';
 

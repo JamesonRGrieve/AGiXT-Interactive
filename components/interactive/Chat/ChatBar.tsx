@@ -21,9 +21,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { DropZone } from '@/components/jrg/DropZone';
-import SwitchDark from '@/components/jrg/theme/SwitchDark';
-import SwitchColorblind from '@/components/jrg/theme/SwitchColorblind';
+import { DropZone } from '@/components/jrg/ui/DropZone';
+import SwitchDark from '@/components/jrg/ui/theme/SwitchDark';
+import SwitchColorblind from '@/components/jrg/ui/theme/SwitchColorblind';
 
 export default function ChatBar({
   onSend,

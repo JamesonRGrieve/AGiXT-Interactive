@@ -4,7 +4,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { getCookie } from 'cookies-next';
 import { LuCheckCircle, LuKey } from 'react-icons/lu';
-import Field from '@/components/jrg/styled/FormControl/Field';
+import Field from '@/components/jrg/ui/styled/FormControl/Field';
 import log from '@/lib/log';
 import { Button } from '@/components/ui/button';
 

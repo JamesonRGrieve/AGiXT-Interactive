@@ -13,7 +13,7 @@ import { useAuthentication } from './Router';
 import AuthCard from './AuthCard';
 import { useAssertion } from '@/lib/assert';
 import { validateURI } from '@/lib/validation';
-import TextField from '@/components/jrg/styled/Input/TextField';
+import TextField from '@/components/jrg/ui/styled/Input/TextField';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 
