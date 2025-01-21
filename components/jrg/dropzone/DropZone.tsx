@@ -1,6 +1,6 @@
 import React, { Children, PropsWithChildren } from 'react';
 import { LuX } from 'react-icons/lu';
-import { DropZoneProvider, useDropZone } from '../ui/DropZoneContext';
+import { DropZoneProvider, useDropZone } from './DropZoneContext';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 

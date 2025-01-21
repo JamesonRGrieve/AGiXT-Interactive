@@ -4,15 +4,15 @@ import { useContext } from 'react';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { usePathname, useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
-import { useConversations } from '../interactive/hooks';
-import { InteractiveConfigContext } from '../interactive/InteractiveConfigContext';
-import { CommandInput, CommandItem, CommandList, Command } from '../ui/command';
-import { Dialog, DialogClose, DialogTrigger, DialogContent } from '../ui/dialog';
+import { useConversations } from '../hooks';
+import { InteractiveConfigContext } from '../InteractiveConfigContext';
+import { CommandInput, CommandItem, CommandList, Command } from '../../ui/command';
+import { Dialog, DialogClose, DialogTrigger, DialogContent } from '../../ui/dialog';
 import { cn } from '@/lib/utils';
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { getTimeDifference } from '../interactive/Chat/Message/Activity';
+import { getTimeDifference } from '../Chat/Message/Activity';
 import { ConversationEdge as Conversation } from '@/interactive/types';
 
 export function ChatHistory() {

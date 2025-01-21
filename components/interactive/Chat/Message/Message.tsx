@@ -7,7 +7,7 @@ import { mutate } from 'swr';
 import { InteractiveConfigContext } from '../../InteractiveConfigContext';
 import MarkdownBlock from './MarkdownBlock';
 import formatDate from './formatDate';
-import JRGDialog from '@/components/jrg/ui/dialog/Dialog';
+import JRGDialog from './Dialog';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipBasic, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';

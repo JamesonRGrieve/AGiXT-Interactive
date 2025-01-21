@@ -4,7 +4,7 @@ import { CaretSortIcon } from '@radix-ui/react-icons';
 
 import { useRouter } from 'next/navigation';
 import { getCookie, setCookie } from 'cookies-next';
-import { useCompany, useCompanies } from '../interactive/hooks';
+import { useCompany, useCompanies } from '../hooks';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,

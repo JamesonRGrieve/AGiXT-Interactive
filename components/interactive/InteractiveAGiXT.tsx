@@ -2,7 +2,7 @@
 import { deleteCookie, getCookie, setCookie } from 'cookies-next';
 import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { LuLogOut as LogOut, LuMenu as Menu, LuSettings as Settings } from 'react-icons/lu';
+import { LuMenu as Menu } from 'react-icons/lu';
 import useSWR from 'swr';
 import axios from 'axios';
 import AppWrapper from '../jrg/appwrapper/AppWrapper';
@@ -15,9 +15,6 @@ import ConversationSelector from './Selectors/ConversationSelector';
 
 import { AgentSelector } from './Selectors/agent-selector';
 import PromptSelector from './Selectors/PromptSelector';
-import SwitchDark from '@/components/jrg/theme/SwitchDark';
-import SwitchColorblind from '@/components/jrg/theme/SwitchColorblind';
-import EditDialog from '@/components/jrg/ui/dialog/Edit/EditDialog';
 import Gravatar from '@/components/jrg/auth/management/Gravatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
@@ -241,59 +238,6 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
                     <p>Menu</p>
                   </TooltipContent>
                 </Tooltip>
-
-                <Popover
-                  open={Boolean(anchorEl)}
-                  anchorEl={anchorEl}
-                  onClose={() => setAnchorEl(null)}
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'left',
-                  }}
-                >
-                  <ul className='menu menu-compact flex flex-col align-center'>
-                    {user?.email && <p className='font-bold px-4 py-2'>{user?.email ?? 'User'}</p>}
-
-                    <EditDialog
-                      onConfirm={(data) => {
-                        console.log(data);
-                        return data;
-                      }}
-                      toUpdate={user}
-                      title={`Settings for ${user?.email ?? 'User'}`}
-                      excludeFields={['subscription', 'email', 'ip_address']}
-                      readOnlyFields={['input_tokens', 'output_tokens']}
-                      submitButtonText='Update'
-                      ButtonComponent={<li />}
-                      ButtonProps={{
-                        children: (
-                          <>
-                            <Settings />
-                            <p>Settings</p>
-                          </>
-                        ),
-                      }}
-                    />
-
-                    <li
-                      onClick={() => {
-                        deleteCookie('jwt', {
-                          domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-                        });
-                        window.location.reload();
-                      }}
-                    >
-                      <LogOut />
-
-                      <p>Logout</p>
-                    </li>
-
-                    <li className='py-2'>
-                      <SwitchDark />
-                      <SwitchColorblind />
-                    </li>
-                  </ul>
-                </Popover>
               </>
             ),
           },
