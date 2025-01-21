@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { LuMenu as Menu } from 'react-icons/lu';
 import useSWR from 'swr';
 import axios from 'axios';
-import AppWrapper from '../jrg/appwrapper/AppWrapper';
+import AppWrapper from '../jrg/appwrapper/old/AppWrapper';
 
 import { InteractiveConfigDefault, InteractiveConfig, Overrides } from './InteractiveConfigContext';
 import ContextWrapper from './ContextWrapper';

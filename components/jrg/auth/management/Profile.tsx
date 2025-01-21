@@ -4,7 +4,7 @@ import axios from 'axios';
 import { deleteCookie, getCookie } from 'cookies-next';
 import { mutate } from 'swr';
 import VerifySMS from '../mfa/SMS';
-import DynamicForm from '@/components/jrg/form/DynamicForm';
+import DynamicForm from '@/components/jrg/dynamic-form/DynamicForm';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import log from '../../next-log/log';

@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import ChainPanel from '@/components/interactive/Settings/chain/ChainPanel';
-import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/nav/sidebar-header';
+import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/SidebarHeader';
 import { ChainDialog } from '@/components/interactive/Settings/chain/ChainDialog';
 
 export default function ChainPage() {

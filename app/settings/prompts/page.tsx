@@ -5,9 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import PromptPanel from '@/components/interactive/Settings/prompt/PromptPanel';
 import NewPromptDialog from '@/components/interactive/Settings/prompt/PromptDialog';
-import { AppSidebar } from '@/components/jrg/appwrapper/nav/app-sidebar';
-import { SidebarInset } from '@/components/ui/sidebar';
-import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/nav/sidebar-header';
+import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/SidebarHeader';
 
 export default function PromptPage() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
