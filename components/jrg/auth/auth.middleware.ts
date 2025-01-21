@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { AuthMode, getAuthMode, getJWT, verifyJWT } from './utils';
-import { generateCookieString, getQueryParams, getRequestedURI } from '@/lib/utils';
+import { AuthMode, getAuthMode, getJWT, verifyJWT, generateCookieString, getQueryParams, getRequestedURI } from './utils';
 
 export type MiddlewareHook = (req: NextRequest) => Promise<{
   activated: boolean;
