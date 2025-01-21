@@ -109,7 +109,7 @@ export function useAgent(
       try {
         if (withSettings) {
           const client = createGraphQLClient();
-          const query = AgentSchema.toGQL('query', 'useAgent', { name: searchName });
+          const query = AgentSchema.toGQL('query', 'GetAgent', { name: searchName });
           log(['GQL useAgent() Query', query], {
             client: 3,
           });
@@ -356,12 +356,12 @@ export function useProviders(): SWRResponse<Provider[]> {
           client: 3,
         });
         const validated = z.array(ProviderSchema).parse(response.providers);
-        log(['GQL useAgent() Validated', validated], {
+        log(['GQL useProviders() Validated', validated], {
           client: 3,
         });
         return validated;
       } catch (error) {
-        log(['GQL useAgent() Error', error], {
+        log(['GQL useProviders() Error', error], {
           client: 1,
         });
         return [];
