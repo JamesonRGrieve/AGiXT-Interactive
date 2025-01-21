@@ -221,32 +221,46 @@ class FrontEndTest:
                         extra_body={"language": "en"},
                     )
                     audio_content = base64.b64decode(tts.content)
-                    audio_path.write_bytes(audio_content)
+
+                    # Write the raw audio first
                     with open(audio_path, "wb") as audio_file:
                         audio_file.write(audio_content)
 
-                    # Read the WAV file
+                    # Read the audio and get its original sample rate
                     audio_data, sample_rate = sf.read(audio_path)
 
                     # Add small silence padding at the end (0.5 seconds)
-                    padding = int(0.5 * sample_rate)
+                    padding = int(0.5 * sample_rate)  # Use the actual sample rate
                     audio_data = np.pad(audio_data, (0, padding), mode="constant")
 
-                    # Store audio data
-                    all_audio_data.append(audio_data)
+                    # Store audio data and sample rate
+                    all_audio_data.append((audio_data, sample_rate))
                     audio_duration = len(audio_data) / sample_rate
-                    all_audio_lengths.append(
-                        max(audio_duration, 2.0)
-                    )  # Minimum 2 seconds
+                    all_audio_lengths.append(max(audio_duration, 2.0))
 
                 except Exception as e:
                     logging.error(f"Error processing clip {idx}: {e}")
                     all_audio_lengths.append(2.0)
+            if all_audio_data:
+                # Use the sample rate from the first audio clip
+                target_sample_rate = all_audio_data[0][1]
 
-            # Combine all audio
-            logging.info("Combining audio tracks...")
-            combined_audio = np.concatenate(all_audio_data)
-            sf.write(concatenated_audio_path, combined_audio, 44100)
+                # Resample all audio to match the first clip's sample rate if needed
+                resampled_audio = []
+                for audio_data, sr in all_audio_data:
+                    if sr != target_sample_rate:
+                        # You might need to add a resampling library like librosa here
+                        # resampled = librosa.resample(audio_data, orig_sr=sr, target_sr=target_sample_rate)
+                        resampled = audio_data  # Placeholder for actual resampling
+                    else:
+                        resampled = audio_data
+                    resampled_audio.append(resampled)
+
+                # Combine the resampled audio
+                combined_audio = np.concatenate(resampled_audio)
+
+                # Write with the correct sample rate
+                sf.write(concatenated_audio_path, combined_audio, target_sample_rate)
 
             # Initial attempt with 30 fps and moderate compression
             initial_fps = 30
