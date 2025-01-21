@@ -87,9 +87,9 @@ export default function Identify({
 
         {showEmail && (
           <>
-            <Label htmlFor='E-Mail Address'>Password</Label>
+            <Label htmlFor='E-Mail Address'>E-Mail Address</Label>
             <Input id='email' autoComplete='username' placeholder='your@example.com' {...register('email')} />
-            <Alert variant='destructive'>{errors.email?.message}</Alert>
+            {errors.email?.message && <Alert variant='destructive'>{errors.email?.message}</Alert>}
 
             <Button variant='default' disabled={isSubmitting} className='w-full space-x-1'>
               <LuUser className='w-5 h-5' />

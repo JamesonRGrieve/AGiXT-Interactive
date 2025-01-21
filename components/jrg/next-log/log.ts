@@ -1,31 +1,34 @@
 export default function log(
-  logItems: any[],
-  verbosity: {
-    client?: number | undefined;
-    server?: number | undefined;
-  } = {
-    client: 3,
-    server: 3,
-  },
+  logItem: any,
+  clientVerbosity: number | string | undefined,
+  verbosity: number | string | undefined = 3,
   heading: string | null = null,
+  serverOnly: boolean | null = null,
 ) {
-  if (!verbosity) {
-    throw new Error('Verbosity must be defined as at least an empty object or left to default, logItem: ' + logItem);
-  }
   // Server
-  if (typeof window === 'undefined') {
-    if (!isNaN(Number(process.env.LOG_VERBOSITY_SERVER)) && verbosity.server !== undefined) {
-      // If we are on server, the env var for server output is defined and there is a server verbosity level for this log.
-      if (heading) console.log(`--- ${heading.toUpperCase()} ---`);
-      console.log(...logItems);
-      if (heading) console.log('-'.repeat(heading.length + 8));
+  clientVerbosity = Number(clientVerbosity ?? 3);
+  verbosity = Number(verbosity ?? 3);
+  if (serverOnly === true || serverOnly === null) {
+    if (typeof window === 'undefined' && (process.env.LOG_VERBOSITY_SERVER ?? verbosity <= 0)) {
+      if (heading !== null) {
+        console.log(`--- ${heading.toUpperCase()} ---`);
+      }
+      console.log(logItem);
+      if (heading !== null) {
+        console.log('-'.repeat(heading.length + 8));
+      }
     }
-  } else {
-    // If we are on client, the env var for client output is defined and there is a client verbosity level for this log.
-    if (!isNaN(Number(process.env.NEXT_PUBLIC_LOG_VERBOSITY_CLIENT)) && verbosity.client !== undefined) {
-      if (heading) console.log(`--- ${heading.toUpperCase()} ---`);
-      console.log(...logItems);
-      if (heading) console.log('-'.repeat(heading.length + 8));
+  }
+  // Client
+  if (serverOnly === false || serverOnly === null) {
+    if (typeof window !== 'undefined' && clientVerbosity >= verbosity) {
+      if (heading !== null) {
+        console.log(`--- ${heading.toUpperCase()} ---`);
+      }
+      console.log(logItem);
+      if (heading !== null) {
+        console.log('-'.repeat(heading.length + 8));
+      }
     }
   }
 }
