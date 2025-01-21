@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import useUser from '@/components/jrg/auth/hooks/useUser';
-import { getGravatarUrl } from '@/lib/gravatar';
+import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
 import { cn } from '@/lib/utils';
 
 const user = {

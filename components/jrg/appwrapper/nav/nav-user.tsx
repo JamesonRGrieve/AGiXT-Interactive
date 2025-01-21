@@ -19,7 +19,7 @@ import {
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import { Appearance } from '@/components/jrg/appwrapper/new/UserMenu';
 import useUser from '@/components/jrg/auth/hooks/useUser';
-import { getGravatarUrl } from '@/lib/gravatar';
+import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
 
 const user = {
   name: 'shadcn',
