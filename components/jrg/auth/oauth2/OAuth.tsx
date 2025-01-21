@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import providers from './OAuthProviders';
 import deepMerge from '@/lib/objects';
 import { Button } from '@/components/ui/button';
+import log from '../../next-log/log';
 
 export type OAuthProps = {
   overrides?: any;
@@ -15,7 +16,7 @@ export type OAuthProps = {
 export default function OAuth({ overrides }: OAuthProps): ReactNode {
   const router = useRouter();
   const oAuthProviders = useMemo(() => deepMerge(providers, overrides) as typeof providers, [providers, overrides]);
-  console.log('OAuth Providers: ', oAuthProviders);
+  log(['OAuth Providers: ', oAuthProviders], { client: 3 });
   const onOAuth2 = useCallback(
     (response: any) => {
       document.location.href = `${process.env.NEXT_PUBLIC_APP_URI}`; // This should be fixed properly just low priority.
@@ -25,8 +26,6 @@ export default function OAuth({ overrides }: OAuthProps): ReactNode {
     },
     [router],
   );
-  //console.log('OAuth Providers: ');
-  //console.log(oAuthProviders);
   /*
   // Eventually automatically launch if it's the only provider.
   useEffect(() => {

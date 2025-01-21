@@ -120,6 +120,7 @@
     "@types/react": "^18.3.12",
     "@types/react-google-recaptcha": "^2.1.9",
     "@types/react-simple-oauth2-login": "^0.5.5",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "@typescript-eslint/eslint-plugin": "^6.21.0",
     "@typescript-eslint/parser": "^6.21.0",
     "autoprefixer": "^10.4.20",

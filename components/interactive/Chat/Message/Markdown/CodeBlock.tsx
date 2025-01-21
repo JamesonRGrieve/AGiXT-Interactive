@@ -12,7 +12,7 @@ import { DataTable } from '../data-table';
 import { createColumns } from '../data-table/data-table-columns';
 import Mermaid from './Code/Mermaid';
 import { parseXSVData } from './Code/ParseXSVData';
-import TabPanel from '@/components/jrg/TabPanel';
+import TabPanel from './TabPanel';
 
 const fileExtensions = {
   '': 'txt',

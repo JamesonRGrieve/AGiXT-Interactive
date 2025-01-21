@@ -6,9 +6,9 @@ import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import { useAuthentication } from '../Router';
 import { Profile } from './Profile';
-import { DynamicFormFieldValueTypes } from '@/components/jrg/DynamicForm';
+import { DynamicFormFieldValueTypes } from '@/components/jrg/dynamic-form/DynamicForm';
 import { validateURI } from '@/lib/validation';
-import { useAssertion } from '@/lib/assert';
+import { useAssertion } from '@/components/jrg/assert/assert';
 import { Button } from '@/components/ui/button';
 
 export type ManageProps = {
@@ -29,7 +29,7 @@ export default function Manage({
 }: ManageProps): ReactNode {
   const [responseMessage, setResponseMessage] = useState('');
   const [active, setActive] = useState<ActivePage>('Profile');
-  console.log(MENU_ITEMS);
+  log(['Menu Items', MENU_ITEMS], { client: 3 });
   type User = {
     missing_requirements?: {
       [key: string]: {

@@ -7,7 +7,7 @@ import { InteractiveConfigContext } from '../../InteractiveConfigContext';
 import { VoiceRecorder } from '../VoiceRecorder';
 import { ListUploadedFiles, OverrideSwitches, ResetConversation, SendMessage, Timer, UploadFiles } from './Adornments';
 import { Textarea } from '@/components/ui/textarea';
-import { DropZone } from '@/components/jrg/DropZone';
+import { DropZone } from '@/components/jrg/dropzone/DropZone';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { TooltipBasic } from '@/components/ui/tooltip';
@@ -49,10 +49,6 @@ export default function ChatBar({
     value: message,
     setValue: setMessage,
   } = useDynamicInput('', uploadedFiles);
-
-  useEffect(() => {
-    console.log(uploadedFiles);
-  }, [uploadedFiles]);
 
   const handleUploadFiles = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     if (event.target.files) {
