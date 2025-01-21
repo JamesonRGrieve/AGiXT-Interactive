@@ -1,7 +1,12 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { AuthMode, getAuthMode, getJWT, verifyJWT } from './utils';
 import { generateCookieString, getQueryParams, getRequestedURI } from '@/lib/utils';
-import { MiddlewareHook } from '@/types/MiddlewareHook';
+import { MiddlewareHook } from '@/components/jrg/auth/types/MiddlewareHook';
+
+export type MiddlewareHook = (req: NextRequest) => Promise<{
+  activated: boolean;
+  response: NextResponse;
+}>;
 
 export const useAuth: MiddlewareHook = async (req) => {
   const toReturn = {

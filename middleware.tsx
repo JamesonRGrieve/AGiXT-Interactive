@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { useAuth, useJWTQueryParam, useOAuth2 } from './components/jrg/auth/auth.middleware';
 import { getRequestedURI } from './lib/utils';
-import { MiddlewareHook } from './types/MiddlewareHook';
+import { MiddlewareHook } from './components/jrg/auth/types/MiddlewareHook';
 
 //import assert from 'assert';
 
