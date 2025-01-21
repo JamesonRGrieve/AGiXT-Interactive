@@ -10,11 +10,11 @@ import { LuCheck as Check, LuCopy as Copy } from 'react-icons/lu';
 import { useAuthentication } from './Router';
 import AuthCard from './AuthCard';
 import { AuthenticatorHelp as MissingAuthenticator } from './mfa/MissingAuthenticator';
-import PasswordField from '@/components/jrg/ui/styled/Input/PasswordField';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { validateURI } from '@/lib/validation';
 import { useAssertion } from '@/components/jrg/assert/assert';
 import { Button } from '@/components/ui/button';
-import TextField from '@/components/jrg/ui/styled/Input/TextField';
 
 export type LoginProps = {
   userLoginEndpoint?: string;

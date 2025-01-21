@@ -13,7 +13,7 @@ import { useAuthentication } from './Router';
 import AuthCard from './AuthCard';
 import { useAssertion } from '@/components/jrg/assert/assert';
 import { validateURI } from '@/lib/validation';
-import TextField from '@/components/jrg/ui/styled/Input/TextField';
+
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -87,9 +87,9 @@ export default function Identify({
 
         {showEmail && (
           <>
-            <Label htmlFor='E-Mail Address'>E-Mail Address</Label>
+            <Label htmlFor='E-Mail Address'>Password</Label>
             <Input id='email' autoComplete='username' placeholder='your@example.com' {...register('email')} />
-            {errors.email?.message && <Alert variant='destructive'>{errors.email?.message}</Alert>}
+            <Alert variant='destructive'>{errors.email?.message}</Alert>
 
             <Button variant='default' disabled={isSubmitting} className='w-full space-x-1'>
               <LuUser className='w-5 h-5' />

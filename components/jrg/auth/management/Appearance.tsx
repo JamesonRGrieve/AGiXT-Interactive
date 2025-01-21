@@ -2,7 +2,7 @@
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
-import { useTheme } from '@/components/jrg/ui/theme/useTheme';
+import { useTheme } from '@/components/jrg/theme/useTheme';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 export const Appearance = () => {
