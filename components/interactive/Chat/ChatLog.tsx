@@ -3,6 +3,7 @@
 import React, { useEffect, useRef } from 'react';
 import ChatActivity from './Message/Activity';
 import Message from './Message/Message';
+import log from '@/components/jrg/next-log/log';
 
 export default function ChatLog({
   conversation,
@@ -19,7 +20,7 @@ export default function ChatLog({
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
-    // console.log('Conversation mutated, scrolling to bottom.', state.overrides.conversation, conversation);
+    log(['Conversation mutated, scrolling to bottom.', state.overrides.conversation, conversation], { client: 3 });
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [conversation]);
 

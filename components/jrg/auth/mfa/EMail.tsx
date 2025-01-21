@@ -28,7 +28,7 @@ export default function VerifyEmail({ verifiedCallback }: { verifiedCallback: an
         {},
       )
     ).data.detail;
-    //console.log(emailResponse);
+    log(['E-Mail Response', emailResponse], { client: 2 });
     if (emailResponse.toLowerCase() === 'true') {
       verifiedCallback(true);
       setEmailVerified(true);

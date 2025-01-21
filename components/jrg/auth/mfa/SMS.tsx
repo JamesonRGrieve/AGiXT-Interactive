@@ -25,7 +25,7 @@ export default function VerifySMS({ verifiedCallback }: { verifiedCallback: any 
         {},
       )
     ).data.detail;
-    //console.log(smsResponse);
+    log(['SMS Response', smsResponse], { client: 2 });
     if (smsResponse.toLowerCase() === 'true') {
       verifiedCallback(true);
       setSMSVerified(true);

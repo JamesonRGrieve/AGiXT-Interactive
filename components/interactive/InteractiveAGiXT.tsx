@@ -18,6 +18,7 @@ import PromptSelector from './Selectors/PromptSelector';
 import Gravatar from '@/components/jrg/auth/management/Gravatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';
+import log from '../jrg/next-log/log';
 
 export type FormProps = {
   fieldOverrides?: { [key: string]: ReactNode };
@@ -126,9 +127,9 @@ const Stateful = (props: AGiXTInteractiveProps): React.JSX.Element => {
   if (process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid' && !uuid) {
     setCookie('uuid', crypto.randomUUID(), { domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN, maxAge: 2147483647 });
   }
-  console.log('Overrides Prop Provided to Stateful:', props.overrides);
-  console.log('UI Config Provided to Stateful:', props.uiConfig);
-  console.log('Server Config Prop Provided to Stateful:', props.serverConfig);
+  log(['Overrides Prop Provided to Stateful:', props.overrides], { client: 3, server: 3 });
+  log(['UI Config Provided to Stateful:', props.uiConfig], { client: 3, server: 3 });
+  log(['Server Config Prop Provided to Stateful:', props.serverConfig], { client: 3, server: 3 });
   return (
     <ContextWrapper
       apiKey={props.serverConfig?.apiKey || process.env.NEXT_PUBLIC_AGIXT_API_KEY || getCookie('jwt') || ''}
@@ -182,9 +183,7 @@ const Interactive = (props: Overrides & UIProps): React.JSX.Element => {
       })
     ).data;
   });
-  console.log(user);
   const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-  //console.log(mobile);
   return (
     <AppWrapper
       header={
@@ -306,15 +305,18 @@ const InteractiveAGiXT = ({
     }),
     [uiConfig],
   );
-  console.log(
-    `InteractiveAGiXT initialized as ${stateful ? '' : 'not '}stateful. ${
-      stateful
-        ? 'InteractiveAGiXT will provide its own InteractiveConfigContext Provider and state.'
-        : 'Assuming a InteractiveConfigContext Provider encloses this instance.'
-    }`,
+  log(
+    [
+      `InteractiveAGiXT initialized as ${stateful ? '' : 'not '}stateful. ${
+        stateful
+          ? 'InteractiveAGiXT will provide its own InteractiveConfigContext Provider and state.'
+          : 'Assuming a InteractiveConfigContext Provider encloses this instance.'
+      }`,
+    ],
+    { client: 3, server: 3 },
   );
-  console.log('Initializing user interface with options: ', uiConfigWithEnv);
-  // console.log('Configuration Provided From Server: ', chatConfig, serverConfig, uiConfig);
+  log(['Initializing user interface with options: ', uiConfigWithEnv], { client: 3, server: 3 });
+  log(['Configuration Provided From Server: ', serverConfig, uiConfig], { client: 3, server: 3 });
   return stateful ? (
     <Stateful overrides={overrides} serverConfig={serverConfig} uiConfig={uiConfigWithEnv} agent={agent} />
   ) : (

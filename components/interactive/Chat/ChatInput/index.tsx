@@ -50,10 +50,6 @@ export default function ChatBar({
     setValue: setMessage,
   } = useDynamicInput('', uploadedFiles);
 
-  useEffect(() => {
-    console.log(uploadedFiles);
-  }, [uploadedFiles]);
-
   const handleUploadFiles = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     if (event.target.files) {
       for (const file of event.target.files) {

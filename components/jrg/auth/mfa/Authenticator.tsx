@@ -36,7 +36,8 @@ export default function VerifyAuthenticator({ verifiedCallback }: { verifiedCall
         mfa_token: fields.token,
       });
       const totpResponse = response.data.detail;
-      // console.log(totpResponse);
+      log(['TOTP Response', totpResponse], { client: 2 });
+
       if (totpResponse.toLowerCase() === 'true') {
         verifiedCallback(true);
         setTotpVerified(true);

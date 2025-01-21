@@ -235,7 +235,6 @@ export default function Activity({
           {children?.map((child, index) => {
             const messageType = child.message.split(' ')[0];
             const messageBody = child.message.substring(child.message.indexOf(' '));
-            console.log(messageType);
             return (
               <Activity
                 key={child.timestamp + '-' + messageBody}
