@@ -15,9 +15,6 @@ import ConversationSelector from './Selectors/ConversationSelector';
 
 import { AgentSelector } from './Selectors/agent-selector';
 import PromptSelector from './Selectors/PromptSelector';
-import SwitchDark from '@/components/jrg/theme/SwitchDark';
-import SwitchColorblind from '@/components/jrg/theme/SwitchColorblind';
-import EditDialog from '@/components/jrg/ui/dialog/Edit/EditDialog';
 import Gravatar from '@/components/jrg/auth/management/Gravatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';

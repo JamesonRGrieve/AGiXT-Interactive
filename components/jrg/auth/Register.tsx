@@ -7,7 +7,6 @@ import { ReCAPTCHA } from 'react-google-recaptcha';
 import { useAuthentication } from './Router';
 import AuthCard from './AuthCard';
 import { toTitleCase } from '@/components/jrg/form/DynamicForm';
-import PasswordField from '@/components/jrg/ui/styled/Input/PasswordField';
 import { useAssertion } from '@/components/jrg/assert/assert';
 import { validateURI } from '@/lib/validation';
 import { Input } from '@/components/ui/input';
