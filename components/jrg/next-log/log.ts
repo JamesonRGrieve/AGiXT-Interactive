@@ -1,34 +1,23 @@
 export default function log(
-  logItem: any,
-  clientVerbosity: number | string | undefined,
-  verbosity: number | string | undefined = 3,
+  logItem: string | object,
+  clientVerbosity: number | undefined = 3,
+  serverVerbosity: number | undefined = 3,
   heading: string | null = null,
-  serverOnly: boolean | null = null,
 ) {
   // Server
-  clientVerbosity = Number(clientVerbosity ?? 3);
-  verbosity = Number(verbosity ?? 3);
-  if (serverOnly === true || serverOnly === null) {
-    if (typeof window === 'undefined' && (process.env.LOG_VERBOSITY_SERVER ?? verbosity <= 0)) {
-      if (heading !== null) {
-        console.log(`--- ${heading.toUpperCase()} ---`);
-      }
+  if (typeof window === 'undefined') {
+    if (!isNaN(Number(process.env.LOG_VERBOSITY_SERVER)) && serverVerbosity !== undefined) {
+      // If we are on server, the env var for server output is defined and there is a server verbosity level for this log.
+      if (heading) console.log(`--- ${heading.toUpperCase()} ---`);
       console.log(logItem);
-      if (heading !== null) {
-        console.log('-'.repeat(heading.length + 8));
-      }
+      if (heading) console.log('-'.repeat(heading.length + 8));
     }
-  }
-  // Client
-  if (serverOnly === false || serverOnly === null) {
-    if (typeof window !== 'undefined' && clientVerbosity >= verbosity) {
-      if (heading !== null) {
-        console.log(`--- ${heading.toUpperCase()} ---`);
-      }
+  } else {
+    // If we are on client, the env var for client output is defined and there is a client verbosity level for this log.
+    if (!isNaN(Number(process.env.LOG_VERBOSITY_CLIENT)) && clientVerbosity !== undefined) {
+      if (heading) console.log(`--- ${heading.toUpperCase()} ---`);
       console.log(logItem);
-      if (heading !== null) {
-        console.log('-'.repeat(heading.length + 8));
-      }
+      if (heading) console.log('-'.repeat(heading.length + 8));
     }
   }
 }
