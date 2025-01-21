@@ -5,7 +5,7 @@ import React, { useState } from 'react';
 import { getCookie } from 'cookies-next';
 import { LuCheckCircle, LuKey } from 'react-icons/lu';
 import Field from '@/components/jrg/ui/styled/FormControl/Field';
-import log from '@/lib/log';
+import log from '@/components/jrg/next-log/log';
 import { Button } from '@/components/ui/button';
 
 export type RegisterFormProps = object;
