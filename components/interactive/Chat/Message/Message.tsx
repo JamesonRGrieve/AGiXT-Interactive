@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import MarkdownBlock from './MarkdownBlock';
 import formatDate from './formatDate';
+import JRGDialog from '@/components/jrg/ui/dialog/Dialog';
 import { cn } from '@/lib/utils';
 import { TooltipBasic } from '@/components/ui/tooltip';
 import { formatTimeAgo } from '@/lib/time-ago';

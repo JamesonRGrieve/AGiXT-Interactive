@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { LuMenu as Menu } from 'react-icons/lu';
 import useSWR from 'swr';
 import axios from 'axios';
-import AppWrapper from '../jrg/appwrapper/old/AppWrapper';
+import AppWrapper from '../jrg/ui/wrapper/AppWrapper';
 
 import { InteractiveConfigDefault, InteractiveConfig, Overrides } from './InteractiveConfigContext';
 import ContextWrapper from './ContextWrapper';
@@ -15,6 +15,9 @@ import ConversationSelector from './Selectors/ConversationSelector';
 
 import { AgentSelector } from './Selectors/agent-selector';
 import PromptSelector from './Selectors/PromptSelector';
+import SwitchDark from '@/components/jrg/ui/theme/SwitchDark';
+import SwitchColorblind from '@/components/jrg/ui/theme/SwitchColorblind';
+import EditDialog from '@/components/jrg/ui/dialog/Edit/EditDialog';
 import Gravatar from '@/components/jrg/auth/management/Gravatar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Button } from '@/components/ui/button';

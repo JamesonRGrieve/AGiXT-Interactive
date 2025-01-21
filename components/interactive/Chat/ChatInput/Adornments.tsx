@@ -17,8 +17,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import SwitchDark from '@/components/jrg/theme/SwitchDark';
-import SwitchColorblind from '@/components/jrg/theme/SwitchColorblind';
+import SwitchDark from '@/components/jrg/ui/theme/SwitchDark';
+import SwitchColorblind from '@/components/jrg/ui/theme/SwitchColorblind';
 
 export const Timer = ({ loading, timer }: { loading: boolean; timer: number }) => {
   const tooltipMessage = loading

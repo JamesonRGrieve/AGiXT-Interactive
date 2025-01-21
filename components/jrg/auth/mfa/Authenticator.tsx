@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import QRCode from 'react-qr-code';
 import { deleteCookie, getCookie } from 'cookies-next';
 import Field from '@/components/jrg/ui/styled/FormControl/Field';
-import log from '@/components/jrg/next-log/log';
+import log from '@/lib/log';
 import { Button } from '@/components/ui/button';
 
 export type RegisterFormProps = object;

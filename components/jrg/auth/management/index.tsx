@@ -6,7 +6,7 @@ import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import { useAuthentication } from '../Router';
 import { Profile } from './Profile';
-import { DynamicFormFieldValueTypes } from '@/components/jrg/dynamic-form/DynamicForm';
+import { DynamicFormFieldValueTypes } from '@/components/jrg/ui/DynamicForm';
 import { validateURI } from '@/lib/validation';
 import { useAssertion } from '@/components/jrg/assert/assert';
 import { Button } from '@/components/ui/button';

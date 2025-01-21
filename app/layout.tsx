@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { ReactNode } from 'react';
-import Head from '@/components/jrg/appwrapper/old/Head';
+import Head from '@/components/jrg/ui/wrapper/Head';
 import { cn } from '@/lib/utils';
 import './globals.css';
 import InteractiveConfigContextWrapper from '@/components/interactive/ContextWrapper';
