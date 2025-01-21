@@ -225,11 +225,7 @@ class FrontEndTest:
                     with open(audio_path, "wb") as audio_file:
                         audio_file.write(audio_content)
 
-                    # Write the raw audio first
-                    with open(audio_path, "wb") as audio_file:
-                        audio_file.write(audio_content)
-
-                    # Read the audio and get its original sample rate
+                    # Read the WAV file
                     audio_data, sample_rate = sf.read(audio_path)
 
                     # Add small silence padding at the end (0.5 seconds)
