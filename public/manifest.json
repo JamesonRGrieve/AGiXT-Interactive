@@ -6,8 +6,8 @@
   "display": "standalone",
   "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait-primary",
-  "background_color": "#fff",
-  "theme_color": "#fff",
+  "background_color": "#0c0910",
+  "theme_color": "#0c0910",
   "icons": [
     {
       "src": "/XTIcon_128.png",
