@@ -221,7 +221,6 @@ class FrontEndTest:
                         extra_body={"language": "en"},
                     )
                     audio_content = base64.b64decode(tts.content)
-                    audio_path.write_bytes(audio_content)
                     with open(audio_path, "wb") as audio_file:
                         audio_file.write(audio_content)
 
