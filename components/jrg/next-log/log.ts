@@ -22,7 +22,7 @@ export default function log(
     }
   } else {
     // If we are on client, the env var for client output is defined and there is a client verbosity level for this log.
-    if (!isNaN(Number(process.env.LOG_VERBOSITY_CLIENT)) && verbosity.client !== undefined) {
+    if (!isNaN(Number(process.env.NEXT_PUBLIC_LOG_VERBOSITY_CLIENT)) && verbosity.client !== undefined) {
       if (heading) console.log(`--- ${heading.toUpperCase()} ---`);
       console.log(...logItems);
       if (heading) console.log('-'.repeat(heading.length + 8));
