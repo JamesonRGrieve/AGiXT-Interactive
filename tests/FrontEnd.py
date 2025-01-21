@@ -243,7 +243,7 @@ class FrontEndTest:
                     all_audio_lengths.append(2.0)
             if all_audio_data:
                 # Use the sample rate from the first audio clip
-                target_sample_rate = 16000
+                target_sample_rate = all_audio_data[0][1]
 
                 # Resample all audio to match the first clip's sample rate if needed
                 resampled_audio = []
