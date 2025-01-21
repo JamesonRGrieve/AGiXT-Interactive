@@ -11,7 +11,7 @@
 
 AGiXT Interactive is both an embeddable React component and standalone NextJS application allowing interaction with agents with extensive administration options.
 
-![Interactive Screenshot](https://github.com/user-attachments/assets/84a0bfe3-a47c-489b-8515-d14f3cdae664)
+![Interactive Screenshot](https://github.com/user-attachments/assets/82da8608-33e7-411a-9f82-4093c5eef2ec)
 
 ### Run with Docker Compose
 
