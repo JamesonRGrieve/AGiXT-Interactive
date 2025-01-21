@@ -216,7 +216,7 @@ class FrontEndTest:
                     # Generate TTS audio
                     tts = openai.audio.speech.create(
                         model="tts-1",
-                        voice="DukeNukem",
+                        voice="HAL9000",
                         input=cleaned_action,
                         extra_body={"language": "en"},
                     )
@@ -243,7 +243,7 @@ class FrontEndTest:
                     all_audio_lengths.append(2.0)
             if all_audio_data:
                 # Use the sample rate from the first audio clip
-                target_sample_rate = all_audio_data[0][1]
+                target_sample_rate = 16000
 
                 # Resample all audio to match the first clip's sample rate if needed
                 resampled_audio = []
