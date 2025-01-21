@@ -1,7 +1,7 @@
 import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
-import { AppSidebar } from '@/components/layout/app-sidebar';
+import { AppSidebar } from '@/components/jrg/appwrapper/nav/app-sidebar';
 import { SidebarInset } from '@/components/ui/sidebar';
-import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/layout/sidebar-header';
+import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/nav/sidebar-header';
 
 export default function SupportPage() {
   // Get the top level domain name from next_public_agixt_server

@@ -5,10 +5,10 @@ import { getCookie } from 'cookies-next';
 import { usePathname } from 'next/navigation';
 import { ViewVerticalIcon } from '@radix-ui/react-icons';
 
-import { AgentSelector } from '../interactive/Selectors/agent-selector';
-import { ChatHistory } from './chat-history';
-import { NavMain } from '@/components/layout/nav-main';
-import { NavUser } from '@/components/layout/nav-user';
+import { AgentSelector } from '../../../interactive/Selectors/agent-selector';
+import { ChatHistory } from '../../../layout/chat-history';
+import { NavMain } from '@/components/jrg/appwrapper/nav/nav-main';
+import { NavUser } from '@/components/jrg/appwrapper/nav/nav-user';
 import {
   Sidebar,
   SidebarContent,

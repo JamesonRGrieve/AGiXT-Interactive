@@ -2,13 +2,13 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { ReactNode } from 'react';
-import Head from '@/components/jrg/ui/wrapper/Head';
+import Head from '@/components/jrg/appwrapper/Head';
 import { cn } from '@/lib/utils';
 import './globals.css';
 import InteractiveConfigContextWrapper from '@/components/interactive/ContextWrapper';
 import { SidebarProvider } from '@/components/ui/sidebar';
-import { AppSidebar } from '@/components/layout/app-sidebar';
-import { ContextSidebar } from '@/components/layout/context-sidebar';
+import { AppSidebar } from '@/components/jrg/appwrapper/nav/app-sidebar';
+import { ContextSidebar } from '@/components/jrg/appwrapper/nav/context-sidebar';
 import { Toaster } from '@/components/ui/toaster';
 import '@/components/jrg/zod2gql/zod2gql';
 

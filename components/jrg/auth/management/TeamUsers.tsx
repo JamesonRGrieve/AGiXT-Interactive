@@ -22,8 +22,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-import { DataTable } from '@/components/datawais/data-table';
-import { DataTableColumnHeader } from '@/components/datawais/data-table-column-header';
+import { DataTable } from '@/components/wais/data/data-table';
+import { DataTableColumnHeader } from '@/components/wais/data/data-table-column-header';
 
 interface User {
   email: string;

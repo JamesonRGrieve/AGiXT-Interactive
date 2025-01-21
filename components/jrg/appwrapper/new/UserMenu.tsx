@@ -20,7 +20,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { useTheme } from '@/components/jrg/ui/theme/useTheme';
+import { useTheme } from '@/components/jrg/theme/useTheme';
 import useUser from '@/auth/hooks/useUser';
 import { getGravatarUrl } from '@/lib/gravatar';
 import { useCompany } from '@/components/interactive/hooks';

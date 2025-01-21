@@ -6,7 +6,7 @@ import { HowItWorks } from '@/components/home/how-it-works';
 import PricingGrid from '@/components/jrg/auth/stripe/PricingTable';
 import { Contact } from '@/components/home/contact';
 import { CallToAction } from '@/components/home/call-to-action';
-import { ThemeToggle } from '@/components/jrg/ui/theme/ThemeToggle';
+import { ThemeToggle } from '@/components/jrg/theme/ThemeToggle';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 

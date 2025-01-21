@@ -6,9 +6,9 @@ import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import { useAuthentication } from '../Router';
 import { Profile } from './Profile';
-import { DynamicFormFieldValueTypes } from '@/components/jrg/ui/DynamicForm';
+import { DynamicFormFieldValueTypes } from '@/components/jrg/form/DynamicForm';
 import { validateURI } from '@/lib/validation';
-import { useAssertion } from '@/lib/assert';
+import { useAssertion } from '@/components/jrg/assert/assert';
 import { Button } from '@/components/ui/button';
 
 export type ManageProps = {

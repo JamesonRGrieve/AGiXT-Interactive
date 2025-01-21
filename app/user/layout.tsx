@@ -2,9 +2,9 @@
 
 import { ReactNode } from 'react';
 import Link from 'next/link';
-import { AppSidebar } from '@/components/layout/app-sidebar';
+import { AppSidebar } from '@/components/jrg/appwrapper/nav/app-sidebar';
 import { SidebarInset } from '@/components/ui/sidebar';
-import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/layout/sidebar-header';
+import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/nav/sidebar-header';
 import { usePathname } from 'next/navigation';
 
 export default function UserLayout({ children }: { children: ReactNode }): ReactNode {
