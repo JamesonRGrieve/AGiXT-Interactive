@@ -1,13 +1,5 @@
 /** @type {import('next').NextConfig} */
 
-const withPWA = require('next-pwa')({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === 'development',
-  buildExcludes: [/.*\.map$/],
-})
-
 const mergeConfigs = (obj1, obj2) =>
   Object.keys(obj2).reduce(
     (acc, key) => ({
@@ -205,7 +197,21 @@ const nextConfig = configs.reduce((accumulator, config) => mergeConfigs(accumula
       retryOnError: false, // or a number to set max retries
     },
   },
+  // Add PWA headers configuration
+  async headers() {
+    return [
+      {
+        source: '/sw.js',
+        headers: [
+          {
+            key: 'Cache-Control',
+            value: 'public, max-age=0, must-revalidate',
+          },
+        ],
+      },
+    ];
+  },
 });
 console.log(nextConfig);
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-module.exports = withPWA(nextConfig);
+module.exports = nextConfig;
