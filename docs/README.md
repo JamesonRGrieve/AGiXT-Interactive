@@ -9,7 +9,9 @@
 
 [![Logo](https://josh-xt.github.io/AGiXT/images/AGiXT-gradient-flat.svg)](https://josh-xt.github.io/AGiXT/)
 
-AGiXT Interactive is both an embeddable React component and standalone NextJS application allowing interaction with agents without administration options.
+AGiXT Interactive is both an embeddable React component and standalone NextJS application allowing interaction with agents with extensive administration options.
+
+![Interactive Screenshot](https://github.com/user-attachments/assets/84a0bfe3-a47c-489b-8515-d14f3cdae664)
 
 ### Run with Docker Compose
 
