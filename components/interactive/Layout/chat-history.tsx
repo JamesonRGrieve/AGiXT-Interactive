@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { getTimeDifference } from '../Chat/Message/Activity';
+import { getTimeDifference } from '@/interactive/Chat/Activity';
 import { ConversationEdge as Conversation } from '@/interactive/types';
 
 export function ChatHistory() {

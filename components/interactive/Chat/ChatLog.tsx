@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
-import ChatActivity from './Message/Activity';
+import { Activity as ChatActivity } from './Activity';
 import Message from './Message/Message';
 import log from '@/components/jrg/next-log/log';
 
