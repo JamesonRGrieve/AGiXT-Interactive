@@ -8,7 +8,14 @@ import { Check, Mail, MoreHorizontal, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
-import { useCompany, useCompanies, useInvitations } from '@/components/interactive/hooks';
+import {
+  useCompany,
+  useCompanies,
+  useInvitations,
+  useOldCompanies,
+  useOldInvitations,
+  useOldActiveCompany,
+} from '@/components/interactive/hooks';
 
 import { Checkbox } from '@/components/ui/checkbox';
 import {
@@ -324,14 +331,15 @@ export const Team = () => {
   const [creating, setCreating] = useState(false);
   const [newParent, setNewParent] = useState('');
   const [newName, setNewName] = useState('');
-  const { data: invitationsData } = useInvitations();
-  const { data: companyData } = useCompanies();
-  const { data: activeCompany, mutate } = useCompany();
+  const { data: invitationsData } = useOldInvitations();
+  const { data: companyData } = useOldCompanies();
+  const { data: activeCompany, mutate } = useOldActiveCompany();
   const [responseMessage, setResponseMessage] = useState('');
+  console.log('USERS', activeCompany);
   const handleConfirm = async () => {
     if (renaming) {
       try {
-        const companyId = getCookie('agixt-company-id');
+        const companyId = activeCompany.id;
         await axios.put(
           `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${companyId}`,
           { name: newName },
@@ -384,7 +392,7 @@ export const Team = () => {
         {
           email: email,
           role_id: parseInt(roleId),
-          company_id: getCookie('agixt-company-id'),
+          company_id: activeCompany.id,
         },
         {
           headers: {
