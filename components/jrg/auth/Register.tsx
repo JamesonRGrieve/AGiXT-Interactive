@@ -6,9 +6,8 @@ import React, { FormEvent, ReactNode, useEffect, useState, useRef } from 'react'
 import { ReCAPTCHA } from 'react-google-recaptcha';
 import { useAuthentication } from './Router';
 import AuthCard from './AuthCard';
-import { toTitleCase } from '@/components/jrg/DynamicForm';
-import PasswordField from '@/components/jrg/styled/Input/PasswordField';
-import { useAssertion } from '@/lib/assert';
+import { toTitleCase } from '@/components/jrg/dynamic-form/DynamicForm';
+import { useAssertion } from '@/components/jrg/assert/assert';
 import { validateURI } from '@/lib/validation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -115,8 +114,10 @@ export default function Register({ additionalFields = [], userRegisterEndpoint =
           <input type='hidden' id='email' name='email' value={getCookie('email')} />
           {authConfig.authModes.basic && (
             <>
-              <PasswordField />
-              <PasswordField id='password-again' name='password-again' label='Password (Again)' />
+              <Label htmlFor='password'>Password</Label>
+              <Input id='password' placeholder='Password' name='password' autoComplete='password' />
+              <Label htmlFor='password-again'>Password (Again)</Label>
+              <Input id='password-again' placeholder='Password' name='password' autoComplete='password' />
             </>
           )}
           {additionalFields.length > 0 &&

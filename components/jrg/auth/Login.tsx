@@ -10,11 +10,11 @@ import { LuCheck as Check, LuCopy as Copy } from 'react-icons/lu';
 import { useAuthentication } from './Router';
 import AuthCard from './AuthCard';
 import { AuthenticatorHelp as MissingAuthenticator } from './mfa/MissingAuthenticator';
-import PasswordField from '@/components/jrg/styled/Input/PasswordField';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { validateURI } from '@/lib/validation';
-import { useAssertion } from '@/lib/assert';
+import { useAssertion } from '@/components/jrg/assert/assert';
 import { Button } from '@/components/ui/button';
-import TextField from '@/components/jrg/styled/Input/TextField';
 
 export type LoginProps = {
   userLoginEndpoint?: string;
@@ -91,14 +91,14 @@ export default function Login({
           </div>
         )}
         <input type='hidden' id='email' name='email' value={getCookie('email')} />
-        {authConfig.authModes.basic && <PasswordField />}
-        <TextField
-          id='token'
-          label='Multi-Factor Code'
-          placeholder='Enter your 6 digit code'
-          name='token'
-          autoComplete='one-time-code'
-        />
+        {authConfig.authModes.basic && (
+          <>
+            <Label htmlFor='password'>Password</Label>
+            <Input id='password' placeholder='Password' name='password' autoComplete='password' />
+          </>
+        )}
+        <Label htmlFor='token'>Multi-Factor Code</Label>
+        <Input id='token' placeholder='Enter your 6 digit code' name='token' autoComplete='one-time-code' />
         {!otp_uri && <MissingAuthenticator />}
         {authConfig.recaptchaSiteKey && (
           <div className='my-3'>

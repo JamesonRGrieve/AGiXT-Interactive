@@ -1,10 +1,11 @@
 import timezones from 'timezones-list';
 
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
-import Field from '@/components/jrg/styled/FormControl/Field';
-import TextField from '@/components/jrg/styled/Input/TextField';
+import Field from './Field';
+import TextField from './TextField';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import log from '../next-log/log';
 
 export function toTitleCase(str: string) {
   // Replace underscores, or capital letters (in the middle of the string) with a space and the same character
@@ -90,10 +91,8 @@ export default function DynamicForm({
         setEditedState((prevState) => ({ ...prevState, [key]: { ...prevState[key], error: error.message } }));
       }
     });
-    console.log('No errors!');
     if (Object.values(editedState).every((field) => field.error === '')) {
       const formattedForReturn = Object.fromEntries(Object.entries(editedState).map(([key, value]) => [key, value.value]));
-      console.log(formattedForReturn);
       onConfirm(formattedForReturn);
     }
   }, [editedState, fields, onConfirm]);
@@ -112,7 +111,7 @@ export default function DynamicForm({
       }
     });
     setEditedState(initialState);
-    console.log('Setting initial state', initialState);
+    log(['Setting initial dynamic form state', initialState], { client: 2 });
   }, [fields, toUpdate]); // Depend on `fields` to re-initialize state when `fields` prop changes
 
   return (

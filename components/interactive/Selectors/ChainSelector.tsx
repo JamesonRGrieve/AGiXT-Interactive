@@ -6,7 +6,7 @@ import { useChains } from '../hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useRouter, useSearchParams } from 'next/navigation';
-import usePathname from '@/hooks/usePathname';
+import usePathname from '@/components/jrg/auth/hooks/usePathname';
 
 export function ChainSelector({
   value,

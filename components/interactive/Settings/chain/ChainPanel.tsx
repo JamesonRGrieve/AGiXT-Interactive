@@ -79,7 +79,7 @@ export default function ChainPanel({ showCreateDialog, setShowCreateDialog }) {
         </Button>
       </div>
       <div className='mt-4'>
-        <ChainSteps chainData={chainData} chainMutate={mutate} />
+        <ChainSteps />
       </div>
     </>
   );

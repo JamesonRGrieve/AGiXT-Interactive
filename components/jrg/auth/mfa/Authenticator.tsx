@@ -5,8 +5,8 @@ import { LuCheckCircle, LuKey } from 'react-icons/lu';
 import React, { useEffect, useState } from 'react';
 import QRCode from 'react-qr-code';
 import { deleteCookie, getCookie } from 'cookies-next';
-import Field from '@/components/jrg/styled/FormControl/Field';
-import log from '@/lib/log';
+import Field from '@/components/jrg/ui/styled/FormControl/Field';
+import log from '@/components/jrg/next-log/log';
 import { Button } from '@/components/ui/button';
 
 export type RegisterFormProps = object;
@@ -36,7 +36,8 @@ export default function VerifyAuthenticator({ verifiedCallback }: { verifiedCall
         mfa_token: fields.token,
       });
       const totpResponse = response.data.detail;
-      // console.log(totpResponse);
+      log(['TOTP Response', totpResponse], { client: 2 });
+
       if (totpResponse.toLowerCase() === 'true') {
         verifiedCallback(true);
         setTotpVerified(true);

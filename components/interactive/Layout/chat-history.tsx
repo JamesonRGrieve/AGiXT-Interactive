@@ -4,15 +4,15 @@ import { useContext } from 'react';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { usePathname, useRouter } from 'next/navigation';
 import dayjs from 'dayjs';
-import { useConversations } from '../interactive/hooks';
-import { InteractiveConfigContext } from '../interactive/InteractiveConfigContext';
-import { CommandInput, CommandItem, CommandList, Command } from '../ui/command';
-import { Dialog, DialogClose, DialogTrigger, DialogContent } from '../ui/dialog';
+import { useConversations } from '../hooks';
+import { InteractiveConfigContext } from '../InteractiveConfigContext';
+import { CommandInput, CommandItem, CommandList, Command } from '../../ui/command';
+import { Dialog, DialogClose, DialogTrigger, DialogContent } from '../../ui/dialog';
 import { cn } from '@/lib/utils';
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Badge } from '@/components/ui/badge';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { getTimeDifference } from '../interactive/Chat/Message/Activity';
+import { getTimeDifference } from '../Chat/Message/Activity';
 import { ConversationEdge as Conversation } from '@/interactive/types';
 
 export function ChatHistory() {
@@ -33,7 +33,7 @@ export function ChatHistory() {
   };
 
   if (!conversationData || !conversationData.length || isLoading) return null;
-  const groupedConversations = groupConversations(conversationData);
+  const groupedConversations = groupConversations(conversationData.filter((conversation) => conversation.name !== '-'));
 
   return (
     <SidebarGroup className='group-data-[collapsible=icon]:hidden'>
@@ -71,7 +71,7 @@ export function ChatHistory() {
                   </TooltipTrigger>
                   <TooltipContent side='right'>
                     <div>{conversation.name}</div>
-                    {/* TODO: Add helper that handles all cases seconds, minutes, hours, days, weeks, months */}
+                    {/* TODO: Modify helper to handle all cases seconds, minutes, hours, days, weeks, months */}
                     {label === 'Today' ? (
                       <div>
                         Updated: {getTimeDifference(dayjs().format('YYYY-MM-DDTHH:mm:ssZ'), conversation.updatedAt)} ago

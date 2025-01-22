@@ -22,8 +22,9 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-import { DataTable } from '@/components/datawais/data-table';
-import { DataTableColumnHeader } from '@/components/datawais/data-table-column-header';
+import { DataTable } from '@/components/wais/data/data-table';
+import { DataTableColumnHeader } from '@/components/wais/data/data-table-column-header';
+import log from '../../next-log/log';
 
 interface User {
   email: string;
@@ -407,7 +408,7 @@ export const Team = () => {
       setResponseMessage(error.response?.data?.detail || 'Failed to send invitation');
     }
   };
-  console.log(invitationsData);
+  log(['Invitations Data', invitationsData], { client: 3 });
   return (
     <div className='space-y-6'>
       <DataTable data={activeCompany?.users || []} columns={users_columns} />

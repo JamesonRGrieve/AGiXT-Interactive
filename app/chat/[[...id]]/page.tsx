@@ -1,6 +1,5 @@
 import { cookies } from 'next/headers';
 import AGiXTInteractive from '@/components/interactive/InteractiveAGiXT';
-import { useEffect } from 'react';
 import ConvSwitch from './ConvSwitch';
 
 export default function Home({ params }: { params: { id: string } }) {

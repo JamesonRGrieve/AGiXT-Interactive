@@ -1,9 +1,9 @@
 import React from 'react';
-import CheckField from '../Input/CheckField';
-import PasswordField from '../Input/PasswordField';
-import SelectField from '../Input/SelectField';
-import TextField from '../Input/TextField';
-import RadioField from '../Input/RadioField';
+import CheckField from './CheckField';
+import PasswordField from './PasswordField';
+import SelectField from './SelectField';
+import TextField from './TextField';
+import RadioField from './RadioField';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
