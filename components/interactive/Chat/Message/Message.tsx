@@ -60,7 +60,7 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
   const isUserMsgJustText = checkUserMsgJustText(chatItem);
 
   return (
-    <div className={cn('m-3 overflow-hidden flex flex-col gap-2', isUserMsgJustText && 'max-w-[60%] self-end')}>
+    <div className={cn('m-3 overflow-hidden flex flex-col gap-2 min-w-48', isUserMsgJustText && 'max-w-[60%] self-end')}>
       {audios?.sources?.length > 0 ? (
         <>
           {audios?.message?.trim() && (
@@ -79,33 +79,35 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
         </>
       ) : (
         <div
-          className={cn(
+          className={
             chatItem.role === 'USER'
-              ? 'chat-log-message-user bg-primary rounded-3xl py-1 px-3 rounded-br-none px-5 text-primary-foreground'
-              : 'chat-log-message-ai p-0 pt-8 text-foreground',
-          )}
+              ? 'chat-log-message-user bg-primary rounded-3xl py-1 rounded-br-none px-5 text-primary-foreground'
+              : 'chat-log-message-ai p-0 pt-2 text-foreground'
+          }
         >
           <MarkdownBlock content={formattedMessage} chatItem={chatItem} setLoading={setLoading} />
         </div>
       )}
 
-      {chatItem.timestamp !== '' && (
-        <p className={cn('text-sm text-muted-foreground flex gap-1', chatItem.role === 'USER' && 'self-end')}>
-          <p className='inline font-bold text-muted-foreground'>{chatItem.role === 'USER' ? 'You' : chatItem.role}</p>•
-          <TooltipBasic title={formatDate(chatItem.timestamp, false)}>
-            <span>{formatTimeAgo(chatItem.timestamp)}</span>
-          </TooltipBasic>
-        </p>
-      )}
+      <div className={cn('flex items-center gap-6', chatItem.role === 'USER' && 'flex-row-reverse')}>
+        {chatItem.timestamp !== '' && (
+          <p className={'text-sm text-muted-foreground flex gap-1'}>
+            <p className='inline font-bold text-muted-foreground'>{chatItem.role === 'USER' ? 'You' : chatItem.role}</p>•
+            <TooltipBasic title={formatDate(chatItem.timestamp, false)}>
+              <span>{formatTimeAgo(chatItem.timestamp)}</span>
+            </TooltipBasic>
+          </p>
+        )}
 
-      <MessageActions
-        chatItem={chatItem}
-        audios={audios}
-        formattedMessage={formattedMessage}
-        lastUserMessage={lastUserMessage}
-        updatedMessage={updatedMessage}
-        setUpdatedMessage={setUpdatedMessage}
-      />
+        <MessageActions
+          chatItem={chatItem}
+          audios={audios}
+          formattedMessage={formattedMessage}
+          lastUserMessage={lastUserMessage}
+          updatedMessage={updatedMessage}
+          setUpdatedMessage={setUpdatedMessage}
+        />
+      </div>
     </div>
   );
 }

@@ -47,7 +47,7 @@ export function MessageActions({
   const enableMessageDeletion = process.env.NEXT_PUBLIC_AGIXT_ALLOW_MESSAGE_DELETION === 'true';
 
   return (
-    <div className={cn('flex gap-2', chatItem.role === 'USER' && 'justify-end items-center')}>
+    <div className={cn('flex', chatItem.role === 'USER' && 'justify-end items-center')}>
       {(audios?.message?.trim() || !audios) && (
         <>
           {chatItem.role !== 'USER' && process.env.NEXT_PUBLIC_AGIXT_RLHF === 'true' && (
