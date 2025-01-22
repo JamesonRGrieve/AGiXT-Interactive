@@ -15,7 +15,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-export function ContextSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function SidebarContext({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [hasStarted, setHasStarted] = useState(false);
   const { toggleSidebar } = useSidebar('right');
   const pathname = usePathname();

@@ -10,6 +10,9 @@ import { cn } from '@/lib/utils';
 // import { Label } from '@/components/ui/label';
 // import { Switch } from '@/components/ui/switch';
 import useProducts from '@/components/jrg/auth/hooks/useProducts';
+import { useState } from 'react';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 // const defaultPricingData = [
 //   {
 //     name: 'Free',
@@ -77,7 +80,6 @@ type PricingCardProps = Product & {
 export default function PricingTable() {
   // const [isAnnual, setIsAnnual] = useState(false);
   const { data: pricingData, isLoading, error } = useProducts();
-  console.log(pricingData);
   return (
     <>
       {/* <div className='flex items-center justify-center'>
@@ -115,8 +117,10 @@ export function PricingCard({
   marketing_features,
   priceAnnual,
   isMostPopular,
+  flatRate = false,
   isAnnual = false,
 }: PricingCardProps) {
+  const [quantity, setQuantity] = useState(1);
   return (
     <Card
       className={cn(
@@ -129,11 +133,13 @@ export function PricingCard({
           <Badge className='self-center mb-3 uppercase w-max bg-primary-foreground text-primary'>Most popular</Badge>
         )}
         <CardTitle className={isMostPopular ? '!mb-7' : 'mb-7'}>{name}</CardTitle>
-        <span className='text-5xl font-bold'>
-          {isAnnual
-            ? priceAnnual
-            : `$${price.unit_amount / 100}${price.currency.toLocaleUpperCase()} / ${price.recurring.interval_count} ${price.recurring.interval}`}
-        </span>
+        {flatRate && (
+          <span className='text-5xl font-bold'>
+            {isAnnual
+              ? priceAnnual
+              : `$${price.unit_amount / 100}${price.currency.toLocaleUpperCase()} / ${price.recurring.interval_count} ${price.recurring.interval}`}
+          </span>
+        )}
       </CardHeader>
       <CardDescription className={isMostPopular ? 'w-11/12 mx-auto text-primary-foreground' : 'text-center'}>
         {description}
@@ -152,34 +158,40 @@ export function PricingCard({
           ))}
         </ul>
       </CardContent>
-      <CardFooter>
+      <CardFooter className='flex flex-col gap-4'>
         {getCookie('jwt') ? (
-          <Button
-            className='w-full text-foreground'
-            variant={'outline'}
-            onClick={async () => {
-              const checkout_uri = (
-                await axios.post(
-                  process.env.NEXT_PUBLIC_AGIXT_SERVER + '/v1/checkout',
-                  {
-                    cart: [
-                      {
-                        price: price.id,
-                      },
-                    ],
-                  },
-                  {
-                    headers: {
-                      Authorization: getCookie('jwt'),
+          <>
+            <Label htmlFor='quantity'>Initial Users</Label>
+            <Input id='quantity' type='number' value={quantity} onChange={(e) => setQuantity(Number(e.target.value))} />
+
+            <Button
+              className='w-full text-foreground'
+              variant={'outline'}
+              onClick={async () => {
+                const checkout_uri = (
+                  await axios.post(
+                    process.env.NEXT_PUBLIC_AGIXT_SERVER + '/v1/checkout',
+                    {
+                      cart: [
+                        {
+                          price: price.id,
+                          quantity: quantity,
+                        },
+                      ],
                     },
-                  },
-                )
-              ).data.detail;
-              window.location.href = checkout_uri;
-            }}
-          >
-            Sign up
-          </Button>
+                    {
+                      headers: {
+                        Authorization: getCookie('jwt'),
+                      },
+                    },
+                  )
+                ).data.detail;
+                window.location.href = checkout_uri;
+              }}
+            >
+              Sign up
+            </Button>
+          </>
         ) : (
           <Link href='/user' className='w-full'>
             <Button className='w-full text-foreground' variant={'outline'}>

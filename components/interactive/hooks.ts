@@ -33,8 +33,7 @@ import {
   ConversationEdgeSchema,
 } from './types';
 import { z } from 'zod';
-import { RiRhythmFill } from 'react-icons/ri';
-import { agent } from './InteractiveConfigDefault';
+import log from '../jrg/next-log/log';
 
 // ============================================================================
 // Utility Functions
@@ -101,7 +100,9 @@ export function useAgent(
       });
     }
   }
-  console.log('SEARCH NAME', searchName);
+  log([`GQL useAgent() SEARCH NAME: ${searchName}`], {
+    client: 3,
+  });
   return useSWR<{ agent: Agent | null; commands: string[] }>(
     [`/agent?name=${searchName}`, companies, withSettings],
     async (): Promise<{ agent: Agent | null; commands: string[] }> => {
@@ -109,15 +110,21 @@ export function useAgent(
         if (withSettings) {
           const client = createGraphQLClient();
           const query = AgentSchema.toGQL('query', 'GetAgent', { name: searchName });
-          console.log(query);
-          const response = await client.request<Agent>(query, { name: searchName });
-          console.log(response);
+          log(['GQL useAgent() Query', query], {
+            client: 3,
+          });
+          const response = await client.request<{ agent: Agent }>(query, { name: searchName });
+          log(['GQL useAgent() Response', response], {
+            client: 3,
+          });
           return AgentSchema.parse(response.agent);
         } else {
           const toReturn = { agent: foundEarly, commands: [] };
           if (companies?.length && !toReturn.agent) {
             for (const company of companies) {
-              console.log('CHECKING COMPANY', company);
+              log(['GQL useAgent() Checking Company', company], {
+                client: 3,
+              });
               const agent = company.agents.find((a) => a.name === searchName);
               if (agent) {
                 toReturn.agent = agent;
@@ -127,11 +134,15 @@ export function useAgent(
           if (toReturn.agent) {
             toReturn.commands = await state.agixt.getCommands(toReturn.agent.name);
           }
-          console.log('GOT AGENT', toReturn);
+          log(['GQL useAgent() Got Agent', toReturn], {
+            client: 3,
+          });
           return toReturn;
         }
       } catch (error) {
-        console.log('Failed to fetch agent data:', error);
+        log(['GQL useAgent() Error', error], {
+          client: 1,
+        });
         return { agent: null, commands: [] };
       }
     },
@@ -153,9 +164,16 @@ export function usePromptCategories(): SWRResponse<string[]> {
   return useSWR<string[]>(
     '/promptCategories',
     async (): Promise<string[]> => {
-      const query = PromptCategorySchema.toGQL('query', 'GetPromptCategories');
-      const response = await client.request(query);
-      return response || [];
+      try {
+        const query = PromptCategorySchema.toGQL('query', 'GetPromptCategories');
+        const response = await client.request(query);
+        return response || [];
+      } catch (error) {
+        log(['GQL usePromptCategories() Error', error], {
+          client: 1,
+        });
+        return [];
+      }
     },
     { fallbackData: [] },
   );
@@ -184,9 +202,16 @@ export function usePrompts(): SWRResponse<Prompt[]> {
   return useSWR<Prompt[]>(
     '/prompts',
     async (): Promise<Prompt[]> => {
-      const query = PromptSchema.toGQL('query', 'GetPrompts');
-      const response = await client.request(query);
-      return response.prompts || [];
+      try {
+        const query = PromptSchema.toGQL('query', 'GetPrompts');
+        const response = await client.request(query);
+        return response.prompts || [];
+      } catch (error) {
+        log(['GQL usePrompts() Error', error], {
+          client: 1,
+        });
+        return [];
+      }
     },
     { fallbackData: [] },
   );
@@ -216,11 +241,18 @@ export function useCompany(id?: string): SWRResponse<Company | null> {
   return useSWR<Company | null>(
     [`/company?id=${id}`, companies],
     (): Company | null => {
-      if (id) {
-        return companies?.find((c) => c.id === id) || null;
-      } else {
-        const agentName = getCookie('agixt-agent');
-        return companies?.find((c) => (agentName ? c.agents.some((a) => a.name === agentName) : c.primary)) || null;
+      try {
+        if (id) {
+          return companies?.find((c) => c.id === id) || null;
+        } else {
+          const agentName = getCookie('agixt-agent');
+          return companies?.find((c) => (agentName ? c.agents.some((a) => a.name === agentName) : c.primary)) || null;
+        }
+      } catch (error) {
+        log(['GQL useCompany() Error', error], {
+          client: 1,
+        });
+        return null;
       }
     },
     { fallbackData: null },
@@ -241,11 +273,28 @@ export function useUser(): SWRResponse<User> {
   return useSWR<User>(
     '/user',
     async (): Promise<User> => {
-      const query = UserSchema.toGQL('query', 'GetUser');
-      console.log(query);
-      const response = await client.request<{ user: User }>(query);
-      console.log(response);
-      return UserSchema.parse(response.user);
+      try {
+        const query = UserSchema.toGQL('query', 'GetUser');
+        log(['GQL useUser() Query', query], {
+          client: 3,
+        });
+        const response = await client.request<{ user: User }>(query);
+        log(['GQL useUser() Response', response], {
+          client: 3,
+        });
+        return UserSchema.parse(response.user);
+      } catch (error) {
+        log(['GQL useUser() Error', error], {
+          client: 1,
+        });
+        return {
+          companies: [],
+          email: '',
+          firstName: '',
+          id: '',
+          lastName: '',
+        };
+      }
     },
     {
       fallbackData: {
@@ -274,10 +323,17 @@ export function useProvider(providerName?: string): SWRResponse<Provider | null>
   return useSWR<Provider | null>(
     providerName ? [`/provider`, providerName] : null,
     async (): Promise<Provider | null> => {
-      const query = ProviderSchema.toGQL('query', 'GetProvider', { providerName });
-      const response = await client.request<Provider>(query, { providerName });
-      const validated = ProviderSchema.parse(response);
-      return validated.provider;
+      try {
+        const query = ProviderSchema.toGQL('query', 'GetProvider', { providerName });
+        const response = await client.request<Provider>(query, { providerName });
+        const validated = ProviderSchema.parse(response);
+        return validated.provider;
+      } catch (error) {
+        log(['GQL useProvider() Error', error], {
+          client: 1,
+        });
+        return null;
+      }
     },
     { fallbackData: null },
   );
@@ -296,12 +352,18 @@ export function useProviders(): SWRResponse<Provider[]> {
       try {
         const query = ProviderSchema.toGQL('query', 'GetProviders');
         const response = await client.request<Provider[]>(query);
-        console.log('RESPONSE', response);
+        log(['GQL useProviders() Response', response], {
+          client: 3,
+        });
         const validated = z.array(ProviderSchema).parse(response.providers);
-        console.log('VALIDATED', validated);
+        log(['GQL useProviders() Validated', validated], {
+          client: 3,
+        });
         return validated;
       } catch (error) {
-        console.log('ERROR', error);
+        log(['GQL useProviders() Error', error], {
+          client: 1,
+        });
         return [];
       }
     },
@@ -324,10 +386,17 @@ export function useInvitations(companyId?: string): SWRResponse<Invitation[]> {
   return useSWR<Invitation[]>(
     companyId ? [`/invitations`, companyId] : '/invitations',
     async (): Promise<Invitation[]> => {
-      const query = InvitationSchema.toGQL('query', 'GetInvitations', { companyId });
-      const response = await client.request<Invitation[]>(query, { companyId });
-      const validated = InvitationSchema.parse(response);
-      return validated.invitations;
+      try {
+        const query = InvitationSchema.toGQL('query', 'GetInvitations', { companyId });
+        const response = await client.request<Invitation[]>(query, { companyId });
+        const validated = InvitationSchema.parse(response);
+        return validated.invitations;
+      } catch (error) {
+        log(['GQL useInvitations() Error', error], {
+          client: 1,
+        });
+        return [];
+      }
     },
     { fallbackData: [] },
   );
@@ -348,10 +417,17 @@ export function useCommandArgs(commandName: string): SWRResponse<CommandArgs | n
   return useSWR<CommandArgs | null>(
     commandName ? [`/command_args`, commandName] : null,
     async (): Promise<CommandArgs | null> => {
-      const query = CommandArgSchema.toGQL('query', 'GetCommandArgs', { commandName });
-      const response = await client.request<CommandArgs>(query, { commandName });
-      const validated = CommandArgSchema.parse(response);
-      return validated;
+      try {
+        const query = CommandArgSchema.toGQL('query', 'GetCommandArgs', { commandName });
+        const response = await client.request<CommandArgs>(query, { commandName });
+        const validated = CommandArgSchema.parse(response);
+        return validated;
+      } catch (error) {
+        log(['GQL useCommandArgs() Error', error], {
+          client: 1,
+        });
+        return null;
+      }
     },
     { fallbackData: null },
   );
@@ -374,13 +450,22 @@ export function useChain(chainName?: string): SWRResponse<Chain | null> {
     async (): Promise<Chain | null> => {
       try {
         const query = ChainSchema.toGQL('query', 'GetChain', { chainName: chainName });
-        console.log('QUERY', query);
-        const response = await client.request<Chain>(query, { chainName: chainName });
-        console.log('RESPONSE', response);
-        const validated = ChainSchema.parse(response.data);
-        return validated.chain;
+        log(['GQL useChain() Query', query], {
+          client: 3,
+        });
+        const response = await client.request<{ chain: Chain }>(query, { chainName: chainName });
+        log(['GQL useChain() Response', response], {
+          client: 3,
+        });
+        const validated = ChainSchema.parse(response.chain);
+        log(['GQL useChain() Validated', validated], {
+          client: 3,
+        });
+        return validated;
       } catch (error) {
-        console.log('ERROR:', error);
+        log(['GQL useChain() Error', error], {
+          client: 1,
+        });
         return null;
       }
     },
@@ -404,6 +489,9 @@ export function useChains(): SWRResponse<Chain[]> {
         const validated = z.array(ChainsSchema).parse(response.chains);
         return validated;
       } catch (error) {
+        log(['GQL useChains() Error', error], {
+          client: 1,
+        });
         return [];
       }
     },
@@ -426,9 +514,16 @@ export function useConversation(conversationId: string): SWRResponse<Conversatio
   return useSWR<Conversation | null>(
     conversationId ? [`/conversation`, conversationId] : null,
     async (): Promise<Conversation | null> => {
-      const query = ConversationSchema.toGQL('subscription', 'WatchConversation', { conversationId });
-      const response = await client.request<Conversation>(query, { conversationId });
-      return response.conversation;
+      try {
+        const query = ConversationSchema.toGQL('subscription', 'WatchConversation', { conversationId });
+        const response = await client.request<Conversation>(query, { conversationId });
+        return response.conversation;
+      } catch (error) {
+        log(['GQL useConversation() Error', error], {
+          client: 1,
+        });
+        return null;
+      }
     },
     {
       fallbackData: null,
@@ -449,11 +544,15 @@ export function useConversations(): SWRResponse<ConversationEdge[]> {
     async (): Promise<ConversationEdge[]> => {
       try {
         const query = z.object({ edges: ConversationEdgeSchema }).toGQL('query', 'GetConversations');
-        console.log('QUERY', query);
+        log(['GQL useConversations() Query', query], {
+          client: 3,
+        });
         const response = await client.request<{ conversations: { edges: ConversationEdge[] } }>(query);
         return z.array(ConversationEdgeSchema).parse(response.conversations.edges);
       } catch (error) {
-        console.log('ERROR:', error);
+        log(['GQL useConversations() Error', error], {
+          client: 1,
+        });
         return [];
       }
     },

@@ -1,9 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
-import { AppSidebar } from '@/components/layout/app-sidebar';
-import { SidebarInset } from '@/components/ui/sidebar';
-import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/layout/sidebar-header';
+import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/SidebarHeader';
 
 // Read privacy policy from a local file
 function getPrivacyPolicy() {

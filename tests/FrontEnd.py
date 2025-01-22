@@ -1,3 +1,6 @@
+import base64
+import shutil
+import openai
 from playwright.async_api import async_playwright
 from IPython.display import Image, display
 from pyzbar.pyzbar import decode
@@ -18,9 +21,12 @@ import os
 import re
 import platform
 
+
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
+openai.base_url = os.getenv("EZLOCALAI_URI")
+openai.api_key = os.getenv("EZLOCALAI_API_KEY", "none")
 
 
 async def print_args(msg):
@@ -106,10 +112,13 @@ class FrontEndTest:
         display(Image(filename=str(screenshot_path)))
         return screenshot_path
 
-    def create_video_report(self):
+    def create_video_report(self, max_size_mb=10):
         """
         Creates a video from all screenshots taken during the test run with Google TTS narration
-        using OpenCV and FFMPEG for video processing.
+        using OpenCV and FFMPEG for video processing. Adjusts framerate and compression if output exceeds size limit.
+
+        Args:
+            max_size_mb (int): Maximum size of the output video in MB. Defaults to 10.
         """
         if is_desktop():
             return None
@@ -132,24 +141,64 @@ class FrontEndTest:
             temp_dir = tempfile.mkdtemp()
             logging.info("Creating temporary directory for audio files...")
 
+            def create_video(fps):
+                """Helper function to create video at specified FPS"""
+                video_path = os.path.join(temp_dir, "video_no_audio.mp4")
+                fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+                out = cv2.VideoWriter(video_path, fourcc, fps, (width, height))
+                total_frames = 0
+
+                for idx, (screenshot_path, _) in enumerate(
+                    self.screenshots_with_actions
+                ):
+                    frames_needed = int(max(all_audio_lengths[idx], 2.0) * fps)
+                    img = cv2.imread(screenshot_path)
+                    for _ in range(frames_needed):
+                        out.write(img)
+                        total_frames += 1
+
+                out.release()
+                return video_path, total_frames
+
+            def combine_video_audio(silent_video_path, audio_path, output_path, crf=23):
+                """Helper function to combine video and audio with compression"""
+                subprocess.run(
+                    [
+                        "ffmpeg",
+                        "-i",
+                        silent_video_path,
+                        "-i",
+                        audio_path,
+                        "-c:v",
+                        "libx264",  # Use H.264 codec
+                        "-crf",
+                        str(
+                            crf
+                        ),  # Compression quality (18-28 is good, higher = more compression)
+                        "-preset",
+                        "medium",  # Encoding speed preset
+                        "-c:a",
+                        "aac",
+                        "-b:a",
+                        "128k",  # Compress audio bitrate
+                        output_path,
+                        "-y",
+                        "-loglevel",
+                        "error",
+                    ]
+                )
+
             # Create paths for our files
-            silent_video_path = os.path.join(temp_dir, "video_no_audio.mp4")
             final_video_path = os.path.abspath(os.path.join(os.getcwd(), "report.mp4"))
             concatenated_audio_path = os.path.join(temp_dir, "combined_audio.wav")
-
-            # Initialize video writer
-            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-            fps = 30
-            out = cv2.VideoWriter(silent_video_path, fourcc, fps, (width, height))
 
             # Lists to store audio data and durations
             all_audio_data = []
             all_audio_lengths = []
-            total_frames = 0
 
             # First pass: Generate audio files and calculate durations
             logging.info("Generating audio narrations...")
-            for idx, (screenshot_path, action_name) in enumerate(
+            for idx, (_, action_name) in enumerate(
                 tqdm(
                     self.screenshots_with_actions,
                     desc="Generating audio files",
@@ -157,7 +206,7 @@ class FrontEndTest:
                 )
             ):
                 # Generate audio file for this action
-                temp_audio_path = os.path.join(temp_dir, f"audio_{idx}.mp3")
+                audio_path = os.path.join(temp_dir, f"audio_{idx}.wav")
 
                 try:
                     # Clean up the action name for better narration
@@ -165,98 +214,108 @@ class FrontEndTest:
                     cleaned_action = re.sub(r"([a-z])([A-Z])", r"\1 \2", cleaned_action)
 
                     # Generate TTS audio
-                    tts = gTTS(text=cleaned_action, lang="en", slow=False)
-                    tts.save(temp_audio_path)
-
-                    # Convert MP3 to WAV using FFMPEG
-                    wav_path = os.path.join(temp_dir, f"audio_{idx}.wav")
-                    subprocess.run(
-                        [
-                            "ffmpeg",
-                            "-i",
-                            temp_audio_path,
-                            "-acodec",
-                            "pcm_s16le",
-                            "-ar",
-                            "44100",
-                            wav_path,
-                            "-y",  # Overwrite if exists
-                            "-loglevel",
-                            "error",  # Suppress output
-                        ]
+                    tts = openai.audio.speech.create(
+                        model="tts-1",
+                        voice="HAL9000",
+                        input=cleaned_action,
+                        extra_body={"language": "en"},
                     )
+                    audio_content = base64.b64decode(tts.content)
 
-                    # Read the WAV file
-                    audio_data, sample_rate = sf.read(wav_path)
+                    # Write the raw audio first
+                    with open(audio_path, "wb") as audio_file:
+                        audio_file.write(audio_content)
+
+                    # Read the audio and get its original sample rate
+                    audio_data, sample_rate = sf.read(audio_path)
 
                     # Add small silence padding at the end (0.5 seconds)
-                    padding = int(0.5 * sample_rate)
+                    padding = int(0.5 * sample_rate)  # Use the actual sample rate
                     audio_data = np.pad(audio_data, (0, padding), mode="constant")
 
-                    # Store audio data
-                    all_audio_data.append(audio_data)
+                    # Store audio data and sample rate
+                    all_audio_data.append((audio_data, sample_rate))
                     audio_duration = len(audio_data) / sample_rate
-                    all_audio_lengths.append(
-                        max(audio_duration, 2.0)
-                    )  # Minimum 2 seconds
-
-                    # Calculate frames needed for this segment
-                    frames_needed = int(max(audio_duration, 2.0) * fps)
-
-                    # Read and write frames
-                    img = cv2.imread(screenshot_path)
-                    for _ in range(frames_needed):
-                        out.write(img)
-                        total_frames += 1
+                    all_audio_lengths.append(max(audio_duration, 2.0))
 
                 except Exception as e:
                     logging.error(f"Error processing clip {idx}: {e}")
-                    # Use minimum duration for failed clips
                     all_audio_lengths.append(2.0)
-                    frames_needed = int(2.0 * fps)
-                    img = cv2.imread(screenshot_path)
-                    for _ in range(frames_needed):
-                        out.write(img)
-                        total_frames += 1
+            if all_audio_data:
+                # Use the sample rate from the first audio clip
+                target_sample_rate = all_audio_data[0][1]
 
-            out.release()
+                # Resample all audio to match the first clip's sample rate if needed
+                resampled_audio = []
+                for audio_data, sr in all_audio_data:
+                    if sr != target_sample_rate:
+                        # You might need to add a resampling library like librosa here
+                        # resampled = librosa.resample(audio_data, orig_sr=sr, target_sr=target_sample_rate)
+                        resampled = audio_data  # Placeholder for actual resampling
+                    else:
+                        resampled = audio_data
+                    resampled_audio.append(resampled)
 
-            # Combine all audio
-            logging.info("Combining audio tracks...")
-            combined_audio = np.concatenate(all_audio_data)
-            sf.write(concatenated_audio_path, combined_audio, 44100)
+                # Combine the resampled audio
+                combined_audio = np.concatenate(resampled_audio)
 
-            # Use FFMPEG to combine video and audio
-            logging.info("Merging video and audio...")
-            subprocess.run(
-                [
-                    "ffmpeg",
-                    "-i",
-                    silent_video_path,
-                    "-i",
-                    concatenated_audio_path,
-                    "-c:v",
-                    "copy",
-                    "-c:a",
-                    "aac",
-                    final_video_path,
-                    "-y",  # Overwrite if exists
-                    "-loglevel",
-                    "error",  # Suppress output
-                ]
+                # Write with the correct sample rate
+                sf.write(concatenated_audio_path, combined_audio, target_sample_rate)
+
+            # Initial attempt with 30 fps and moderate compression
+            initial_fps = 30
+            silent_video_path, total_frames = create_video(initial_fps)
+            combine_video_audio(
+                silent_video_path, concatenated_audio_path, final_video_path, crf=23
             )
+
+            # Get file size in MB
+            file_size_mb = os.path.getsize(final_video_path) / (1024 * 1024)
+
+            # If file is still too large, try increasing compression and reducing fps
+            if file_size_mb > max_size_mb:
+                logging.info(
+                    f"Video size ({file_size_mb:.2f}MB) exceeds limit of {max_size_mb}MB. Adjusting settings..."
+                )
+
+                # First try stronger compression
+                logging.info("Attempting stronger compression...")
+                combine_video_audio(
+                    silent_video_path, concatenated_audio_path, final_video_path, crf=28
+                )
+                file_size_mb = os.path.getsize(final_video_path) / (1024 * 1024)
+
+                # If still too large, reduce fps and maintain high compression
+                if file_size_mb > max_size_mb:
+                    # Calculate new fps based on size ratio with some extra buffer
+                    new_fps = int(
+                        initial_fps * (max_size_mb / file_size_mb) * 0.85
+                    )  # 15% buffer
+                    new_fps = max(new_fps, 10)  # Don't go below 10 fps
+
+                    logging.info(
+                        f"Recreating video with {new_fps} fps and high compression..."
+                    )
+                    silent_video_path, total_frames = create_video(new_fps)
+                    combine_video_audio(
+                        silent_video_path,
+                        concatenated_audio_path,
+                        final_video_path,
+                        crf=28,
+                    )
 
             # Cleanup
             logging.info("Cleaning up temporary files...")
-            import shutil
-
             shutil.rmtree(temp_dir)
 
             if not os.path.exists(final_video_path):
                 logging.error("Video file was not created successfully")
                 return None
 
-            logging.info(f"Video report created successfully at: {final_video_path}")
+            final_size_mb = os.path.getsize(final_video_path) / (1024 * 1024)
+            logging.info(
+                f"Video report created successfully at: {final_video_path} (Size: {final_size_mb:.2f}MB)"
+            )
             return final_video_path
 
         except Exception as e:
@@ -267,12 +326,12 @@ class FrontEndTest:
 
         prompt = f"""The goal will be to view the screenshot and determine if the action was successful or not.
 
-The action we were trying to perform was: {action_name}
+        The action we were trying to perform was: {action_name}
 
-This screenshot shows the result of the action.
+        This screenshot shows the result of the action.
 
-In your <answer> block, respond with only one word `True` if the screenshot is as expected, to indicate if the action was successful. If the action was not successful, explain why in the <answer> block, this will be sent to the developers as the error in the test.
-"""
+        In your <answer> block, respond with only one word `True` if the screenshot is as expected, to indicate if the action was successful. If the action was not successful, explain why in the <answer> block, this will be sent to the developers as the error in the test.
+        """
         with open(screenshot_path, "rb") as f:
             screenshot = f.read().decode("utf-8")
         screenshot = f"data:image/png;base64,{screenshot}"
@@ -290,71 +349,20 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def handle_mfa_screen(self):
         """Handle MFA screenshot"""
-        # Initialize otp_uri before QR code scanning
+        # Decode QR code from screenshot
+        await asyncio.sleep(2)
+        # await self.take_screenshot(f"Screenshot prior to attempting to decode QR code")
+        nparr = np.frombuffer(await self.page.screenshot(), np.uint8)
+        img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         otp_uri = None
-        max_retries = 5  # Increased retries
-        retry_count = 0
-
-        # Wait longer initially for QR code to fully render
-        await asyncio.sleep(5)
-
-        while not otp_uri and retry_count < max_retries:
-            try:
-                logging.info(
-                    f"Attempting to decode QR code (Attempt {retry_count + 1}/{max_retries})"
-                )
-                await self.take_screenshot(
-                    f"Screenshot prior to attempting to decode QR code - Attempt {retry_count + 1}"
-                )
-
-                # Take a high-quality screenshot
-                screenshot = await self.page.screenshot(type="png")
-                nparr = np.frombuffer(screenshot, np.uint8)
-                img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
-
-                # Try different image processing techniques
-                decoded_objects = []
-
-                # Attempt 1: Original image
-                decoded_objects = decode(img)
-
-                # Attempt 2: Try with grayscale if original fails
-                if not decoded_objects:
-                    gray_img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                    decoded_objects = decode(gray_img)
-                    logging.info("Attempting decode with grayscale image")
-
-                # Attempt 3: Try with thresholding if grayscale fails
-                if not decoded_objects:
-                    _, thresh_img = cv2.threshold(gray_img, 127, 255, cv2.THRESH_BINARY)
-                    decoded_objects = decode(thresh_img)
-                    logging.info("Attempting decode with thresholded image")
-
-                for obj in decoded_objects:
-                    if obj.type == "QRCODE":
-                        otp_uri = obj.data.decode("utf-8")
-                        logging.info("Successfully decoded QR code")
-                        break
-
-                if not otp_uri:
-                    retry_count += 1
-                    if retry_count == max_retries:
-                        raise Exception(
-                            "Failed to decode QR code after multiple attempts and image processing techniques"
-                        )
-                    logging.info(
-                        f"QR code not found, retrying in 3 seconds... ({retry_count}/{max_retries})"
-                    )
-                    await asyncio.sleep(3)  # Increased wait time between attempts
-                else:
-                    logging.info(f"Retrieved OTP URI: {otp_uri}")
-            except Exception as e:
-                logging.error(f"Error during QR code decoding: {str(e)}")
-                retry_count += 1
-                if retry_count == max_retries:
-                    raise Exception(f"Failed to decode QR code: {str(e)}")
-                await asyncio.sleep(3)
-
+        decoded_objects = decode(img)
+        for obj in decoded_objects:
+            if obj.type == "QRCODE":
+                otp_uri = obj.data.decode("utf-8")
+                break
+        if not otp_uri:
+            raise Exception("Failed to decode QR code")
+        logging.info(f"Retrieved OTP URI: {otp_uri}")
         match = re.search(r"secret=([\w\d]+)", otp_uri)
         if match:
             secret_key = match.group(1)
@@ -364,7 +372,9 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
             logging.info(f"Generated OTP token: {otp_token}")
             await self.page.fill("#token", otp_token)
             logging.info("Entering OTP token")
-            await self.take_screenshot("Verify OTP token entered")
+            await self.take_screenshot(
+                "The user scans the QR code and enrolls it in their authenticator app, then entering the one-time password therefrom."
+            )
             logging.info("Submitting OTP token")
             await self.page.click('button[type="submit"]')
         else:
@@ -386,7 +396,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
             result = await action_function()
             if followup_function:
                 await followup_function()
-            await self.take_screenshot(f"Verify {action_description}")
+            await self.take_screenshot(f"{action_description}")
             return result
         except Exception as e:
             logging.error(f"Failed {action_description}: {e}")
@@ -397,47 +407,35 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         email_address = f"{uuid.uuid4()}@example.com"
 
         await self.test_action(
-            f"Entering email address in registration form: {email_address}",
+            f"The user enters their email address in the registration form. Since this e-mail address doesn't have an account yet, we proceed to the registration page.",
             lambda: self.page.fill("#email", email_address),
         )
 
         await self.test_action(
-            "Clicking 'Continue with Email' button which should advance to name input after email submission",
+            "Clicking the 'Continue with Email' button advances the process.",
             lambda: self.page.locator("text=Continue with Email").click(),
         )
 
         first_name = "Test"
+        last_name = "User"
         await self.test_action(
-            f"Entering first name: {first_name}",
+            f"The user enters their first name, in this case. {first_name}. We are using the name {first_name} {last_name} for demonstration purposes.",
             lambda: self.page.fill("#first_name", first_name),
         )
 
-        last_name = "User"
         await self.test_action(
-            f"Entering last name: {last_name}",
+            f"The user enters their last name: {last_name}.",
             lambda: self.page.fill("#last_name", last_name),
         )
 
         await self.test_action(
-            "Clicking 'Register' button to advance to the MFA step after registration",
+            "Clicking the 'Register' button advances the login process to the multifactor authentication confirmation step after registration, ensuring the user has enrolled therein.",
             lambda: self.page.click('button[type="submit"]'),
-            lambda: asyncio.sleep(10),
         )
 
-        await asyncio.sleep(2)
-
-        # try:
-        #     await self.test_action(
-        #         "Clicking 'Register' button again",
-        #         lambda: self.page.click('button[type="submit"]'),
-        #     )
-        # except:
-        #     pass
-
-        await asyncio.sleep(2)
-
         mfa_token = await self.test_action(
-            "Capturing QR code after it appears", lambda: self.handle_mfa_screen()
+            "After successfully entering their one time password, the user is allowed into the application.",
+            lambda: self.handle_mfa_screen(),
         )
 
         logging.info(f"MFA token {mfa_token} handled successfully")
@@ -447,52 +445,51 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def handle_google(self):
         """Handle Google OAuth scenario"""
+        # await stealth_async(self.context)
 
         async def handle_oauth_async(popup):
             self.popup = popup
             logging.info(f"New popup URL: {popup.url}")
             await popup.wait_for_timeout(5000)
-            await self.take_screenshot(
-                "Verify Google OAuth popup window opened correctly"
-            )
+            await self.take_screenshot("Google OAuth popup window opened correctly")
 
             await self.test_action(
-                "Verify email is entered in Google OAuth form",
+                "E-mail is entered in Google OAuth form",
                 lambda: popup.fill("#identifierId", "xtemailtesting@gmail.com"),
             )
 
             await self.test_action(
-                "Verify system advanced to password screen in Google OAuth",
+                "System advanced to password screen in Google OAuth",
                 lambda: popup.click('text="Next"'),
             )
 
             await self.test_action(
-                "Verify password is entered in Google OAuth form",
+                "Password is entered in Google OAuth form",
                 lambda: popup.fill("[type=password]", "bJBO228mp]s6"),
             )
 
             await self.test_action(
-                "Verify system showing Google safety screen",
+                "System showing Google safety screen",
                 lambda: popup.click('text="Next"'),
             )
 
             await self.test_action(
-                "Verify system showing Google access permissions screen",
+                "System showing Google access permissions screen",
                 lambda: popup.click('text="Continue"'),
             )
 
             await self.test_action(
-                "Verify system showing scope selection screen",
+                "system showing scope selection screen",
                 lambda: popup.click('text="Continue"'),
             )
 
             await self.test_action(
-                "Verify required scopes are checked for Google OAuth",
+                "required scopes are checked for Google OAuth",
                 lambda: popup.click("[type=checkbox]"),
             )
 
             await self.test_action(
-                "Verify popup closed", lambda: popup.click('text="Continue"')
+                "popup closed", lambda: popup.click('text="Continue"')
             )
 
             await popup.wait_for_timeout(20000)
@@ -506,38 +503,65 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         )
 
         await self.take_screenshot(
-            "Verify Google OAuth process completed and returned to main application"
+            "Google OAuth process completed and returned to main application"
         )
         return "xtemailtesting@gmail.com"
 
     async def handle_chat(self):
         try:
             await self.test_action(
-                "Verify chat interface is loaded and ready for interaction",
+                "After the user logs in, the chat interface is loaded and ready for their first basic interaction.",
                 lambda: self.page.click("text=Chat"),
             )
             await self.test_action(
-                "Verify text prompt has been expanded",
+                "By clicking in the chat bar, the user can expand it to show more options and see their entire input.",
                 lambda: self.page.click("#message"),
             )
             await self.test_action(
-                "Verify text prompt has been filled",
+                "The user enters an input to prompt the default agent, since no advanced settings have been configured, this will use the default A G I X T thought process.",
                 lambda: self.page.fill(
                     "#message",
                     "Tell me a fictional story about a man named John Doe. Include the word 'extravagant' at least twice.",
                 ),
             )
             await self.test_action(
-                "Verify message is sent and the timer has started",
+                "When the user hits send, or the enter key, the message is sent to the agent and it begins thinking.",
                 lambda: self.page.click("#send-message"),
             )
+            while not await self.page.locator(
+                ":has-text('Conversation renamed')"
+            ).count():
+                logging.info(f"No rename found yet, waiting 5s.")
+                await asyncio.sleep(5)
             logging.info(
-                f"{self.page.locator('.chat-log-message-ai').count() } AI responses found initially..."
+                str(
+                    await self.page.locator(":has-text('Conversation renamed')").count()
+                )
+                + "conversation rename detected, continuing."
             )
 
             await asyncio.sleep(2)
 
-            await self.take_screenshot("Verify chat response")
+            await self.take_screenshot(
+                "When the agent finishes thinking, the agent responds alongside providing its thought process and renaming the conversation contextually."
+            )
+
+            await self.test_action(
+                "The user can expand the thought process to see the thoughts, reflections and actions.",
+                lambda: self.page.locator(".agixt-activity")
+                .get_by_text("Completed Activities")
+                .click(),
+                lambda: self.page.locator(".agixt-activity")
+                .get_by_text("Completed Activities")
+                .scroll_into_view_if_needed(),
+            )
+            await self.test_action(
+                "The agent also provides a visualization of its thought process.",
+                lambda: self.page.click(".agixt-activity-diagram"),
+                lambda: self.page.locator(
+                    '.flowchart[id^="mermaid"]'
+                ).scroll_into_view_if_needed(),
+            )
 
             # await self.test_action(
             #     "Record audio",
@@ -575,12 +599,12 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
             # )
 
             # await self.test_action(
-            #     "Verify message is sent and the timer has started",
+            #     "message is sent and the timer has started",
             #     lambda: self.page.click("#send-message"),
             # )
             # await asyncio.sleep(120)
 
-            # await self.take_screenshot("Verify voice response")
+            # await self.take_screenshot("voice response")
         except Exception as e:
             logging.error(f"Error nagivating to chat: {e}")
             raise Exception(f"Error nagivating to chat: {e}")
@@ -623,11 +647,9 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
 
     async def handle_stripe(self):
         """Handle Stripe subscription scenario"""
-        await self.take_screenshot(
-            "Verify subscription page is loaded with available plans"
-        )
+        await self.take_screenshot("subscription page is loaded with available plans")
         await self.test_action(
-            "Verify Stripe checkout page is open",
+            "Stripe checkout page is open",
             lambda: self.page.click(".bg-card button"),
             followup_function=lambda: self.page.wait_for_url(
                 "https://checkout.stripe.com/c/**"
@@ -639,7 +661,7 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
         )
         if sus_button:
             await self.test_action(
-                "Verify subscription confirmation button is visible", lambda: None
+                "subscription confirmation button is visible", lambda: None
             )
             await self.test_action(
                 "Click subscription confirmation button", lambda: sus_button.click()
@@ -678,17 +700,10 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
             lambda: self.page.click("button.SubmitButton.SubmitButton--complete"),
         )
         await self.page.wait_for_timeout(15000)
-        await self.take_screenshot(
-            "Verify payment was processed and subscription is active"
-        )
+        await self.take_screenshot("payment was processed and subscription is active")
 
     async def run(self, headless=not is_desktop()):
         try:
-            # Wait for backend to start
-            if headless:
-                logging.info("Waiting 60 seconds for backend to start...")
-                await asyncio.sleep(60)
-
             async with async_playwright() as self.playwright:
                 self.browser = await self.playwright.chromium.launch(headless=headless)
                 self.context = await self.browser.new_context()
@@ -700,13 +715,13 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
                 logging.info(f"Navigating to {self.base_uri}")
                 await self.page.goto(self.base_uri)
                 await self.take_screenshot(
-                    "Verify application landing page loaded successfully"
+                    "The landing page of the application is the first thing the user sees."
                 )
 
                 logging.info("Clicking 'Register or Login' button")
                 await self.page.click('text="Login or Register"')
                 await self.take_screenshot(
-                    "Verify authentication options are displayed"
+                    "The user has multiple authentication options if enabled, including several o auth options such as Microsoft or Google. For this test, we will use the basic email authentication."
                 )
 
                 if "google" not in self.features:
@@ -722,9 +737,6 @@ In your <answer> block, respond with only one word `True` if the screenshot is a
                 if "stripe" in self.features:
                     await self.handle_stripe()
 
-                await self.take_screenshot(
-                    "Verify successful login and navigation to Chat page"
-                )
                 await self.handle_train_user_agent()
                 await self.handle_train_company_agent()
                 await self.handle_chat()

@@ -1,26 +1,9 @@
 'use client';
 
-import {
-  LuMic,
-  LuPaperclip,
-  LuBook,
-  LuCommand,
-  LuGraduationCap,
-  LuHelpCircle,
-  LuCopy,
-  LuDownload,
-  LuThumbsUp,
-  LuThumbsDown,
-  LuPen as LuEdit,
-  LuTrash2,
-  LuVolume2,
-} from 'react-icons/lu';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { AppSidebar } from '@/components/layout/app-sidebar';
-import { SidebarInset } from '@/components/ui/sidebar';
-import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/layout/sidebar-header';
-import { Button } from '@/components/ui/button';
-import { getCookie, setCookie } from 'cookies-next';
+import { LuMic, LuPaperclip, LuBook, LuCommand, LuGraduationCap, LuThumbsUp, LuThumbsDown } from 'react-icons/lu';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/SidebarHeader';
+import { getCookie } from 'cookies-next';
 import { useEffect, useState } from 'react';
 export default function GettingStartedPage() {
   const [hasStarted, setHasStarted] = useState(false);

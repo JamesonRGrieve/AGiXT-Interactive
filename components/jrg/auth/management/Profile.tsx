@@ -4,9 +4,10 @@ import axios from 'axios';
 import { deleteCookie, getCookie } from 'cookies-next';
 import { mutate } from 'swr';
 import VerifySMS from '../mfa/SMS';
-import DynamicForm from '@/components/jrg/DynamicForm';
+import DynamicForm from '@/components/jrg/dynamic-form/DynamicForm';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import log from '../../next-log/log';
 
 export const Profile = ({
   isLoading,
@@ -62,8 +63,6 @@ export const Profile = ({
             </Button>,
           ]}
           onConfirm={async (data) => {
-            console.log(data);
-
             const updateResponse = (
               await axios
                 .put(
@@ -82,7 +81,7 @@ export const Profile = ({
                 )
                 .catch((exception: any) => exception.response)
             ).data;
-            console.log(updateResponse);
+            log(['Update Response', updateResponse], { client: 2 });
             setResponseMessage(updateResponse.detail.toString());
             await mutate('/user');
           }}
@@ -105,7 +104,6 @@ export const Profile = ({
               }, {})}
               excludeFields={['verify_email', 'verify_sms']}
               onConfirm={async (data) => {
-                console.log(data);
                 const updateResponse = (
                   await axios
                     .put(

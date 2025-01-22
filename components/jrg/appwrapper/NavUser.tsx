@@ -4,8 +4,8 @@ import { BadgeCheck, Bell, LogOut } from 'lucide-react';
 import { CaretRightIcon, ComponentPlaceholderIcon } from '@radix-ui/react-icons';
 
 import { useRouter } from 'next/navigation';
-import { Skeleton } from '../ui/skeleton';
-import { Button } from '../ui/button';
+import { Skeleton } from '../../ui/skeleton';
+import { Button } from '../../ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -17,9 +17,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
-import { Appearance } from '@/components/jrg/wrapper/new/UserMenu';
+import { Appearance } from '@/components/jrg/appwrapper/UserMenu';
 import useUser from '@/components/jrg/auth/hooks/useUser';
-import { getGravatarUrl } from '@/lib/gravatar';
+import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
 
 const user = {
   name: 'shadcn',

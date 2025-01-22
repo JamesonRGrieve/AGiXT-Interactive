@@ -1,5 +1,6 @@
 import React from 'react';
 import mermaid from 'mermaid';
+import log from '@/components/jrg/next-log/log';
 // https://codesandbox.io/p/sandbox/react-with-mermaid-ex9f7?file=%2Fsrc%2FMermaid.js%3A1%2C1-64%2C1
 
 interface MermaidProps {
@@ -8,7 +9,7 @@ interface MermaidProps {
 
 const Mermaid: React.FC<MermaidProps> = ({ chart }) => {
   const id = React.useId();
-  console.log('Rendering Chart', chart);
+  log(['Rendering Mermaid Chart', chart], { client: 2 });
   React.useEffect(() => {
     mermaid.initialize({
       startOnLoad: true,

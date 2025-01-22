@@ -13,7 +13,7 @@ import OrganizationalUnit, { OrganizationalUnitProps } from './OU';
 import ErrorPage, { ErrorPageProps } from './ErrorPage';
 import oAuth2Providers from './oauth2/OAuthProviders';
 import deepMerge from '@/lib/objects';
-import assert from '@/lib/assert';
+import assert from '@/components/jrg/assert/assert';
 
 type RouterPageProps = {
   path: string;
