@@ -14,6 +14,7 @@ import MarkdownBlock from './MarkdownBlock';
 import formatDate from './formatDate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { cn } from '@/lib/utils';
 
 export function getTimeDifference(timestamp1, timestamp2) {
   // Convert timestamps to Date objects
@@ -160,6 +161,8 @@ export default function Activity({
   const title = useMemo(() => message.split('\n')[0].replace(/:$/, ''), [message]).trim();
   const body = useMemo(() => message.split('\n').slice(1).join('\n'), [message]).trim();
   const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM-DDTHH:mm:ssZ'));
+  const rootStyles = 'p-2.5 overflow-hidden flex gap-2';
+
   useEffect(() => {
     if (!nextTimestamp && activityType !== 'info') {
       const interval = setInterval(() => {
@@ -169,7 +172,7 @@ export default function Activity({
       return () => clearInterval(interval);
     }
   }, [nextTimestamp, activityType]);
-  const rootStyles = 'p-2.5 overflow-hidden flex gap-2';
+
   const rootChildren = (
     <Tooltip>
       <TooltipTrigger asChild>
@@ -220,14 +223,19 @@ export default function Activity({
     </Tooltip>
   );
 
-  return children?.length > 0 ? (
+  if (!children || children.length <= 0) return rootChildren;
+
+  return (
     <Accordion
       type='single'
       className={`w-full border-t border-border ${alternateBackground === 'primary' ? 'bg-primary/10' : ''}`}
     >
       <AccordionItem value='item-1' className='border-b-0'>
         <AccordionTrigger
-          className={`${rootStyles} w-full flex justify-start items-center px-0 py-2.5 border-b border-border hover:no-underline`}
+          className={cn(
+            rootStyles,
+            'w-full flex justify-start items-center px-0 py-2.5 border-b border-border hover:no-underline',
+          )}
         >
           {rootChildren}
         </AccordionTrigger>
@@ -265,7 +273,5 @@ export default function Activity({
         </AccordionContent>
       </AccordionItem>
     </Accordion>
-  ) : (
-    rootChildren
   );
 }
