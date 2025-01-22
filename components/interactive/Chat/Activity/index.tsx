@@ -10,11 +10,13 @@ import { GiMirrorMirror } from 'react-icons/gi';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
-import MarkdownBlock from './MarkdownBlock';
-import formatDate from './formatDate';
+import MarkdownBlock from '../Message/MarkdownBlock';
+import formatDate from '../Message/formatDate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { cn } from '@/lib/utils';
+import { z } from 'zod';
+import { severities } from './Severtities';
 
 export function getTimeDifference(timestamp1, timestamp2) {
   // Convert timestamps to Date objects
@@ -36,105 +38,6 @@ export function getTimeDifference(timestamp1, timestamp2) {
 
   return `${minutes}m ${seconds}s`;
 }
-const severities = {
-  error: {
-    icon: (
-      <Tooltip>
-        <TooltipTrigger>
-          <Error className='text-destructive' />
-        </TooltipTrigger>
-        <TooltipContent>Error</TooltipContent>
-      </Tooltip>
-    ),
-    text: 'text-destructive',
-    border: 'border-destructive',
-  },
-
-  info: {
-    icon: (
-      <Tooltip>
-        <TooltipTrigger>
-          <Info className='text-info' />
-        </TooltipTrigger>
-        <TooltipContent>Information</TooltipContent>
-      </Tooltip>
-    ),
-    text: 'text-info',
-    border: 'border-info',
-  },
-  success: {
-    icon: (
-      <Tooltip>
-        <TooltipTrigger>
-          <CircleCheck className='text-success' />
-        </TooltipTrigger>
-        <TooltipContent>Successful Activity</TooltipContent>
-      </Tooltip>
-    ),
-    text: 'text-success',
-    border: 'border-success',
-  },
-  warn: {
-    icon: (
-      <Tooltip>
-        <TooltipTrigger>
-          <TriangleAlert className='text-warning' />
-        </TooltipTrigger>
-        <TooltipContent>Warning</TooltipContent>
-      </Tooltip>
-    ),
-    text: 'text-warning',
-    border: 'border-warning',
-  },
-  thought: {
-    icon: (
-      <Tooltip>
-        <TooltipTrigger>
-          <TfiThought />
-        </TooltipTrigger>
-        <TooltipContent>Planned/Thought About an Activity</TooltipContent>
-      </Tooltip>
-    ),
-    text: 'text-info',
-    border: 'border-info',
-  },
-  reflection: {
-    icon: (
-      <Tooltip>
-        <TooltipTrigger>
-          <GiMirrorMirror />
-        </TooltipTrigger>
-        <TooltipContent>Reflected on an Activity</TooltipContent>
-      </Tooltip>
-    ),
-    text: 'text-info',
-    border: 'border-info',
-  },
-  execution: {
-    icon: (
-      <Tooltip>
-        <TooltipTrigger>
-          <FaRunning />
-        </TooltipTrigger>
-        <TooltipContent>Executed/Ran a Command</TooltipContent>
-      </Tooltip>
-    ),
-    text: 'text-info',
-    border: 'border-info',
-  },
-  diagram: {
-    icon: (
-      <Tooltip>
-        <TooltipTrigger>
-          <Pencil />
-        </TooltipTrigger>
-        <TooltipContent>Drew a Diagram</TooltipContent>
-      </Tooltip>
-    ),
-    text: 'text-info',
-    border: 'border-info',
-  },
-};
 
 export type ActivityProps = {
   activityType: 'error' | 'info' | 'success' | 'warn' | 'thought' | 'reflection' | 'execution' | 'diagram';
@@ -149,7 +52,7 @@ export type ActivityProps = {
 dayjs.extend(timezone);
 dayjs.extend(utc);
 
-export default function Activity({
+export function Activity({
   message,
   activityType,
   alternateBackground = 'primary',
