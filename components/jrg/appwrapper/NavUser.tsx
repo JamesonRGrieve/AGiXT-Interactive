@@ -47,7 +47,7 @@ export function NavUser() {
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
               <Avatar className='w-8 h-8 rounded-lg'>
-                <AvatarImage src={getGravatarUrl(user?.email)} alt={user?.first_name} />
+                <AvatarImage src={getGravatarUrl(user?.email)} alt={user?.firstName} />
                 <AvatarFallback className='rounded-lg'>{userInitials(user)}</AvatarFallback>
               </Avatar>
               <div className='grid flex-1 text-sm leading-tight text-left'>
@@ -59,7 +59,7 @@ export function NavUser() {
                 ) : (
                   <>
                     <span className='font-semibold capitalize truncate'>
-                      {user.first_name} {user.last_name}
+                      {user.firstName} {user.lastName}
                     </span>
                     <span className='text-xs truncate'>{user.email}</span>
                   </>
@@ -86,7 +86,7 @@ export function NavUser() {
                 </Avatar>
                 <div className='grid flex-1 text-sm leading-tight text-left'>
                   <span className='font-semibold truncate'>
-                    {user.first_name} {user.last_name}
+                    {user.firstName} {user.lastName}
                   </span>
                   <span className='text-xs truncate'>{user.email}</span>
                 </div>
@@ -118,7 +118,7 @@ export function NavUser() {
   );
 }
 
-function userInitials({ first_name, last_name }: { first_name: string; last_name: string }): string | null {
-  if (!first_name || !last_name) return null;
-  return `${first_name[0].toUpperCase()}${last_name[0].toUpperCase()}`;
+function userInitials({ firstName, lastName }: { firstName: string; lastName: string }): string | null {
+  if (!firstName || !lastName) return null;
+  return `${firstName[0].toUpperCase()}${lastName[0].toUpperCase()}`;
 }
