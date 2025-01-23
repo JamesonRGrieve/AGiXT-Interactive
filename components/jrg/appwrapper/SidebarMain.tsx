@@ -5,10 +5,10 @@ import { getCookie } from 'cookies-next';
 import { usePathname } from 'next/navigation';
 import { ViewVerticalIcon } from '@radix-ui/react-icons';
 
-import { AgentSelector } from '../interactive/Selectors/agent-selector';
-import { ChatHistory } from './chat-history';
-import { NavMain } from '@/components/layout/nav-main';
-import { NavUser } from '@/components/layout/nav-user';
+import { AgentSelector } from '../../interactive/Selectors/agent-selector';
+import { ChatHistory } from '../../interactive/Layout/chat-history';
+import { NavMain } from '@/components/jrg/appwrapper/NavMain';
+import { NavUser } from '@/components/jrg/appwrapper/NavUser';
 import {
   Sidebar,
   SidebarContent,
@@ -19,7 +19,7 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function SidebarMain({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [hasStarted, setHasStarted] = useState(false);
   const { toggleSidebar } = useSidebar('left');
   const pathname = usePathname();
@@ -38,7 +38,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain />
-        {pathname.includes('/chat') && <ChatHistory />}
+        <ChatHistory />
       </SidebarContent>
       <SidebarFooter>
         <SidebarMenuButton tooltip='Hide Sidebar' side='left' onClick={toggleSidebar}>

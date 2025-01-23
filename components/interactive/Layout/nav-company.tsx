@@ -4,7 +4,7 @@ import { CaretSortIcon } from '@radix-ui/react-icons';
 
 import { useRouter } from 'next/navigation';
 import { getCookie, setCookie } from 'cookies-next';
-import { useCompany, useCompanies } from '../interactive/hooks';
+import { useCompany, useCompanies } from '../hooks';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -15,7 +15,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import useUser from '@/components/jrg/auth/hooks/useUser';
-import { getGravatarUrl } from '@/lib/gravatar';
+import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
 import { cn } from '@/lib/utils';
 
 const user = {

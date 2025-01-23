@@ -6,9 +6,8 @@ import React, { FormEvent, ReactNode, useEffect, useState, useRef } from 'react'
 import { ReCAPTCHA } from 'react-google-recaptcha';
 import { useAuthentication } from './Router';
 import AuthCard from './AuthCard';
-import { toTitleCase } from '@/components/jrg/DynamicForm';
-import PasswordField from '@/components/jrg/styled/Input/PasswordField';
-import { useAssertion } from '@/lib/assert';
+import { toTitleCase } from '@/components/jrg/dynamic-form/DynamicForm';
+import { useAssertion } from '@/components/jrg/assert/assert';
 import { validateURI } from '@/lib/validation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -47,16 +46,24 @@ export default function Register({ additionalFields = [], userRegisterEndpoint =
     }
     let registerResponse;
     let registerResponseData;
+    console.log('AUTH PROCESS START');
     try {
       // TODO fix the stupid double submission.
+      console.log('AUTH SENDING REQUEST');
       registerResponse = await axios
         .post(`${authConfig.authServer}${userRegisterEndpoint}`, {
           ...formData,
         })
-        .catch((exception: AxiosError) => exception.response);
+        .catch((exception: AxiosError) => {
+          console.log('AUTH REQUEST ERROR');
+          console.log(exception);
+          return exception.response;
+        });
+      console.log('AUTH REQUEST SUCCESS');
       registerResponseData = registerResponse?.data;
     } catch (exception) {
-      console.error(exception);
+      console.log('ERROR OCCURRED DURING AUTH PROCESS');
+      console.log(exception);
       registerResponse = null;
     }
 
@@ -73,7 +80,10 @@ export default function Register({ additionalFields = [], userRegisterEndpoint =
       loginParams.push(`verify_sms=true`);
     }
     if ([200, 201].includes(registerResponse?.status || 500)) {
+      console.log('AUTH PUSHING TO LOGIN');
       router.push(loginParams.length > 0 ? `/user/login?${loginParams.join('&')}` : '/user/login');
+    } else {
+      console.log('AUTH NO WORK HELP');
     }
   };
   useEffect(() => {
@@ -104,8 +114,10 @@ export default function Register({ additionalFields = [], userRegisterEndpoint =
           <input type='hidden' id='email' name='email' value={getCookie('email')} />
           {authConfig.authModes.basic && (
             <>
-              <PasswordField />
-              <PasswordField id='password-again' name='password-again' label='Password (Again)' />
+              <Label htmlFor='password'>Password</Label>
+              <Input id='password' placeholder='Password' name='password' autoComplete='password' />
+              <Label htmlFor='password-again'>Password (Again)</Label>
+              <Input id='password-again' placeholder='Password' name='password' autoComplete='password' />
             </>
           )}
           {additionalFields.length > 0 &&

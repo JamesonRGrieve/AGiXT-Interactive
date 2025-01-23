@@ -21,7 +21,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { DropZone } from '@/components/jrg/DropZone';
+import { DropZone } from '@/components/jrg/dropzone/DropZone';
 import SwitchDark from '@/components/jrg/theme/SwitchDark';
 import SwitchColorblind from '@/components/jrg/theme/SwitchColorblind';
 
@@ -53,10 +53,6 @@ export default function ChatBar({
   const [uploadedFiles, setUploadedFiles] = useState<{ [x: string]: string }>({});
   const [message, setMessage] = useState('');
   const [alternativeInputActive, setAlternativeInputActive] = useState(false);
-
-  useEffect(() => {
-    console.log(uploadedFiles);
-  }, [uploadedFiles]);
 
   const handleUploadFiles = async (event: React.ChangeEvent<HTMLInputElement>): Promise<void> => {
     if (event.target.files) {

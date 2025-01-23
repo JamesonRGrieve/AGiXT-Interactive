@@ -3,7 +3,7 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { getCookie } from 'cookies-next';
-import log from '@/lib/log';
+import log from '@/components/jrg/next-log/log';
 
 export type RegisterFormProps = object;
 export default function VerifySMS({ verifiedCallback }: { verifiedCallback: any }): JSX.Element {
@@ -25,7 +25,7 @@ export default function VerifySMS({ verifiedCallback }: { verifiedCallback: any 
         {},
       )
     ).data.detail;
-    //console.log(smsResponse);
+    log(['SMS Response', smsResponse], { client: 2 });
     if (smsResponse.toLowerCase() === 'true') {
       verifiedCallback(true);
       setSMSVerified(true);

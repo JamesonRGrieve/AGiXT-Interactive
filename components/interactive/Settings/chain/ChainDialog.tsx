@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 
-export default function NewChainDialog({ open, setOpen }) {
+export function ChainDialog({ open, setOpen }) {
   const router = useRouter();
   const context = useInteractiveConfig();
   const [newChainName, setNewChainName] = useState('');

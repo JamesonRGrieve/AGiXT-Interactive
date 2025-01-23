@@ -7,33 +7,27 @@ import { UIProps } from '../InteractiveAGiXT';
 import { InteractiveConfigContext, Overrides } from '../InteractiveConfigContext';
 import ChatLog from './ChatLog';
 import ChatBar from './ChatInput';
+import log from '@/components/jrg/next-log/log';
 
 export async function getAndFormatConversastion(state): Promise<any[]> {
   const rawConversation = await state.agixt.getConversation('', state.overrides.conversation, 100, 1);
-  //console.log('Raw conversation: ', rawConversation);
+  log(['Raw conversation: ', rawConversation], { client: 3 });
   return rawConversation.reduce((accumulator, currentMessage: { id: string; message: string }) => {
     const messageType = currentMessage.message.split(' ')[0];
-    // console.log('Message type: ', messageType);
+    log(['Message type: ', messageType], { client: 2 });
     if (messageType.startsWith('[SUBACTIVITY]')) {
       let target;
       const parent = messageType.split('[')[2].split(']')[0];
-      // console.log('Subactivity with parent: ', parent);
-      // console.log('Accumulator: ', accumulator);
-      // console.log('Current message: ', currentMessage);
-      // console.log('Accumulator at 0', accumulator[0]);
+
       const parentIndex = accumulator.findIndex((message) => {
-        //console.log('Checking message', message);
         return message.id === parent || message.children.some((child) => child.id === parent);
       });
       if (parentIndex !== -1) {
         if (accumulator[parentIndex].id === parent) {
           target = accumulator[parentIndex];
-          // console.log("Found top level parent's index: ", parentIndex, accumulator[parentIndex]);
         } else {
           target = accumulator[parentIndex].children.find((child) => child.id === parent);
-          // console.log("Found child parent's index: ", parentIndex, accumulator[parentIndex], target);
         }
-        // console.log(target);
         target.children.push({ ...currentMessage, children: [] });
       } else {
         throw new Error(
@@ -55,7 +49,6 @@ export default function Chat({
   enableVoiceInput,
   showOverrideSwitchesCSV,
 }: Overrides & UIProps): React.JSX.Element {
-  // console.log('Chat Themes: ', showChatThemeToggles);
   const [loading, setLoading] = useState(false);
   const state = useContext(InteractiveConfigContext);
   const conversation = useSWR(
@@ -68,7 +61,14 @@ export default function Chat({
       refreshInterval: loading ? 1000 : 0,
     },
   );
-  //console.log(conversation.data);
+  useEffect(() => {
+    if (Array.isArray(state.overrides.conversation)) {
+      state.mutate((oldState) => ({
+        ...oldState,
+        overrides: { ...oldState.overrides, conversation: oldState.overrides.conversation[0] },
+      }));
+    }
+  }, [state.overrides.conversation]);
   async function chat(messageTextBody, messageAttachedFiles): Promise<string> {
     const messages = [];
 
@@ -97,12 +97,12 @@ export default function Chat({
       user: state.overrides.conversation,
     };
     setLoading(true);
-    console.log('Sending: ', state.openai, toOpenAI);
+    log(['Sending: ', state.openai, toOpenAI], { client: 1 });
     const req = state.openai.chat.completions.create(toOpenAI);
     await new Promise((resolve) => setTimeout(resolve, 100));
     mutate(conversationSWRPath + state.overrides.conversation);
     const chatCompletion = await req;
-    console.log('RESPONSE: ', chatCompletion);
+    log(['RESPONSE: ', chatCompletion], { client: 1 });
     state.mutate((oldState) => ({
       ...oldState,
       overrides: {
@@ -127,7 +127,7 @@ export default function Chat({
       //   },
       // );
       await mutate('/conversation');
-      console.log(response);
+      log([response], { client: 1 });
     }
     setLoading(false);
     mutate(conversationSWRPath + response);
@@ -139,7 +139,6 @@ export default function Chat({
     }
   }
   useEffect(() => {
-    // console.log("Conversation changed, fetching new conversation's messages.", state.overrides.conversation);
     mutate(conversationSWRPath + state.overrides.conversation);
   }, [state.overrides.conversation]);
   useEffect(() => {

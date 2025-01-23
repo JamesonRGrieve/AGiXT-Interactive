@@ -7,12 +7,13 @@ import { mutate } from 'swr';
 import { InteractiveConfigContext } from '../../InteractiveConfigContext';
 import MarkdownBlock from './MarkdownBlock';
 import formatDate from './formatDate';
-import JRGDialog from '@/components/jrg/dialog/Dialog';
+import JRGDialog from './Dialog';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipBasic, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 
 export type MessageProps = {
   chatItem: { role: string; message: string; timestamp: string; rlhf?: { positive: boolean; feedback: string } };
@@ -40,6 +41,7 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
   const enableMessageDeletion = process.env.NEXT_PUBLIC_AGIXT_ALLOW_MESSAGE_DELETION === 'true';
   const state = useContext(InteractiveConfigContext);
   const [updatedMessage, setUpdatedMessage] = useState(chatItem.message);
+  const { toast } = useToast();
   const formattedMessage = useMemo(() => {
     let formatted = chatItem.message;
     try {
@@ -154,6 +156,10 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
                 size='icon'
                 onClick={() => {
                   clipboardCopy(formattedMessage);
+                  toast({
+                    title: 'Message Copied',
+                    description: 'Message has been copied to your clipboard.',
+                  });
                 }}
               >
                 <LuCopy />
