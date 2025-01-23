@@ -74,7 +74,10 @@ const items: Item[] = [
       {
         title: 'Training',
         icon: GraduationCap,
-        url: '/settings/training?mode=user',
+        url: '/settings/training',
+        queryParams: {
+          mode: 'user',
+        },
       },
       {
         title: 'Extensions',
