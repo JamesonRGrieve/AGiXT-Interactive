@@ -18,12 +18,8 @@ declare global {
 }
 
 export default function Subscribe({ searchParams }: { searchParams: any }): JSX.Element {
-  const router = useRouter();
   const authConfig = useAuthentication();
 
-  if (process.env.NEXT_PUBLIC_STRIPE_ENABLED === 'true') {
-    router.push('/');
-  }
   return (
     <>
       {authConfig.subscribe.heading && <h2 className='text-3xl'>{authConfig.subscribe.heading}</h2>}

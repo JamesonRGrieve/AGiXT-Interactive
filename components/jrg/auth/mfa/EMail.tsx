@@ -4,8 +4,8 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { getCookie } from 'cookies-next';
 import { LuCheckCircle, LuKey } from 'react-icons/lu';
-import Field from '@/components/jrg/styled/FormControl/Field';
-import log from '@/lib/log';
+import Field from '@/components/jrg/ui/styled/FormControl/Field';
+import log from '@/components/jrg/next-log/log';
 import { Button } from '@/components/ui/button';
 
 export type RegisterFormProps = object;
@@ -28,7 +28,7 @@ export default function VerifyEmail({ verifiedCallback }: { verifiedCallback: an
         {},
       )
     ).data.detail;
-    //console.log(emailResponse);
+    log(['E-Mail Response', emailResponse], { client: 2 });
     if (emailResponse.toLowerCase() === 'true') {
       verifiedCallback(true);
       setEmailVerified(true);

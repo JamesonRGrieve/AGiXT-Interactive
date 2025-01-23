@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import { FormEvent } from 'react';
-import PasswordField from '@/components/jrg/styled/Input/PasswordField';
+import PasswordField from '@/components/jrg/ui/styled/Input/PasswordField';
 import { Separator } from '@/components/ui/separator';
 
 export const Account = ({

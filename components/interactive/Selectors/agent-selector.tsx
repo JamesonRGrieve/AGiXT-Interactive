@@ -19,10 +19,12 @@ import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/c
 
 export function AgentSelector() {
   const { isMobile } = useSidebar('left');
-  const { data: activeAgent, mutate: mutateActiveAgent } = useAgent();
-  const { data: activeCompany, mutate: mutateActiveCompany } = useCompany();
+  const { data: activeAgent, mutate: mutateActiveAgent, error: agentError } = useAgent();
+  const { data: activeCompany, mutate: mutateActiveCompany, error: companyError } = useCompany();
   const { data: agentsData } = useAgents();
-
+  console.log(agentError);
+  console.log(companyError);
+  console.log(activeAgent, activeCompany);
   const switchAgents = (agent: Agent) => {
     // setActiveAgent(agent);
     setCookie('agixt-agent', agent.name, {

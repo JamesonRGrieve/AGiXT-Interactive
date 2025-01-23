@@ -15,7 +15,7 @@ import formatDate from './formatDate';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
-function getTimeDifference(timestamp1, timestamp2) {
+export function getTimeDifference(timestamp1, timestamp2) {
   // Convert timestamps to Date objects
   const date1 = new Date(timestamp1);
   const date2 = new Date(timestamp2);
@@ -25,6 +25,7 @@ function getTimeDifference(timestamp1, timestamp2) {
 
   // Convert milliseconds to seconds
   const diffInSeconds = Math.floor(diffInMs / 1000);
+  if (diffInSeconds === 0) return '<1s';
 
   // Calculate minutes and seconds
   const minutes = Math.floor(diffInSeconds / 60);
@@ -176,9 +177,9 @@ export default function Activity({
           <Accordion type='single'>
             <AccordionItem value='an-item'>
               <AccordionTrigger
-                className={`${rootStyles} text-foreground flex items-center cursor-pointer justify-start gap-2`}
+                className={`${rootStyles} agixt-activity agixt-activity-${activityType.toLocaleLowerCase()} text-foreground flex items-center cursor-pointer justify-start gap-2`}
               >
-                <div className='w-20 flex items-center justify-between gap-2'>
+                <div className='flex items-center justify-between w-20 gap-2'>
                   {activityType !== 'info' && !nextTimestamp ? (
                     <AutorenewOutlined className='animate-spin text-primary' />
                   ) : (
@@ -196,8 +197,10 @@ export default function Activity({
             </AccordionItem>
           </Accordion>
         ) : (
-          <div className={`${rootStyles} text-foreground flex items-center justify-start cursor-pointer gap-2`}>
-            <div className='w-20 flex items-center justify-between gap-2'>
+          <div
+            className={`${rootStyles} agixt-activity text-foreground flex items-center justify-start cursor-pointer gap-2`}
+          >
+            <div className='flex items-center justify-between w-20 gap-2'>
               {activityType !== 'info' && !nextTimestamp ? (
                 <AutorenewOutlined className='animate-spin text-primary' />
               ) : (
@@ -232,7 +235,6 @@ export default function Activity({
           {children?.map((child, index) => {
             const messageType = child.message.split(' ')[0];
             const messageBody = child.message.substring(child.message.indexOf(' '));
-            console.log(messageType);
             return (
               <Activity
                 key={child.timestamp + '-' + messageBody}

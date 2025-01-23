@@ -1,6 +1,6 @@
 import React from 'react';
 import md5 from 'md5';
-import { LuUserRound } from 'react-icons/lu';
+import { UserRound } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 // This component should be deleted
@@ -12,7 +12,7 @@ const Gravatar = ({ email, size = 40, ...props }: any) => {
     <Avatar>
       <AvatarImage src={gravatarUrl} alt={email} {...props} />
       <AvatarFallback>
-        <LuUserRound />
+        <UserRound />
       </AvatarFallback>
     </Avatar>
   );

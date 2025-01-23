@@ -11,11 +11,14 @@ import { LuUser } from 'react-icons/lu';
 import OAuth from './oauth2/OAuth';
 import { useAuthentication } from './Router';
 import AuthCard from './AuthCard';
-import { useAssertion } from '@/lib/assert';
+import { useAssertion } from '@/components/jrg/assert/assert';
 import { validateURI } from '@/lib/validation';
-import TextField from '@/components/jrg/styled/Input/TextField';
+
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Alert } from '@/components/ui/alert';
 
 const schema = z.object({
   email: z.string().email({ message: 'Please enter a valid E-Mail address.' }),
@@ -84,14 +87,10 @@ export default function Identify({
 
         {showEmail && (
           <>
-            <TextField
-              id='email'
-              label='E-Mail Address'
-              autoComplete='username'
-              placeholder='your@example.com'
-              error={errors.email?.message}
-              {...register('email')}
-            />
+            <Label htmlFor='E-Mail Address'>E-Mail Address</Label>
+            <Input id='email' autoComplete='username' placeholder='your@example.com' {...register('email')} />
+            {errors.email?.message && <Alert variant='destructive'>{errors.email?.message}</Alert>}
+
             <Button variant='default' disabled={isSubmitting} className='w-full space-x-1'>
               <LuUser className='w-5 h-5' />
               <span>Continue with Email</span>

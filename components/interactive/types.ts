@@ -1,182 +1,186 @@
 import { z } from 'zod';
+import '@/components/jrg/zod2gql/zod2gql';
+
+// ============================================================================
+// Base Types and Enums
+// ============================================================================
+
+export const RoleSchema = z.enum(['user', 'system', 'assistant', 'function']);
+
+export const PromptCategorySchema = z.unknown();
+
+// ============================================================================
+// Agent Related Schemas
+// ============================================================================
 
 export const AgentSchema = z.object({
-  companyId: z.string(),
+  companyId: z.string().uuid(),
   default: z.boolean(),
-  id: z.string(),
-  name: z.string(),
+  id: z.string().uuid(),
+  name: z.string().min(1),
   status: z.union([z.boolean(), z.literal(null)]),
+  settings: z.array(z.object({ name: z.string(), value: z.string() })),
 });
-// Prompt Types
+
+export type Agent = z.infer<typeof AgentSchema>;
+
+// ============================================================================
+// Prompt Related Schemas
+// ============================================================================
+
+export const PromptArgumentSchema = z.object({
+  name: z.string(),
+});
+
 export const PromptSchema = z.object({
   name: z.string(),
   category: z.string(),
   content: z.string(),
   description: z.string().optional(),
-  arguments: z.array(z.unknown()),
-});
-
-export const PromptResponseSchema = z.object({
-  data: z.object({
-    prompt: PromptSchema,
-  }),
-});
-
-export const PromptsResponseSchema = z.object({
-  data: z.object({
-    prompts: z.array(PromptSchema),
-  }),
-});
-export const PromptCategorySchema = z.string();
-export const PromptCategoriesResponseSchema = z.object({
-  data: z.object({
-    promptCategories: z.array(z.string()),
-  }),
+  arguments: z.array(PromptArgumentSchema),
 });
 
 export type Prompt = z.infer<typeof PromptSchema>;
-export type Agent = z.infer<typeof AgentSchema>;
+export type PromptArgument = z.infer<typeof PromptArgumentSchema>;
+
+// ============================================================================
+// Company Related Schemas
+// ============================================================================
+
 export const CompanySchema = z.object({
-  agents: z.array(AgentSchema),
-  id: z.string(),
-  companyId: z.union([z.string(), z.null()]),
-  name: z.string(),
+  agents: z.array(
+    AgentSchema.pick({
+      companyId: true,
+      default: true,
+      id: true,
+      name: true,
+      status: true,
+    }),
+  ),
+  id: z.string().uuid(),
+  companyId: z.union([z.string().uuid(), z.null()]),
+  name: z.string().min(1),
   primary: z.boolean(),
-  roleId: z.number(),
+  roleId: z.number().int().positive(),
 });
 
 export type Company = z.infer<typeof CompanySchema>;
+
+// ============================================================================
+// User Related Schemas
+// ============================================================================
+
 export const UserSchema = z.object({
   companies: z.array(CompanySchema),
-  email: z.string(),
-  firstName: z.string(),
-  id: z.string(),
-  lastName: z.string(),
+  email: z.string().email(),
+  firstName: z.string().min(1),
+  id: z.string().uuid(),
+  lastName: z.string().min(1),
 });
 
 export type User = z.infer<typeof UserSchema>;
 
-export const UserResponseSchema = z.object({
-  data: z.object({
-    user: UserSchema,
-  }),
-});
+// ============================================================================
+// Provider Related Schemas
+// ============================================================================
 
-export type UserResponse = z.infer<typeof UserResponseSchema>;
-// Additional type definitions
+export const ProviderSettingSchema = z.object({
+  name: z.string().min(1),
+  value: z.unknown(),
+});
 
 export const ProviderSchema = z.object({
-  name: z.string(),
-  friendlyName: z.string(),
+  name: z.string().min(1),
+  friendlyName: z.string().min(1),
   description: z.string(),
-  services: z.array(z.unknown()),
-  settings: z.record(z.unknown()),
-});
-
-export const ProviderResponseSchema = z.object({
-  data: z.object({
-    provider: ProviderSchema,
-  }),
-});
-
-export const ProvidersResponseSchema = z.object({
-  data: z.object({
-    providers: z.array(ProviderSchema),
-  }),
+  services: z.unknown(),
+  settings: z.array(ProviderSettingSchema),
 });
 
 export type Provider = z.infer<typeof ProviderSchema>;
 
+// ============================================================================
+// Invitation Related Schemas
+// ============================================================================
+
 export const InvitationSchema = z.object({
-  id: z.string(),
-  companyId: z.string(),
-  email: z.string(),
-  createdAt: z.string(),
-  inviterId: z.string(),
+  id: z.string().uuid(),
+  companyId: z.string().uuid(),
+  email: z.string().email(),
+  createdAt: z.string().datetime(),
+  inviterId: z.string().uuid(),
   isAccepted: z.boolean(),
-  roleId: z.string(),
+  roleId: z.string().uuid(),
 });
 
-export const InvitationsResponseSchema = z.object({
-  data: z.object({
-    invitations: z.array(InvitationSchema),
-  }),
-});
-// Enhanced types for command arguments
+export type Invitation = z.infer<typeof InvitationSchema>;
+
+// ============================================================================
+// Command Related Schemas
+// ============================================================================
+
 export const CommandArgValueSchema = z.object({
   value: z.string(),
 });
 
 export const CommandArgSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1),
   value: CommandArgValueSchema,
 });
 
-export const CommandArgsResponseSchema = z.object({
-  data: z.object({
-    commandArgs: z.object({
-      args: z.array(CommandArgSchema),
-    }),
-  }),
-});
+export type CommandArgs = z.infer<typeof CommandArgSchema>;
 
-export type CommandArgs = z.infer<typeof CommandArgsResponseSchema>;
+// ============================================================================
+// Chain Related Schemas
+// ============================================================================
 
-// Enhanced types for chains
 export const ChainStepPromptSchema = z.object({
-  chainName: z.string(),
-  commandName: z.string(),
-  promptCategory: z.string(),
-  promptName: z.string(),
+  chainName: z.string().min(1),
+  commandName: z.string().min(1),
+  promptCategory: PromptCategorySchema,
+  promptName: z.string().min(1),
 });
 
 export const ChainStepSchema = z.object({
-  agentName: z.string(),
+  agentName: z.string().min(1),
   prompt: ChainStepPromptSchema,
-  promptType: z.string(),
-  step: z.number(),
+  promptType: z.string().min(1),
+  step: z.number().int().nonnegative(),
 });
 
 export const ChainSchema = z.object({
-  id: z.string(),
-  chainName: z.string(),
-  description: z.string().optional(),
+  id: z.string().uuid(),
+  chainName: z.string(), //.min(1),
   steps: z.array(ChainStepSchema),
 });
-
-export const ChainResponseSchema = z.object({
-  data: z.object({
-    chain: ChainSchema,
-  }),
-});
-
-export const ChainsResponseSchema = z.object({
-  data: z.object({
-    chains: z.array(ChainSchema),
-  }),
-});
+export const ChainsSchema = ChainSchema.pick({ id: true, chainName: true });
 
 export type Chain = z.infer<typeof ChainSchema>;
+export type ChainStepPrompt = z.infer<typeof ChainStepPromptSchema>;
+export type ChainStep = z.infer<typeof ChainStepSchema>;
 
-// Enhanced types for conversations
+// ============================================================================
+// Conversation Related Schemas
+// ============================================================================
+
 export const ConversationMetadataSchema = z.object({
-  agentId: z.string(),
-  attachmentCount: z.number(),
-  createdAt: z.string(),
+  agentId: z.string().uuid(),
+  attachmentCount: z.number().int().nonnegative(),
+  createdAt: z.string().datetime(),
   hasNotifications: z.boolean(),
-  id: z.string(),
-  name: z.string(),
-  summary: z.string().optional(),
-  updatedAt: z.string(),
+  id: z.string().uuid(),
+  name: z.string().min(1),
+  summary: z.unknown(),
+  updatedAt: z.string().datetime(),
 });
 
 export const MessageSchema = z.object({
-  id: z.string(),
-  message: z.string(),
-  role: z.string(),
-  timestamp: z.string(),
-  updatedAt: z.string().optional(),
-  updatedBy: z.string().optional(),
+  id: z.string().uuid(),
+  message: z.string().min(1),
+  role: RoleSchema,
+  timestamp: z.string().datetime(),
+  updatedAt: z.string().datetime().optional(),
+  updatedBy: z.string().uuid().optional(),
   feedbackReceived: z.boolean().optional(),
 });
 
@@ -186,32 +190,16 @@ export const ConversationSchema = z.object({
 });
 
 export const ConversationEdgeSchema = z.object({
-  attachmentCount: z.number(),
-  agentId: z.string(),
-  createdAt: z.string(),
+  attachmentCount: z.number().int().nonnegative(),
+  createdAt: z.string(), // TODO Figure out why this errors: .datetime(),
   hasNotifications: z.boolean(),
-  id: z.string(),
-  name: z.string(),
-  summary: z.string().optional(),
-  updatedAt: z.string(),
-});
-
-export const ConversationsResponseSchema = z.object({
-  data: z.object({
-    conversations: z.object({
-      edges: z.array(ConversationEdgeSchema),
-      pageInfo: z.object({}).passthrough(),
-    }),
-  }),
+  id: z.string().uuid(),
+  name: z.string().min(1),
+  summary: z.unknown(),
+  updatedAt: z.string(), // TODO Figure out why this errors: .datetime(),.datetime(),
 });
 
 export type Conversation = z.infer<typeof ConversationSchema>;
 export type ConversationEdge = z.infer<typeof ConversationEdgeSchema>;
-
+export type ConversationMetadata = z.infer<typeof ConversationMetadataSchema>;
 export type Message = z.infer<typeof MessageSchema>;
-
-export type ChainStepPrompt = z.infer<typeof ChainStepPromptSchema>;
-
-export type ChainStep = z.infer<typeof ChainStepSchema>;
-
-export type Invitation = z.infer<typeof InvitationSchema>;

@@ -4,6 +4,7 @@ import OpenAI from 'openai';
 import { getCookie } from 'cookies-next';
 import { InteractiveConfigContext, InteractiveConfigDefault, InteractiveConfig } from './InteractiveConfigContext';
 import AGiXTSDK from '@/lib/sdk';
+import log from '../jrg/next-log/log';
 
 export default function InteractiveConfigContextWrapper({
   initialState = InteractiveConfigDefault,
@@ -18,14 +19,35 @@ export default function InteractiveConfigContextWrapper({
   children: ReactNode;
 }): React.JSX.Element {
   if (process.env.NEXT_PUBLIC_ENV === 'development') {
-    console.log('Default Config Provided:', InteractiveConfigDefault);
-    console.log('Initial State Provided:', initialState);
-    console.log('Booting State With:', {
-      ...InteractiveConfigDefault,
-      ...initialState,
-      // Overridden in context provider.
-      mutate: null,
-    });
+    log(
+      [InteractiveConfigDefault],
+      {
+        client: 2,
+      },
+      'Default Config Provided',
+    );
+    log(
+      [initialState],
+      {
+        client: 2,
+      },
+      'Initial State Provided',
+    );
+    log(
+      [
+        {
+          ...InteractiveConfigDefault,
+          ...initialState,
+          // Overridden in context provider.
+          mutate: null,
+        },
+      ],
+
+      {
+        client: 1,
+      },
+      'Booting State With',
+    );
   }
   const agixt: AGiXTSDK = new AGiXTSDK({
     baseUri: agixtServer,
@@ -47,20 +69,10 @@ export default function InteractiveConfigContextWrapper({
     mutate: null,
   } as InteractiveConfig);
 
-  if (process.env.NEXT_PUBLIC_ENV === 'development') {
-    console.log(
-      'Context Wrapper initializing AGiXTSDK and OpenAI with baseUri/apiKey: ',
-      agixtServer,
-      apiKey,
-      agixt,
-      openai,
-      InteractiveConfigState,
-    );
-    // eslint-disable-next-line react-hooks/rules-of-hooks
-    useEffect(() => {
-      console.log('State changed to...', InteractiveConfigState);
-    }, [InteractiveConfigState]);
-  }
+  log([`Context Wrapper initializing AGiXTSDK and OpenAI with baseUri ${agixtServer} and apiKey ${apiKey}.`], {
+    client: 1,
+  });
+
   return (
     <InteractiveConfigContext.Provider
       value={{ ...InteractiveConfigState, agixt: agixt, openai: openai, mutate: setInteractiveConfigState }}

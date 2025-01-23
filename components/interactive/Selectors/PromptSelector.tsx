@@ -5,11 +5,24 @@ import { InteractiveConfigContext } from '../InteractiveConfigContext';
 import { usePrompts } from '../hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { useRouter, useSearchParams } from 'next/navigation';
+import usePathname from '@/components/jrg/auth/hooks/usePathname';
 
-export default function PromptSelector({ category = 'Default', value, onChange }): React.JSX.Element {
+export default function PromptSelector({
+  category = 'Default',
+  value,
+  onChange,
+}: {
+  category?: string;
+  value?: string;
+  onChange?: (value: string) => void;
+}): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);
-  const { data: promptData, error } = usePrompts(category);
+  const { data: promptData, error } = usePrompts();
+  const searchParams = useSearchParams();
   console.log('PROMPT DATA', promptData);
+  const router = useRouter();
+  const pathname = usePathname();
   console.log(error);
   useEffect(() => {
     console.log('Value changed to ', value);
@@ -21,31 +34,25 @@ export default function PromptSelector({ category = 'Default', value, onChange }
           <div className='w-full'>
             <Select
               disabled={promptData?.length === 0}
-              value={value || (state.overrides.prompt === undefined ? '/' : state.overrides.prompt)}
+              value={value || searchParams.get('prompt') || undefined}
               onValueChange={
                 onChange
                   ? (value) => {
                       onChange(value);
                     }
-                  : (value) =>
-                      state.mutate((oldState) => ({
-                        ...oldState,
-                        overrides: { ...oldState.overrides, prompt: value === '/' ? undefined : value },
-                      }))
+                  : (value) => router.push(`/settings/prompts?category=${category}&prompt=${value}`)
               }
             >
               <SelectTrigger className='w-full text-xs'>
                 <SelectValue placeholder='Select a Prompt' />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value='/'>- Use Agent Default -</SelectItem>
-                {promptData &&
-                  promptData.map &&
-                  promptData.map((promptName, index) => (
-                    <SelectItem key={index.toString() + '-' + promptName} value={promptName}>
-                      {promptName}
-                    </SelectItem>
-                  ))}
+                {!pathname.includes('settings/prompts') && <SelectItem value='/'>- Use Agent Default -</SelectItem>}
+                {promptData?.map((prompt, index) => (
+                  <SelectItem key={prompt.name} value={prompt.name}>
+                    {prompt.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
