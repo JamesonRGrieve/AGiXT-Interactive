@@ -97,8 +97,6 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
   const [vote, setVote] = useState(chatItem.rlhf ? (chatItem.rlhf.positive ? 1 : -1) : 0);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
-  const [isForkOpen, setIsForkOpen] = useState(false);
-  const [forkName, setForkName] = useState('');
 
   const isUserMsgJustText = checkUserMsgJustText(chatItem);
 
@@ -215,7 +213,42 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
                 )}
               </>
             )}
+            <TooltipBasic title='Fork Conversation'>
+              <Button
+                variant='ghost'
+                size='icon'
+                onClick={async () => {
+                  try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation/fork`, {
+                      method: 'POST',
+                      headers: {
+                        Authorization: getCookie('jwt'),
+                      },
+                      body: JSON.stringify({
+                        conversation_name: state.overrides?.conversation,
+                        message_id: chatItem.id,
+                      }),
+                    });
 
+                    if (!response.ok) throw new Error('Failed to fork conversation');
+
+                    const data = await response.json();
+                    toast({
+                      title: 'Conversation Forked',
+                      description: `New conversation created: ${data.message}`,
+                    });
+                  } catch (error) {
+                    toast({
+                      title: 'Error',
+                      description: 'Failed to fork conversation',
+                      variant: 'destructive',
+                    });
+                  }
+                }}
+              >
+                <LuGitFork />
+              </Button>
+            </TooltipBasic>
             <TooltipBasic title='Copy Message'>
               <Button
                 variant='ghost'
@@ -231,11 +264,7 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
                 <LuCopy />
               </Button>
             </TooltipBasic>
-            <TooltipBasic title='Fork Conversation'>
-              <Button variant='ghost' size='icon' onClick={() => setIsForkOpen(true)}>
-                <LuGitFork />
-              </Button>
-            </TooltipBasic>
+
             <TooltipBasic title='Download Message'>
               <Button
                 variant='ghost'
@@ -356,60 +385,6 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
                     }}
                   >
                     Submit
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-
-            <Dialog open={isForkOpen} onOpenChange={setIsForkOpen}>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Fork Conversation</DialogTitle>
-                  <DialogDescription>Enter a name for the new conversation.</DialogDescription>
-                </DialogHeader>
-                <Textarea
-                  value={forkName}
-                  onChange={(e) => setForkName(e.target.value)}
-                  placeholder='New conversation name...'
-                />
-                <DialogFooter>
-                  <Button variant='outline' onClick={() => setIsForkOpen(false)}>
-                    Cancel
-                  </Button>
-                  <Button
-                    onClick={async () => {
-                      try {
-                        const response = await fetch(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation/fork`, {
-                          method: 'POST',
-                          headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: getCookie('jwt'),
-                          },
-                          body: JSON.stringify({
-                            conversation_name: forkName,
-                            message_id: chatItem.id,
-                          }),
-                        });
-
-                        if (!response.ok) throw new Error('Failed to fork conversation');
-
-                        const data = await response.json();
-                        toast({
-                          title: 'Conversation Forked',
-                          description: `New conversation created: ${data.message}`,
-                        });
-                        setIsForkOpen(false);
-                        setForkName('');
-                      } catch (error) {
-                        toast({
-                          title: 'Error',
-                          description: 'Failed to fork conversation',
-                          variant: 'destructive',
-                        });
-                      }
-                    }}
-                  >
-                    Fork
                   </Button>
                 </DialogFooter>
               </DialogContent>
