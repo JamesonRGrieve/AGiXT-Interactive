@@ -105,7 +105,15 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
 
     setIsLoadingAudio(true);
     try {
-      const response = await fetch(`/v1/conversation/${state.overrides.conversation}/tts/${chatItem.id}`);
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/conversation/${state.overrides.conversation}/tts/${chatItem.id}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `${getCookie('jwt')}`,
+          },
+        },
+      );
       if (!response.ok) throw new Error('Failed to fetch audio');
 
       const blob = await response.blob();
