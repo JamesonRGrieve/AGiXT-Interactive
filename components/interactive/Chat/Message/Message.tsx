@@ -1,7 +1,16 @@
 'use client';
 
 import React, { useContext, useState, useMemo, useRef } from 'react';
-import { LuCopy, LuDownload, LuThumbsUp, LuThumbsDown, LuPen as LuEdit, LuTrash2, LuVolume2 } from 'react-icons/lu';
+import {
+  LuCopy,
+  LuDownload,
+  LuThumbsUp,
+  LuThumbsDown,
+  LuPen as LuEdit,
+  LuTrash2,
+  LuVolume2,
+  LuGitFork,
+} from 'react-icons/lu';
 import { Loader2 } from 'lucide-react';
 import clipboardCopy from 'clipboard-copy';
 import { mutate } from 'swr';
@@ -85,6 +94,8 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
   const [vote, setVote] = useState(chatItem.rlhf ? (chatItem.rlhf.positive ? 1 : -1) : 0);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
+  const [isForkOpen, setIsForkOpen] = useState(false);
+  const [forkName, setForkName] = useState('');
 
   const isUserMsgJustText = checkUserMsgJustText(chatItem);
 
@@ -93,14 +104,7 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
 
     setIsLoadingAudio(true);
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/conversation/${state.overrides.conversation}/tts/${chatItem.id}`,
-        {
-          headers: {
-            Authorization: getCookie('jwt'),
-          },
-        },
-      );
+      const response = await fetch(`/v1/conversation/${state.overrides.conversation}/tts/${chatItem.id}`);
       if (!response.ok) throw new Error('Failed to fetch audio');
 
       const blob = await response.blob();
@@ -216,6 +220,11 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
                 }}
               >
                 <LuCopy />
+              </Button>
+            </TooltipBasic>
+            <TooltipBasic title='Fork Conversation'>
+              <Button variant='ghost' size='icon' onClick={() => setIsForkOpen(true)}>
+                <LuGitFork />
               </Button>
             </TooltipBasic>
             <TooltipBasic title='Download Message'>
@@ -338,6 +347,60 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
                     }}
                   >
                     Submit
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
+
+            <Dialog open={isForkOpen} onOpenChange={setIsForkOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Fork Conversation</DialogTitle>
+                  <DialogDescription>Enter a name for the new conversation.</DialogDescription>
+                </DialogHeader>
+                <Textarea
+                  value={forkName}
+                  onChange={(e) => setForkName(e.target.value)}
+                  placeholder='New conversation name...'
+                />
+                <DialogFooter>
+                  <Button variant='outline' onClick={() => setIsForkOpen(false)}>
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={async () => {
+                      try {
+                        const response = await fetch(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation/fork`, {
+                          method: 'POST',
+                          headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: getCookie('jwt'),
+                          },
+                          body: JSON.stringify({
+                            conversation_name: forkName,
+                            message_id: chatItem.id,
+                          }),
+                        });
+
+                        if (!response.ok) throw new Error('Failed to fork conversation');
+
+                        const data = await response.json();
+                        toast({
+                          title: 'Conversation Forked',
+                          description: `New conversation created: ${data.message}`,
+                        });
+                        setIsForkOpen(false);
+                        setForkName('');
+                      } catch (error) {
+                        toast({
+                          title: 'Error',
+                          description: 'Failed to fork conversation',
+                          variant: 'destructive',
+                        });
+                      }
+                    }}
+                  >
+                    Fork
                   </Button>
                 </DialogFooter>
               </DialogContent>
