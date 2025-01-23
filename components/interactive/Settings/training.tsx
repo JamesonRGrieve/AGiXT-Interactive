@@ -15,7 +15,7 @@ import {
   LuYoutube,
 } from 'react-icons/lu';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useActiveCompany } from '../hooks';
+import { useCompany } from '../hooks';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
@@ -166,7 +166,7 @@ export const AutoResizeTextarea: React.FC<AutoResizeTextareaProps> = ({ value, o
 const Training = (): React.ReactElement => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { data: company } = useActiveCompany();
+  const { data: company } = useCompany();
   const [userPersona, setUserPersona] = useState<string>('');
   const [companyPersona, setCompanyPersona] = useState<string>('');
   const [uploadingDocument, setUploadingDocument] = useState(false);
@@ -176,7 +176,7 @@ const Training = (): React.ReactElement => {
   const [userExternalSources, setUserExternalSources] = useState<string[]>([]);
   const [companyExternalSources, setCompanyExternalSources] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const { data: activeCompany } = useActiveCompany();
+  const { data: activeCompany } = useCompany();
 
   const apiKey = getCookie('jwt') || '';
   const apiServer = process.env.NEXT_PUBLIC_AGIXT_SERVER as string;

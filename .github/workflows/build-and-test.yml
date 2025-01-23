@@ -15,6 +15,12 @@ jobs:
   build:
     uses: ./.github/workflows/docker.yml
     name: Build
+    with:
+      registry-dockerhub-enable: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+      registry-repo-name: AGiXT-Interactive
+      registry-readme: ./docs/README.md
+    secrets:
+      DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
   test-ui:
     needs: build
     uses: ./.github/workflows/tests.yml
@@ -29,3 +35,6 @@ jobs:
     secrets:
       GHCR_PAT: ${{ secrets.GHCR_PAT }}
       DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+      EZLOCALAI_URI: ${{ secrets.EZLOCALAI_URI }}
+      EZLOCALAI_API_KEY: ${{ secrets.EZLOCALAI_API_KEY }}
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}

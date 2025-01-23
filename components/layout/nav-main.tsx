@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 
 import Link from 'next/link';
-import { useActiveCompany } from '../interactive/hooks';
+import { useCompany } from '../interactive/hooks';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   SidebarGroup,
@@ -160,7 +160,7 @@ export function NavMain() {
   const router = useRouter();
   const pathname = usePathname();
   const queryParams = useSearchParams();
-  const { data: company } = useActiveCompany();
+  const { data: company } = useCompany();
   const { toggleSidebar, open } = useSidebar('left');
   console.log(pathname);
   const itemsWithActiveState = items.map((item) => ({

@@ -41,6 +41,12 @@ on:
         required: true
       DISCORD_WEBHOOK:
         description: Optional discord webhook available as os.getenv('DISCORD_WEBHOOK') in your notebook
+      EZLOCALAI_URI:
+        description: Optional ezlocalai uri available as os.getenv('EZLOCALAI_URI') in your notebook
+      EZLOCALAI_API_KEY:
+        description: Optional ezlocalai api key available as os.getenv('EZLOCALAI_API_KEY') in your notebook
+      DEEPSEEK_API_KEY:
+        description: Optional deepseek api key available as os.getenv('DEEPSEEK_API_KEY') in your notebook
 
 jobs:
   test:
@@ -79,6 +85,11 @@ jobs:
           LOG_LEVEL: INFO
           TZ: America/New_York
           SEED_DATA: true
+          EZLOCALAI_URI: ${{ secrets.EZLOCALAI_URI }}
+          EZLOCALAI_API_KEY: ${{ secrets.EZLOCALAI_API_KEY }}
+          EZLOCALAI_MAX_TOKENS: "1"
+          EZLOCALAI_VOICE: "HAL9000"
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
       front-end:
         image: ${{ inputs.front-end-image }}
         ports:
@@ -147,6 +158,8 @@ jobs:
         env:
           API_KEY: ${{ secrets.api-key }}
           features: ${{ inputs.features }}
+          EZLOCALAI_URI: ${{ secrets.EZLOCALAI_URI }}
+          EZLOCALAI_API_KEY: ${{ secrets.EZLOCALAI_API_KEY }}
         run: |
           echo "Executing notebook with strict error checking..."
 

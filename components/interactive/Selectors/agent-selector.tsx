@@ -6,7 +6,7 @@ import { ChevronsUpDown, Plus } from 'lucide-react';
 import { FaRobot } from 'react-icons/fa';
 import { z } from 'zod';
 
-import { useActiveCompany, useAgent, useAgents } from '../interactive/hooks';
+import { useCompany, useAgent, useAgents } from '../hooks';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,59 +17,11 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 
-const AgentSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  default: z.boolean(),
-  companyId: z.string(),
-});
-
-const DataSchema = z.object({
-  data: z.object({
-    appState: z.object({
-      state: z.object({
-        user: z.object({
-          companies: z.array(
-            z.object({
-              name: z.string(),
-              agents: z.array(AgentSchema),
-            }),
-          ),
-        }),
-      }),
-    }),
-  }),
-});
-
-function extractAgentsFromData(data: unknown): Agent[] {
-  const parseResult = DataSchema.safeParse(data);
-
-  if (!parseResult.success) {
-    console.error('Invalid data structure:', parseResult.error.errors);
-    return [];
-  }
-
-  const companies = parseResult.data.data.appState.state.user.companies;
-
-  return companies.flatMap((company) =>
-    company.agents.map((agent) => ({
-      ...agent,
-      companyName: company.name,
-    })),
-  );
-}
-
-export function AgentSwitcher() {
+export function AgentSelector() {
   const { isMobile } = useSidebar('left');
   const { data: activeAgent, mutate: mutateActiveAgent } = useAgent();
-  const { data: activeCompany, mutate: mutateActiveCompany } = useActiveCompany();
+  const { data: activeCompany, mutate: mutateActiveCompany } = useCompany();
   const { data: agentsData } = useAgents();
-  const [agentName, setAgentName] = useState();
-
-  // Not amazing, but it's to fix hydration issues. Will need to look at better solutions
-  useEffect(() => {
-    setAgentName(getCookie('agixt-agent') ?? activeAgent?.name);
-  }, [activeAgent]);
 
   const switchAgents = (agent: Agent) => {
     // setActiveAgent(agent);
@@ -97,7 +49,7 @@ export function AgentSwitcher() {
                 <FaRobot className='size-4' />
               </div>
               <div className='grid flex-1 text-sm leading-tight text-left'>
-                <span className='font-semibold truncate'>{agentName}</span>
+                <span className='font-semibold truncate'>{activeAgent?.agent?.name}</span>
                 <span className='text-xs truncate'>{activeCompany?.name}</span>
               </div>
               <ChevronsUpDown className='ml-auto' />
