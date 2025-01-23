@@ -1,6 +1,8 @@
 'use client';
 import React, { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import Plyr from 'plyr-react';
+import 'plyr-react/plyr.css';
 
 const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
   const href = e.currentTarget.getAttribute('href');
@@ -16,9 +18,6 @@ const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
 
 type MarkdownLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
-import Plyr from 'plyr-react';
-import 'plyr-react/plyr.css';
-
 export default function MarkdownLink({ children, href, className, ...props }: MarkdownLinkProps): ReactNode {
   const isExternal = href && !href.startsWith('#');
   const youtubeId = href ? getYoutubeId(href) : null;
@@ -26,29 +25,33 @@ export default function MarkdownLink({ children, href, className, ...props }: Ma
 
   if (youtubeId) {
     return (
-      <div className='relative w-full min-w-[320px] min-h-[180px] pt-[56.25%]'>
-        <iframe
-          className='absolute top-0 left-0 w-full h-full'
-          src={`https://www.youtube.com/embed/${youtubeId}`}
-          allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-          allowFullScreen
-        />
+      <div className='w-full max-w-lg'>
+        <div className='relative w-full aspect-video'>
+          <iframe
+            className='absolute top-0 left-0 w-full h-full'
+            src={`https://www.youtube.com/embed/${youtubeId}`}
+            allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+            allowFullScreen
+          />
+        </div>
       </div>
     );
   }
 
   if (isVideo) {
     return (
-      <div className='relative w-full min-w-[320px] min-h-[180px]'>
-        <Plyr
-          source={{
-            type: 'video',
-            sources: [{ src: href, type: 'video/mp4' }],
-          }}
-          options={{
-            controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-          }}
-        />
+      <div className='w-full max-w-lg'>
+        <div className='relative w-full aspect-video'>
+          <Plyr
+            source={{
+              type: 'video',
+              sources: [{ src: href, type: 'video/mp4' }],
+            }}
+            options={{
+              controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+            }}
+          />
+        </div>
       </div>
     );
   }
