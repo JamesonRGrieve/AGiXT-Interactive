@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { getCookie } from 'cookies-next';
 import axios from 'axios';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
@@ -15,6 +15,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
+import { Input } from '@/components/ui/input';
 
 // Types remain the same
 type Command = {
@@ -47,6 +48,7 @@ export function Extensions() {
   const { agent } = useInteractiveConfig();
   const pathname = usePathname();
   const { data: agentData } = useAgent();
+  const [searchText, setSearchText] = useState('');
   const router = useRouter();
   const [extensions, setExtensions] = useState<Extension[]>([]);
   const [selectedExtension, setSelectedExtension] = useState<string>('');
@@ -67,9 +69,15 @@ export function Extensions() {
   const categorizeExtensions = (exts: Extension[]) => {
     return {
       // Connected extensions are those with settings and at least one command
-      connectedExtensions: exts.filter((ext) => ext.settings?.length > 0 && ext.commands?.length > 0),
+      connectedExtensions: filterExtensions(
+        exts.filter((ext) => ext.settings?.length > 0 && ext.commands?.length > 0),
+        searchText,
+      ),
       // Available extensions are those with settings that aren't connected yet
-      availableExtensions: exts.filter((ext) => ext.settings?.length > 0 && !ext.commands?.length),
+      availableExtensions: filterExtensions(
+        exts.filter((ext) => ext.settings?.length > 0 && !ext.commands?.length),
+        searchText,
+      ),
     };
   };
   // Categorize extensions for the available tab
@@ -205,7 +213,27 @@ export function Extensions() {
   };
 
   console.log(providerData);
-
+  function filterExtensions(extensions, text) {
+    return text
+      ? extensions
+      : extensions.filter(
+          (ext) =>
+            ext.extension_name.toLowerCase().includes(text.toLowerCase()) ||
+            ext.description.toLowerCase().includes(text.toLowerCase()),
+        );
+  }
+  const filterCommands = useCallback(
+    (commands) => {
+      return searchText
+        ? commands
+        : commands.filter(
+            (cmd) =>
+              cmd.friendly_name.toLowerCase().includes(searchText.toLowerCase()) ||
+              cmd.description.toLowerCase().includes(searchText.toLowerCase()),
+          );
+    },
+    [searchText],
+  );
   const { connectedExtensions, availableExtensions } = categorizeExtensions(extensions);
   const { connectedProviders, availableProviders } = categorizeProviders(Object.values(providerData));
   console.log(connectedProviders, availableProviders);
@@ -251,6 +279,7 @@ export function Extensions() {
             </Alert>
           ) : (
             <div className='grid gap-4'>
+              <Input placeholder='Search...' value={searchText} onChange={(e) => setSearchText(e.target.value)} />
               {extensionsWithCommands
                 .sort((a, b) => a.extension_name.localeCompare(b.extension_name))
                 .map((extension) => (
@@ -263,6 +292,11 @@ export function Extensions() {
                     </CardHeader>
                     <CardContent className='space-y-4'>
                       {extension.commands
+                        .filter((command) =>
+                          [command.command_name, command.extension_name, command.friendly_name, command.description].some(
+                            (value) => value?.toLowerCase().includes(searchText.toLowerCase()),
+                          ),
+                        )
                         .filter((command) => !showEnabledOnly || command.enabled)
                         .map((command) => (
                           <Card key={command.command_name} className='p-4 border border-border/50'>
