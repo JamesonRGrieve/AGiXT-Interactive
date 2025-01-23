@@ -61,6 +61,14 @@ export default function Chat({
       refreshInterval: loading ? 1000 : 0,
     },
   );
+  useEffect(() => {
+    if (Array.isArray(state.overrides.conversation)) {
+      state.mutate((oldState) => ({
+        ...oldState,
+        overrides: { ...oldState.overrides, conversation: oldState.overrides.conversation[0] },
+      }));
+    }
+  }, [state.overrides.conversation]);
   async function chat(messageTextBody, messageAttachedFiles): Promise<string> {
     const messages = [];
 
