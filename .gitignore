@@ -7,7 +7,6 @@ dist
 .pnp.js
 *.log
 tests/test_screenshots
-public/*.js
 # testing
 /coverage
 

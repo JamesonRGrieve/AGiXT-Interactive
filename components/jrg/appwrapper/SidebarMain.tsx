@@ -23,13 +23,14 @@ export function SidebarMain({ ...props }: React.ComponentProps<typeof Sidebar>) 
   const [hasStarted, setHasStarted] = useState(false);
   const { toggleSidebar } = useSidebar('left');
   const pathname = usePathname();
-  if (pathname === '/' || (pathname.startsWith('/user') && pathname !== '/user/manage')) return null;
 
   useEffect(() => {
     if (getCookie('agixt-has-started') === 'true') {
       setHasStarted(true);
     }
   }, [getCookie('agixt-has-started')]);
+
+  if (pathname === '/' || (pathname.startsWith('/user') && pathname !== '/user/manage')) return null;
 
   return (
     <Sidebar collapsible='icon' {...props}>

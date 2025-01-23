@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { LuMail as Mail, LuLoader as Loader2 } from 'react-icons/lu';
 import { Disclosure, DisclosureContent, DisclosureTrigger } from '@/components/ui/disclosure';
 import { Button } from '@/components/ui/button';
+import axios from 'axios';
+import { getCookie } from 'cookies-next';
 
 export const AuthenticatorHelp = () => {
   const [loading, setLoading] = useState({
@@ -11,8 +13,17 @@ export const AuthenticatorHelp = () => {
 
   const handleEmailSend = async () => {
     setLoading((prev) => ({ ...prev, email: true }));
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    axios.post(
+      `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/user/mfa/email`,
+      {
+        email: getCookie('email'),
+      },
+      {
+        headers: {
+          Authorization: getCookie('jwt'),
+        },
+      },
+    );
     setLoading((prev) => ({ ...prev, email: false }));
   };
 

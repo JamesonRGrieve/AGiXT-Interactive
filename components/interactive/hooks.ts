@@ -27,13 +27,13 @@ import {
   CommandArgSchema,
   PromptCategorySchema,
   ChainsSchema,
-  ConversationsSchema,
   ConversationMetadataSchema,
   ConversationMetadata,
   ConversationEdgeSchema,
 } from './types';
 import { z } from 'zod';
 import log from '../jrg/next-log/log';
+import axios from 'axios';
 
 // ============================================================================
 // Utility Functions
@@ -557,5 +557,56 @@ export function useConversations(): SWRResponse<ConversationEdge[]> {
       }
     },
     { fallbackData: [] },
+  );
+}
+export function useOldCompanies() {
+  const state = useContext(InteractiveConfigContext);
+  return useSWR<string[]>(
+    `/companies`,
+    async () => {
+      return await state.agixt.getCompanies();
+    },
+    {
+      fallbackData: [],
+    },
+  );
+}
+
+export function useOldInvitations(company_id?: string) {
+  const state = useContext(InteractiveConfigContext);
+  return useSWR<string[]>(
+    company_id ? `/invitations/${company_id}` : '/invitations',
+    async () => await state.agixt.getInvitations(company_id),
+    {
+      fallbackData: [],
+    },
+  );
+}
+export function useOldActiveCompany() {
+  const state = useContext(InteractiveConfigContext);
+  const { data: companyData } = useCompany();
+  return useSWR<string[]>(
+    [`/companies`, companyData?.id ?? null],
+    async () => {
+      const companies = await state.agixt.getCompanies();
+      const user = await axios.get(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/user`, {
+        headers: {
+          Authorization: getCookie('jwt'),
+        },
+      });
+      console.log('ACTIVE COMPANY USER', user);
+      const target = companies.filter((company) => company.id === companyData.id)[0];
+      console.log('ACTIVE COMPANY TARGET', target);
+      console.log(
+        'USER COMPANY',
+        user.data.companies.filter((company) => company.id === companyData.id),
+      );
+      target.my_role = user.data.companies.filter((company) => company.id === companyData.id)[0].role_id;
+      console.log('ACTIVE COMPANY TARGET AFTER', target);
+      return target;
+    },
+    {
+      fallbackData: [],
+    },
   );
 }
