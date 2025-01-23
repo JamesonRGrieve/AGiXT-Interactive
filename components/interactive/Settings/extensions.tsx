@@ -57,6 +57,7 @@ export function Extensions() {
   const [showEnabledOnly, setShowEnabledOnly] = useState(false);
   const agent_name = (getCookie('agixt-agent') || process.env.NEXT_PUBLIC_AGIXT_AGENT) ?? agent;
   const { data: activeCompany } = useCompany();
+  console.log('ACTIVE COMPANY', activeCompany);
   const { data: providerData } = useProviders();
   const searchParams = useSearchParams();
   // Filter extensions for the enabled commands view
@@ -113,7 +114,7 @@ export function Extensions() {
 
       const response = await axios.get(
         searchParams.get('mode') === 'company'
-          ? `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${getCookie('agixt-company-id')}/extensions`
+          ? `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${activeCompany.id}/extensions`
           : `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/agent/${agent_name}/extensions`,
         {
           headers: {
