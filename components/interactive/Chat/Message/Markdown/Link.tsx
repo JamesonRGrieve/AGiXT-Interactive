@@ -25,7 +25,7 @@ export default function MarkdownLink({ children, href, className, ...props }: Ma
 
   if (youtubeId) {
     return (
-      <div className='w-full max-w-lg'>
+      <div className='w-96'>
         <div className='relative w-full aspect-video'>
           <iframe
             className='absolute top-0 left-0 w-full h-full'
@@ -40,7 +40,7 @@ export default function MarkdownLink({ children, href, className, ...props }: Ma
 
   if (isVideo) {
     return (
-      <div className='w-full max-w-lg'>
+      <div className='w-96'>
         <div className='relative w-full aspect-video'>
           <Plyr
             source={{
