@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useContext, useState, useMemo } from 'react';
-import { LuCopy, LuDownload, LuThumbsUp, LuThumbsDown, LuPen as LuEdit, LuTrash2 } from 'react-icons/lu';
+import React, { useContext, useState, useMemo, useRef } from 'react';
+import { LuCopy, LuDownload, LuThumbsUp, LuThumbsDown, LuPen as LuEdit, LuTrash2, LuGitFork } from 'react-icons/lu';
 import clipboardCopy from 'clipboard-copy';
 import { mutate } from 'swr';
 import { InteractiveConfigContext } from '../../InteractiveConfigContext';
@@ -15,6 +15,8 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { formatTimeAgo } from '@/lib/time-ago';
+import { getCookie } from 'cookies-next';
+import { Loader2, Volume2 } from 'lucide-react';
 
 export type MessageProps = {
   chatItem: { role: string; message: string; timestamp: string; rlhf?: { positive: boolean; feedback: string } };
@@ -45,6 +47,44 @@ export function MessageActions({
   const [feedback, setFeedback] = useState('');
   const enableMessageEditing = process.env.NEXT_PUBLIC_AGIXT_ALLOW_MESSAGE_EDITING === 'true';
   const enableMessageDeletion = process.env.NEXT_PUBLIC_AGIXT_ALLOW_MESSAGE_DELETION === 'true';
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
+  const handleTTS = async () => {
+    if (!state.overrides.conversation) return;
+
+    setIsLoadingAudio(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/conversation/${state.overrides.conversation}/tts/${chatItem.id}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `${getCookie('jwt')}`,
+          },
+        },
+      );
+      if (!response.ok) throw new Error('Failed to fetch audio');
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setAudioUrl(url);
+
+      // Play audio automatically when loaded
+      if (audioRef.current) {
+        audioRef.current.play();
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to generate speech',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoadingAudio(false);
+    }
+  };
 
   return (
     <div className={cn('flex', chatItem.role === 'USER' && 'justify-end items-center')}>
@@ -78,12 +118,57 @@ export function MessageActions({
               </TooltipBasic>
             </>
           )}
-          {/* TODO: Implement speak message */}
-          {/* <TooltipBasic title='Speak Message'>
-              <Button variant='ghost' size='icon' onClick={() => {}}>
-                <LuVolume2 />
-              </Button>
-            </TooltipBasic> */}
+          {chatItem.role !== 'USER' && !audios && (
+            <>
+              {audioUrl ? (
+                <audio ref={audioRef} controls className='h-8 w-32'>
+                  <source src={audioUrl} type='audio/wav' />
+                </audio>
+              ) : (
+                <TooltipBasic title='Speak Message'>
+                  <Button variant='ghost' size='icon' onClick={handleTTS} disabled={isLoadingAudio}>
+                    {isLoadingAudio ? <Loader2 className='h-4 w-4 animate-spin' /> : <Volume2 />}
+                  </Button>
+                </TooltipBasic>
+              )}
+            </>
+          )}
+          <TooltipBasic title='Fork Conversation'>
+            <Button
+              variant='ghost'
+              size='icon'
+              onClick={async () => {
+                try {
+                  const response = await fetch(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation/fork`, {
+                    method: 'POST',
+                    headers: {
+                      Authorization: getCookie('jwt'),
+                    },
+                    body: JSON.stringify({
+                      conversation_name: state.overrides?.conversation,
+                      message_id: chatItem.id,
+                    }),
+                  });
+
+                  if (!response.ok) throw new Error('Failed to fork conversation');
+
+                  const data = await response.json();
+                  toast({
+                    title: 'Conversation Forked',
+                    description: `New conversation created: ${data.message}`,
+                  });
+                } catch (error) {
+                  toast({
+                    title: 'Error',
+                    description: 'Failed to fork conversation',
+                    variant: 'destructive',
+                  });
+                }
+              }}
+            >
+              <LuGitFork />
+            </Button>
+          </TooltipBasic>
           <TooltipBasic title='Copy Message'>
             <Button
               variant='ghost'
