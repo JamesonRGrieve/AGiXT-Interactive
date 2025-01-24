@@ -127,7 +127,7 @@ export function MessageActions({
               ) : (
                 <TooltipBasic title='Speak Message'>
                   <Button variant='ghost' size='icon' onClick={handleTTS} disabled={isLoadingAudio}>
-                    {isLoadingAudio ? <Loader2 className='h-4 w-4 animate-spin' /> : <Volume2 />}
+                    {isLoadingAudio ? <Loader2 className='h-4 w-4 animate-spin' /> : <Volume2 className='h-4 w-4' />}
                   </Button>
                 </TooltipBasic>
               )}
