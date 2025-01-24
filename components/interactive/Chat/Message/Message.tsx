@@ -25,6 +25,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { getCookie } from 'cookies-next';
+import { MessageActions } from './Actions';
+import { formatTimeAgo } from '@/lib/time-ago';
+import AudioPlayer from './Audio';
 
 export type MessageProps = {
   chatItem: {
@@ -138,16 +141,13 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
         <>
           {audios.message?.trim() && (
             <MarkdownBlock
-              content={formattedMessage}
+              content={audios.message}
               chatItem={{ ...chatItem, message: audios.message }}
               setLoading={setLoading}
             />
           )}
           {audios.sources.map((src) => (
-            <audio controls key={src}>
-              <source src={src} type='audio/wav' />
-              <track kind='captions' />
-            </audio>
+            <AudioPlayer key={src} src={src} />
           ))}
         </>
       ) : (
