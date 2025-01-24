@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { cn } from '@/lib/utils';
 import Plyr from 'plyr-react';
 import 'plyr-react/plyr.css';
@@ -40,10 +40,6 @@ const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
   const href = e.currentTarget.getAttribute('href');
   if (href?.startsWith('#')) {
     e.preventDefault();
-    const id = href.slice(1);
-    if (typeof document !== 'undefined') {
-      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-    }
   }
 };
 
@@ -59,6 +55,17 @@ const MarkdownLink: React.FC<MarkdownLinkProps> = ({ children, href, className, 
   const isExternal = href && !href.startsWith('#');
   const youtubeId = href ? getYoutubeId(href) : null;
   const isVideo = href?.match(/\.(mp4|webm|ogg)$/i);
+
+  useEffect(() => {
+    if (href?.startsWith('#')) {
+      const id = href.slice(1);
+      const element = document.querySelector(id);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [href]);
+
 
   if (youtubeId) {
     return <YoutubeEmbed href={href} />;
