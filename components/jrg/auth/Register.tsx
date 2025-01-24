@@ -12,6 +12,7 @@ import { validateURI } from '@/lib/validation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
+import OAuth from './oauth2/OAuth';
 
 export type RegisterProps = {
   additionalFields?: string[];
@@ -144,6 +145,7 @@ export default function Register({ additionalFields = [], userRegisterEndpoint =
           <Button type='submit'>Register</Button>
           {responseMessage && <AuthCard.ResponseMessage>{responseMessage}</AuthCard.ResponseMessage>}
         </form>
+        {invite && <OAuth />}
       </AuthCard>
     </div>
   );
