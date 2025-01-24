@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useCompany, useCompanies } from '@/components/interactive/hooks';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 const ROLES = [
   { id: 2, name: 'Admin' },
@@ -33,12 +34,12 @@ export const Team = () => {
   const { data: companyData } = useCompanies();
   const { data: activeCompany, mutate } = useCompany();
   const [responseMessage, setResponseMessage] = useState('');
+  console.log(activeCompany);
   const handleConfirm = async () => {
     if (renaming) {
       try {
-        const companyId = getCookie('agixt-company-id');
         await axios.put(
-          `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${companyId}`,
+          `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${activeCompany.id}`,
           { name: newName },
           {
             headers: {
@@ -145,38 +146,58 @@ export const Team = () => {
             )}
           </>
         ) : (
-          <h3>{activeCompany.name}</h3>
+          <h3>{activeCompany?.name}</h3>
         )}
-        <Button
-          onClick={() => {
-            if (renaming) {
-              handleConfirm();
-            } else {
-              setRenaming(true);
-              setNewName(activeCompany.name);
-            }
-          }}
-          disabled={creating}
-          size='icon'
-          variant='ghost'
-        >
-          {renaming ? <LuCheck className='h-4 w-4' /> : <LuPencil className='h-4 w-4' />}
-        </Button>
-        <Button
-          onClick={() => {
-            if (creating) {
-              handleConfirm();
-            } else {
-              setCreating(true);
-              setNewName('');
-            }
-          }}
-          disabled={renaming}
-          size='icon'
-          variant='ghost'
-        >
-          {creating ? <LuCheck className='h-4 w-4' /> : <LuPlus className='h-4 w-4' />}
-        </Button>
+
+        <TooltipProvider>
+          <div className='flex gap-2'>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => {
+                    if (renaming) {
+                      handleConfirm();
+                    } else {
+                      setRenaming(true);
+                      setNewName(activeCompany?.name);
+                    }
+                  }}
+                  disabled={creating}
+                  size='icon'
+                  variant='ghost'
+                >
+                  {renaming ? <LuCheck className='h-4 w-4' /> : <LuPencil className='h-4 w-4' />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{renaming ? 'Confirm rename' : 'Rename'}</p>
+              </TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  onClick={() => {
+                    if (creating) {
+                      handleConfirm();
+                    } else {
+                      setCreating(true);
+                      setNewName('');
+                    }
+                  }}
+                  disabled={renaming}
+                  size='icon'
+                  variant='ghost'
+                >
+                  {creating ? <LuCheck className='h-4 w-4' /> : <LuPlus className='h-4 w-4' />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{creating ? 'Confirm create' : 'Create new'}</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       </div>
     </div>
   );
