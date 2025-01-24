@@ -65,9 +65,6 @@ export function NavUser() {
                   </>
                 )}
               </div>
-              <Button asChild variant='ghost' size='icon' className='w-4 h-4 hover:bg-card'>
-                <Bell />
-              </Button>
 
               <CaretRightIcon className='ml-auto size-4' />
             </SidebarMenuButton>
