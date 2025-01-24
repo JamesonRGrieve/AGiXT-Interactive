@@ -41,7 +41,9 @@ const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
   if (href?.startsWith('#')) {
     e.preventDefault();
     const id = href.slice(1);
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    if (typeof document !== 'undefined') {
+      document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+    }
   }
 };
 
