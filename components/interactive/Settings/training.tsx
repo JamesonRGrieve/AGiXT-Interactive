@@ -183,17 +183,17 @@ const Training = (): React.ReactElement => {
   const agentName = getCookie('agixt-agent') || process.env.NEXT_PUBLIC_AGIXT_AGENT || DEFAULT_AGENT;
   const router = useRouter();
   useEffect(() => {
-    if (getCookie('agixt-company-id') || searchParams.get('mode') !== 'company') {
+    if (activeCompany.id || searchParams.get('mode') !== 'company') {
       fetchCompanyData();
     }
-  }, [getCookie('agixt-company-id'), searchParams.get('mode') !== 'company']);
+  }, [activeCompany.id, searchParams.get('mode') !== 'company']);
 
   const fetchCompanyData = async () => {
     setLoading(true);
     try {
       const url =
         searchParams.get('mode') === 'company'
-          ? `${apiServer}/api/agent/${agentName}/persona/${getCookie('agixt-company-id')}`
+          ? `${apiServer}/api/agent/${agentName}/persona/${activeCompany.id}`
           : `${apiServer}/api/agent/${agentName}/persona`;
 
       const personaResponse = await fetch(url, {
@@ -211,7 +211,7 @@ const Training = (): React.ReactElement => {
 
       const sourcesUrl =
         searchParams.get('mode') === 'company'
-          ? `${apiServer}/api/agent/${agentName}/memory/external_sources/${COLLECTION_NUMBER}/${getCookie('agixt-company-id')}`
+          ? `${apiServer}/api/agent/${agentName}/memory/external_sources/${COLLECTION_NUMBER}/${activeCompany.id}`
           : `${apiServer}/api/agent/${agentName}/memory/external_sources/${COLLECTION_NUMBER}`;
 
       const sourcesResponse = await fetch(sourcesUrl, {
@@ -238,7 +238,7 @@ const Training = (): React.ReactElement => {
     try {
       const response = await fetch(
         searchParams.get('mode') === 'company'
-          ? `${apiServer}/api/agent/${agentName}/persona/${getCookie('agixt-company-id')}`
+          ? `${apiServer}/api/agent/${agentName}/persona/${activeCompany.id}`
           : `${apiServer}/api/agent/${agentName}/persona`,
         {
           method: 'PUT',
@@ -248,7 +248,7 @@ const Training = (): React.ReactElement => {
           },
           body: JSON.stringify({
             persona: searchParams.get('mode') === 'company' ? companyPersona : userPersona,
-            company_id: searchParams.get('mode') === 'company' ? getCookie('agixt-company-id') : null,
+            company_id: searchParams.get('mode') === 'company' ? activeCompany.id : null,
             // user: searchParams.get('mode') === 'company',
           }),
         },
@@ -281,7 +281,7 @@ const Training = (): React.ReactElement => {
 
       const response = await fetch(
         searchParams.get('mode') === 'company'
-          ? `${apiServer}/api/agent/${agentName}/learn/file/${getCookie('agixt-company-id')}`
+          ? `${apiServer}/api/agent/${agentName}/learn/file/${activeCompany.id}`
           : `${apiServer}/api/agent/${agentName}/learn/file`,
 
         {
@@ -294,7 +294,7 @@ const Training = (): React.ReactElement => {
             file_name: file.name,
             file_content: fileString,
             collection_number: COLLECTION_NUMBER,
-            company_id: searchParams.get('mode') === 'company' ? getCookie('agixt-company-id') : null,
+            company_id: searchParams.get('mode') === 'company' ? activeCompany.id : null,
           }),
         },
       );
@@ -330,7 +330,7 @@ const Training = (): React.ReactElement => {
         body: JSON.stringify({
           external_source: source,
           collection_number: COLLECTION_NUMBER,
-          company_id: searchParams.get('mode') === 'company' ? getCookie('agixt-company-id') : null,
+          company_id: searchParams.get('mode') === 'company' ? activeCompany.id : null,
         }),
       });
 

@@ -145,7 +145,7 @@ export function Extensions() {
     try {
       const result = await axios.patch(
         searchParams.get('mode') === 'company'
-          ? `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${getCookie('agixt-company-id')}/command`
+          ? `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${activeCompany.id}/command`
           : `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/agent/${agent_name}/command`,
 
         {
