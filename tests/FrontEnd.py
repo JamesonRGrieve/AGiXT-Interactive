@@ -320,6 +320,12 @@ class FrontEndTest:
 
         except Exception as e:
             logging.error(f"Error creating video report: {e}")
+            screenshot_fallback_path = os.path.join(self.screenshots_dir, "video_report_fallback.png")
+            logging.info(f"Creating fallback screenshot at: {screenshot_fallback_path}")
+            if self.page:
+                await self.page.screenshot(path=screenshot_fallback_path)
+                display(Image(filename=str(screenshot_fallback_path)))
+                return screenshot_fallback_path
             return None
 
     async def prompt_agent(self, action_name, screenshot_path):
