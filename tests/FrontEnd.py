@@ -201,7 +201,7 @@ class FrontEndTest:
                     if self.page:
                         await self.page.screenshot(path=screenshot_fallback_path)
                         display(Image(filename=str(screenshot_fallback_path)))
-                    return screenshot_fallback_path
+                    return None
                 except Exception as e:
                     logging.error(f"Unexpected error during video processing: {e}")
                     screenshot_fallback_path = os.path.join(
@@ -213,7 +213,7 @@ class FrontEndTest:
                     if self.page:
                         await self.page.screenshot(path=screenshot_fallback_path)
                         display(Image(filename=str(screenshot_fallback_path)))
-                    return screenshot_fallback_path
+                    return None
             
             # Create paths for our files
             final_video_path = os.path.abspath(os.path.join(os.getcwd(), "report.mp4"))

@@ -30,6 +30,10 @@ class TestRunner:
                                 )
                             else:
                                 print(f"Video report created at: {video_report_path}")
+                        else:
+                            print(
+                                "Failed to create video report or fallback screenshot."
+                            )
                         sys.exit(1)
                     else:
                         try:
@@ -44,6 +48,10 @@ class TestRunner:
                                     error_message += f". Fallback video report screenshot created at: {video_report_path}"
                                 else:
                                     error_message += f". Video report created at: {video_report_path}"
+                            else:
+                                error_message += (
+                                    ". Failed to create video report or fallback screenshot."
+                                )
                             logging.error(error_message)
                             print(error_message)
                             sys.exit(1)
@@ -63,6 +71,10 @@ class TestRunner:
                                 )
                             else:
                                 print(f"Video report created at: {video_report_path}")
+                        else:
+                            print(
+                                "Failed to create video report or fallback screenshot."
+                            )
                         sys.exit(1)
                     finally:
                         loop.close()
@@ -77,4 +89,6 @@ class TestRunner:
                         )
                     else:
                         print(f"Video report created at: {video_report_path}")
+                else:
+                    print("Failed to create video report or fallback screenshot.")
                 sys.exit(1)
