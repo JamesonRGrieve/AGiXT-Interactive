@@ -18,12 +18,7 @@ export default function AudioPlayer({ src }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [audio] = useState(new Audio());
-  return (
-    <audio controls className='w-full'>
-      <source src={'/api/audio?url=' + src} type='audio/wav' />
-      Your browser does not support the audio element.
-    </audio>
-  );
+
   useEffect(() => {
     const loadAudio = async () => {
       try {
