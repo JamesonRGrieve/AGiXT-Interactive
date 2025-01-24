@@ -29,8 +29,8 @@ import {
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 
-import { DataTable } from '@/components/wais/data/data-table';
-import { DataTableColumnHeader } from '@/components/wais/data/data-table-column-header';
+import { DataTable } from '@/components/jrg/wais/data/data-table';
+import { DataTableColumnHeader } from '@/components/jrg/wais/data/data-table-column-header';
 import log from '../../next-log/log';
 
 interface User {
@@ -135,7 +135,7 @@ const users_columns: ColumnDef<User>[] = [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='ghost' className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'>
-              <MoreHorizontal className='h-4 w-4' />
+              <MoreHorizontal className='w-4 h-4' />
               <span className='sr-only'>Open menu</span>
             </Button>
           </DropdownMenuTrigger>
@@ -143,14 +143,14 @@ const users_columns: ColumnDef<User>[] = [
             <DropdownMenuLabel>User Actions</DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={(e) => e.preventDefault()} className='p-0'>
-              <Button variant='ghost' className='w-full justify-start'>
+              <Button variant='ghost' className='justify-start w-full'>
                 Edit User
               </Button>
             </DropdownMenuItem>
             <DropdownMenuItem onSelect={() => router.push(`/users/${row.original.id}`)}>View Details</DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={(e) => e.preventDefault()} className='p-0'>
-              <Button variant='ghost' className='w-full justify-start text-red-600 hover:text-red-600'>
+              <Button variant='ghost' className='justify-start w-full text-red-600 hover:text-red-600'>
                 Delete User
               </Button>
             </DropdownMenuItem>
@@ -210,7 +210,7 @@ export const invitations_columns: ColumnDef<Invitation>[] = [
     cell: ({ row }) => {
       return (
         <div className='flex items-center space-x-2'>
-          <Mail className='h-4 w-4 text-muted-foreground' />
+          <Mail className='w-4 h-4 text-muted-foreground' />
           <span className='font-medium'>{row.getValue('email')}</span>
         </div>
       );
@@ -249,7 +249,7 @@ export const invitations_columns: ColumnDef<Invitation>[] = [
       return (
         <div className='flex w-[100px] items-center'>
           <Badge variant={isAccepted ? 'default' : 'secondary'}>
-            {isAccepted ? <Check className='mr-1 h-3 w-3' /> : <X className='mr-1 h-3 w-3' />}
+            {isAccepted ? <Check className='w-3 h-3 mr-1' /> : <X className='w-3 h-3 mr-1' />}
             {isAccepted ? 'Accepted' : 'Pending'}
           </Badge>
         </div>
@@ -293,7 +293,7 @@ export const invitations_columns: ColumnDef<Invitation>[] = [
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant='ghost' className='flex h-8 w-8 p-0 data-[state=open]:bg-muted'>
-              <MoreHorizontal className='h-4 w-4' />
+              <MoreHorizontal className='w-4 h-4' />
               <span className='sr-only'>Open menu</span>
             </Button>
           </DropdownMenuTrigger>
