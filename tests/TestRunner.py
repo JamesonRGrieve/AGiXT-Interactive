@@ -22,8 +22,9 @@ class TestRunner:
                     except Exception as e:
                         logging.error(f"Test execution failed: {e}")
                         # Make one final attempt to create video if it doesn't exist
-                        if not os.path.exists(os.path.join(os.getcwd(), "report.mp4")):
-                            test.create_video_report()
+                        video_report_path = test.create_video_report()
+                        if video_report_path:
+                            print(f"Fallback video report screenshot created at: {video_report_path}")
                         sys.exit(1)
                 else:
                     try:
@@ -32,8 +33,9 @@ class TestRunner:
                         asyncio.get_event_loop().run_until_complete(test.run())
                     except Exception as e:
                         logging.error(f"Test execution failed: {e}")
-                        if not os.path.exists(os.path.join(os.getcwd(), "report.mp4")):
-                            test.create_video_report()
+                        video_report_path = test.create_video_report()
+                        if video_report_path:
+                            print(f"Fallback video report screenshot created at: {video_report_path}")
                         sys.exit(1)
             else:
                 print("Windows Detected, using asyncio.ProactorEventLoop")
@@ -51,9 +53,7 @@ class TestRunner:
         except Exception as e:
             logging.error(f"Critical failure: {e}")
             # Try one last time to create video even in case of critical failure
-            if not os.path.exists(os.path.join(os.getcwd(), "report.mp4")):
-                try:
-                    test.create_video_report()
-                except Exception as video_error:
-                    logging.error(f"Failed to create video report: {video_error}")
+            video_report_path = test.create_video_report()
+            if video_report_path:
+                print(f"Fallback video report screenshot created at: {video_report_path}")
             sys.exit(1)

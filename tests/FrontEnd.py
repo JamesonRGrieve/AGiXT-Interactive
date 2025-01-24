@@ -326,7 +326,7 @@ class FrontEndTest:
                 await self.page.screenshot(path=screenshot_fallback_path)
                 display(Image(filename=str(screenshot_fallback_path)))
                 return screenshot_fallback_path
-            return None
+            return screenshot_fallback_path # Return fallback screenshot path even if video report fails
 
     async def prompt_agent(self, action_name, screenshot_path):
 
