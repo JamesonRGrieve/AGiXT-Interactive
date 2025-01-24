@@ -30,14 +30,11 @@
     --destructive: 0 50% 30%;
     --destructive-foreground: 262.1 5% 90%;
     --warning: 30 100% 50%;
-    --warning-foreground: 30 100% 50%;
-    /* TODO: Add foreground colors.
-     Would've been too long to find a foreground color for each of success, info, and warn in root, dark, colorblind and colorblind dark so I didn't do it this time. But should be done eventually 
-    */
+    --warning-foreground: 30 10% 10%;
     --success: 120 100% 25%;
-    --success-foreground: 120 100% 25%;
+    --success-foreground: 120 10% 98%;
     --info: 210 100% 40%;
-    --info-foreground: 210 100% 40%;
+    --info-foreground: 210 10% 98%;
     --border: 262.1 28% 50%;
     --input: 262.1 28% 68%;
     --ring: 262.1 88.3% 57.8%;
@@ -75,11 +72,11 @@
     --destructive: 0 50% 30%;
     --destructive-foreground: 262.1 5% 90%;
     --warning: 30 100% 70%;
-    --warning-foreground: 30 100% 70%;
+    --warning-foreground: 30 15% 15%;
     --success: 120 100% 40%;
-    --success-foreground: 120 100% 40%;
+    --success-foreground: 120 15% 15%;
     --info: 210 100% 60%;
-    --info-foreground: 210 100% 60%;
+    --info-foreground: 210 15% 15%;
     --border: 262.1 28% 18%;
     --input: 262.1 28% 18%;
     --ring: 262.1 88.3% 57.8%;
@@ -115,12 +112,12 @@
     --accent-foreground: 0 0% 10%;
     --destructive: 0 0% 30%;
     --destructive-foreground: 0 0% 90%;
-    --warning: 0 0% 100%;
-    --warning-foreground: 0 0% 100%;
-    --success: 0 0% 100%;
-    --success-foreground: 0 0% 100%;
-    --info: 0 0% 100%;
-    --info-foreground: 0 0% 100%;
+    --warning: 0 0% 75%;
+    --warning-foreground: 0 0% 15%;
+    --success: 0 0% 75%;
+    --success-foreground: 0 0% 15%;
+    --info: 0 0% 75%;
+    --info-foreground: 0 0% 15%;
     --border: 0 0% 50%;
     --input: 0 0% 18%;
     --ring: 0 0% 57.8%;
@@ -143,12 +140,12 @@
     --accent-foreground: 0 0% 90%;
     --destructive: 0 0% 30%;
     --destructive-foreground: 0 0% 90%;
-    --warning: 0 0% 100%;
-    --warning-foreground: 0 0% 100%;
-    --success: 0 0% 100%;
-    --success-foreground: 0 0% 100%;
-    --info: 0 0% 100%;
-    --info-foreground: 0 0% 100%;
+    --warning: 0 0% 25%;
+    --warning-foreground: 0 0% 85%;
+    --success: 0 0% 25%;
+    --success-foreground: 0 0% 85%;
+    --info: 0 0% 25%;
+    --info-foreground: 0 0% 85%;
     --border: 0 0% 18%;
     --input: 0 0% 18%;
     --ring: 0 0% 57.8%;

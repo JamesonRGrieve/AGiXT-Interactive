@@ -1,9 +1,10 @@
 'use client';
 import React, { ReactNode, useState, useRef } from 'react';
+import { ChevronDown } from 'lucide-react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
 import { a11yDark, a11yLight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
-import { LuCopy as Copy, LuDownload as Download } from 'react-icons/lu';
-
+import { Copy, Download } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import 'katex/dist/katex.min.css';
 import Latex from 'react-latex-next';
 import { getCookie } from 'cookies-next';
@@ -78,6 +79,7 @@ const fileExtensions = {
   xml: 'xml',
   latex: 'latex',
 };
+
 const languageRenders = {
   markdown: (content) => <MarkdownBlock content={content} />,
   html: (content) => <div dangerouslySetInnerHTML={{ __html: content }} />,
@@ -141,6 +143,7 @@ export default function CodeBlock({
 }: CodeBlockProps): ReactNode {
   const codeBlockRef = useRef<HTMLDivElement>(null);
   const [tab, setTab] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
 
   if (inline) {
     return <span className='bg-gray-200 dark:bg-gray-700 rounded-md px-1 py-0.5 font-mono'>{children}</span>;
@@ -179,9 +182,17 @@ export default function CodeBlock({
     }
   };
 
-  return language || children.toString().includes('\n') ? (
-    <div className='my-2 overflow-hidden border rounded-lg bg-background'>
+  return (
+    <Collapsible
+      open={isOpen}
+      onOpenChange={setIsOpen}
+      className={`my-2 overflow-hidden border rounded-lg bg-background transition-all duration-300 ease-in-out ${isOpen ? 'w-full' : 'inline-block'}`}
+    >
       <div className='relative flex items-center justify-between pr-4 border-b-2 border-border'>
+        <CollapsibleTrigger className='p-2 hover:bg-muted'>
+          <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`} />
+        </CollapsibleTrigger>
+
         {Object.keys(languageRenders).includes(language) && (
           <div className='flex'>
             <button className={`px-4 py-2 ${tab === 0 ? 'bg-muted' : ''}`} onClick={() => setTab(0)}>
@@ -200,38 +211,38 @@ export default function CodeBlock({
             <Download className='w-5 h-5' />
           </button>
           <span className='ml-2 text-sm'>
-            {fileNameWithExtension} | {language}
+            {fileNameWithExtension || 'text.txt'} | {language || ''}
           </span>
         </div>
       </div>
 
-      {Object.keys(languageRenders).includes(language) && (
-        <TabPanel value={tab} index={0}>
-          <div className='code-container'>{languageRenders[language.toString()](children, setLoading)}</div>
-        </TabPanel>
-      )}
+      <CollapsibleContent className='transition-all duration-300 ease-in-out'>
+        {Object.keys(languageRenders).includes(language) && (
+          <TabPanel value={tab} index={0}>
+            <div className='code-container'>{languageRenders[language.toString()](children, setLoading)}</div>
+          </TabPanel>
+        )}
 
-      <TabPanel value={tab} index={Object.keys(languageRenders).includes(language) ? 1 : 0}>
-        <div className='code-container' ref={codeBlockRef}>
-          {language.toLowerCase() in fileExtensions ? (
-            <SyntaxHighlighter
-              {...props}
-              language={language.toLowerCase()}
-              style={getCookie('theme')?.includes('dark') ? a11yDark : a11yLight}
-              showLineNumbers
-              wrapLongLines
-            >
-              {children}
-            </SyntaxHighlighter>
-          ) : (
-            <code className='code-block' {...props}>
-              {children}
-            </code>
-          )}
-        </div>
-      </TabPanel>
-    </div>
-  ) : (
-    <span className='bg-muted rounded-md px-1 py-0.5 font-mono'>{children}</span>
+        <TabPanel value={tab} index={Object.keys(languageRenders).includes(language) ? 1 : 0}>
+          <div className='code-container' ref={codeBlockRef}>
+            {language.toLowerCase() in fileExtensions ? (
+              <SyntaxHighlighter
+                {...props}
+                language={language.toLowerCase()}
+                style={getCookie('theme')?.includes('dark') ? a11yDark : a11yLight}
+                showLineNumbers
+                wrapLongLines
+              >
+                {children}
+              </SyntaxHighlighter>
+            ) : (
+              <code className='code-block' {...props}>
+                {children}
+              </code>
+            )}
+          </div>
+        </TabPanel>
+      </CollapsibleContent>
+    </Collapsible>
   );
 }
