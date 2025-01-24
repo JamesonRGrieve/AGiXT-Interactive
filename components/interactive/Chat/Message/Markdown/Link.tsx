@@ -1,8 +1,8 @@
 'use client';
 import React, { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
-import Plyr from 'plyr-react';
-import 'plyr-react/plyr.css';
+// import Plyr from 'plyr-react';
+// import 'plyr-react/plyr.css';
 
 const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
   const href = e.currentTarget.getAttribute('href');
@@ -28,6 +28,7 @@ export default function MarkdownLink({ children, href, className, ...props }: Ma
       <div className='w-96'>
         <div className='relative w-full aspect-video'>
           <iframe
+            title={youtubeId}
             className='absolute top-0 left-0 w-full h-full'
             src={`https://www.youtube.com/embed/${youtubeId}`}
             allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
@@ -38,23 +39,23 @@ export default function MarkdownLink({ children, href, className, ...props }: Ma
     );
   }
 
-  if (isVideo) {
-    return (
-      <div className='w-96'>
-        <div className='relative w-full aspect-video'>
-          <Plyr
-            source={{
-              type: 'video',
-              sources: [{ src: href, type: 'video/mp4' }],
-            }}
-            options={{
-              controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
-            }}
-          />
-        </div>
-      </div>
-    );
-  }
+  // if (isVideo) {
+  //   return (
+  //     <div className='w-96'>
+  //       <div className='relative w-full aspect-video'>
+  //         <Plyr
+  //           source={{
+  //             type: 'video',
+  //             sources: [{ src: href, type: 'video/mp4' }],
+  //           }}
+  //           options={{
+  //             controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+  //           }}
+  //         />
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <a
@@ -62,7 +63,7 @@ export default function MarkdownLink({ children, href, className, ...props }: Ma
       className={cn('underline hover:no-underline', className)}
       target={isExternal ? '_blank' : undefined}
       rel={isExternal ? 'noopener noreferrer' : undefined}
-      onClick={isExternal ? undefined : handleAnchorClick}
+      // onClick={isExternal ? undefined : handleAnchorClick}
       {...props}
     >
       {children}
