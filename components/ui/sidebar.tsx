@@ -314,8 +314,17 @@ const SidebarRail = React.forwardRef<
   const [isResizing, setIsResizing] = React.useState(false);
   const startXRef = React.useRef(0);
   const startWidthRef = React.useRef(0);
+  const previousWidthRef = React.useRef(width);
 
-  const handleMouseMove = React.useCallback(
+  React.useEffect(() => {
+    if (state === 'expanded') {
+      setWidth(previousWidthRef.current);
+    } else {
+      previousWidthRef.current = width;
+    }
+  }, [state, setWidth, width]);
+
+  const handleResize = React.useCallback(
     (e: MouseEvent) => {
       if (!isResizing) return;
 
@@ -333,38 +342,48 @@ const SidebarRail = React.forwardRef<
     [isResizing, maxWidth, minWidth, setWidth, side],
   );
 
-  const handleMouseUp = React.useCallback(() => {
+  const handleResizeEnd = React.useCallback(() => {
     setIsResizing(false);
     document.body.style.userSelect = '';
-    document.removeEventListener('mousemove', handleMouseMove);
-    document.removeEventListener('mouseup', handleMouseUp);
-  }, [handleMouseMove]);
+    document.removeEventListener('mousemove', handleResize);
+    document.removeEventListener('mouseup', handleResizeEnd);
+  }, [handleResize]);
 
   const handleMouseDown = React.useCallback(
     (e: React.MouseEvent) => {
-      if (state === 'collapsed') {
-        toggleSidebar();
-        return;
-      }
-
-      e.preventDefault();
       startXRef.current = e.pageX;
       startWidthRef.current = width;
-      setIsResizing(true);
-      document.body.style.userSelect = 'none';
 
-      document.addEventListener('mousemove', handleMouseMove);
+      const handleMouseUp = (upEvent: MouseEvent) => {
+        if (Math.abs(upEvent.pageX - startXRef.current) < 5) {
+          toggleSidebar();
+        }
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+
+      const handleMouseMove = (moveEvent: MouseEvent) => {
+        if (Math.abs(moveEvent.pageX - startXRef.current) > 5) {
+          setIsResizing(true);
+          document.body.style.userSelect = 'none';
+          document.addEventListener('mousemove', handleResize);
+          document.addEventListener('mouseup', handleResizeEnd);
+          document.removeEventListener('mousemove', handleMouseMove);
+          document.removeEventListener('mouseup', handleMouseUp);
+        }
+      };
+
       document.addEventListener('mouseup', handleMouseUp);
+      document.addEventListener('mousemove', handleMouseMove);
     },
-    [handleMouseMove, handleMouseUp, state, toggleSidebar, width],
+    [handleResize, handleResizeEnd, toggleSidebar, width],
   );
 
   React.useEffect(() => {
     return () => {
-      document.removeEventListener('mousemove', handleMouseMove);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousemove', handleResize);
+      document.removeEventListener('mouseup', handleResizeEnd);
     };
-  }, [handleMouseMove, handleMouseUp]);
+  }, [handleResize, handleResizeEnd]);
 
   return (
     <button
