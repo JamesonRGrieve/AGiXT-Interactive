@@ -1,4 +1,3 @@
-'use client';
 import React, { ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import Plyr from 'plyr-react';
