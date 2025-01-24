@@ -16,6 +16,7 @@ import {
   User,
   Puzzle,
   Building,
+  Workflow,
 } from 'lucide-react';
 
 import Link from 'next/link';
@@ -83,6 +84,19 @@ const items: Item[] = [
         title: 'Extensions',
         icon: Puzzle,
         url: '/settings/extensions',
+        queryParams: {
+          tab: 'extensions',
+          mode: 'user',
+        },
+      },
+      {
+        title: 'Actions',
+        icon: Workflow,
+        url: '/settings/extensions',
+        queryParams: {
+          tab: 'actions',
+          mode: 'user',
+        },
       },
       {
         title: 'Settings',
@@ -113,6 +127,16 @@ const items: Item[] = [
         icon: Puzzle,
         url: '/settings/extensions',
         queryParams: {
+          tab: 'extensions',
+          mode: 'company',
+        },
+      },
+      {
+        title: 'Team Actions',
+        icon: Workflow,
+        url: '/settings/extensions',
+        queryParams: {
+          tab: 'actions',
           mode: 'company',
         },
       },
