@@ -10,14 +10,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { usePromptCategories } from '@/components/interactive/hooks';
+import { usePromptCategories, usePrompts } from '@/components/interactive/hooks';
 import { mutate } from 'swr';
 
 export default function PromptDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
   const router = useRouter();
   const context = useInteractiveConfig();
   const { data: categoryData } = usePromptCategories();
-
+  const { mutate } = usePrompts();
   const [newPromptName, setNewPromptName] = useState('');
   const [promptCategory, setPromptCategory] = useState('Default');
   const [toggleNewPromptCategory, setToggleNewPromptCategory] = useState(false);
@@ -25,9 +25,9 @@ export default function PromptDialog({ open, setOpen }: { open: boolean; setOpen
 
   const handleNewPrompt = async () => {
     await context.agixt.addPrompt(newPromptName, promptBody, promptCategory);
-    await mutate(`/api/prompts?category=${promptCategory}`);
+    await mutate();
     setOpen(false);
-    router.push(`/prompt?category=${promptCategory}&prompt=${newPromptName}`);
+    router.push(`/settings/prompts?category=${promptCategory}&prompt=${newPromptName}`);
   };
 
   const handleImportPrompt = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,11 +51,11 @@ export default function PromptDialog({ open, setOpen }: { open: boolean; setOpen
           <DialogTitle>Create New Prompt Template</DialogTitle>
         </DialogHeader>
         <div className='grid gap-4 py-4'>
-          <div className='flex items-center space-x-2'>
+          {/* <div className='flex items-center space-x-2'>
             <Switch id='new-category' checked={toggleNewPromptCategory} onCheckedChange={setToggleNewPromptCategory} />
             <Label htmlFor='new-category'>New Category</Label>
-          </div>
-          {toggleNewPromptCategory ? (
+          </div> */}
+          {/* {toggleNewPromptCategory ? (
             <div className='grid grid-cols-4 items-center gap-4'>
               <Label htmlFor='new-category-name' className='text-right'>
                 New Prompt Category
@@ -86,7 +86,7 @@ export default function PromptDialog({ open, setOpen }: { open: boolean; setOpen
                 </SelectContent>
               </Select>
             </div>
-          )}
+          )} */}
           <div className='grid grid-cols-4 items-center gap-4'>
             <Label htmlFor='prompt-name' className='text-right'>
               New Prompt Name
