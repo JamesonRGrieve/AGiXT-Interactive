@@ -97,18 +97,13 @@ const items: Item[] = [
     items: [
       {
         title: 'Team',
-        icon: Building,
-        url: '/team', // Still need a team user management page for invites and viewing who is on the team
-      },
-      {
-        title: 'Team Users',
         icon: User,
-        url: '/team/users', // Still need a team user management page for invites and viewing who is on the team
+        url: '/team',
       },
       {
         title: 'Team Training',
         icon: GraduationCap,
-        url: '/settings/training', // Still need to split this off into a separate page for Team level
+        url: '/settings/training',
         queryParams: {
           mode: 'company',
         },
@@ -116,7 +111,7 @@ const items: Item[] = [
       {
         title: 'Team Extensions',
         icon: Puzzle,
-        url: '/settings/extensions', // Still need to split this off into a separate page for Team level
+        url: '/settings/extensions',
         queryParams: {
           mode: 'company',
         },
@@ -124,7 +119,7 @@ const items: Item[] = [
       {
         title: 'Team Settings',
         icon: Settings,
-        url: '/settings', // Still need to split off provider settings and add agent rename functionality on a new page
+        url: '/settings',
         queryParams: {
           mode: 'company',
         },

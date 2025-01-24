@@ -226,9 +226,18 @@ export function usePrompts(): SWRResponse<Prompt[]> {
  * @returns SWR response containing array of companies
  */
 export function useCompanies(): SWRResponse<Company[]> {
-  const { data: user } = useUser();
+  const userHook = useUser();
+  const { data: user } = userHook;
 
-  return useSWR<Company[]>(['/companies', user], () => user?.companies || [], { fallbackData: [] });
+  const swrHook = useSWR<Company[]>(['/companies', user], () => user?.companies || [], { fallbackData: [] });
+
+  const originalMutate = swrHook.mutate;
+  swrHook.mutate = async () => {
+    await userHook.mutate();
+    return originalMutate();
+  };
+
+  return swrHook;
 }
 
 /**
@@ -237,9 +246,10 @@ export function useCompanies(): SWRResponse<Company[]> {
  * @returns SWR response containing company data or null
  */
 export function useCompany(id?: string): SWRResponse<Company | null> {
-  const { data: companies } = useCompanies();
+  const companiesHook = useCompanies();
+  const { data: companies } = companiesHook;
 
-  return useSWR<Company | null>(
+  const swrHook = useSWR<Company | null>(
     [`/company?id=${id}`, companies],
     (): Company | null => {
       try {
@@ -258,6 +268,14 @@ export function useCompany(id?: string): SWRResponse<Company | null> {
     },
     { fallbackData: null },
   );
+
+  const originalMutate = swrHook.mutate;
+  swrHook.mutate = async () => {
+    await companiesHook.mutate();
+    return originalMutate();
+  };
+
+  return swrHook;
 }
 
 // ============================================================================
