@@ -33,7 +33,7 @@ export const dummyNotifications = [
 ];
 
 export default function NotificationsPage() {
-  const [notifications, setNotifications] = useState(dummyNotifications);
+  const [notifications, setNotifications] = useState([]);
   return (
     <SidebarInset>
       <SidebarHeader>
