@@ -1,6 +1,6 @@
-"use client";
+'use client';
 
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
 import Plyr from 'plyr-react';
 import 'plyr-react/plyr.css';
@@ -54,6 +54,7 @@ const getYoutubeId = (url: string): string | null => {
 type MarkdownLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
 const MarkdownLink: React.FC<MarkdownLinkProps> = ({ children, href, className, ...props }) => {
+  const targetRef = useRef<HTMLElement | null>(null);
   const isExternal = href && !href.startsWith('#');
   const youtubeId = href ? getYoutubeId(href) : null;
   const isVideo = href?.match(/\.(mp4|webm|ogg)$/i);
@@ -61,13 +62,12 @@ const MarkdownLink: React.FC<MarkdownLinkProps> = ({ children, href, className, 
   useEffect(() => {
     if (href?.startsWith('#')) {
       const id = href.slice(1);
-      const element = document.querySelector(id);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
+      targetRef.current = document.getElementById(id);
+      if (targetRef.current) {
+        targetRef.current.scrollIntoView({ behavior: 'smooth' });
       }
     }
   }, [href]);
-
 
   if (youtubeId) {
     return <YoutubeEmbed href={href} />;
