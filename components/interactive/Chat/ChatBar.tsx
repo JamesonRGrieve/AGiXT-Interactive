@@ -5,7 +5,6 @@ import { CheckCircle as LuCheckCircle } from 'lucide-react';
 import { LuPaperclip, LuSend, LuArrowUp, LuLoader, LuTrash2 } from 'react-icons/lu';
 import { setCookie } from 'cookies-next';
 import { InteractiveConfigContext } from '../InteractiveConfigContext';
-import { OverrideSwitch } from './OverrideSwitch';
 import { VoiceRecorder } from './VoiceRecorder';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -162,35 +161,6 @@ const Timer = ({ loading, timer }: { loading: boolean; timer: number }) => {
           : `Your last interaction took ${(timer / 10).toFixed(1)} seconds to completely resolve.`}
       </TooltipContent>
     </Tooltip>
-  );
-};
-
-const OverrideSwitches = ({ showOverrideSwitches }: { showOverrideSwitches: string }) => {
-  return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Tooltip>
-          <TooltipTrigger>
-            <Button size='icon'>
-              <LuArrowUp className='w-4 h-4' />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent>Overrides</TooltipContent>
-        </Tooltip>
-      </PopoverTrigger>
-      <PopoverContent className='w-56'>
-        <div className='space-y-4'>
-          {showOverrideSwitches.split(',').includes('tts') && <OverrideSwitch name='tts' label='Text-to-Speech' />}
-          {showOverrideSwitches.split(',').includes('websearch') && <OverrideSwitch name='websearch' label='Websearch' />}
-          {showOverrideSwitches.split(',').includes('create-image') && (
-            <OverrideSwitch name='create-image' label='Generate an Image' />
-          )}
-          {showOverrideSwitches.split(',').includes('analyze-user-input') && (
-            <OverrideSwitch name='analyze-user-input' label='Analyze' />
-          )}
-        </div>
-      </PopoverContent>
-    </Popover>
   );
 };
 
