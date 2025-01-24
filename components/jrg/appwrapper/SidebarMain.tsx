@@ -10,7 +10,7 @@ import { NavMain } from '@/components/jrg/appwrapper/NavMain';
 import { NavUser } from '@/components/jrg/appwrapper/NavUser';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar';
 import { ToggleSidebar } from './ToggleSidebar';
-import { Notifications } from '@/app/notifications/layout';
+import { NotificationsNavItem } from '@/app/notifications/page';
 
 export function SidebarMain({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [hasStarted, setHasStarted] = useState(false);
@@ -34,7 +34,7 @@ export function SidebarMain({ ...props }: React.ComponentProps<typeof Sidebar>) 
         <ChatHistory />
       </SidebarContent>
       <SidebarFooter>
-        <Notifications />
+        <NotificationsNavItem />
         <ToggleSidebar side='left' />
         <NavUser />
       </SidebarFooter>
