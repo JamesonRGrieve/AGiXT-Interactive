@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME,
@@ -39,11 +39,10 @@ export const metadata: Metadata = {
     ],
   },
   applicationName: process.env.NEXT_PUBLIC_APP_NAME,
-  themeColor: 'var(--primary)',
   other: {
     'mobile-web-app-capable': 'yes',
   },
-}
+};
 
 export const viewport = {
   minimumScale: 1,
@@ -52,4 +51,5 @@ export const viewport = {
   shrinkToFit: 'no',
   viewportFit: 'cover',
   userScalable: false,
-} 
+  themeColor: 'var(--primary)',
+};
