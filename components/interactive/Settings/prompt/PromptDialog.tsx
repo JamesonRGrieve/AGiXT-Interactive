@@ -11,6 +11,7 @@ import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import { usePromptCategories } from '@/components/interactive/hooks';
+import { mutate } from 'swr';
 
 export default function PromptDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
   const router = useRouter();
@@ -24,6 +25,7 @@ export default function PromptDialog({ open, setOpen }: { open: boolean; setOpen
 
   const handleNewPrompt = async () => {
     await context.agixt.addPrompt(newPromptName, promptBody, promptCategory);
+    await mutate(`/api/prompts?category=${promptCategory}`);
     setOpen(false);
     router.push(`/prompt?category=${promptCategory}&prompt=${newPromptName}`);
   };
