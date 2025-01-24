@@ -519,8 +519,17 @@ export function useChains(): SWRResponse<Chain[]> {
     async (): Promise<Chain[]> => {
       try {
         const query = ChainsSchema.toGQL('query', 'GetChains');
+        log(['GQL useChains() Query', query], {
+          client: 3,
+        });
         const response = await client.request<{ chains: Chain[] }>(query);
+        log(['GQL useChains() Response', response], {
+          client: 3,
+        });
         const validated = z.array(ChainsSchema).parse(response.chains);
+        log(['GQL useChains() Validated', validated], {
+          client: 3,
+        });
         return validated;
       } catch (error) {
         log(['GQL useChains() Error', error], {
@@ -574,7 +583,7 @@ export function useConversations(): SWRResponse<ConversationEdge[]> {
   const client = createGraphQLClient();
 
   return useSWR<ConversationEdge[]>(
-    '/chains',
+    '/conversations',
     async (): Promise<ConversationEdge[]> => {
       try {
         const query = z.object({ edges: ConversationEdgeSchema }).toGQL('query', 'GetConversations');

@@ -20,7 +20,7 @@ export function ChainSelector({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-
+  console.log('CHAIN DATA', chainData);
   if (error) return <div>Failed to load chains</div>;
 
   return (

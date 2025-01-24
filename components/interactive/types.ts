@@ -135,10 +135,10 @@ export type CommandArgs = z.infer<typeof CommandArgSchema>;
 // ============================================================================
 
 export const ChainStepPromptSchema = z.object({
-  chainName: z.string().optional(),
-  commandName: z.string().optional(),
+  chainName: z.string().nullable(),
+  commandName: z.string().nullable(),
   promptCategory: PromptCategorySchema,
-  promptName: z.string().optional(),
+  promptName: z.string().nullable(),
 });
 
 export const ChainStepSchema = z.object({
