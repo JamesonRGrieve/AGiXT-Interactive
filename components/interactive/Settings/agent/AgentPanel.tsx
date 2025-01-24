@@ -14,13 +14,13 @@ import { useInteractiveConfig } from '@/components/interactive/InteractiveConfig
 export default function AgentPanel({ setShowCreateDialog }) {
   const [renaming, setRenaming] = useState(false);
   const [creating, setCreating] = useState(false);
-  const { data: agentData } = useAgent();
+  const { data: agentData, mutate: mutateAgent } = useAgent();
   const [newName, setNewName] = useState('');
 
   const context = useInteractiveConfig();
   const router = useRouter();
   const pathname = usePathname();
-  const { data: companyData } = useCompany();
+  const { data: companyData, mutate: mutateCompany } = useCompany();
   const handleConfirm = async () => {
     if (renaming) {
       try {
@@ -29,7 +29,7 @@ export default function AgentPanel({ setShowCreateDialog }) {
         setCookie('agixt-agent', newName, {
           domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
         });
-        mutate('/agents');
+        mutateAgent();
       } catch (error) {
         console.error('Failed to rename agent:', error);
       }
@@ -48,7 +48,9 @@ export default function AgentPanel({ setShowCreateDialog }) {
         setCookie('agixt-agent', newName, {
           domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
         });
-        mutate('/agents');
+
+        mutateCompany();
+        mutateAgent();
         setCreating(false);
       } catch (error) {
         console.error('Failed to create agent:', error);
@@ -59,7 +61,8 @@ export default function AgentPanel({ setShowCreateDialog }) {
   const handleDelete = async () => {
     try {
       await context.agixt.deleteAgent(agentData.agent.name);
-      mutate('/agents');
+      mutateCompany();
+      mutateAgent();
       router.push(pathname);
     } catch (error) {
       console.error('Failed to delete agent:', error);
@@ -82,65 +85,62 @@ export default function AgentPanel({ setShowCreateDialog }) {
   };
 
   return (
-    agentData?.agent &&
-    companyData && (
-      <div className='flex items-center space-x-2 mb-4'>
-        {renaming || creating ? (
-          <>
-            <Input
-              value={newName}
-              onChange={(e) => setNewName(e.target.value)}
-              className='w-64'
-              placeholder='Enter agent name'
-            />
-            @ {companyData.name}
-          </>
-        ) : (
-          <h3>
-            {agentData.agent.name} @ {companyData.name}
-          </h3>
-        )}
+    <div className='flex items-center space-x-2 mb-4'>
+      {renaming || creating ? (
+        <>
+          <Input
+            value={newName}
+            onChange={(e) => setNewName(e.target.value)}
+            className='w-64'
+            placeholder='Enter agent name'
+          />
+          @ {companyData?.name}
+        </>
+      ) : (
+        <h3>
+          {agentData?.agent?.name} @ {companyData?.name}
+        </h3>
+      )}
 
-        <Button
-          onClick={() => {
-            if (creating) {
-              handleConfirm();
-            } else {
-              setCreating(true);
-              setNewName('');
-            }
-          }}
-          disabled={renaming}
-          size='icon'
-          variant='ghost'
-        >
-          {creating ? <LuCheck className='h-4 w-4' /> : <LuPlus className='h-4 w-4' />}
-        </Button>
+      <Button
+        onClick={() => {
+          if (creating) {
+            handleConfirm();
+          } else {
+            setCreating(true);
+            setNewName('');
+          }
+        }}
+        disabled={renaming}
+        size='icon'
+        variant='ghost'
+      >
+        {creating ? <LuCheck className='h-4 w-4' /> : <LuPlus className='h-4 w-4' />}
+      </Button>
 
-        <Button
-          onClick={() => {
-            if (renaming) {
-              handleConfirm();
-            } else {
-              setRenaming(true);
-              setNewName(getCookie('agixt-agent')?.toString() || '');
-            }
-          }}
-          disabled={creating}
-          size='icon'
-          variant='ghost'
-        >
-          {renaming ? <LuCheck className='h-4 w-4' /> : <LuPencil className='h-4 w-4' />}
-        </Button>
+      <Button
+        onClick={() => {
+          if (renaming) {
+            handleConfirm();
+          } else {
+            setRenaming(true);
+            setNewName(getCookie('agixt-agent')?.toString() || '');
+          }
+        }}
+        disabled={creating}
+        size='icon'
+        variant='ghost'
+      >
+        {renaming ? <LuCheck className='h-4 w-4' /> : <LuPencil className='h-4 w-4' />}
+      </Button>
 
-        <Button onClick={handleExport} disabled={renaming || creating} size='icon' variant='ghost'>
-          <LuDownload className='h-4 w-4' />
-        </Button>
+      <Button onClick={handleExport} disabled={renaming || creating} size='icon' variant='ghost'>
+        <LuDownload className='h-4 w-4' />
+      </Button>
 
-        <Button onClick={handleDelete} disabled={renaming || creating} size='icon' variant='ghost'>
-          <LuTrash2 className='h-4 w-4' />
-        </Button>
-      </div>
-    )
+      <Button onClick={handleDelete} disabled={renaming || creating} size='icon' variant='ghost'>
+        <LuTrash2 className='h-4 w-4' />
+      </Button>
+    </div>
   );
 }
