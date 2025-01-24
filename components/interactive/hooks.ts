@@ -57,9 +57,10 @@ const createGraphQLClient = (): GraphQLClient =>
  * @returns SWR response containing array of agents
  */
 export function useAgents(): SWRResponse<Agent[]> {
-  const { data: companies } = useCompanies();
+  const companiesHook = useCompanies();
+  const { data: companies } = companiesHook;
 
-  return useSWR<Agent[]>(
+  const swrHook = useSWR<Agent[]>(
     ['/agents', companies],
     (): Agent[] =>
       companies?.flatMap((company) =>
@@ -70,6 +71,13 @@ export function useAgents(): SWRResponse<Agent[]> {
       ) || [],
     { fallbackData: [] },
   );
+
+  const originalMutate = swrHook.mutate;
+  swrHook.mutate = async () => {
+    await companiesHook.mutate();
+    return originalMutate();
+  };
+  return swrHook;
 }
 
 /**
@@ -84,7 +92,8 @@ export function useAgent(
   agent: Agent | null;
   commands: string[];
 }> {
-  const { data: companies } = useCompanies();
+  const companiesHook = useCompanies();
+  const { data: companies } = companiesHook;
   const state = useContext(InteractiveConfigContext);
   let searchName = name || (getCookie('agixt-agent') as string | undefined);
   let foundEarly = null;
@@ -103,7 +112,7 @@ export function useAgent(
   log([`GQL useAgent() SEARCH NAME: ${searchName}`], {
     client: 3,
   });
-  return useSWR<{ agent: Agent | null; commands: string[] }>(
+  const swrHook = useSWR<{ agent: Agent | null; commands: string[] }>(
     [`/agent?name=${searchName}`, companies, withSettings],
     async (): Promise<{ agent: Agent | null; commands: string[] }> => {
       try {
@@ -148,6 +157,12 @@ export function useAgent(
     },
     { fallbackData: { agent: null, commands: [] } },
   );
+  const originalMutate = swrHook.mutate;
+  swrHook.mutate = async () => {
+    await companiesHook.mutate();
+    return originalMutate();
+  };
+  return swrHook;
 }
 
 // ============================================================================
