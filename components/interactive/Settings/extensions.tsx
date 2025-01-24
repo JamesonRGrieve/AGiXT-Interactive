@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, use } from 'react';
 import { getCookie } from 'cookies-next';
 import axios from 'axios';
 import { useRouter, usePathname, useSearchParams } from 'next/navigation';
@@ -235,16 +235,25 @@ export function Extensions() {
     },
     [searchText],
   );
+  useEffect(() => {
+    if (!searchParams.get('tab')) {
+      router.push(`${pathname}?tab=extensions`);
+    }
+  }, [searchParams]);
   const { connectedExtensions, availableExtensions } = categorizeExtensions(extensions);
   const { connectedProviders, availableProviders } = categorizeProviders(Object.values(providerData));
   console.log(connectedProviders, availableProviders);
   return (
     <div className='space-y-6'>
-      <Tabs defaultValue='commands' className='space-y-4'>
+      <Tabs defaultValue={searchParams.get('tab') || 'extensions'} className='space-y-4'>
         <div className='flex items-center gap-2'>
           <TabsList>
-            <TabsTrigger value='extensions'>Extensions</TabsTrigger>
-            <TabsTrigger value='commands'>Commands</TabsTrigger>
+            <TabsTrigger value='extensions' onClick={() => router.push(`${pathname}?tab=extensions`)}>
+              Extensions
+            </TabsTrigger>
+            <TabsTrigger value='actions' onClick={() => router.push(`${pathname}?tab=actions`)}>
+              Actions
+            </TabsTrigger>
           </TabsList>
           {/* {activeCompany?.my_role >= 2 && (
             <>
@@ -265,9 +274,9 @@ export function Extensions() {
             </>
           )} */}
         </div>
-        <TabsContent value='commands' className='space-y-4'>
+        <TabsContent value='actions' className='space-y-4'>
           <div className='flex items-center justify-between mb-4'>
-            <h3 className='text-lg font-medium'>Enabled Commands</h3>
+            <h3 className='text-lg font-medium'>Enabled Actions</h3>
             <div className='flex items-center gap-2'>
               <Label htmlFor='show-enabled-only'>Show Enabled Only</Label>
               <Switch id='show-enabled-only' checked={showEnabledOnly} onCheckedChange={setShowEnabledOnly} />
@@ -276,7 +285,9 @@ export function Extensions() {
 
           {extensionsWithCommands.length === 0 ? (
             <Alert>
-              <AlertDescription>No extensions are currently enabled. Enable extensions to see them here.</AlertDescription>
+              <AlertDescription>
+                No extensions are currently enabled. Enable extensions to see their actions here.
+              </AlertDescription>
             </Alert>
           ) : (
             <div className='grid gap-4'>
@@ -321,7 +332,7 @@ export function Extensions() {
         <TabsContent value='extensions' className='space-y-4'>
           <div className='grid gap-4'>
             <p className='text-sm text-muted-foreground'>
-              Manage your connected third-party extensions that grant your agent additional capabilities through commands.
+              Manage your connected third-party extensions that grant your agent additional capabilities through actions.
             </p>
             {searchParams.get('mode') !== 'company' &&
               [
