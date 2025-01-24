@@ -39,7 +39,7 @@ export const Team = () => {
     if (renaming) {
       try {
         await axios.put(
-          `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${activeCompany.id}`,
+          `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${activeCompany?.id}`,
           { name: newName },
           {
             headers: {
