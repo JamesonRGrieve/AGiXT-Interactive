@@ -1,7 +1,17 @@
 'use client';
 
-import React, { useContext, useState, useMemo } from 'react';
-import { LuCopy, LuDownload, LuThumbsUp, LuThumbsDown, LuPen as LuEdit, LuTrash2 } from 'react-icons/lu';
+import React, { useContext, useState, useMemo, useRef } from 'react';
+import {
+  LuCopy,
+  LuDownload,
+  LuThumbsUp,
+  LuThumbsDown,
+  LuPen as LuEdit,
+  LuTrash2,
+  LuVolume2,
+  LuGitFork,
+} from 'react-icons/lu';
+import { Loader2 } from 'lucide-react';
 import clipboardCopy from 'clipboard-copy';
 import { mutate } from 'swr';
 import { InteractiveConfigContext } from '../../InteractiveConfigContext';
@@ -14,9 +24,19 @@ import { Tooltip, TooltipBasic, TooltipContent, TooltipProvider, TooltipTrigger 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { getCookie } from 'cookies-next';
 
 export type MessageProps = {
-  chatItem: { role: string; message: string; timestamp: string; rlhf?: { positive: boolean; feedback: string } };
+  chatItem: {
+    id: string;
+    role: string;
+    message: string;
+    timestamp: string;
+    rlhf?: {
+      positive: boolean;
+      feedback: string;
+    };
+  };
   lastUserMessage: string;
   alternateBackground?: string;
   setLoading: (loading: boolean) => void;
@@ -42,16 +62,21 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
   const state = useContext(InteractiveConfigContext);
   const [updatedMessage, setUpdatedMessage] = useState(chatItem.message);
   const { toast } = useToast();
+  const [isLoadingAudio, setIsLoadingAudio] = useState(false);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const audioRef = useRef<HTMLAudioElement>(null);
+
   const formattedMessage = useMemo(() => {
     let formatted = chatItem.message;
     try {
       const parsed = JSON.parse(chatItem.message);
       formatted = (parsed.text || chatItem.message).replace('\\n', '\n');
     } catch (e) {
-      // console.error(e);
+      // If parsing fails, use original message
     }
     return formatted;
   }, [chatItem]);
+
   const audios = useMemo(() => {
     if (
       !chatItem?.message ||
@@ -68,11 +93,47 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
       sources: audioSources,
     };
   }, [chatItem]);
+
   const [vote, setVote] = useState(chatItem.rlhf ? (chatItem.rlhf.positive ? 1 : -1) : 0);
   const [open, setOpen] = useState(false);
   const [feedback, setFeedback] = useState('');
 
   const isUserMsgJustText = checkUserMsgJustText(chatItem);
+
+  const handleTTS = async () => {
+    if (!state.overrides.conversation) return;
+
+    setIsLoadingAudio(true);
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/conversation/${state.overrides.conversation}/tts/${chatItem.id}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `${getCookie('jwt')}`,
+          },
+        },
+      );
+      if (!response.ok) throw new Error('Failed to fetch audio');
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      setAudioUrl(url);
+
+      // Play audio automatically when loaded
+      if (audioRef.current) {
+        audioRef.current.play();
+      }
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to generate speech',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoadingAudio(false);
+    }
+  };
 
   return (
     <div className={cn('m-3 overflow-hidden flex flex-col gap-2', isUserMsgJustText && 'max-w-[60%] self-end')}>
@@ -144,12 +205,58 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
                 </TooltipBasic>
               </>
             )}
-            {/* TODO: Implement speak message */}
-            {/* <TooltipBasic title='Speak Message'>
-              <Button variant='ghost' size='icon' onClick={() => {}}>
-                <LuVolume2 />
+
+            {chatItem.role !== 'USER' && !audios && (
+              <>
+                {audioUrl ? (
+                  <audio ref={audioRef} controls className='h-8 w-32'>
+                    <source src={audioUrl} type='audio/wav' />
+                  </audio>
+                ) : (
+                  <TooltipBasic title='Speak Message'>
+                    <Button variant='ghost' size='icon' onClick={handleTTS} disabled={isLoadingAudio}>
+                      {isLoadingAudio ? <Loader2 className='h-4 w-4 animate-spin' /> : <LuVolume2 />}
+                    </Button>
+                  </TooltipBasic>
+                )}
+              </>
+            )}
+            <TooltipBasic title='Fork Conversation'>
+              <Button
+                variant='ghost'
+                size='icon'
+                onClick={async () => {
+                  try {
+                    const response = await fetch(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation/fork`, {
+                      method: 'POST',
+                      headers: {
+                        Authorization: getCookie('jwt'),
+                      },
+                      body: JSON.stringify({
+                        conversation_name: state.overrides?.conversation,
+                        message_id: chatItem.id,
+                      }),
+                    });
+
+                    if (!response.ok) throw new Error('Failed to fork conversation');
+
+                    const data = await response.json();
+                    toast({
+                      title: 'Conversation Forked',
+                      description: `New conversation created: ${data.message}`,
+                    });
+                  } catch (error) {
+                    toast({
+                      title: 'Error',
+                      description: 'Failed to fork conversation',
+                      variant: 'destructive',
+                    });
+                  }
+                }}
+              >
+                <LuGitFork />
               </Button>
-            </TooltipBasic> */}
+            </TooltipBasic>
             <TooltipBasic title='Copy Message'>
               <Button
                 variant='ghost'
@@ -165,6 +272,7 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
                 <LuCopy />
               </Button>
             </TooltipBasic>
+
             <TooltipBasic title='Download Message'>
               <Button
                 variant='ghost'
@@ -186,7 +294,6 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
             {enableMessageEditing && (
               <TooltipProvider>
                 <Tooltip>
-                  {/* TODO: Replace this with new dialog */}
                   <JRGDialog
                     ButtonComponent={Button}
                     ButtonProps={{
@@ -225,7 +332,6 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
               <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    {/* TODO: Replace this with new dialog */}
                     <JRGDialog
                       ButtonComponent={Button}
                       ButtonProps={{ variant: 'ghost', size: 'icon', children: <LuTrash2 /> }}
