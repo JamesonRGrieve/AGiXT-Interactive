@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { setCookie } from 'cookies-next';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar:state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -89,7 +90,11 @@ const SidebarProvider = React.forwardRef<
           setRightOpen(openState);
         }
 
-        document.cookie = `sidebar:${side}:state=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`;
+        setCookie(`sidebar:${side}:state`, openState, {
+          path: '/',
+          maxAge: SIDEBAR_COOKIE_MAX_AGE,
+          domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+        });
       };
     };
 
