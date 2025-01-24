@@ -139,16 +139,15 @@ export function MessageActions({
               size='icon'
               onClick={async () => {
                 try {
-                  const response = await fetch(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation/fork`, {
-                    method: 'POST',
-                    headers: {
-                      Authorization: getCookie('jwt'),
+                  const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/conversation/fork/${state.overrides?.conversation}/${chatItem.id}`,
+                    {
+                      method: 'POST',
+                      headers: {
+                        Authorization: getCookie('jwt'),
+                      },
                     },
-                    body: JSON.stringify({
-                      conversation_name: state.overrides?.conversation,
-                      message_id: chatItem.id,
-                    }),
-                  });
+                  );
 
                   if (!response.ok) throw new Error('Failed to fork conversation');
 
