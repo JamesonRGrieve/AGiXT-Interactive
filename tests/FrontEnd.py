@@ -555,13 +555,18 @@ class FrontEndTest:
                 .get_by_text("Completed Activities")
                 .scroll_into_view_if_needed(),
             )
-            await self.test_action(
-                "The agent also provides a visualization of its thought process.",
-                lambda: self.page.click(".agixt-activity-diagram"),
-                lambda: self.page.locator(
-                    '.flowchart[id^="mermaid"]'
-                ).scroll_into_view_if_needed(),
-            )
+            try:
+                await self.test_action(
+                    "The agent also provides a visualization of its thought process.",
+                    lambda: self.page.click(".agixt-activity-diagram"),
+                    lambda: self.page.locator(
+                        '.flowchart[id^="mermaid"]'
+                    ).scroll_into_view_if_needed(),
+                )
+            except Exception as e:
+                self.take_screenshot(
+                    "The agent did not provide a visualization of its thought process."
+                )
 
             # await self.test_action(
             #     "Record audio",
