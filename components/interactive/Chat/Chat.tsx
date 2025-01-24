@@ -86,7 +86,7 @@ export default function Chat({
           },
         })), // Spread operator to include all file contents
       ],
-      ...(activeCompany.id ? { company_id: activeCompany.id } : {}),
+      ...(activeCompany?.id ? { company_id: activeCompany?.id } : {}),
       ...(getCookie('agixt-create-image') ? { create_image: getCookie('agixt-create-image') } : {}),
       ...(getCookie('agixt-tts') ? { tts: getCookie('agixt-tts') } : {}),
       ...(getCookie('agixt-websearch') ? { websearch: getCookie('agixt-websearch') } : {}),

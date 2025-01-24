@@ -339,7 +339,7 @@ export const Team = () => {
   const handleConfirm = async () => {
     if (renaming) {
       try {
-        const companyId = activeCompany.id;
+        const companyId = activeCompany?.id;
         await axios.put(
           `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${companyId}`,
           { name: newName },
@@ -389,7 +389,7 @@ export const Team = () => {
         {
           email: email,
           role_id: parseInt(roleId),
-          company_id: activeCompany.id,
+          company_id: activeCompany?.id,
         },
         {
           headers: {

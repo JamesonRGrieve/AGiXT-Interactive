@@ -33,25 +33,15 @@ export default function Extension({
   error,
   setSelectedExtension,
 }) {
-  const isOverrideExtension = OVERRIDE_EXTENSIONS[extension.extension_name];
-  const [state, setState] = useState(
-    isOverrideExtension
-      ? getCookie(`agixt-${OVERRIDE_EXTENSIONS[extension.extension_name].name}`) === undefined
-        ? true
-        : getCookie(`agixt-${OVERRIDE_EXTENSIONS[extension.extension_name].name}`) !== 'false'
-      : null,
-  );
+  const [state, setState] = useState(false);
 
   useEffect(() => {
-    if (!isOverrideExtension) return;
-
-    const name = OVERRIDE_EXTENSIONS[extension.extension_name].name;
-    setCookie(`agixt-${name}`, state.toString(), {
-      domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-      maxAge: 2147483647,
-    });
-  }, [state, extension.extension_name, isOverrideExtension]);
-
+    setState(
+      Object.keys(OVERRIDE_EXTENSIONS).includes(extension.extension_name)
+        ? getCookie(`agixt-${OVERRIDE_EXTENSIONS[extension.extension_name].name}`) === 'true'
+        : false,
+    );
+  }, [extension.extension_name]);
   return (
     <div className='flex flex-col gap-2 p-3 transition-colors border rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
       <div className='flex items-center gap-2'>
@@ -60,13 +50,32 @@ export default function Extension({
           <div>
             <h4 className='font-medium truncate'>{extension.friendly_name || extension.extension_name}</h4>
             <p className='text-sm text-muted-foreground'>
-              {isOverrideExtension ? (state ? 'Enabled' : 'Disabled') : connected ? 'Connected' : 'Not Connected'}
+              {Object.keys(OVERRIDE_EXTENSIONS).includes(extension.extension_name)
+                ? state
+                  ? 'Enabled'
+                  : 'Disabled'
+                : connected
+                  ? 'Connected'
+                  : 'Not Connected'}
             </p>
           </div>
         </div>
 
-        {isOverrideExtension ? (
-          <Button variant='outline' size='sm' className='gap-2' onClick={() => setState(!state)}>
+        {Object.keys(OVERRIDE_EXTENSIONS).includes(extension.extension_name) ? (
+          <Button
+            variant='outline'
+            size='sm'
+            className='gap-2'
+            onClick={() => {
+              console.log('SETTING ' + `agixt-${OVERRIDE_EXTENSIONS[extension.extension_name].name}` + ` to ${!state}`);
+              setCookie(`agixt-${OVERRIDE_EXTENSIONS[extension.extension_name].name}`, (!state).toString(), {
+                domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+                maxAge: 2147483647,
+                path: '/',
+              });
+              setState(!state);
+            }}
+          >
             {state ? <PowerOff className='w-4 h-4' /> : <Power className='w-4 h-4' />}
             {state ? 'Disable' : 'Enable'}
           </Button>
