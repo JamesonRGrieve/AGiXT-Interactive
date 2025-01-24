@@ -38,10 +38,11 @@ const VideoPlayer: React.FC<MediaProps> = ({ href }) => (
   </div>
 );
 
-const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>): void => {
+const handleAnchorClick = (e: React.MouseEvent<HTMLAnchorElement>, targetRef: React.RefObject<HTMLAnchorElement>): void => {
   const href = e.currentTarget.getAttribute('href');
   if (href?.startsWith('#')) {
     e.preventDefault();
+    targetRef.current?.scrollIntoView({ behavior: 'smooth' });
   }
 };
 
@@ -54,20 +55,10 @@ const getYoutubeId = (url: string): string | null => {
 type MarkdownLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement>;
 
 const MarkdownLink: React.FC<MarkdownLinkProps> = ({ children, href, className, ...props }) => {
-  const targetRef = useRef<HTMLElement | null>(null);
+  const targetRef = useRef<HTMLAnchorElement>(null);
   const isExternal = href && !href.startsWith('#');
   const youtubeId = href ? getYoutubeId(href) : null;
   const isVideo = href?.match(/\.(mp4|webm|ogg)$/i);
-
-  useEffect(() => {
-    if (href?.startsWith('#')) {
-      const id = href.slice(1);
-      targetRef.current = document.getElementById(id);
-      if (targetRef.current) {
-        targetRef.current.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-  }, [href]);
 
   if (youtubeId) {
     return <YoutubeEmbed href={href} />;
@@ -79,11 +70,12 @@ const MarkdownLink: React.FC<MarkdownLinkProps> = ({ children, href, className, 
 
   return (
     <a
+      ref={targetRef}
       href={href}
       className={cn('underline hover:no-underline', className)}
       target={isExternal ? '_blank' : undefined}
       rel={isExternal ? 'noopener noreferrer' : undefined}
-      onClick={isExternal ? undefined : handleAnchorClick}
+      onClick={(e) => !isExternal && handleAnchorClick(e, targetRef)}
       {...props}
     >
       {children}
