@@ -2,8 +2,8 @@
 
 import React, { ReactNode, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
-import Plyr from 'plyr-react';
-import 'plyr-react/plyr.css';
+// import Plyr from 'plyr-react';
+// import 'plyr-react/plyr.css';
 
 interface MediaProps {
   href: string;
@@ -61,12 +61,38 @@ const MarkdownLink: React.FC<MarkdownLinkProps> = ({ children, href, className, 
   const isVideo = href?.match(/\.(mp4|webm|ogg)$/i);
 
   if (youtubeId) {
-    return <YoutubeEmbed href={href} />;
+    return (
+      <div className='w-96'>
+        <div className='relative w-full aspect-video'>
+          <iframe
+            title={youtubeId}
+            className='absolute top-0 left-0 w-full h-full'
+            src={`https://www.youtube.com/embed/${youtubeId}`}
+            allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
+            allowFullScreen
+          />
+        </div>
+      </div>
+    );
   }
 
-  if (isVideo) {
-    return <VideoPlayer href={href} />;
-  }
+  // if (isVideo) {
+  //   return (
+  //     <div className='w-96'>
+  //       <div className='relative w-full aspect-video'>
+  //         <Plyr
+  //           source={{
+  //             type: 'video',
+  //             sources: [{ src: href, type: 'video/mp4' }],
+  //           }}
+  //           options={{
+  //             controls: ['play', 'progress', 'current-time', 'mute', 'volume', 'fullscreen'],
+  //           }}
+  //         />
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <a
@@ -75,7 +101,7 @@ const MarkdownLink: React.FC<MarkdownLinkProps> = ({ children, href, className, 
       className={cn('underline hover:no-underline', className)}
       target={isExternal ? '_blank' : undefined}
       rel={isExternal ? 'noopener noreferrer' : undefined}
-      onClick={(e) => !isExternal && handleAnchorClick(e, targetRef)}
+      // onClick={isExternal ? undefined : handleAnchorClick}
       {...props}
     >
       {children}
