@@ -8,6 +8,7 @@ import { InteractiveConfigContext, Overrides } from '../InteractiveConfigContext
 import ChatLog from './ChatLog';
 import ChatBar from './ChatInput';
 import log from '@/components/jrg/next-log/log';
+import { useCompany } from '../hooks';
 
 export async function getAndFormatConversastion(state): Promise<any[]> {
   const rawConversation = await state.agixt.getConversation('', state.overrides.conversation, 100, 1);
@@ -61,6 +62,7 @@ export default function Chat({
       refreshInterval: loading ? 1000 : 0,
     },
   );
+  const { data: activeCompany } = useCompany();
   useEffect(() => {
     if (Array.isArray(state.overrides.conversation)) {
       state.mutate((oldState) => ({
@@ -84,7 +86,7 @@ export default function Chat({
           },
         })), // Spread operator to include all file contents
       ],
-      ...(getCookie('agixt-company-id') ? { company_id: getCookie('agixt-company-id') } : {}),
+      ...(activeCompany.id ? { company_id: activeCompany.id } : {}),
       ...(getCookie('agixt-create-image') ? { create_image: getCookie('agixt-create-image') } : {}),
       ...(getCookie('agixt-tts') ? { tts: getCookie('agixt-tts') } : {}),
       ...(getCookie('agixt-websearch') ? { websearch: getCookie('agixt-websearch') } : {}),

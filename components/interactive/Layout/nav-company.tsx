@@ -31,8 +31,9 @@ export function NavCompany() {
   const { data: company } = useCompany();
   console.log(company);
   const { data: companies } = useCompanies();
+
   const { data: user, mutate: mutateUser } = useUser();
-  const { data, mutate: mutateActiveCompany } = useCompany();
+  const { data: activeCompany, mutate: mutateActiveCompany } = useCompany();
   const handleLogout = () => {
     router.push('/user/logout');
   };
@@ -65,11 +66,8 @@ export function NavCompany() {
             {companies.map((company) => (
               <DropdownMenuItem
                 key={company.id}
-                className={cn('capitalize', company.id == getCookie('agixt-company-id') && 'bg-muted')}
+                className={cn('capitalize', company.id == activeCompany?.id && 'bg-muted')}
                 onClick={() => {
-                  setCookie('agixt-company-id', company.id, {
-                    domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-                  });
                   mutateUser();
                   mutateActiveCompany();
                 }}

@@ -30,9 +30,6 @@ export function AgentSelector() {
     setCookie('agixt-agent', agent.name, {
       domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
     });
-    setCookie('agixt-company-id', agent.companyId, {
-      domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-    });
     mutateActiveAgent();
     mutateActiveCompany();
   };

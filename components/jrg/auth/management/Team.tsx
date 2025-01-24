@@ -66,9 +66,6 @@ export const Team = () => {
             },
           },
         );
-        setCookie('agixt-company-id', newResponse.data.id, {
-          domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-        });
         mutate();
         setResponseMessage('Company created successfully!');
       } catch (error) {
@@ -90,7 +87,7 @@ export const Team = () => {
         {
           email: email,
           role_id: parseInt(roleId),
-          company_id: getCookie('agixt-company-id'),
+          company_id: companyData?.id,
         },
         {
           headers: {

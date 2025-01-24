@@ -15,12 +15,12 @@ export default function useUser() {
           Authorization: getCookie('jwt'),
         },
       });
-      if (!getCookie('agixt-company-id')) {
-        console.log('Setting company ID to: ' + userDataReq.data.companies.filter((x) => x.primary)[0].id);
-        setCookie('agixt-company-id', userDataReq.data.companies.filter((x) => x.primary)[0].id, {
-          domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-        });
-      }
+      // if (!getCookie('agixt-company-id')) {
+      //   console.log('Setting company ID to: ' + userDataReq.data.companies.filter((x) => x.primary)[0].id);
+      //   setCookie('agixt-company-id', userDataReq.data.companies.filter((x) => x.primary)[0].id, {
+      //     domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+      //   });
+      // }
       if (userDataReq.status === 402) {
         router.push('/user/subscribe');
       }
