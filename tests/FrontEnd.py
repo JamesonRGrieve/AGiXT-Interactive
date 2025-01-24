@@ -193,21 +193,6 @@ class FrontEndTest:
                     logging.error(f"Unexpected error during video processing: {e}")
                     return await self.create_fallback_screenshot("video_report_fallback.png")
 
-    async def create_fallback_screenshot(self, filename):
-        """Helper method to create fallback screenshots on error"""
-        if not self.page:
-            return None
-        screenshot_fallback_path = os.path.join(self.screenshots_dir, filename)
-        logging.info(f"Creating fallback screenshot at: {screenshot_fallback_path}")
-        try:
-            await self.page.screenshot(path=screenshot_fallback_path)
-            if os.path.exists(screenshot_fallback_path):
-                display(Image(filename=str(screenshot_fallback_path)))
-                return screenshot_fallback_path
-        except Exception as e:
-            logging.error(f"Failed to create fallback screenshot: {e}")
-        return None
-            
             # Create paths for our files
             final_video_path = os.path.abspath(os.path.join(os.getcwd(), "report.mp4"))
             concatenated_audio_path = os.path.join(temp_dir, "combined_audio.wav")
@@ -337,6 +322,21 @@ class FrontEndTest:
                 f"Video report created successfully at: {final_video_path} (Size: {final_size_mb:.2f}MB)"
             )
             return final_video_path
+
+    async def create_fallback_screenshot(self, filename):
+        """Helper method to create fallback screenshots on error"""
+        if not self.page:
+            return None
+        screenshot_fallback_path = os.path.join(self.screenshots_dir, filename)
+        logging.info(f"Creating fallback screenshot at: {screenshot_fallback_path}")
+        try:
+            await self.page.screenshot(path=screenshot_fallback_path)
+            if os.path.exists(screenshot_fallback_path):
+                display(Image(filename=str(screenshot_fallback_path)))
+                return screenshot_fallback_path
+        except Exception as e:
+            logging.error(f"Failed to create fallback screenshot: {e}")
+        return None
 
     async def prompt_agent(self, action_name, screenshot_path):
 
