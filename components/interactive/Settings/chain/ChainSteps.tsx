@@ -39,7 +39,7 @@ export default function ChainSteps() {
               <ChainStep
                 {...step}
                 agent_name={step.agent_name}
-                step_type={step.prompt_type}
+                step_type={step.chainName ? 'Chain' : step.commandName ? 'Command' : 'Prompt'}
                 step_object={step.prompt}
                 last_step={chainData.steps.length === index + 1}
               />

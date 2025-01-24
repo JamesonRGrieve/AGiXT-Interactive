@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { LuArrowUp, LuArrowDown, LuSave, LuX } from 'react-icons/lu';
+import { ArrowUp, ArrowDown, Save, X } from 'lucide-react';
 import useSWR, { mutate } from 'swr';
 import PromptSelector from '../../Selectors/PromptSelector';
 import PromptCategorySelector from '../../Selectors/PromptCategorySelector';
@@ -13,7 +13,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
+import { useChain, useChains } from '../../hooks';
 
 const ignoreArgs = [
   'prompt_name',
@@ -32,6 +34,7 @@ const ignoreArgs = [
   'import_files',
   'output_url',
 ];
+
 export default function ChainStep({
   step,
   last_step,
@@ -45,7 +48,6 @@ export default function ChainStep({
   step_type: string;
   step_object: any;
 }) {
-  console.log('STEP', step, step_type, step_object);
   const [agentName, setAgentName] = useState(agent_name);
   const [targetName, setTargetName] = useState(
     step_type === 'Prompt'
@@ -59,12 +61,10 @@ export default function ChainStep({
   const [stepType, setStepType] = useState(step_type);
   const context = useInteractiveConfig();
   const [modified, setModified] = useState(false);
-
   const searchParams = useSearchParams();
+  const { mutate } = useChain(searchParams.get('chain') ?? undefined);
+  const { mutate: mutateChainList } = useChains();
 
-  useEffect(() => {
-    console.log('Targetname changed to ', targetName);
-  }, [targetName]);
   const { data: agentData } = useSWR('/agents', async () =>
     ((await context.agixt.getAgents()) as any[])
       .map((agent: any) => agent.name)
@@ -85,17 +85,30 @@ export default function ChainStep({
     () => ({
       Prompt: {
         component: (
-          <>
+          <div className='space-y-2'>
             <PromptCategorySelector category={targetCategory.toString()} categoryMutate={setTargetCategory} />
-            <PromptSelector value={targetName} onChange={setTargetName} />
-          </>
+            <div>
+              <Label htmlFor='prompt-name'>Prompt Name</Label>
+              <PromptSelector value={targetName} onChange={setTargetName} />
+            </div>
+          </div>
         ),
       },
       Command: {
-        component: <CommandSelector agentName={agentName} value={targetName} mutate={setTargetName} />,
+        component: (
+          <div>
+            <Label htmlFor='command-name'>Command Name</Label>
+            <CommandSelector agentName={agentName} value={targetName} mutate={setTargetName} />
+          </div>
+        ),
       },
       Chain: {
-        component: <ChainSelector value={targetName} mutate={setTargetName} />,
+        component: (
+          <div>
+            <Label htmlFor='chain-name'>Chain Name</Label>
+            <ChainSelector value={targetName} mutate={setTargetName} />
+          </div>
+        ),
       },
     }),
     [agentName, targetName, targetCategory],
@@ -119,14 +132,11 @@ export default function ChainStep({
       if (newArgs.includes('AxiosError')) {
         setArgs({});
       } else {
-        console.log(newArgs);
         const filteredArr = newArgs.filter((x) => !ignoreArgs.includes(x.name));
-
         const newObj = filteredArr.reduce((acc, key) => {
           acc[key] = '';
           return acc;
         }, {});
-        console.log('New args will be', newArgs, newObj);
         setArgs(newObj);
       }
     })();
@@ -139,17 +149,15 @@ export default function ChainStep({
       setTargetCategory('Default');
     }
   }, [step_object.prompt_category]);
-  useEffect(() => {
-    console.log('Args changed to', args);
-  }, [args]);
+
   const handleIncrement = async (): Promise<void> => {
     await context.agixt.moveStep(searchParams.get('chain') ?? '', step, Number(step) + 1);
-    mutate(`/chain?chain=${searchParams.get('chain')}`);
+    mutate();
   };
 
   const handleDecrement = async (): Promise<void> => {
     await context.agixt.moveStep(searchParams.get('chain') ?? '', step, Number(step) - 1);
-    mutate(`/chain?chain=${searchParams.get('chain')}`);
+    mutate();
   };
 
   const handleSave = async (): Promise<void> => {
@@ -163,33 +171,55 @@ export default function ChainStep({
       nameObj['chain_name'] = targetName;
     }
     await context.agixt.updateStep(searchParams.get('chain') ?? '', step, agentName, stepType, { ...args, ...nameObj });
-    mutate(`/chain?chain=${searchParams.get('chain')}`);
+    mutate();
     setModified(false);
   };
 
   const handleDelete = async (): Promise<void> => {
     await context.agixt.deleteStep(searchParams.get('chain') ?? '', step);
-    mutate(`/chain?chain=${searchParams.get('chain')}`);
+    mutateChainList();
   };
 
   return (
-    <div className='space-y-4'>
-      <div className='flex items-center justify-between'>
-        <h3 className='text-lg font-semibold'>Step {step}</h3>
-        <div className='space-x-2'>
-          <Button onClick={handleDecrement} disabled={step === 1} size='sm'>
-            <LuArrowUp className='h-4 w-4' />
-          </Button>
-          <Button onClick={handleIncrement} disabled={last_step} size='sm'>
-            <LuArrowDown className='h-4 w-4' />
-          </Button>
-          <Button onClick={handleSave} disabled={!modified} size='sm'>
-            <LuSave className='h-4 w-4' />
-          </Button>
-          <Button onClick={handleDelete} variant='destructive' size='sm'>
-            <LuX className='h-4 w-4' />
-          </Button>
-        </div>
+    <div className='p-4 space-y-4'>
+      <div className='flex items-center'>
+        <h3 className='text-lg font-semibold mr-6'>Step {step}</h3>
+        <TooltipProvider>
+          <div className='flex items-center space-x-2'>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' onClick={handleDecrement} disabled={step === 1}>
+                  <ArrowUp className='h-4 w-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Move Step Up</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' onClick={handleIncrement} disabled={last_step}>
+                  <ArrowDown className='h-4 w-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Move Step Down</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' onClick={handleSave} disabled={!modified}>
+                  <Save className='h-4 w-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>{modified ? 'Save Changes' : 'No Changes to Save'}</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' onClick={handleDelete}>
+                  <X className='h-4 w-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete Step</TooltipContent>
+            </Tooltip>
+          </div>
+        </TooltipProvider>
       </div>
 
       <div className='grid grid-cols-3 gap-4'>
@@ -198,7 +228,6 @@ export default function ChainStep({
           <Select
             value={stepType.toString()}
             onValueChange={(value) => {
-              console.log(value);
               setTargetName('');
               setTargetCategory('Default');
               setStepType(value);
