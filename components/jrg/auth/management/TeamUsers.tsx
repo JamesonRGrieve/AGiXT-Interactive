@@ -308,7 +308,7 @@ export const invitations_columns: ColumnDef<Invitation>[] = [
             <DropdownMenuItem
               className='text-destructive'
               onClick={() => {
-                // Handle invitation cancellation
+                axios.delete(`/api/invitation/${row.original.id}`);
               }}
             >
               Cancel Invitation
@@ -331,7 +331,7 @@ export const Team = () => {
   const [creating, setCreating] = useState(false);
   const [newParent, setNewParent] = useState('');
   const [newName, setNewName] = useState('');
-  const { data: invitationsData } = useOldInvitations();
+  const { data: invitationsData, mutate: mutateInvitations } = useOldInvitations();
   const { data: companyData } = useOldCompanies();
   const { data: activeCompany, mutate } = useOldActiveCompany();
   const [responseMessage, setResponseMessage] = useState('');
@@ -398,7 +398,7 @@ export const Team = () => {
           },
         },
       );
-
+      mutateInvitations();
       if (response.status === 200) {
         if (response.data?.id) {
           setResponseMessage(
