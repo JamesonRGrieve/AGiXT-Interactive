@@ -78,12 +78,57 @@ export function MessageActions({
               </TooltipBasic>
             </>
           )}
-          {/* TODO: Implement speak message */}
-          {/* <TooltipBasic title='Speak Message'>
-              <Button variant='ghost' size='icon' onClick={() => {}}>
-                <LuVolume2 />
-              </Button>
-            </TooltipBasic> */}
+          {chatItem.role !== 'USER' && !audios && (
+            <>
+              {audioUrl ? (
+                <audio ref={audioRef} controls className='h-8 w-32'>
+                  <source src={audioUrl} type='audio/wav' />
+                </audio>
+              ) : (
+                <TooltipBasic title='Speak Message'>
+                  <Button variant='ghost' size='icon' onClick={handleTTS} disabled={isLoadingAudio}>
+                    {isLoadingAudio ? <Loader2 className='h-4 w-4 animate-spin' /> : <Volume2 className='h-4 w-4' />}
+                  </Button>
+                </TooltipBasic>
+              )}
+            </>
+          )}
+          <TooltipBasic title='Fork Conversation'>
+            <Button
+              variant='ghost'
+              size='icon'
+              onClick={async () => {
+                try {
+                  const response = await fetch(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation/fork`, {
+                    method: 'POST',
+                    headers: {
+                      Authorization: getCookie('jwt'),
+                    },
+                    body: JSON.stringify({
+                      conversation_name: state.overrides?.conversation,
+                      message_id: chatItem.id,
+                    }),
+                  });
+
+                  if (!response.ok) throw new Error('Failed to fork conversation');
+
+                  const data = await response.json();
+                  toast({
+                    title: 'Conversation Forked',
+                    description: `New conversation created: ${data.message}`,
+                  });
+                } catch (error) {
+                  toast({
+                    title: 'Error',
+                    description: 'Failed to fork conversation',
+                    variant: 'destructive',
+                  });
+                }
+              }}
+            >
+              <LuGitFork />
+            </Button>
+          </TooltipBasic>
           <TooltipBasic title='Copy Message'>
             <Button
               variant='ghost'
