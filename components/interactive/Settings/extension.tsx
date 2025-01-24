@@ -1,4 +1,5 @@
-import { Plus, Unlink, Wrench } from 'lucide-react';
+import { Plus, Unlink, Wrench, Power, PowerOff } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import MarkdownBlock from '../Chat/Message/MarkdownBlock';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
@@ -13,8 +14,15 @@ import {
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { getCookie, setCookie } from 'cookies-next';
 
-// Single Extension component that handles both connected and disconnected states
+const OVERRIDE_EXTENSIONS = {
+  'text-to-speech': { name: 'tts', label: 'Text to Speech' },
+  'web-search': { name: 'websearch', label: 'Web Search' },
+  'image-generation': { name: 'create-image', label: 'Image Generation' },
+  analysis: { name: 'analyze-user-input', label: 'File Analysis' },
+};
+
 export default function Extension({
   extension,
   connected,
@@ -25,18 +33,44 @@ export default function Extension({
   error,
   setSelectedExtension,
 }) {
+  const isOverrideExtension = OVERRIDE_EXTENSIONS[extension.extension_name];
+  const [state, setState] = useState(
+    isOverrideExtension
+      ? getCookie(`agixt-${OVERRIDE_EXTENSIONS[extension.extension_name].name}`) === undefined
+        ? true
+        : getCookie(`agixt-${OVERRIDE_EXTENSIONS[extension.extension_name].name}`) !== 'false'
+      : null,
+  );
+
+  useEffect(() => {
+    if (!isOverrideExtension) return;
+
+    const name = OVERRIDE_EXTENSIONS[extension.extension_name].name;
+    setCookie(`agixt-${name}`, state.toString(), {
+      domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
+      maxAge: 2147483647,
+    });
+  }, [state, extension.extension_name, isOverrideExtension]);
+
   return (
-    <div className='flex flex-col gap-4 p-4 transition-colors border rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
-      <div className='flex items-center gap-4'>
+    <div className='flex flex-col gap-2 p-3 transition-colors border rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'>
+      <div className='flex items-center gap-2'>
         <div className='flex items-center flex-1 min-w-0 gap-3.5'>
           <Wrench className='flex-shrink-0 w-5 h-5 text-muted-foreground' />
           <div>
-            <h4 className='font-medium truncate'>{extension.extension_name}</h4>
-            <p className='text-sm text-muted-foreground'>{connected ? 'Connected' : 'Not Connected'}</p>
+            <h4 className='font-medium truncate'>{extension.friendly_name || extension.extension_name}</h4>
+            <p className='text-sm text-muted-foreground'>
+              {isOverrideExtension ? (state ? 'Enabled' : 'Disabled') : connected ? 'Connected' : 'Not Connected'}
+            </p>
           </div>
         </div>
 
-        {connected ? (
+        {isOverrideExtension ? (
+          <Button variant='outline' size='sm' className='gap-2' onClick={() => setState(!state)}>
+            {state ? <PowerOff className='w-4 h-4' /> : <Power className='w-4 h-4' />}
+            {state ? 'Disable' : 'Enable'}
+          </Button>
+        ) : connected ? (
           <Button variant='outline' size='sm' className='gap-2' onClick={() => onDisconnect(extension)}>
             <Unlink className='w-4 h-4' />
             Disconnect
@@ -59,7 +93,7 @@ export default function Extension({
             </DialogTrigger>
             <DialogContent className='sm:max-w-[425px]'>
               <DialogHeader>
-                <DialogTitle>Configure {extension.extension_name}</DialogTitle>
+                <DialogTitle>Configure {extension.friendly_name || extension.extension_name}</DialogTitle>
                 <DialogDescription>Enter the required credentials to enable this service.</DialogDescription>
               </DialogHeader>
 

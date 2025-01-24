@@ -124,16 +124,7 @@ export const ConnectedServices = () => {
   };
 
   return (
-    <div className='space-y-6'>
-      <div>
-        <h3 className='text-lg font-medium'>Manage Extensions</h3>
-        <p className='text-sm text-muted-foreground'>
-          Manage your connected third-party extensions that grant your agent additional capabilities through commands.
-        </p>
-      </div>
-
-      <Separator />
-
+    <>
       {error && (
         <Alert variant='destructive'>
           <AlertDescription>{error}</AlertDescription>
@@ -222,6 +213,6 @@ export const ConnectedServices = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 };
