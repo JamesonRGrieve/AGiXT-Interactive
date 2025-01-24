@@ -224,6 +224,7 @@ export const useOAuth2: MiddlewareHook = async (req) => {
           code: queryParams.code,
           referrer: redirect.toString(),
           state: jwt,
+          invitation: req.cookies.get('invitation')?.value,
         }),
         headers: {
           'Content-Type': 'application/json',
