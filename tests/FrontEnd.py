@@ -162,67 +162,40 @@ class FrontEndTest:
 
             def combine_video_audio(silent_video_path, audio_path, output_path, crf=23):
                 """Helper function to combine video and audio with compression"""
-                try:
-                    subprocess.run(
-                        [
-                            "ffmpeg",
-                            "-i",
-                            silent_video_path,
-                            "-i",
-                            audio_path,
-                            "-c:v",
-                            "libx264",  # Use H.264 codec
-                            "-crf",
-                            str(
-                                crf
-                            ),  # Compression quality (18-28 is good, higher = more compression)
-                            "-preset",
-                            "medium",  # Encoding speed preset
-                            "-c:a",
-                            "aac",
-                            "-b:a",
-                            "128k",  # Compress audio bitrate
-                            output_path,
-                            "-y",
-                            "-loglevel",
-                            "error",
-                        ],
-                        check=True,
-                    )
-                except subprocess.CalledProcessError as e:
-                    logging.error(f"Error combining video and audio: {e}")
-                    logging.error(f"Command output: {e.output.decode()}")
-                    screenshot_fallback_path = os.path.join(
-                        self.screenshots_dir, "video_report_fallback.png"
-                    )
-                    logging.info(
-                        f"Creating fallback screenshot at: {screenshot_fallback_path}"
-                    )
-                    if self.page:
-                        await self.page.screenshot(path=screenshot_fallback_path)
-                        display(Image(filename=str(screenshot_fallback_path)))
-                    return None
-                except Exception as e:
-                    logging.error(f"Unexpected error during video processing: {e}")
-                    screenshot_fallback_path = os.path.join(
-                        self.screenshots_dir, "video_report_fallback.png"
-                    )
-                    logging.info(
-                        f"Creating fallback screenshot at: {screenshot_fallback_path}"
-                    )
-                    if self.page:
-                        await self.page.screenshot(path=screenshot_fallback_path)
-                        display(Image(filename=str(screenshot_fallback_path)))
-                    return None
-            
+                subprocess.run(
+                    [
+                        "ffmpeg",
+                        "-i",
+                        silent_video_path,
+                        "-i",
+                        audio_path,
+                        "-c:v",
+                        "libx264",  # Use H.264 codec
+                        "-crf",
+                        str(
+                            crf
+                        ),  # Compression quality (18-28 is good, higher = more compression)
+                        "-preset",
+                        "medium",  # Encoding speed preset
+                        "-c:a",
+                        "aac",
+                        "-b:a",
+                        "128k",  # Compress audio bitrate
+                        output_path,
+                        "-y",
+                        "-loglevel",
+                        "error",
+                    ]
+                )
+
             # Create paths for our files
             final_video_path = os.path.abspath(os.path.join(os.getcwd(), "report.mp4"))
             concatenated_audio_path = os.path.join(temp_dir, "combined_audio.wav")
-            
+
             # Lists to store audio data and durations
             all_audio_data = []
             all_audio_lengths = []
-            
+
             # First pass: Generate audio files and calculate durations
             logging.info("Generating audio narrations...")
             for idx, (_, action_name) in enumerate(
@@ -344,6 +317,10 @@ class FrontEndTest:
                 f"Video report created successfully at: {final_video_path} (Size: {final_size_mb:.2f}MB)"
             )
             return final_video_path
+
+        except Exception as e:
+            logging.error(f"Error creating video report: {e}")
+            return None
 
     async def prompt_agent(self, action_name, screenshot_path):
 
