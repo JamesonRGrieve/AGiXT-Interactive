@@ -53,7 +53,7 @@ export function ChainSelector({
                   ?.filter((chain) => chain.chainName)
                   .map((chain) => (
                     /* TODO change to chain.id after IDs are implemented. */
-                    <SelectItem key={chain.chainName} value={chain.chainName}>
+                    <SelectItem key={chain.id} value={chain.chainName}>
                       {chain.chainName}
                     </SelectItem>
                   ))}
