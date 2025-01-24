@@ -25,7 +25,7 @@ export function SidebarMain({ ...props }: React.ComponentProps<typeof Sidebar>) 
   if (pathname === '/' || (pathname.startsWith('/user') && pathname !== '/user/manage')) return null;
 
   return (
-    <Sidebar collapsible='icon' {...props}>
+    <Sidebar collapsible='icon' {...props} className='hide-scrollbar'>
       <SidebarHeader>
         <AgentSelector />
       </SidebarHeader>
