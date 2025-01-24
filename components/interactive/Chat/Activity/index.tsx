@@ -16,7 +16,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { cn } from '@/lib/utils';
 import { z } from 'zod';
-import { severities } from './Severtities';
+import { severities } from './Severtities.tsx';
 
 export function getTimeDifference(timestamp1, timestamp2) {
   // Convert timestamps to Date objects
