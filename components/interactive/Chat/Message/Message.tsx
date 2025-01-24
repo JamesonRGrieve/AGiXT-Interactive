@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import MarkdownBlock from './MarkdownBlock';
 import formatDate from './formatDate';
 import { cn } from '@/lib/utils';
-import { TooltipBasic } from '@/components/ui/tooltip';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { formatTimeAgo } from '@/lib/time-ago';
 import { MessageActions } from './Actions';
 
@@ -90,14 +90,7 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
       )}
 
       <div className={cn('flex items-center gap-6', chatItem.role === 'USER' && 'flex-row-reverse')}>
-        {chatItem.timestamp !== '' && (
-          <p className={'text-sm text-muted-foreground flex gap-1'}>
-            <p className='inline font-bold text-muted-foreground'>{chatItem.role === 'USER' ? 'You' : chatItem.role}</p>•
-            <TooltipBasic title={formatDate(chatItem.timestamp, false)}>
-              <span>{formatTimeAgo(chatItem.timestamp)}</span>
-            </TooltipBasic>
-          </p>
-        )}
+        <TimeStamp chatItem={chatItem} />
 
         <MessageActions
           chatItem={chatItem}
@@ -109,5 +102,35 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
         />
       </div>
     </div>
+  );
+}
+
+export function TimeStamp({ chatItem }: { chatItem: { role: string; timestamp: string } }) {
+  const [open, setOpen] = useState(false);
+
+  if (chatItem.timestamp === '') return null;
+  const roleLabel = chatItem.role === 'USER' ? 'You' : chatItem.role;
+  const timeAgo = formatTimeAgo(chatItem.timestamp);
+  const date = formatDate(chatItem.timestamp, false);
+
+  return (
+    <p className={'text-sm text-muted-foreground flex gap-1'}>
+      <span className='inline font-bold text-muted-foreground'>{roleLabel}</span>•
+      <TooltipProvider>
+        <Tooltip open={open} onOpenChange={setOpen}>
+          <TooltipTrigger asChild>
+            <button
+              type='button'
+              onClick={() => setOpen(true)}
+              className='text-left cursor-pointer'
+              aria-label='Show full timestamp'
+            >
+              {timeAgo}
+            </button>
+          </TooltipTrigger>
+          <TooltipContent>{date}</TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </p>
   );
 }
