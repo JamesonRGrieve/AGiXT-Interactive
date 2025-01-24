@@ -134,9 +134,9 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
 
   return (
     <div className={cn('m-3 overflow-hidden flex flex-col gap-2 min-w-48', isUserMsgJustText && 'max-w-[60%] self-end')}>
-      {audios?.sources?.length > 0 ? (
+      {audios && audios.sources.length > 0 ? (
         <>
-          {audios?.message?.trim() && (
+          {audios.message?.trim() && (
             <MarkdownBlock
               content={formattedMessage}
               chatItem={{ ...chatItem, message: audios.message }}
