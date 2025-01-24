@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useContext } from 'react';
-import { InteractiveConfigContext } from '../InteractiveConfigContext';
+import React from 'react';
 import { useChains } from '../hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -48,15 +47,12 @@ export function ChainSelector({
               </SelectTrigger>
               <SelectContent>
                 {!pathname.includes('settings/chains') && <SelectItem value='/'>- Use Agent Default -</SelectItem>}
-                {/* TODO remove filter after AGiXT#1369 is solved.} */}
-                {chainData
-                  ?.filter((chain) => chain.chainName)
-                  .map((chain) => (
-                    /* TODO change to chain.id after IDs are implemented. */
-                    <SelectItem key={chain.id} value={chain.chainName}>
-                      {chain.chainName}
-                    </SelectItem>
-                  ))}
+
+                {chainData?.map((chain) => (
+                  <SelectItem key={chain.id} value={chain.chainName}>
+                    {chain.chainName}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
