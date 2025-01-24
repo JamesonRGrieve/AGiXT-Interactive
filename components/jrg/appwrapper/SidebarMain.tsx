@@ -34,7 +34,7 @@ export function SidebarMain({ ...props }: React.ComponentProps<typeof Sidebar>) 
         <ChatHistory />
       </SidebarContent>
       <SidebarFooter>
-        <NotificationsNavItem />
+        {/* <NotificationsNavItem /> */}
         <ToggleSidebar side='left' />
         <NavUser />
       </SidebarFooter>
