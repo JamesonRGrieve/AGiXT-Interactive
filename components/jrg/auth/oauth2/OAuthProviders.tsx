@@ -49,6 +49,7 @@ import {
   RiBriefcaseLine as WorkOutlineOutlined,
 } from 'react-icons/ri';
 import React from 'react';
+import { GiTesla } from 'react-icons/gi';
 
 const providers = {
   AOL: {
@@ -71,6 +72,13 @@ const providers = {
     uri: 'https://appleid.apple.com/auth/authorize',
     params: {},
     icon: <Apple />,
+  },
+  Tesla: {
+    client_id: process.env.NEXT_PUBLIC_TESLA_CLIENT_ID,
+    scope: 'openid offline_access user_data vehicle_device_data vehicle_cmds vehicle_charging_cmds vehicle_location',
+    uri: 'https://fleet-api.prd.na.vn.cloud.tesla.com',
+    params: {},
+    icon: <GiTesla />,
   },
   Autodesk: {
     client_id: process.env.NEXT_PUBLIC_AUTODESK_CLIENT_ID,
