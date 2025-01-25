@@ -12,7 +12,7 @@ export function Hero() {
           href='/user/login'
           className='inline-block px-6 py-3 font-semibold transition duration-300 border rounded-lg bg-primary text-primary-foreground hover:bg-primary-50'
         >
-          Start Free Trial
+          Get Started Now
         </Link>
       </div>
     </section>
