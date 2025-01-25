@@ -1,0 +1,29 @@
+name: Issue Report - Software as a Service
+description: Report a bug or issue.
+title: "[Type] Title"
+labels: ["type | bug"]
+body:
+  - type: markdown
+    attributes:
+      value: "Thanks for taking the time to fill out this issue."
+      
+  - type: textarea
+    id: description
+    attributes:
+      label: Replication Instructions
+      description: What were you doing when the problem occurred?
+    validations:
+      required: true
+      
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      
+  - type: textarea
+    id: current
+    attributes:
+      label: Current Behavior
+      description: What actually happened?
+      
