@@ -171,14 +171,27 @@ export const Team = () => {
             <DropdownMenuContent align='end' className='w-[160px]'>
               <DropdownMenuLabel>User Actions</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={(e) => e.preventDefault()} className='p-0'>
+              {/* <DropdownMenuItem onClick={(e) => e.preventDefault()} className='p-0'>
                 <Button variant='ghost' className='justify-start w-full'>
                   Edit User
                 </Button>
-              </DropdownMenuItem>
+              </DropdownMenuItem> */}
               <DropdownMenuItem onSelect={() => router.push(`/users/${row.original.id}`)}>View Details</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={(e) => e.preventDefault()} className='p-0'>
+              <DropdownMenuItem
+                onClick={(e) => {
+                  axios.delete(
+                    `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${activeCompany?.id}/users/${row.original.id}`,
+                    {
+                      headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: getCookie('jwt'),
+                      },
+                    },
+                  );
+                }}
+                className='p-0'
+              >
                 <Button variant='ghost' className='justify-start w-full text-red-600 hover:text-red-600'>
                   Delete User
                 </Button>
@@ -236,8 +249,8 @@ export const Team = () => {
       header: ({ column }) => <DataTableColumnHeader column={column} title='Role' />,
       cell: ({ row }) => {
         const roleMap = {
-          1: 'Admin',
-          2: 'Manager',
+          1: 'Root Admin',
+          2: 'Team Admin',
           3: 'User',
         };
         return (
