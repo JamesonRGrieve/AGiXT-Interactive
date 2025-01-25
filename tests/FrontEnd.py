@@ -455,7 +455,7 @@ class FrontEndTest:
 
             await self.test_action(
                 "E-mail is entered in Google OAuth form",
-                lambda: popup.fill("#identifierId", "xtemailtesting@gmail.com"),
+                lambda: popup.fill("#identifierId", os.getenv("GoogleTestEmail")),
             )
 
             await self.test_action(
@@ -465,7 +465,7 @@ class FrontEndTest:
 
             await self.test_action(
                 "Password is entered in Google OAuth form",
-                lambda: popup.fill("[type=password]", "bJBO228mp]s6"),
+                lambda: popup.fill("[type=password]", os.getenv("GoogleTestPassword")),
             )
 
             await self.test_action(
@@ -505,7 +505,7 @@ class FrontEndTest:
         await self.take_screenshot(
             "Google OAuth process completed and returned to main application"
         )
-        return "xtemailtesting@gmail.com"
+
 
     async def handle_chat(self):
         try:
@@ -613,6 +613,16 @@ class FrontEndTest:
         except Exception as e:
             logging.error(f"Error nagivating to chat: {e}")
             raise Exception(f"Error nagivating to chat: {e}")
+
+    async def handle_commands_workflow(self):
+        """Handle commands workflow scenario"""
+        # TODO: Implement commands workflow test
+        pass
+
+    async def handle_mandatory_context(self):
+        """Handle mandatory context scenario"""
+        # TODO: Implement mandatory context test
+        pass
 
     async def handle_email(self):
         """Handle email verification scenario"""
