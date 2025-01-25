@@ -9,7 +9,7 @@ export function CallToAction() {
       <div className='container px-6 mx-auto text-center'>
         <h2 className='mb-4 text-3xl font-bold'>Ready to Unlock the Full Potential of Your Data?</h2>
         <p className='mb-8 text-xl'>
-          Start your free trial today and experience the power of AI-driven business intelligence.
+          Start today and experience the power of AI-driven business intelligence.
         </p>
         <Link href='/user/login'>
           <Button size='lg'>Get Started Now</Button>
