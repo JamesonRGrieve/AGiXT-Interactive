@@ -11,6 +11,7 @@ import { SidebarContext } from '@/components/jrg/appwrapper/SidebarContext';
 import { Toaster } from '@/components/ui/toaster';
 import { metadata, viewport } from './metadata';
 import '@/components/jrg/zod2gql/zod2gql';
+import { CommandMenu } from '@/components/command';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,6 +30,7 @@ export default function RootLayout({ children }: { children: ReactNode }): React
             <SidebarMain side='left' />
             {children}
             <Toaster />
+            <CommandMenu />
             {/* <ContextSidebar side='right' /> */}
           </SidebarProvider>
         </InteractiveConfigContextWrapper>
