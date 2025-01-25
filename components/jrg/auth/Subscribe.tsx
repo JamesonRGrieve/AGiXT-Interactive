@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import React, { Suspense } from 'react';
 import { useAuthentication } from './Router';
 import PricingTable from './stripe/PricingTable';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Link from 'next/link';
 
 export type SubscribeProps = { redirectTo?: string };
 
@@ -22,6 +24,17 @@ export default function Subscribe({ searchParams }: { searchParams: any }): JSX.
 
   return (
     <>
+      <Alert>
+        <AlertTitle>Early Access Software</AlertTitle>
+        <AlertDescription>
+          This is an early-access deployment of open-source software. You may encounter problems or &quot;bugs&quot;. If you
+          do, please make note of your most recent actions and{' '}
+          <Link href='https://github.com/JamesonRGrieve/AGiXT-Interactive/issues/new?template=Blank+issue'>
+            let us know by making a report here
+          </Link>
+          . Your understanding as we build towards the future is much appreciated.
+        </AlertDescription>
+      </Alert>
       {authConfig.subscribe.heading && <h2 className='text-3xl'>{authConfig.subscribe.heading}</h2>}
       {process.env.NEXT_PUBLIC_STRIPE_PRICING_TABLE_ID ? (
         <Suspense fallback={<p>Loading pricing...</p>}>
