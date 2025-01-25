@@ -51,7 +51,7 @@ type Item = {
   }[];
 };
 
-const items: Item[] = [
+export const items: Item[] = [
   {
     title: 'Chat',
     url: '/chat',
