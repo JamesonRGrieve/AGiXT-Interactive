@@ -1,5 +1,7 @@
 import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
 import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/SidebarHeader';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Link from 'next/link';
 
 export default function SupportPage() {
   // Get the top level domain name from next_public_agixt_server
@@ -11,6 +13,17 @@ export default function SupportPage() {
       <SidebarHeader>
         <SidebarHeaderTitle>Support</SidebarHeaderTitle>
       </SidebarHeader>
+      <Alert>
+        <AlertTitle>Early Access Software</AlertTitle>
+        <AlertDescription>
+          This is an early-access deployment of open-source software. You may encounter problems or &quot;bugs&quot;. If you
+          do, please make note of your most recent actions and{' '}
+          <Link href='https://github.com/JamesonRGrieve/AGiXT-Interactive/issues/new?template=bug_report_prod.yml'>
+            let us know by making a report here
+          </Link>
+          . Your understanding as we build towards the future is much appreciated.
+        </AlertDescription>
+      </Alert>
       <SidebarMain>
         <MarkdownBlock content={content} />
       </SidebarMain>

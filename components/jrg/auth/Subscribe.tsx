@@ -29,7 +29,7 @@ export default function Subscribe({ searchParams }: { searchParams: any }): JSX.
         <AlertDescription>
           This is an early-access deployment of open-source software. You may encounter problems or &quot;bugs&quot;. If you
           do, please make note of your most recent actions and{' '}
-          <Link href='https://github.com/JamesonRGrieve/AGiXT-Interactive/issues/new?template=Blank+issue'>
+          <Link href='https://github.com/JamesonRGrieve/AGiXT-Interactive/issues/new?template=bug_report_prod.yml'>
             let us know by making a report here
           </Link>
           . Your understanding as we build towards the future is much appreciated.
