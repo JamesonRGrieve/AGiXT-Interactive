@@ -143,7 +143,7 @@ export default function CodeBlock({
 }: CodeBlockProps): ReactNode {
   const codeBlockRef = useRef<HTMLDivElement>(null);
   const [tab, setTab] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   if (inline) {
     return <span className='bg-gray-200 dark:bg-gray-700 rounded-md px-1 py-0.5 font-mono'>{children}</span>;
