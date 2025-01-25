@@ -90,11 +90,11 @@ const items: Item[] = [
         },
       },
       {
-        title: 'Actions',
+        title: 'Abilities',
         icon: Workflow,
         url: '/settings/extensions',
         queryParams: {
-          tab: 'actions',
+          tab: 'abilities',
           mode: 'user',
         },
       },
@@ -132,11 +132,11 @@ const items: Item[] = [
         },
       },
       {
-        title: 'Team Actions',
+        title: 'Team Abilities',
         icon: Workflow,
         url: '/settings/extensions',
         queryParams: {
-          tab: 'actions',
+          tab: 'abilities',
           mode: 'company',
         },
       },
