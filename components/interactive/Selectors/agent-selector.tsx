@@ -6,7 +6,7 @@ import { ChevronsUpDown, Plus } from 'lucide-react';
 import { FaRobot } from 'react-icons/fa';
 import { z } from 'zod';
 
-import { useCompany, useAgent, useAgents } from '../hooks';
+import { useCompany, useAgent, useAgents, useProviders } from '../hooks';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,8 +30,8 @@ export function AgentSelector() {
     setCookie('agixt-agent', agent.name, {
       domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
     });
-    mutateActiveAgent();
     mutateActiveCompany();
+    mutateActiveAgent();
   };
 
   return (
