@@ -423,8 +423,10 @@ export const Team = () => {
   log(['Invitations Data', invitationsData], { client: 3 });
   return (
     <div className='space-y-6'>
+      <h4 className='text-md font-medium'>{activeCompany?.name} Current Users</h4>
       <DataTable data={activeCompany?.users || []} columns={users_columns} />
       <form onSubmit={handleSubmit} className='space-y-4'>
+        <h4 className='text-md font-medium'>Invite Users to {activeCompany?.name}</h4>
         <div className='space-y-2'>
           <Label htmlFor='email'>Email Address</Label>
           <Input
@@ -457,7 +459,12 @@ export const Team = () => {
           Send Invitation
         </Button>
       </form>
-      <DataTable data={invitationsData || []} columns={invitations_columns} />
+      {invitationsData.length > 0 && (
+        <>
+          <h4 className='text-md font-medium'>Pending Invitations</h4>
+          <DataTable data={invitationsData || []} columns={invitations_columns} />
+        </>
+      )}
     </div>
   );
 };
