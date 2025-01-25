@@ -1,6 +1,6 @@
 name: Issue Report - Software as a Service
 description: Report a bug or issue.
-title: "[Type] Title"
+title: "Issue / Bug Report"
 labels: ["type | bug"]
 body:
   - type: markdown
