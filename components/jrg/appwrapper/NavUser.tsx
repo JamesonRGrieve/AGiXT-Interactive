@@ -44,7 +44,7 @@ export function NavUser() {
             <SidebarMenuButton
               side='left'
               size='lg'
-              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group-data-[collapsible=icon]:my-2 pl-0'
             >
               <Avatar className='w-8 h-8 rounded-lg'>
                 <AvatarImage src={getGravatarUrl(user?.email)} alt={user?.firstName} />
