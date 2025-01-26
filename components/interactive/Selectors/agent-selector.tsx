@@ -16,15 +16,14 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
+import { Agent } from '../types';
 
 export function AgentSelector() {
   const { isMobile } = useSidebar('left');
   const { data: activeAgent, mutate: mutateActiveAgent, error: agentError } = useAgent();
   const { data: activeCompany, mutate: mutateActiveCompany, error: companyError } = useCompany();
   const { data: agentsData } = useAgents();
-  console.log(agentError);
-  console.log(companyError);
-  console.log(activeAgent, activeCompany);
+
   const switchAgents = (agent: Agent) => {
     // setActiveAgent(agent);
     setCookie('agixt-agent', agent.name, {
@@ -55,7 +54,7 @@ export function AgentSelector() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className='w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg px-2'
+            className='w-[--radix-dropdown-menu-trigger-width] min-w-64 rounded-lg px-2'
             align='start'
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}
@@ -63,9 +62,9 @@ export function AgentSelector() {
             <DropdownMenuLabel className='text-xs text-muted-foreground'>Agents</DropdownMenuLabel>
             {agentsData &&
               agentsData.map((agent) => (
-                <DropdownMenuItem key={agent.id} onClick={() => switchAgents(agent)} className='gap-2 p-2'>
+                <DropdownMenuItem key={agent.id} onClick={() => switchAgents(agent)} className='flex-col items-start p-2'>
                   <span>{agent.name}</span>
-                  <span className='text-xs text-muted-foreground'>@ {agent.companyName}</span>
+                  <span className='text-xs text-muted-foreground'>{agent.companyName}</span>
                 </DropdownMenuItem>
               ))}
             <DropdownMenuSeparator />
