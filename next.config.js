@@ -50,7 +50,7 @@ const useCookiesConfig = () => ({
 });
 const useAuthConfig = () => ({
   env: {
-    PRIVATE_ROUTES: process.env.PRIVATE_ROUTES || '/chat,/settings/',
+    PRIVATE_ROUTES: process.env.PRIVATE_ROUTES || '/chat,/team,/settings/',
     AUTH_WEB: (AUTH_WEB = process.env.AUTH_WEB || `${APP_URI}/user`),
     NEXT_PUBLIC_AUTH_WEB: AUTH_WEB,
     AGIXT_SERVER: (AGIXT_SERVER = process.env.AGIXT_SERVER || 'https://api.app.agixt.chat'),
