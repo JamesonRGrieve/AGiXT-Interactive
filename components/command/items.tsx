@@ -44,7 +44,7 @@ export const suggestions: CommandMenuGroup = {
     {
       icon: HelpCircle,
       label: 'Support',
-      description: 'Get help and support',
+      description: 'Get help, report a bug, or request a feature',
       url: '/docs/support',
     },
   ],
