@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { getCookie, setCookie } from 'cookies-next';
-import { ChevronsUpDown, Plus } from 'lucide-react';
+import { ChevronsUpDown, Plus, Check } from 'lucide-react';
 import { FaRobot } from 'react-icons/fa';
 import { z } from 'zod';
 
@@ -23,6 +23,8 @@ export function AgentSelector() {
   const { data: activeAgent, mutate: mutateActiveAgent, error: agentError } = useAgent();
   const { data: activeCompany, mutate: mutateActiveCompany, error: companyError } = useCompany();
   const { data: agentsData } = useAgents();
+
+  console.error({ agentError, companyError });
 
   const switchAgents = (agent: Agent) => {
     // setActiveAgent(agent);
@@ -62,13 +64,20 @@ export function AgentSelector() {
             <DropdownMenuLabel className='text-xs text-muted-foreground'>Agents</DropdownMenuLabel>
             {agentsData &&
               agentsData.map((agent) => (
-                <DropdownMenuItem key={agent.id} onClick={() => switchAgents(agent)} className='flex-col items-start p-2'>
-                  <span>{agent.name}</span>
-                  <span className='text-xs text-muted-foreground'>{agent.companyName}</span>
+                <DropdownMenuItem
+                  key={agent.id}
+                  onClick={() => switchAgents(agent)}
+                  className='flex items-center justify-between p-2 cursor-pointer'
+                >
+                  <div className='flex flex-col'>
+                    <span>{agent.name}</span>
+                    <span className='text-xs text-muted-foreground'>{agent.companyName}</span>
+                  </div>
+                  {activeAgent?.agent?.id === agent.id && <Check className='w-4 h-4 ml-2' />}
                 </DropdownMenuItem>
               ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='gap-2 p-2'>
+            <DropdownMenuItem className='gap-2 p-2 cursor-pointer'>
               <div className='flex items-center justify-center border rounded-md size-6 bg-background'>
                 <Plus className='size-4' />
               </div>
