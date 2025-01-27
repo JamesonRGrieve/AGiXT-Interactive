@@ -2,7 +2,7 @@
 
 import { SidebarInset } from '@/components/ui/sidebar';
 import { SidebarHeader, SidebarMain } from '@/components/jrg/appwrapper/SidebarHeader';
-import { useConversations } from '@/components/interactive/hooks';
+import { useConversation, useConversations } from '@/components/interactive/hooks';
 import { EditIcon, Edit2, Trash2, Download, Paperclip } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useContext, useState } from 'react';
@@ -59,7 +59,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
               <p className='text-sm text-muted-foreground'>New Chat</p>
             )}
           </div>
-          {currentConversation && <ConversationActions currentConversation={currentConversation} />}
+          {<ConversationActions currentConversation={currentConversation || { id: '-' }} />}
         </div>
       </SidebarHeader>
       <SidebarMain>{children}</SidebarMain>
@@ -72,11 +72,11 @@ export function ConversationActions({ currentConversation }: { currentConversati
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
   const [newName, setNewName] = useState('');
-
+  const { mutate } = useConversation(currentConversation?.id);
   const handleDeleteConversation = async (): Promise<void> => {
     if (currentConversation?.id) {
       await state.agixt.deleteConversation(currentConversation.id);
-      await mutate('/conversation');
+      await mutate();
       state.mutate((oldState) => ({
         ...oldState,
         overrides: { ...oldState.overrides, conversation: '-' },
