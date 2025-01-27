@@ -31,10 +31,14 @@ export const useNextAPIBypass: MiddlewareHook = async (req) => {
   return toReturn;
 };
 
-export const useSocketIOBypass: MiddlewareHook = async (req) => ({
-  activated: getRequestedURI(req).includes('socket.io'),
-  response: NextResponse.next(),
-});
+export const useSocketIOBypass: MiddlewareHook = async (req) => {
+  const url = new URL(getRequestedURI(req));
+
+  return {
+    activated: url.host === 'socket.io',
+    response: NextResponse.next(),
+  };
+};
 
 export default async function Middleware(req: NextRequest): Promise<NextResponse> {
   log([`MIDDLEWARE INVOKED AT ${req.nextUrl.pathname}`], {
