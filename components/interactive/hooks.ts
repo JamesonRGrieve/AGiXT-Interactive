@@ -92,13 +92,7 @@ export function useAgent(
   agent: Agent | null;
   commands: string[];
 }> {
-  const companiesHook = useCompanies();
-  const { data: companies } = companiesHook;
-  const state = useContext(InteractiveConfigContext);
-  let searchName = name || (getCookie('agixt-agent') as string | undefined);
-  let foundEarly = null;
-
-  if (!searchName && companies?.length) {
+  const getDefaultAgent = () => {
     const primaryCompany = companies.find((c) => c.primary);
     if (primaryCompany?.agents?.length) {
       const primaryAgent = primaryCompany?.agents.find((a) => a.default);
@@ -108,6 +102,16 @@ export function useAgent(
         domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
       });
     }
+    return foundEarly;
+  };
+  const companiesHook = useCompanies();
+  const { data: companies } = companiesHook;
+  const state = useContext(InteractiveConfigContext);
+  let searchName = name || (getCookie('agixt-agent') as string | undefined);
+  let foundEarly = null;
+
+  if (!searchName && companies?.length) {
+    foundEarly = getDefaultAgent();
   }
   log([`GQL useAgent() SEARCH NAME: ${searchName}`], {
     client: 3,
@@ -140,12 +144,23 @@ export function useAgent(
               }
             }
           }
-          if (toReturn.agent) {
-            toReturn.commands = await state.agixt.getCommands(toReturn.agent.name);
+          if (!toReturn.agent) {
+            log(['GQL useAgent() Agent Not Found, Using Default', toReturn], {
+              client: 3,
+            });
+            toReturn.agent = getDefaultAgent();
           }
-          log(['GQL useAgent() Got Agent', toReturn], {
-            client: 3,
-          });
+          if (toReturn.agent) {
+            log(['GQL useAgent() Agent Found, Getting Commands', toReturn], {
+              client: 3,
+            });
+            toReturn.commands = await state.agixt.getCommands(toReturn.agent.name);
+          } else {
+            log(['GQL useAgent() Did Not Get Agent', toReturn], {
+              client: 3,
+            });
+          }
+
           return toReturn;
         }
       } catch (error) {
