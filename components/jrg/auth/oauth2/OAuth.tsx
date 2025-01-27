@@ -9,6 +9,7 @@ import providers from './OAuthProviders';
 import deepMerge from '@/lib/objects';
 import { Button } from '@/components/ui/button';
 import log from '../../next-log/log';
+import { useAgent } from '@/components/interactive/hooks';
 
 export type OAuthProps = {
   overrides?: any;
@@ -16,10 +17,13 @@ export type OAuthProps = {
 export default function OAuth({ overrides }: OAuthProps): ReactNode {
   const router = useRouter();
   const oAuthProviders = useMemo(() => deepMerge(providers, overrides) as typeof providers, [providers, overrides]);
+  const { mutate } = useAgent();
   log(['OAuth Providers: ', oAuthProviders], { client: 3 });
   const onOAuth2 = useCallback(
     (response: any) => {
-      document.location.href = `${process.env.NEXT_PUBLIC_APP_URI}`; // This should be fixed properly just low priority.
+      mutate();
+      document.location.href = `${process.env.NEXT_PUBLIC_APP_URI}/chat`; // This should be fixed properly just low priority.
+
       // const redirect = getCookie('href') ?? '/';
       // deleteCookie('href');
       // router.push(redirect);
