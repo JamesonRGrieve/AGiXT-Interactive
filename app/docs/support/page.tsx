@@ -9,7 +9,8 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from '@/components/ui/card';
 import useUser from '@/components/jrg/auth/hooks/useUser';
-
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import Link from 'next/link';
 const requestTypes = [
   { value: 'bug', label: 'Repot a Bug Report' },
   { value: 'technical', label: 'Technical Support' },
@@ -45,6 +46,21 @@ export default function SupportPage() {
         <SidebarHeaderTitle>Support</SidebarHeaderTitle>
       </SidebarHeader>
       <SidebarMain className='flex flex-col items-center justify-center'>
+        <Alert>
+          <AlertTitle>Early Access Software</AlertTitle>
+          <AlertDescription>
+            This is an early-access deployment of open-source software. You may encounter problems or &quot;bugs&quot;. If
+            you do, please make note of your most recent actions and{' '}
+            <Link
+              className='text-info hover:underline'
+              href='https://github.com/JamesonRGrieve/AGiXT-Interactive/issues/new?template=bug_report_prod.yml'
+            >
+              let us know by making a report here
+            </Link>
+            . Your understanding as we build towards the future is much appreciated.
+          </AlertDescription>
+        </Alert>
+
         <Card className='w-full max-w-lg border rounded-md'>
           <form onSubmit={handleSubmit}>
             <CardHeader>

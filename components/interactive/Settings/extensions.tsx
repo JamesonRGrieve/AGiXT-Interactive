@@ -251,8 +251,8 @@ export function Extensions() {
             <TabsTrigger value='extensions' onClick={() => router.push(`${pathname}?tab=extensions`)}>
               Extensions
             </TabsTrigger>
-            <TabsTrigger value='actions' onClick={() => router.push(`${pathname}?tab=actions`)}>
-              Actions
+            <TabsTrigger value='abilities' onClick={() => router.push(`${pathname}?tab=abilities`)}>
+              Abilities
             </TabsTrigger>
           </TabsList>
           {/* {activeCompany?.my_role >= 2 && (
@@ -274,9 +274,9 @@ export function Extensions() {
             </>
           )} */}
         </div>
-        <TabsContent value='actions' className='space-y-4'>
+        <TabsContent value='abilities' className='space-y-4'>
           <div className='flex items-center justify-between mb-4'>
-            <h3 className='text-lg font-medium'>Enabled Actions</h3>
+            <h3 className='text-lg font-medium'>Enabled Abilities</h3>
             <div className='flex items-center gap-2'>
               <Label htmlFor='show-enabled-only'>Show Enabled Only</Label>
               <Switch id='show-enabled-only' checked={showEnabledOnly} onCheckedChange={setShowEnabledOnly} />
@@ -286,7 +286,7 @@ export function Extensions() {
           {extensionsWithCommands.length === 0 ? (
             <Alert>
               <AlertDescription>
-                No extensions are currently enabled. Enable extensions to see their actions here.
+                No extensions are currently enabled. Enable extensions to see their abilities here.
               </AlertDescription>
             </Alert>
           ) : (
@@ -332,7 +332,7 @@ export function Extensions() {
         <TabsContent value='extensions' className='space-y-4'>
           <div className='grid gap-4'>
             <p className='text-sm text-muted-foreground'>
-              Manage your connected third-party extensions that grant your agent additional capabilities through actions.
+              Manage your connected third-party extensions that grant your agent additional capabilities through abilities.
             </p>
             {searchParams.get('mode') !== 'company' &&
               [

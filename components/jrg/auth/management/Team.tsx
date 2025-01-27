@@ -143,7 +143,7 @@ export const Team = () => {
             )}
           </>
         ) : (
-          <h3>{activeCompany?.name}</h3>
+          <h3 className='text-lg font-medium'>{activeCompany?.name}</h3>
         )}
 
         <TooltipProvider>
