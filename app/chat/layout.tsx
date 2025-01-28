@@ -22,26 +22,10 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
   // Find the current conversation
   const currentConversation = conversations?.find((conv) => conv.id === state.overrides.conversation);
 
-  const handleAddConversation = async (): Promise<void> => {
-    setCookie('agixt-conversation', '-', {
-      domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-    });
-    state.mutate((oldState) => ({
-      ...oldState,
-      overrides: { ...oldState.overrides, conversation: '-' },
-    }));
-  };
-
   return (
     <SidebarInset>
       <SidebarHeader>
-        <div className='flex items-center w-full gap-2'>
-          <TooltipBasic title='New Conversation' side='right'>
-            <Button size='icon' variant='ghost' onClick={handleAddConversation}>
-              <EditIcon className='w-4 h-4 text-muted-foreground' />
-            </Button>
-          </TooltipBasic>
-
+        <div className='flex items-center w-full gap-2 pl-4'>
           <div className='flex items-center flex-1 gap-2 mx-auto'>
             {isLoadingConversations ? (
               <Skeleton className='w-32 h-4' />

@@ -1,7 +1,8 @@
 'use client';
 
-import { ChatBubbleIcon, ChevronRightIcon } from '@radix-ui/react-icons';
+import { ChevronRightIcon } from '@radix-ui/react-icons';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { TbMessageCirclePlus } from 'react-icons/tb';
 import {
   BookOpen,
   SquareLibrary,
@@ -53,9 +54,9 @@ type Item = {
 
 export const items: Item[] = [
   {
-    title: 'Chat',
+    title: 'New Chat',
     url: '/chat',
-    icon: ChatBubbleIcon,
+    icon: TbMessageCirclePlus,
     isActive: true,
   },
   {
@@ -184,7 +185,7 @@ export function NavMain() {
   const queryParams = useSearchParams();
   const { data: company } = useCompany();
   const { toggleSidebar, open } = useSidebar('left');
-  console.log(pathname);
+
   const itemsWithActiveState = items.map((item) => ({
     ...item,
     isActive: isActive(item, pathname, queryParams),
