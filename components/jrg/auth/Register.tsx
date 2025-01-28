@@ -105,7 +105,7 @@ export default function Register({ additionalFields = [], userRegisterEndpoint =
   return (
     <div className={additionalFields.length === 0 && authConfig.authModes.magical ? ' invisible' : ''}>
       <AuthCard
-        title={invite !== null ? 'Accept Invitation to ' + (invite || 'Company') : 'Sign Up'}
+        title={invite !== null ? 'Accept Invitation to ' + (invite.replaceAll('+', ' ') || 'Company') : 'Sign Up'}
         description={`Welcome, please complete your registration. ${invite !== null ? 'You are accepting an invitation' : ''}${invite ? ' to ' + invite + '.' : ''}${invite !== null ? '.' : ''}`}
         showBackButton
       >
