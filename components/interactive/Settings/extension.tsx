@@ -31,7 +31,7 @@ export default function Extension({
   settings = {},
   setSettings,
   error,
-  setSelectedExtension,
+  setSelectedExtension = () => {},
 }) {
   const [state, setState] = useState(false);
 

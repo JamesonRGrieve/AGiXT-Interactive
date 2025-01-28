@@ -116,9 +116,9 @@ export function useAgent(
   log([`GQL useAgent() SEARCH NAME: ${searchName}`], {
     client: 3,
   });
-  const swrHook = useSWR<{ agent: Agent | null; commands: string[] }>(
+  const swrHook = useSWR<{ agent: Agent | null; commands: string[]; extensions: any[] }>(
     [`/agent?name=${searchName}`, companies, withSettings],
-    async (): Promise<{ agent: Agent | null; commands: string[] }> => {
+    async (): Promise<{ agent: Agent | null; commands: string[]; extensions: any[] }> => {
       try {
         if (withSettings) {
           const client = createGraphQLClient();
@@ -132,7 +132,7 @@ export function useAgent(
           });
           return AgentSchema.parse(response.agent);
         } else {
-          const toReturn = { agent: foundEarly, commands: [] };
+          const toReturn = { agent: foundEarly, commands: [], extensions: [] };
           if (companies?.length && !toReturn.agent) {
             for (const company of companies) {
               log(['GQL useAgent() Checking Company', company], {
@@ -154,6 +154,13 @@ export function useAgent(
             log(['GQL useAgent() Agent Found, Getting Commands', toReturn], {
               client: 3,
             });
+            toReturn.extensions = (
+              await axios.get(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/agent/${toReturn.agent.name}/extensions`, {
+                headers: {
+                  Authorization: getCookie('jwt'),
+                },
+              })
+            ).data.extensions;
             toReturn.commands = await state.agixt.getCommands(toReturn.agent.name);
           } else {
             log(['GQL useAgent() Did Not Get Agent', toReturn], {
@@ -167,10 +174,10 @@ export function useAgent(
         log(['GQL useAgent() Error', error], {
           client: 1,
         });
-        return { agent: null, commands: [] };
+        return { agent: null, commands: [], extensions: [] };
       }
     },
-    { fallbackData: { agent: null, commands: [] } },
+    { fallbackData: { agent: null, commands: [], extensions: [] } },
   );
   const originalMutate = swrHook.mutate;
   swrHook.mutate = async () => {
@@ -277,20 +284,49 @@ export function useCompanies(): SWRResponse<Company[]> {
 export function useCompany(id?: string): SWRResponse<Company | null> {
   const companiesHook = useCompanies();
   const { data: companies } = companiesHook;
-
+  console.log('COMPANY THING');
   const swrHook = useSWR<Company | null>(
     [`/company?id=${id}`, companies],
-    (): Company | null => {
+    async (): Promise<Company | null> => {
       try {
+        console.log('COMPANY THING 2');
         if (id) {
+          console.log('COMPANY THING 3');
           return companies?.find((c) => c.id === id) || null;
         } else {
+          console.log('COMPANY THING 4');
+          log(['GQL useCompany() Companies', companies], {
+            client: 1,
+          });
           const agentName = getCookie('agixt-agent');
-          return companies?.find((c) => (agentName ? c.agents.some((a) => a.name === agentName) : c.primary)) || null;
+          log(['GQL useCompany() AgentName', agentName], {
+            client: 1,
+          });
+          const targetCompany =
+            companies?.find((c) => (agentName ? c.agents.some((a) => a.name === agentName) : c.primary)) || null;
+          log(['GQL useCompany() Company', targetCompany], {
+            client: 1,
+          });
+          targetCompany.extensions = (
+            await axios.get(
+              `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${targetCompany.id}/extensions`,
+
+              {
+                headers: {
+                  Authorization: getCookie('jwt'),
+                },
+              },
+            )
+          ).data.extensions;
+          log(['GQL useCompany() Company With Extensions', targetCompany], {
+            client: 3,
+          });
+          return targetCompany;
         }
       } catch (error) {
+        console.log('COMPANY THING 5');
         log(['GQL useCompany() Error', error], {
-          client: 1,
+          client: 3,
         });
         return null;
       }
