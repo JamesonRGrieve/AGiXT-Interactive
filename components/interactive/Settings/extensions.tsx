@@ -50,17 +50,16 @@ export function Extensions() {
   const { data: agentData } = useAgent();
   const [searchText, setSearchText] = useState('');
   const router = useRouter();
-  const [extensions, setExtensions] = useState<Extension[]>([]);
-  const [selectedExtension, setSelectedExtension] = useState<string>('');
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [error, setError] = useState<ErrorState>(null);
   const [showEnabledOnly, setShowEnabledOnly] = useState(false);
   const agent_name = (getCookie('agixt-agent') || process.env.NEXT_PUBLIC_AGIXT_AGENT) ?? agent;
-  const { data: activeCompany } = useCompany();
+  const { data: activeCompany, mutate: mutateCompany } = useCompany();
   console.log('ACTIVE COMPANY', activeCompany);
   const { data: providerData } = useProviders();
   const searchParams = useSearchParams();
   // Filter extensions for the enabled commands view
+  const extensions = searchParams.get('mode') === 'company' ? activeCompany?.extensions || [] : agentData?.extensions || [];
   const extensionsWithCommands = extensions.filter((ext) => ext.commands?.length > 0);
   const allEnabledCommands = extensions.flatMap((ext) =>
     ext.commands.filter((cmd) => cmd.enabled).map((cmd) => ({ ...cmd, extension_name: ext.extension_name })),
@@ -107,39 +106,6 @@ export function Extensions() {
           availableProviders: [],
         };
   };
-  // Fetch extensions
-  const fetchExtensions = async () => {
-    try {
-      setError(null);
-
-      const response = await axios.get(
-        searchParams.get('mode') === 'company'
-          ? `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${activeCompany?.id}/extensions`
-          : `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/agent/${agent_name}/extensions`,
-        {
-          headers: {
-            Authorization: getCookie('jwt'),
-          },
-        },
-      );
-
-      if (response.data?.extensions) {
-        setExtensions(response.data.extensions);
-      } else {
-        throw new Error('Invalid extensions data received');
-      }
-    } catch (error: any) {
-      console.error('Failed to fetch extensions:', error);
-      setError({
-        type: 'error',
-        message: `Failed to load extensions: ${error.message}`,
-      });
-    }
-  };
-
-  useEffect(() => {
-    fetchExtensions();
-  }, [agent_name]);
 
   const handleToggleCommand = async (commandName: string, enabled: boolean) => {
     try {
@@ -160,12 +126,7 @@ export function Extensions() {
       );
 
       if (result.status === 200) {
-        setExtensions((prev) =>
-          prev.map((ext) => ({
-            ...ext,
-            commands: ext.commands.map((cmd) => (cmd.friendly_name === commandName ? { ...cmd, enabled } : cmd)),
-          })),
-        );
+        mutateCompany();
       }
     } catch (error) {
       console.error('Failed to toggle command:', error);
@@ -384,7 +345,6 @@ export function Extensions() {
                 onConnect={handleSaveSettings}
                 setSettings={setSettings}
                 error={error}
-                setSelectedExtension={setSelectedExtension}
               />
             ))}
 
@@ -398,7 +358,6 @@ export function Extensions() {
                 settings={settings}
                 setSettings={setSettings}
                 error={error}
-                setSelectedExtension={setSelectedExtension}
               />
             ))}
           </div>
