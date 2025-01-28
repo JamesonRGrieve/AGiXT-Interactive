@@ -1,5 +1,6 @@
 import { User, MessageSquarePlus, Puzzle, Rocket, HelpCircle } from 'lucide-react';
 import { items } from '@/components/jrg/appwrapper/NavMain';
+import { TbMessageCirclePlus } from 'react-icons/tb';
 
 export type CommandMenuItem = {
   icon: any;
@@ -18,7 +19,7 @@ export const suggestions: CommandMenuGroup = {
   heading: 'Suggestions',
   items: [
     {
-      icon: MessageSquarePlus,
+      icon: TbMessageCirclePlus,
       label: 'New Chat',
       description: 'Start a new chat',
       url: '/chat',
