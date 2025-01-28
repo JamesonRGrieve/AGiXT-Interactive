@@ -147,9 +147,20 @@ export function Providers() {
     }
   };
 
-  const handleDisconnect = async (extension: Extension) => {
-    const emptySettings = extension.settings.reduce((acc, setting) => ({ ...acc, [setting]: '' }), {});
-    await handleSaveSettings(extension.extension_name, emptySettings);
+  const handleDisconnect = async (name: string) => {
+    const extension = providerData?.find((ext) => ext.name === name);
+    console.log('DELETION', extension);
+    const emptySettings = extension.settings
+      .filter((setting) => {
+        const isSensitive = ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) => setting.name.includes(keyword));
+        return isSensitive;
+      })
+      .reduce((acc, setting) => {
+        console.log('DELETION PROCESSING SETTING', setting);
+        return { ...acc, [setting.name]: '' };
+      }, {});
+    console.log('SETTING DELETION', emptySettings);
+    await handleSaveSettings(extension.name, emptySettings);
   };
 
   console.log('PROVIDERS', providerData);
