@@ -287,8 +287,9 @@ export function useCompany(id?: string): SWRResponse<Company | null> {
   const { data: companies } = companiesHook;
   console.log('COMPANY THING');
   const swrHook = useSWR<Company | null>(
-    [`/company?id=${id}`, companies],
+    [`/company?id=${id}`, companies, getCookie('jwt')],
     async (): Promise<Company | null> => {
+      if (!getCookie('jwt')) return null;
       try {
         console.log('COMPANY THING 2');
         if (id) {
@@ -352,12 +353,13 @@ export function useCompany(id?: string): SWRResponse<Company | null> {
  * Hook to fetch and manage current user data
  * @returns SWR response containing user data
  */
-export function useUser(): SWRResponse<User> {
+export function useUser(): SWRResponse<User | null> {
   const client = createGraphQLClient();
 
-  return useSWR<User>(
-    '/user',
-    async (): Promise<User> => {
+  return useSWR<User | null>(
+    ['/user', getCookie('jwt')],
+    async (): Promise<User | null> => {
+      if (!getCookie('jwt')) return null;
       try {
         const query = UserSchema.toGQL('query', 'GetUser');
         log(['GQL useUser() Query', query], {
@@ -609,7 +611,7 @@ export function useConversation(conversationId: string): SWRResponse<Conversatio
     conversationId ? [`/conversation`, conversationId] : null,
     async (): Promise<Conversation | null> => {
       try {
-        const query = ConversationSchema.toGQL('subscription', 'WatchConversation', { conversationId });
+        const query = ConversationSchema.toGQL('subscription', 'appState', { conversationId });
         const response = await client.request<Conversation>(query, { conversationId });
         return response.conversation;
       } catch (error) {
