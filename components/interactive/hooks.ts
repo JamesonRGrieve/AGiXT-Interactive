@@ -21,7 +21,7 @@ import {
   Chain,
   ChainSchema,
   Conversation,
-  ConversationSchema,
+  AppStateSchema,
   ConversationEdge,
   InvitationSchema,
   CommandArgSchema,
@@ -30,6 +30,7 @@ import {
   ConversationMetadataSchema,
   ConversationMetadata,
   ConversationEdgeSchema,
+  ConversationSchema,
 } from './types';
 import { z } from 'zod';
 import log from '../jrg/next-log/log';
@@ -48,6 +49,38 @@ const createGraphQLClient = (): GraphQLClient =>
     headers: { authorization: getCookie('jwt') || '' },
   });
 
+/**
+ * Common error handler for GraphQL queries
+ * @param error - Error object
+ * @param context - Context where error occurred
+ * @returns Default value based on type
+ */
+const handleError = <T>(error: any, context: string, defaultValue: T): T => {
+  log(['Error in ' + context, error], { client: 1, server: undefined });
+  return defaultValue;
+};
+
+const executeGqlQuery = async <T>(queryFn: () => Promise<T>, context: string, defaultValue: T): Promise<T> => {
+  try {
+    const response = await queryFn();
+    log(['Response', response], 3, context);
+    return response;
+  } catch (error) {
+    return handleError(error, context, defaultValue);
+  }
+};
+
+/**
+ * Helper to chain mutations between hooks
+ * @param parentHook - Parent hook containing mutate function
+ * @param currentHook - Current hook's mutate function
+ */
+const chainMutations = (parentHook: any, originalMutate: () => Promise<any>) => {
+  return async () => {
+    await parentHook.mutate();
+    return originalMutate();
+  };
+};
 // ============================================================================
 // Agent Related Hooks
 // ============================================================================
@@ -73,10 +106,7 @@ export function useAgents(): SWRResponse<Agent[]> {
   );
 
   const originalMutate = swrHook.mutate;
-  swrHook.mutate = async () => {
-    await companiesHook.mutate();
-    return originalMutate();
-  };
+  swrHook.mutate = chainMutations(companiesHook, originalMutate);
   return swrHook;
 }
 
@@ -180,10 +210,7 @@ export function useAgent(
     { fallbackData: { agent: null, commands: [], extensions: [] } },
   );
   const originalMutate = swrHook.mutate;
-  swrHook.mutate = async () => {
-    await companiesHook.mutate();
-    return originalMutate();
-  };
+  swrHook.mutate = chainMutations(companiesHook, originalMutate);
   return swrHook;
 }
 
@@ -268,10 +295,7 @@ export function useCompanies(): SWRResponse<Company[]> {
   const swrHook = useSWR<Company[]>(['/companies', user], () => user?.companies || [], { fallbackData: [] });
 
   const originalMutate = swrHook.mutate;
-  swrHook.mutate = async () => {
-    await userHook.mutate();
-    return originalMutate();
-  };
+  swrHook.mutate = chainMutations(userHook, originalMutate);
 
   return swrHook;
 }
@@ -336,10 +360,7 @@ export function useCompany(id?: string): SWRResponse<Company | null> {
   );
 
   const originalMutate = swrHook.mutate;
-  swrHook.mutate = async () => {
-    await companiesHook.mutate();
-    return originalMutate();
-  };
+  swrHook.mutate = chainMutations(companiesHook, originalMutate);
 
   return swrHook;
 }
@@ -598,35 +619,63 @@ export function useChains(): SWRResponse<Chain[]> {
 // Conversation Related Hooks
 // ============================================================================
 
-/**
- * Hook to fetch and manage conversation data with real-time updates
- * @param conversationId - Conversation ID to fetch
- * @returns SWR response containing conversation data
- */
-export function useConversation(conversationId: string): SWRResponse<Conversation | null> {
-  const client = createGraphQLClient();
+// /**
+//  * Hook to fetch and manage conversation data with real-time updates
+//  * @param conversationId - Conversation ID to fetch
+//  * @returns SWR response containing conversation data
+//  */
+// export function useAppState(conversationId: string): SWRResponse<Conversation | null> {
+//   const client = createGraphQLClient();
 
-  return useSWR<Conversation | null>(
-    conversationId ? [`/conversation`, conversationId] : null,
-    async (): Promise<Conversation | null> => {
-      try {
-        const query = ConversationSchema.toGQL('subscription', 'appState', { conversationId });
-        const response = await client.request<Conversation>(query, { conversationId });
-        return response.conversation;
-      } catch (error) {
-        log(['GQL useConversation() Error', error], {
-          client: 1,
-        });
-        return null;
-      }
-    },
-    {
-      fallbackData: null,
-      refreshInterval: 1000, // Real-time updates
-    },
-  );
-}
+//   return useSWR<Conversation | null>(
+//     conversationId ? [`/conversation`, conversationId] : null,
+//     async (): Promise<Conversation | null> => {
+//       try {
+//         const query = AppStateSchema.toGQL('subscription', 'appState', { conversationId });
+//         log(['GQL useAppState() Query', query], {
+//           client: 3,
+//         });
+//         const response = await client.request<Conversation>(query, { conversationId });
+//         return response.conversation;
+//       } catch (error) {
+//         log(['GQL useAppState() Error', error], {
+//           client: 1,
+//         });
+//         return null;
+//       }
+//     },
+//     {
+//       fallbackData: null,
+//       refreshInterval: 1000, // Real-time updates
+//     },
+//   );
+// }
+// export function useConversation(conversationId: string): SWRResponse<Conversation | null> {
+//   const client = createGraphQLClient();
 
+//   return useSWR<Conversation | null>(
+//     conversationId ? [`/conversation`, conversationId] : null,
+//     async (): Promise<Conversation | null> => {
+//       try {
+//         const query = ConversationSchema.toGQL('query', 'conversation', { conversationId });
+//         log(['GQL useConversation() Query', query], {
+//           client: 3,
+//         });
+//         const response = await client.request<Conversation>(query, { conversationId });
+//         return response.conversation;
+//       } catch (error) {
+//         log(['GQL useConversation() Error', error], {
+//           client: 1,
+//         });
+//         return null;
+//       }
+//     },
+//     {
+//       fallbackData: null,
+//       refreshInterval: 1000, // Real-time updates
+//     },
+//   );
+// }
 /**
  * Hook to fetch and manage all conversations with real-time updates
  * @returns SWR response containing array of conversation edges
