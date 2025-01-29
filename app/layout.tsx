@@ -26,7 +26,7 @@ export default function RootLayout({ children }: { children: ReactNode }): React
       <Head />
       <body className={cn(inter.className, theme)}>
         <InteractiveConfigContextWrapper>
-          <SidebarProvider>
+          <SidebarProvider className='flex-1'>
             <SidebarMain side='left' />
             {children}
             <Toaster />
