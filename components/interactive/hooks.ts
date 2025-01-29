@@ -650,32 +650,32 @@ export function useChains(): SWRResponse<Chain[]> {
 //     },
 //   );
 // }
-export function useConversation(conversationId: string): SWRResponse<Conversation | null> {
-  const client = createGraphQLClient();
+// export function useConversation(conversationId: string): SWRResponse<Conversation | null> {
+//   const client = createGraphQLClient();
 
-  return useSWR<Conversation | null>(
-    conversationId ? [`/conversation`, conversationId] : null,
-    async (): Promise<Conversation | null> => {
-      try {
-        const query = ConversationSchema.toGQL('query', 'conversation', { conversationId });
-        log(['GQL useConversation() Query', query], {
-          client: 3,
-        });
-        const response = await client.request<Conversation>(query, { conversationId });
-        return response.conversation;
-      } catch (error) {
-        log(['GQL useConversation() Error', error], {
-          client: 1,
-        });
-        return null;
-      }
-    },
-    {
-      fallbackData: null,
-      refreshInterval: 1000, // Real-time updates
-    },
-  );
-}
+//   return useSWR<Conversation | null>(
+//     conversationId ? [`/conversation`, conversationId] : null,
+//     async (): Promise<Conversation | null> => {
+//       try {
+//         const query = ConversationSchema.toGQL('query', 'conversation', { conversationId });
+//         log(['GQL useConversation() Query', query], {
+//           client: 3,
+//         });
+//         const response = await client.request<Conversation>(query, { conversationId });
+//         return response.conversation;
+//       } catch (error) {
+//         log(['GQL useConversation() Error', error], {
+//           client: 1,
+//         });
+//         return null;
+//       }
+//     },
+//     {
+//       fallbackData: null,
+//       refreshInterval: 1000, // Real-time updates
+//     },
+//   );
+// }
 /**
  * Hook to fetch and manage all conversations with real-time updates
  * @returns SWR response containing array of conversation edges

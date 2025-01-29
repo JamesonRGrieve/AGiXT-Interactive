@@ -56,7 +56,7 @@ export function ConversationActions({ currentConversation }: { currentConversati
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
   const [newName, setNewName] = useState('');
-  const { mutate } = useConversation(currentConversation?.id);
+  //const { mutate } = useConversation(currentConversation?.id);
   const handleDeleteConversation = async (): Promise<void> => {
     if (currentConversation?.id) {
       await state.agixt.deleteConversation(currentConversation.id);
