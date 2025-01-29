@@ -159,6 +159,8 @@
   body {
     @apply bg-background text-foreground;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
   .mobile-sidebar {
     padding-bottom: env(safe-area-inset-bottom);
