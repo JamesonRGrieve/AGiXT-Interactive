@@ -97,6 +97,8 @@ const useOAuth2Config = () => ({
     NEXT_PUBLIC_MICROSOFT_CLIENT_ID: process.env.MICROSOFT_CLIENT_ID || '',
     NEXT_PUBLIC_MICROSOFT_SCOPES:
       process.env.MICROSOFT_SCOPES || 'offline_access User.Read Mail.Send Calendars.ReadWrite Calendars.ReadWrite.Shared',
+    NEXT_PUBLIC_TESLA_CLIENT_ID: process.env.TESLA_CLIENT_ID || '',
+    NEXT_PUBLIC_TESLA_SCOPES: process.env.TESLA_SCOPES || 'openid offline_access user_data vehicle_device_data vehicle_cmds vehicle_charging_cmds vehicle_location',
     NEXT_PUBLIC_OPENAM_CLIENT_ID: process.env.OPENAM_CLIENT_ID || '',
     NEXT_PUBLIC_ORCID_CLIENT_ID: process.env.ORCID_CLIENT_ID || '',
     NEXT_PUBLIC_PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID || '',
