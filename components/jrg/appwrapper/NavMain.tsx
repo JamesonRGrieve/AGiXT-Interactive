@@ -18,6 +18,7 @@ import {
   Puzzle,
   Building,
   Workflow,
+  Store,
 } from 'lucide-react';
 
 import Link from 'next/link';
@@ -63,6 +64,11 @@ export const items: Item[] = [
     title: 'Agent Management',
     icon: Bot,
     items: [
+      {
+        title: 'Marketplace',
+        icon: Store,
+        url: '/marketplace',
+      },
       {
         title: 'Prompt Library',
         icon: SquareLibrary,
@@ -244,7 +250,6 @@ export function NavMain() {
                               >
                                 <span className='flex items-center gap-2'>
                                   {subItem.icon && <subItem.icon className='w-4 h-4' />}
-                                  {subItem.max_role && company?.name + ' '}
                                   {subItem.title}
                                 </span>
                               </Link>
@@ -260,33 +265,42 @@ export function NavMain() {
         )}
       </SidebarMenu>
     </SidebarGroup>
-  );
+);
 }
 
 function isActive(item: Item, pathname: string, queryParams: URLSearchParams) {
-  if (item.items) {
-    return item.items.some((subItem) => {
-      if (subItem.url === pathname) {
-        if (subItem.queryParams) {
-          return Object.entries(subItem.queryParams).every(([key, value]) => queryParams.get(key) === value);
-        }
-        // If no query params are defined on the item, require URL to have no query params
-        return [...queryParams.keys()].length === 0;
+if (item.items) {
+  return item.items.some((subItem) => {
+    if (subItem.url === pathname) {
+      if (subItem.queryParams) {
+        return Object.entries(subItem.queryParams).every(([key, value]) => queryParams.get(key) === value);
       }
-      return false;
-    });
-  }
-
-  // Root level items
-  if (item.url === pathname) {
-    if (item.queryParams) {
-      return Object.entries(item.queryParams).every(([key, value]) => queryParams.get(key) === value);
+      // If no query params are defined on the item, require URL to have no query params
+      return [...queryParams.keys()].length === 0;
     }
-    return [...queryParams.keys()].length === 0;
-  }
-  return false;
+    return false;
+  });
 }
-function isSubItemActive(subItem: Item['items'][0], pathname: string, queryParams: URLSearchParams) {
+
+// Root level items
+if (item.url === pathname) {
+  if (item.queryParams) {
+    return Object.entries(item.queryParams).every(([key, value]) => queryParams.get(key) === value);
+  }
+  return [...queryParams.keys()].length === 0;
+}
+return false;
+}
+
+type SubItem = {
+max_role?: number;
+title: string;
+icon?: any;
+url: string;
+queryParams?: object;
+};
+
+function isSubItemActive(subItem: SubItem, pathname: string, queryParams: URLSearchParams) {
   if (subItem.url !== pathname) {
     return false;
   }
