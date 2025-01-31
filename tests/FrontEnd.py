@@ -726,30 +726,20 @@ class FrontEndTest:
             await self.take_screenshot("Mandatory context update button clicked")
             await asyncio.sleep(1)
 
-            # Proceed to chat to test the context
-            await self.take_screenshot("Preparing to test mandatory context in chat")
+            # Let handle_chat run the conversation
             await self.handle_chat()
 
-            await self.test_action(
-                "Testing mandatory context by entering a message",
-                lambda: self.page.fill(
-                    "#message",
-                    "Tell me about your day.",
-                ),
-            )
-
-            await self.take_screenshot("Test message entered for mandatory context")
-            await asyncio.sleep(1)
-
-            await self.test_action(
-                "Send message to verify mandatory context",
-                lambda: self.page.click("#send-message"),
-            )
-
-            # Final verification screenshot
-            await self.take_screenshot(
-                "Mandatory context test complete - waiting for response"
-            )
+            # Verify mandatory context worked
+            try:
+                await self.page.wait_for_selector(".message:has-text('wonderful')",
+                    state="visible",
+                    timeout=30000
+                )
+                logging.info("Mandatory context test succeeded - 'wonderful' found in response")
+                return True
+            except Exception as e:
+                logging.error("Mandatory context test failed - 'wonderful' not found in response")
+                raise Exception("Mandatory context verification failed - response did not contain required word 'wonderful'")
 
         except Exception as e:
             logging.error(f"Error testing mandatory context: {e}")
