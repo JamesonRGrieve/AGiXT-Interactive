@@ -1,5 +1,15 @@
 import base64
 import shutil
+import asyncio
+import logging
+import os
+import re
+import platform
+import uuid
+import tempfile
+from datetime import datetime
+
+# Third party imports - essential first
 import openai
 from playwright.async_api import async_playwright
 from IPython.display import Image, display
@@ -189,7 +199,40 @@ class FrontEndTest:
                 )
 
             # Create paths for our files
-            final_video_path = os.path.abspath(os.path.join(os.getcwd(), "report.mp4"))
+            # Check if ffmpeg is available first
+            try:
+                subprocess.run(['ffmpeg', '-version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+            except Exception as ffmpeg_error:
+                logging.error("FFMPEG is not available. Please install FFMPEG to create video reports.")
+                return None
+
+            # Create tests directory if it doesn't exist
+            tests_dir = os.path.dirname(__file__)
+            logging.info(f"Using tests directory: {tests_dir}")
+            os.makedirs(tests_dir, exist_ok=True)
+            
+            # Check if directory is writable by creating a temp file
+            test_file = os.path.join(tests_dir, "test_write.tmp")
+            try:
+                with open(test_file, 'w') as f:
+                    f.write('test')
+                os.remove(test_file)
+            except Exception as e:
+                logging.error(f"Directory {tests_dir} is not writable: {e}")
+                return None
+            
+            # Create video in the tests directory
+            final_video_path = os.path.abspath(os.path.join(tests_dir, "report.mp4"))
+            
+            # Remove existing video if it exists
+            if os.path.exists(final_video_path):
+                try:
+                    os.remove(final_video_path)
+                except Exception as e:
+                    logging.error(f"Could not remove existing video file: {e}")
+                    return None
+                    
+            logging.info(f"Creating video report at: {final_video_path}")
             concatenated_audio_path = os.path.join(temp_dir, "combined_audio.wav")
 
             # Lists to store audio data and durations
@@ -213,14 +256,25 @@ class FrontEndTest:
                     cleaned_action = action_name.replace("_", " ")
                     cleaned_action = re.sub(r"([a-z])([A-Z])", r"\1 \2", cleaned_action)
 
+                    # Check for OpenAI API Key
+                    if not openai.api_key or openai.api_key == "none":
+                        logging.error("OpenAI API key is not set. Skipping audio generation.")
+                        all_audio_lengths.append(2.0)
+                        continue
+                    
                     # Generate TTS audio
-                    tts = openai.audio.speech.create(
-                        model="tts-1",
-                        voice="HAL9000",
-                        input=cleaned_action,
-                        extra_body={"language": "en"},
-                    )
-                    audio_content = base64.b64decode(tts.content)
+                    try:
+                        tts = openai.audio.speech.create(
+                            model="tts-1",
+                            voice="HAL9000",
+                            input=cleaned_action,
+                            extra_body={"language": "en"},
+                        )
+                        audio_content = base64.b64decode(tts.content)
+                    except Exception as e:
+                        logging.error(f"Error generating TTS audio: {e}")
+                        all_audio_lengths.append(2.0)
+                        continue
 
                     # Write the raw audio first
                     with open(audio_path, "wb") as audio_file:
@@ -319,7 +373,19 @@ class FrontEndTest:
             return final_video_path
 
         except Exception as e:
-            logging.error(f"Error creating video report: {e}")
+            # Check if ffmpeg is available
+            try:
+                subprocess.run(['ffmpeg', '-version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+            except Exception as ffmpeg_error:
+                logging.error("FFMPEG is not available. Please install FFMPEG to create video reports.")
+                return None
+
+            logging.error(f"Error creating video report at {os.path.dirname(__file__)}: {e}")
+            logging.error(f"Debug information:")
+            logging.error(f"- Working directory: {os.getcwd()}")
+            logging.error(f"- Tests directory: {os.path.dirname(__file__)}")
+            logging.error(f"- Screenshots available: {len(self.screenshots_with_actions)}")
+            logging.error(f"- Has write permissions: {os.access(os.path.dirname(__file__), os.W_OK)}")
             return None
 
     async def prompt_agent(self, action_name, screenshot_path):
@@ -620,9 +686,92 @@ class FrontEndTest:
         pass
 
     async def handle_mandatory_context(self):
-        """Handle mandatory context scenario"""
-        # TODO: Implement mandatory context test
-        pass
+        """Test the mandatory context feature by setting and using a context in chat."""
+        try:
+            # Wait for page to be ready after login and navigate to Agent Management
+            await asyncio.sleep(2)
+            await self.take_screenshot("Before navigating to Agent Management")
+
+            # Navigate to Agent Management
+            await self.test_action(
+                "Navigate to Agent Management to begin mandatory context configuration",
+                lambda: self.page.click('span:has-text("Agent Management")'),
+            )
+
+            await self.take_screenshot("Agent Management drop down")
+            await asyncio.sleep(1)
+
+            # Navigate to Training section with graduation cap
+            await self.take_screenshot("Preparing to access Training section")
+            await self.test_action(
+                "Navigate to Training section",
+                lambda: self.page.locator("span:has(.lucide-graduation-cap)").click(),
+            )
+            
+            # Verify sidebar closes after navigation
+            await self.test_action(
+                "Sidebar automatically closes after navigation",
+                lambda: self.page.wait_for_selector(".sidebar", state="hidden")
+            )
+
+            # After navigating to Training section, screenshot the interface
+            await self.take_screenshot("Training section with mandatory context interface")
+            await asyncio.sleep(1)
+
+            await self.test_action(
+                "Locate and enter mandatory context in text area",
+                lambda: self.page.fill(
+                    "textarea[placeholder*='Enter mandatory context']",
+                    "You are a helpful assistant who loves using the word 'wonderful' in responses.",
+                ),
+            )
+
+            await self.take_screenshot("Mandatory context has been entered into text area")
+            await asyncio.sleep(1)
+
+            await self.test_action(
+                "Save mandatory context settings",
+                lambda: self.page.click("text=Update Mandatory Context"),
+            )
+
+            await self.take_screenshot("Mandatory context update button clicked")
+            await asyncio.sleep(1)
+
+            # Click the Agent Management button
+            await self.test_action(
+                "Click the Agent Management button",
+                lambda: self.page.click('button[data-sidebar="menu-button"]'),
+            )
+            await self.take_screenshot("Agent Management button clicked")
+
+            # Proceed to chat to test the context
+            await self.take_screenshot("Preparing to test mandatory context in chat")
+            await self.handle_chat()
+
+            await self.test_action(
+                "Testing mandatory context by entering a message",
+                lambda: self.page.fill(
+                    "#message",
+                    "Tell me about your day.",
+                ),
+            )
+
+            await self.take_screenshot("Test message entered for mandatory context")
+            await asyncio.sleep(1)
+
+            await self.test_action(
+                "Send message to verify mandatory context",
+                lambda: self.page.click("#send-message"),
+            )
+
+            # Final verification screenshot
+            await self.take_screenshot(
+                "Mandatory context test complete - waiting for response"
+            )
+
+        except Exception as e:
+            logging.error(f"Error testing mandatory context: {e}")
+            raise Exception(f"Error testing mandatory context: {e}")
 
     async def handle_email(self):
         """Handle email verification scenario"""
@@ -749,12 +898,48 @@ class FrontEndTest:
                 if "google" in self.features:
                     email = await self.handle_google()
                     mfa_token = ""
-                if "stripe" in self.features:
-                    await self.handle_stripe()
+                if "google" in self.features:
+                    email = await self.handle_google()
+                    mfa_token = ""
 
-                await self.handle_train_user_agent()
-                await self.handle_train_company_agent()
-                await self.handle_chat()
+                # Ensure we wait for the interface to be fully loaded after login
+                try:
+                    await self.page.wait_for_timeout(5000)  # Wait for initial page load
+                    await self.page.wait_for_selector('span:has-text("Agent Management")',
+                        state='visible',
+                        timeout=30000
+                    )
+                except Exception as e:
+                    logging.error(f"Failed to find Agent Management after login: {e}")
+                    await self.take_screenshot("Failed to find Agent Management")
+                    raise
+                
+                # On Linux, go to Agent Management first
+                if not is_desktop():
+                    # Navigate to Agent Management immediately after login
+                    await self.test_action(
+                        "Navigate to Agent Management after login",
+                        lambda: self.page.click('span:has-text("Agent Management")'),
+                    )
+                    await self.take_screenshot("On Agent Management page after login")
+                    # Then proceed with mandatory context and other tests
+                    await self.handle_mandatory_context()
+                    await self.handle_chat()
+                    chat_handled = True
+
+                    # Run remaining tests
+                    if "stripe" in self.features:
+                        await self.handle_stripe()
+                    await self.handle_train_user_agent()
+                    await self.handle_train_company_agent()
+                # else:
+                #     # Non-Linux flow remains unchanged
+                #     if "stripe" in self.features:
+                #         await self.handle_stripe()
+                #     await self.handle_train_user_agent()
+                #     await self.handle_train_company_agent()
+                #     await self.handle_mandatory_context()
+                #     await self.handle_chat()
 
                 ##
                 # Any other tests can be added here
@@ -771,6 +956,6 @@ class FrontEndTest:
         except Exception as e:
             logging.error(f"Test failed: {e}")
             # Try to create video one last time if it failed during the test
-            if not os.path.exists(os.path.join(os.getcwd(), "report.mp4")):
+            if not os.path.exists(os.path.join(os.path.dirname(__file__), "report.mp4")):
                 self.create_video_report()
             raise e
