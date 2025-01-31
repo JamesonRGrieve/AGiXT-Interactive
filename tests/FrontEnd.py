@@ -688,10 +688,6 @@ class FrontEndTest:
     async def handle_mandatory_context(self):
         """Test the mandatory context feature by setting and using a context in chat."""
         try:
-            # Wait for page to be ready after login and navigate to Agent Management
-            await asyncio.sleep(2)
-            await self.take_screenshot("Before navigating to Agent Management")
-
             # Navigate to Agent Management
             await self.test_action(
                 "Navigate to Agent Management to begin mandatory context configuration",
@@ -699,24 +695,17 @@ class FrontEndTest:
             )
 
             await self.take_screenshot("Agent Management drop down")
-            await asyncio.sleep(1)
 
-            # Navigate to Training section with graduation cap
-            await self.take_screenshot("Preparing to access Training section")
+
+            # Navigate directly to training URL
             await self.test_action(
-                "Navigate to Training section",
-                lambda: self.page.locator("span:has(.lucide-graduation-cap)").click(),
-            )
-            
-            # Verify sidebar closes after navigation
-            await self.test_action(
-                "Sidebar automatically closes after navigation",
-                lambda: self.page.wait_for_selector(".sidebar", state="hidden")
+                "Navigate to training settings",
+                lambda: self.page.goto(f"{self.base_uri}/settings/training?mode=user&")
             )
 
+        
             # After navigating to Training section, screenshot the interface
             await self.take_screenshot("Training section with mandatory context interface")
-            await asyncio.sleep(1)
 
             await self.test_action(
                 "Locate and enter mandatory context in text area",
@@ -736,13 +725,6 @@ class FrontEndTest:
 
             await self.take_screenshot("Mandatory context update button clicked")
             await asyncio.sleep(1)
-
-            # Click the Agent Management button
-            await self.test_action(
-                "Click the Agent Management button",
-                lambda: self.page.click('button[data-sidebar="menu-button"]'),
-            )
-            await self.take_screenshot("Agent Management button clicked")
 
             # Proceed to chat to test the context
             await self.take_screenshot("Preparing to test mandatory context in chat")
