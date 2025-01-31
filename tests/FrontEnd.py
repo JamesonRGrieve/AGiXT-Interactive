@@ -741,17 +741,30 @@ class FrontEndTest:
             # Let handle_chat run the conversation
             await self.handle_chat()
 
-            # Verify mandatory context worked
+            # Verify mandatory context worked with more flexible matching
             try:
-                await self.page.wait_for_selector(".message:has-text('wonderful')",
-                    state="visible",
-                    timeout=30000
-                )
-                logging.info("Mandatory context test succeeded - 'wonderful' found in response")
-                return True
+                # Get all message elements
+                messages = await self.page.locator(".message").all()
+                found_word = False
+                response_text = ""
+                
+                # Check each message for the word with case-insensitive matching
+                for message in messages:
+                    text = await message.inner_text()
+                    response_text = text
+                    if 'wonderful' in text.lower():
+                        found_word = True
+                        break
+                
+                if found_word:
+                    logging.info("Mandatory context test succeeded - 'wonderful' found in response")
+                    return True
+                else:
+                    logging.error(f"Mandatory context test failed - Response text: {response_text}")
+                    raise Exception("Mandatory context verification failed - Response did not contain required word 'wonderful' (case insensitive)")
             except Exception as e:
-                logging.error("Mandatory context test failed - 'wonderful' not found in response")
-                raise Exception("Mandatory context verification failed - response did not contain required word 'wonderful'")
+                logging.error(f"Error checking mandatory context response: {str(e)}")
+                raise Exception(f"Mandatory context verification error: {str(e)}")
 
         except Exception as e:
             logging.error(f"Error testing mandatory context: {e}")
