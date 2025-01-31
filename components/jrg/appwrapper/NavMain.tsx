@@ -210,8 +210,9 @@ export function NavMain() {
                       side='left'
                       tooltip={item.title}
                       onClick={() => {
-                        !open && toggleSidebar();
-                        item.url && router.push(item.url);
+                        if (!open) toggleSidebar();
+                        if (item.url) router.push(item.url);
+                        if (pathname === '/chat') router.push('/chat/new');
                       }}
                       className={cn(item.isActive && !item.items?.length && 'bg-muted')}
                     >
