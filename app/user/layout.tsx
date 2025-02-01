@@ -3,13 +3,13 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { SidebarInset } from '@/components/ui/sidebar';
-import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/SidebarHeader';
+import { SidebarPage } from '@/components/jrg/appwrapper/SidebarPage';
 import { usePathname } from 'next/navigation';
 
 export default function UserLayout({ children }: { children: ReactNode }): ReactNode {
   const pathname = usePathname();
 
-  if (pathname === '/user/manage') return <ManageWrapper>{children}</ManageWrapper>;
+  if (pathname === '/user/manage') return <ManagePageWrapper>{children}</ManagePageWrapper>;
 
   return (
     <SidebarInset className='flex flex-col w-full h-full'>
@@ -24,13 +24,10 @@ export default function UserLayout({ children }: { children: ReactNode }): React
   );
 }
 
-function ManageWrapper({ children }: { children: ReactNode }) {
+function ManagePageWrapper({ children }: { children: ReactNode }) {
   return (
     <SidebarInset>
-      <SidebarHeader>
-        <SidebarHeaderTitle>Account Management</SidebarHeaderTitle>
-      </SidebarHeader>
-      <SidebarMain>{children}</SidebarMain>
+      <SidebarPage title='Account Management'>{children}</SidebarPage>
     </SidebarInset>
   );
 }

@@ -2,21 +2,16 @@
 
 import { useState } from 'react';
 import ChainPanel from '@/components/interactive/Settings/chain/ChainPanel';
-import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/SidebarHeader';
+import { SidebarPage } from '@/components/jrg/appwrapper/SidebarPage';
 import { ChainDialog } from '@/components/interactive/Settings/chain/ChainDialog';
 
 export default function ChainPage() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
   return (
-    <>
-      <SidebarHeader>
-        <SidebarHeaderTitle>Chains</SidebarHeaderTitle>
-      </SidebarHeader>
-      <SidebarMain>
-        <ChainPanel showCreateDialog={showCreateDialog} setShowCreateDialog={setShowCreateDialog} />
-        <ChainDialog open={showCreateDialog} setOpen={setShowCreateDialog} />
-      </SidebarMain>
-    </>
+    <SidebarPage title='Chains'>
+      <ChainPanel showCreateDialog={showCreateDialog} setShowCreateDialog={setShowCreateDialog} />
+      <ChainDialog open={showCreateDialog} setOpen={setShowCreateDialog} />
+    </SidebarPage>
   );
 }
