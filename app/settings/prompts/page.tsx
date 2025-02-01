@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import PromptPanel from '@/components/interactive/Settings/prompt/PromptPanel';
 import NewPromptDialog from '@/components/interactive/Settings/prompt/PromptDialog';
-import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/SidebarHeader';
+import { SidebarPage } from '@/components/jrg/appwrapper/SidebarPage';
 
 export default function PromptPage() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
@@ -15,21 +15,16 @@ export default function PromptPage() {
   const router = useRouter();
 
   return (
-    <>
-      <SidebarHeader>
-        <SidebarHeaderTitle>Prompts</SidebarHeaderTitle>
-      </SidebarHeader>
-      <SidebarMain>
-        <PromptPanel
-          showCreateDialog={showCreateDialog}
-          setShowCreateDialog={setShowCreateDialog}
-          context={context}
-          searchParams={searchParams}
-          pathname={pathname}
-          router={router}
-        />
-        <NewPromptDialog open={showCreateDialog} setOpen={setShowCreateDialog} />
-      </SidebarMain>
-    </>
+    <SidebarPage title='Prompts'>
+      <PromptPanel
+        showCreateDialog={showCreateDialog}
+        setShowCreateDialog={setShowCreateDialog}
+        context={context}
+        searchParams={searchParams}
+        pathname={pathname}
+        router={router}
+      />
+      <NewPromptDialog open={showCreateDialog} setOpen={setShowCreateDialog} />
+    </SidebarPage>
   );
 }

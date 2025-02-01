@@ -1,9 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { SidebarHeader, SidebarInset } from '@/components/ui/sidebar';
-import { SidebarMain, SidebarHeaderTitle } from '@/components/jrg/appwrapper/SidebarHeader';
 import { EmptyNotifications, Notifications } from '@/components/interactive/Notifications';
+import { SidebarPage } from '@/components/jrg/appwrapper/SidebarPage';
 
 export const dummyNotifications = [
   {
@@ -35,13 +34,8 @@ export const dummyNotifications = [
 export default function NotificationsPage() {
   const [notifications, setNotifications] = useState([]);
   return (
-    <SidebarInset>
-      <SidebarHeader>
-        <SidebarHeaderTitle>Notifications</SidebarHeaderTitle>
-      </SidebarHeader>
-      <SidebarMain>
-        {notifications.length > 0 ? <Notifications notifications={notifications} /> : <EmptyNotifications />}
-      </SidebarMain>
-    </SidebarInset>
+    <SidebarPage title='Notifications'>
+      {notifications.length > 0 ? <Notifications notifications={notifications} /> : <EmptyNotifications />}
+    </SidebarPage>
   );
 }
