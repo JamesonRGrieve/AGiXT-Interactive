@@ -43,7 +43,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
               <p className='text-sm text-muted-foreground'>New Chat</p>
             )}
           </div>
-          {<ConversationActions currentConversation={currentConversation || { id: '-' }} />}
+          <ConversationActions currentConversation={currentConversation || { id: '-' }} />
         </div>
       </SidebarHeader>
       <SidebarMain>{children}</SidebarMain>
@@ -111,7 +111,7 @@ export function ConversationActions({ currentConversation }: { currentConversati
 
   return (
     <>
-      <div className='relative z-50 flex items-center gap-1'>
+      <div className='relative z-50 flex items-center gap-1 mr-4'>
         <TooltipBasic title='Rename Conversation' side='left'>
           <Button
             size='icon'
