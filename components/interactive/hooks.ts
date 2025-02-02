@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { getCookie, setCookie } from 'cookies-next';
 import { GraphQLClient } from 'graphql-request';
-import { InteractiveConfigContext } from './InteractiveConfigContext';
+import { InteractiveConfigContext, useInteractiveConfig } from './InteractiveConfigContext';
 import useSWR, { SWRResponse } from 'swr';
 
 // Import all types from the centralized schema file
@@ -35,6 +35,9 @@ import {
 import { z } from 'zod';
 import log from '../jrg/next-log/log';
 import axios from 'axios';
+import { useToast } from '@/hooks/useToast';
+import { create } from 'domain';
+import { useRouter } from 'next/navigation';
 
 // ============================================================================
 // Utility Functions
@@ -48,27 +51,6 @@ const createGraphQLClient = (): GraphQLClient =>
   new GraphQLClient(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/graphql`, {
     headers: { authorization: getCookie('jwt') || '' },
   });
-
-/**
- * Common error handler for GraphQL queries
- * @param error - Error object
- * @param context - Context where error occurred
- * @returns Default value based on type
- */
-const handleError = <T>(error: any, context: string, defaultValue: T): T => {
-  log(['Error in ' + context, error], { client: 1, server: undefined });
-  return defaultValue;
-};
-
-const executeGqlQuery = async <T>(queryFn: () => Promise<T>, context: string, defaultValue: T): Promise<T> => {
-  try {
-    const response = await queryFn();
-    log(['Response', response], 3, context);
-    return response;
-  } catch (error) {
-    return handleError(error, context, defaultValue);
-  }
-};
 
 /**
  * Helper to chain mutations between hooks
@@ -247,13 +229,99 @@ export function usePromptCategories(): SWRResponse<string[]> {
  * @param name - Name of the prompt to find
  * @returns SWR response containing prompt data if found
  */
-export function usePrompt(name: string): SWRResponse<Prompt | null> {
-  const { data: prompts, error, isLoading } = usePrompts();
-  return useSWR<Prompt | null>(`/prompt?name=${name}`, () => prompts?.find((p) => p.name === name) || null, {
+export function usePrompt(name: string): SWRResponse<Prompt | null> & {
+  delete: () => Promise<void>;
+  rename: (newName: string) => Promise<void>;
+  update: (content: string) => Promise<void>;
+  export: () => Promise<void>;
+} {
+  const promptsHook = usePrompts();
+  const { data: prompts, error: promptsError, isLoading: promptsLoading, mutate: promptsMutate } = promptsHook;
+  const { agixt } = useInteractiveConfig();
+  const { toast } = useToast();
+  const router = useRouter();
+  const swrHook = useSWR<Prompt | null>([name, prompts], () => prompts?.find((p) => p.name === name) || null, {
     fallbackData: null,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
+  const isLoading = promptsLoading || swrHook.isLoading;
+  const error = promptsError || swrHook.error;
+  return Object.assign(
+    { ...swrHook, isLoading, error },
+    {
+      delete: async () => {
+        try {
+          await agixt.deletePrompt(name);
+          promptsMutate();
+          router.push(`/settings/prompts?prompt=${(prompts && prompts.filter((p) => p.name !== name)[0]?.name) || ''}`);
+          toast({
+            title: 'Success',
+            description: 'Prompt Deleted',
+            duration: 5000,
+          });
+        } catch (error) {
+          toast({
+            title: 'Error',
+            description: 'Failed to Delete Prompt',
+            duration: 5000,
+          });
+        }
+      },
+      rename: async (newName: string) => {
+        try {
+          await agixt.renamePrompt(name, newName);
+          swrHook.mutate();
+          promptsMutate();
+          toast({
+            title: 'Success',
+            description: 'Prompt Renamed',
+            duration: 5000,
+          });
+        } catch (error) {
+          toast({
+            title: 'Error',
+            description: 'Failed to Rename Prompt',
+            duration: 5000,
+          });
+        }
+      },
+      update: async (content: string) => {
+        try {
+          await agixt.updatePrompt(name, content);
+          swrHook.mutate();
+          toast({
+            title: 'Success',
+            description: 'Prompt Updated',
+            duration: 5000,
+          });
+        } catch (error) {
+          toast({
+            title: 'Error',
+            description: 'Failed to Update Prompt',
+            duration: 5000,
+          });
+        }
+      },
+      export: async () => {
+        if (!swrHook.data) {
+          toast({
+            title: 'Error',
+            description: 'No Active Prompt to Export',
+            duration: 5000,
+          });
+          return;
+        }
+        const element = document.createElement('a');
+        const file = new Blob([swrHook.data?.content], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `AGiXT-Prompt-${name}.txt`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      },
+    },
+  );
 }
 
 /**
@@ -729,7 +797,7 @@ export function useOldInvitations(company_id?: string) {
 export function useOldActiveCompany() {
   const state = useContext(InteractiveConfigContext);
   const { data: companyData } = useCompany();
-  return useSWR<string[]>(
+  return useSWR<any>(
     [`/companies`, companyData?.id ?? null],
     async () => {
       const companies = await state.agixt.getCompanies();
@@ -738,7 +806,9 @@ export function useOldActiveCompany() {
           Authorization: getCookie('jwt'),
         },
       });
+      console.log('ACTIVE COMPANY', companyData);
       console.log('ACTIVE COMPANY USER', user);
+      console.log('ALL COMPANIES', companies);
       const target = companies.filter((company) => company.id === companyData.id)[0];
       console.log('ACTIVE COMPANY TARGET', target);
       console.log(

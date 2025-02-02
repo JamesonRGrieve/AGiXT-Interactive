@@ -14,71 +14,26 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import NewPromptDialog from './PromptDialog';
 
 export default function PromptPanel() {
-  const context = useInteractiveConfig();
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const pathname = usePathname();
-
-  const currentPrompt = searchParams.get('prompt') ?? '';
-  const currentCategory = searchParams.get('category') ?? 'Default';
-
-  const { data: promptData, error } = usePrompt(currentPrompt || undefined);
-  const [promptBody, setPromptBody] = useState('');
+  const prompt = usePrompt(searchParams.get('prompt') ?? '');
+  const [promptBody, setPromptBody] = useState(prompt.data?.content || '');
   const [hasChanges, setHasChanges] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [newName, setNewName] = useState('');
-
+  console.log(prompt);
   useEffect(() => {
-    if (promptData?.content) {
-      setPromptBody(promptData.content);
+    if (prompt.data?.content) {
+      setPromptBody(prompt.data.content);
       setHasChanges(false);
     }
-  }, [promptData]);
+  }, [prompt.data?.content]);
 
   useEffect(() => {
     if (renaming) {
-      setNewName(currentPrompt);
+      setNewName(searchParams.get('prompt') ?? '');
     }
-  }, [renaming, currentPrompt]);
-
-  const handleDelete = async () => {
-    await context.agixt.deletePrompt(currentPrompt, currentCategory);
-    mutate(`/prompts?category=${currentCategory}`);
-    router.push(pathname);
-  };
-
-  const handleSave = async () => {
-    await context.agixt.updatePrompt(currentPrompt, promptBody, currentCategory);
-    mutate(`/prompt?category=${currentCategory}&prompt=${currentPrompt}`);
-    setHasChanges(false);
-  };
-
-  const handleRename = async () => {
-    if (newName && newName !== currentPrompt) {
-      await context.agixt.renamePrompt(currentPrompt, newName, currentCategory);
-      setRenaming(false);
-      const current = new URLSearchParams(Array.from(searchParams.entries()));
-      current.set('prompt', newName);
-      router.push(`${pathname}?${current.toString()}`);
-      mutate(`/prompts?category=${currentCategory}`);
-    }
-  };
-
-  const handleExportPrompt = async () => {
-    const element = document.createElement('a');
-    const file = new Blob([promptBody], { type: 'text/plain' });
-    element.href = URL.createObjectURL(file);
-    element.download = `${currentCategory}-${currentPrompt}.txt`;
-    document.body.appendChild(element);
-    element.click();
-    document.body.removeChild(element);
-  };
-
-  const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setPromptBody(e.target.value);
-    setHasChanges(e.target.value !== promptData?.content);
-  };
+  }, [renaming, searchParams.get('prompt')]);
 
   return (
     <div className='space-y-4'>
@@ -100,73 +55,82 @@ export default function PromptPanel() {
               </TooltipTrigger>
               <TooltipContent>Add Prompt</TooltipContent>
             </Tooltip>
-            {promptData && (
-              <>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant='ghost' size='icon' onClick={handleExportPrompt} disabled={renaming}>
-                      <Download className='h-4 w-4' />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Export Prompt</TooltipContent>
-                </Tooltip>
-                {renaming ? (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant='ghost'
-                        size='icon'
-                        onClick={handleRename}
-                        disabled={!newName || newName === currentPrompt}
-                      >
-                        <Check className='h-4 w-4' />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Save Prompt Name</TooltipContent>
-                  </Tooltip>
-                ) : (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant='ghost' size='icon' onClick={() => setRenaming(true)}>
-                        <Pencil className='h-4 w-4' />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Rename Prompt</TooltipContent>
-                  </Tooltip>
-                )}
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button variant='ghost' size='icon' onClick={handleDelete} disabled={renaming}>
-                      <Trash2 className='h-4 w-4' />
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>Delete Prompt</TooltipContent>
-                </Tooltip>
-              </>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' onClick={prompt.export} disabled={renaming}>
+                  <Download className='h-4 w-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Export Prompt</TooltipContent>
+            </Tooltip>
+            {renaming ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant='ghost'
+                    size='icon'
+                    onClick={() => {
+                      prompt.rename(newName);
+                      setRenaming(false);
+                    }}
+                    disabled={!newName || newName === searchParams.get('prompt')}
+                  >
+                    <Check className='h-4 w-4' />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Save Prompt Name</TooltipContent>
+              </Tooltip>
+            ) : (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant='ghost' size='icon' onClick={() => setRenaming(true)}>
+                    <Pencil className='h-4 w-4' />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Rename Prompt</TooltipContent>
+              </Tooltip>
             )}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button variant='ghost' size='icon' onClick={prompt.delete} disabled={renaming}>
+                  <Trash2 className='h-4 w-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Delete Prompt</TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </TooltipProvider>
-      {promptData && (
-        <>
-          <div className='space-y-2'>
-            <AutoResizeTextarea value={promptBody} onChange={handlePromptChange} placeholder='' />
-          </div>
-          <div className='flex space-x-2'>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <span>
-                  <Button onClick={handleSave} disabled={!hasChanges || renaming}>
-                    <Save className='h-4 w-4 mr-2' />
-                    Save Prompt
-                  </Button>
-                </span>
-              </TooltipTrigger>
-              <TooltipContent>{hasChanges ? 'Save changes to prompt' : 'No changes to save'}</TooltipContent>
-            </Tooltip>
-          </div>
-        </>
-      )}
+
+      <div className='space-y-2'>
+        <AutoResizeTextarea
+          value={promptBody}
+          onChange={(e) => {
+            setPromptBody(e.target.value);
+            setHasChanges(e.target.value !== prompt.data?.content);
+          }}
+          placeholder=''
+        />
+      </div>
+      <div className='flex space-x-2'>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span>
+              <Button
+                onClick={() => {
+                  prompt.update(promptBody);
+                  setHasChanges(false);
+                }}
+                disabled={!hasChanges || renaming}
+              >
+                <Save className='h-4 w-4 mr-2' />
+                Save Prompt
+              </Button>
+            </span>
+          </TooltipTrigger>
+          <TooltipContent>{hasChanges ? 'Save changes to prompt' : 'No changes to save'}</TooltipContent>
+        </Tooltip>
+      </div>
       <NewPromptDialog open={isDialogOpen} setOpen={setIsDialogOpen} />
     </div>
   );
