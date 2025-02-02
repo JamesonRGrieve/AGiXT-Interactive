@@ -29,17 +29,17 @@ import { MessageActions } from './Actions';
 import { formatTimeAgo } from '@/lib/time-ago';
 import AudioPlayer from './Audio';
 
-export type MessageProps = {
-  chatItem: {
-    id: string;
-    role: string;
-    message: string;
-    timestamp: string;
-    rlhf?: {
-      positive: boolean;
-      feedback: string;
-    };
+export type ChatItem = {
+  id: string;
+  role: string;
+  message: string;
+  timestamp: string;
+  rlhf?: {
+    positive: boolean;
+    feedback: string;
   };
+};
+export type MessageProps = {
   lastUserMessage: string;
   alternateBackground?: string;
   setLoading: (loading: boolean) => void;

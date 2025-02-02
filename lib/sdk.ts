@@ -164,12 +164,14 @@ export default class AGiXTSDK {
     return this.request<{ message: string }>('put', `/api/conversation/message/${messageId}`, {
       conversation_name: conversationName,
       new_message: newMessage,
+      message_id: messageId,
     }).then((r) => r.message);
   }
 
   async deleteConversationMessage(conversationName: string, messageId: string) {
     return this.request<{ message: string }>('delete', `/api/conversation/message/${messageId}`, {
       conversation_name: conversationName,
+      message_id: messageId,
     }).then((r) => r.message);
   }
 
