@@ -123,7 +123,7 @@ export default function PromptPanel() {
               disabled={!hasChanges || renaming}
             />
           </div>
-          <PromptTest promptContent={promptBody} />
+          <PromptTest promptName={prompt.data?.name} promptContent={promptBody} saved={!hasChanges} />
         </>
       )}
 

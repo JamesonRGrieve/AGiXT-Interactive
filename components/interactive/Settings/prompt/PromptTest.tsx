@@ -4,12 +4,20 @@ import { Label } from '@/components/ui/label';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import { randomUUID } from 'crypto';
-import { Loader2, Send } from 'lucide-react';
+import { Loader2, Repeat, Send } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import MarkdownBlock from '../../Chat/Message/MarkdownBlock';
 import { toast, useToast } from '@/hooks/useToast';
 
-export default function PromptTest({ promptContent }: { promptContent: string }) {
+export default function PromptTest({
+  promptName,
+  promptContent,
+  saved,
+}: {
+  promptName: string;
+  promptContent: string;
+  saved: boolean;
+}) {
   const [variables, setVariables] = useState({});
   const [loading, setLoading] = useState(false);
   const [responses, setResponses] = useState<string[]>([]);
@@ -24,17 +32,10 @@ export default function PromptTest({ promptContent }: { promptContent: string })
   const sendPrompt = useCallback(async () => {
     setLoading(true);
     const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/chat/completions`,
+      `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/agent/${getCookie('agixt-agent')}/prompt`,
       {
-        messages: [
-          {
-            role: 'user',
-            content: promptContent,
-            prompt_args: { ...variables },
-          },
-        ],
-        model: getCookie('agixt-agent'),
-        user: 'PROMPT_TEST_' + crypto.randomUUID(),
+        prompt_name: promptName,
+        prompt_args: variables,
       },
       {
         headers: {
@@ -81,8 +82,9 @@ export default function PromptTest({ promptContent }: { promptContent: string })
         <Loader2 className='animate-spin w-4 h-4' />
       ) : (
         <IconButton
-          Icon={Send}
+          Icon={responses.length > 1 ? Repeat : Send}
           label='Run'
+          disabled={!saved}
           onClick={sendPrompt}
           description={Object.keys(variables).length > 0 ? 'Run the prompt with the provided variables.' : 'Run the prompt.'}
         />
