@@ -13,6 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import NewPromptDialog from './PromptDialog';
 import IconButton from '@/components/jrg/theme/IconButton';
+import PromptTest from './PromptTest';
 
 export default function PromptPanel() {
   const searchParams = useSearchParams();
@@ -63,60 +64,69 @@ export default function PromptPanel() {
               onClick={() => setImportMode(true)}
               disabled={renaming}
             />
-            <IconButton Icon={Download} label='Export' description='Export/Download Prompt' onClick={prompt.export} />
-            {renaming ? (
-              <IconButton
-                Icon={Check}
-                label='Save'
-                description='Save Prompt Name'
-                onClick={() => {
-                  prompt.rename(newName);
-                  setRenaming(false);
-                }}
-                disabled={!newName || newName === searchParams.get('prompt')}
-              />
-            ) : (
-              <IconButton
-                Icon={Pencil}
-                label='Rename'
-                description='Rename Prompt'
-                onClick={() => setRenaming(true)}
-                disabled={renaming}
-              />
+            {promptBody && (
+              <>
+                <IconButton Icon={Download} label='Export' description='Export/Download Prompt' onClick={prompt.export} />
+                {renaming ? (
+                  <IconButton
+                    Icon={Check}
+                    label='Save'
+                    description='Save Prompt Name'
+                    onClick={() => {
+                      prompt.rename(newName);
+                      setRenaming(false);
+                    }}
+                    disabled={!newName || newName === searchParams.get('prompt')}
+                  />
+                ) : (
+                  <IconButton
+                    Icon={Pencil}
+                    label='Rename'
+                    description='Rename Prompt'
+                    onClick={() => setRenaming(true)}
+                    disabled={renaming}
+                  />
+                )}
+                <IconButton
+                  Icon={Trash2}
+                  label='Delete'
+                  description='Delete Prompt'
+                  onClick={prompt.delete}
+                  disabled={renaming}
+                />
+              </>
             )}
-            <IconButton
-              Icon={Trash2}
-              label='Delete'
-              description='Delete Prompt'
-              onClick={prompt.delete}
-              disabled={renaming}
-            />
           </div>
         </div>
       </TooltipProvider>
+      {promptBody && (
+        <>
+          <div className='space-y-2'>
+            <AutoResizeTextarea
+              value={promptBody}
+              onChange={(e) => {
+                setPromptBody(e.target.value);
+                setHasChanges(e.target.value !== prompt.data?.content);
+              }}
+              placeholder=''
+            />
+          </div>
+          <div className='flex space-x-2'>
+            <IconButton
+              Icon={Save}
+              label='Save'
+              description={hasChanges ? 'Save changes to prompt.' : 'No changes to save.'}
+              onClick={() => {
+                prompt.update(promptBody);
+                setHasChanges(false);
+              }}
+              disabled={!hasChanges || renaming}
+            />
+          </div>
+          <PromptTest promptContent={promptBody} />
+        </>
+      )}
 
-      <div className='space-y-2'>
-        <AutoResizeTextarea
-          value={promptBody}
-          onChange={(e) => {
-            setPromptBody(e.target.value);
-            setHasChanges(e.target.value !== prompt.data?.content);
-          }}
-          placeholder=''
-        />
-      </div>
-      <div className='flex space-x-2'>
-        <IconButton
-          Icon={Save}
-          label='Save'
-          description={hasChanges ? 'Save changes to prompt.' : 'No changes to save.'}
-          onClick={() => {
-            prompt.update(promptBody);
-            setHasChanges(false);
-          }}
-          disabled={!hasChanges || renaming}
-        />
-      </div>
       <NewPromptDialog open={isDialogOpen} setOpen={setIsDialogOpen} importMode={importMode} />
     </div>
   );
