@@ -173,6 +173,33 @@
 }
 
 .hide-scrollbar {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+@layer utilities {
+  .icons .icon-btn {
+    @apply p-2 bg-transparent hover:bg-accent hover:text-accent-foreground;
+  }
+  .icons .icon-btn .label {
+    @apply hidden;
+  }
+  .icons .icon-btn .icon {
+    @apply h-4 w-4;
+  }
+  .icons .icon-btn:disabled {
+    @apply opacity-50 pointer-events-none bg-transparent;
+  }
+
+  .labels .icon-btn {
+    @apply px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90;
+  }
+  .labels .icon-btn .label {
+    @apply inline ml-2;
+  }
+  .labels .icon-btn .icon {
+    @apply h-4 w-4;
+  }
+  .labels .icon-btn:disabled {
+    @apply opacity-50 pointer-events-none;
+  }
 }

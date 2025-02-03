@@ -2,26 +2,24 @@
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
+import { useTheme } from '@/components/jrg/theme/useTheme';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { useAppearance } from '../../theme/useAppearance';
 
 export const Themes = () => {
-  const { appearances, currentAppearance, setAppearance } = useAppearance();
+  const { themes, currentTheme, setTheme } = useTheme();
 
   return (
     <div>
       <div>
         <h3 className='text-lg font-medium'>Themes</h3>
-        <p className='text-sm text-muted-foreground'>Customize the interface. Switch between icons and labels on buttons.</p>
+        <p className='text-sm text-muted-foreground'>
+          Customize the interface. Switch between light and dark mode as well as colorblind mode.
+        </p>
       </div>
       <Separator className='my-4' />
       <div>
-        <RadioGroup
-          defaultValue={currentAppearance}
-          onValueChange={(value) => setAppearance(value)}
-          className='grid grid-cols-2 gap-4'
-        >
-          {appearances.map((option) => (
+        <RadioGroup defaultValue='' onValueChange={(value) => setTheme(value)} className='grid grid-cols-2 gap-4'>
+          {themes.map((option) => (
             <div key={option} className='flex flex-col items-center gap-2'>
               <RadioGroupItem value={option} id={option} className='sr-only peer' />
               <Label

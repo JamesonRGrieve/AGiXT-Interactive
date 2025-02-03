@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { MoonIcon } from 'lucide-react';
+import { LayoutGrid, MoonIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -24,6 +24,7 @@ import { useTheme } from '@/components/jrg/theme/useTheme';
 import useUser from '@/auth/hooks/useUser';
 import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
 import { useCompany } from '@/components/interactive/hooks';
+import { useAppearance } from '../theme/useAppearance';
 
 type MenuItem = {
   name: string;
@@ -32,74 +33,17 @@ type MenuItem = {
 
 type UserMenuGroups = MenuItem[][];
 
-export const UserMenu = ({ userMenuItems }: { userMenuItems: UserMenuGroups }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const router = useRouter();
-  const { data: user, mutate: mutateUser } = useUser();
-  const { mutate: mutateActiveCompany } = useCompany();
-  const handleRouting = (path: string) => {
-    setIsMenuOpen(false);
-    router.push(path);
-  };
-
-  const handleLogout = () => {
-    router.push('/user/logout');
-  };
-
-  return (
-    <div className='flex items-center gap-4 md:gap-2 lg:gap-4'>
-      <DropdownMenu open={isMenuOpen} onOpenChange={setIsMenuOpen}>
-        <DropdownMenuTrigger asChild>
-          <Button size='icon' variant='outline' className='bg-transparent rounded-full border-foreground/50'>
-            <Avatar>
-              <AvatarImage src={getGravatarUrl(user?.email)} alt={user?.name} />
-              <AvatarFallback className='bg-transparent'>
-                <span className='sr-only'>Toggle user menu</span>
-                {userInitials(user) ? (
-                  <span className='text-lg'>{userInitials(user)}</span>
-                ) : (
-                  <CircleUser className='w-10 h-10' />
-                )}
-              </AvatarFallback>
-            </Avatar>
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent align='end'>
-          <DropdownMenuLabel>{process.env.NEXT_PUBLIC_APP_NAME}</DropdownMenuLabel>
-          {userMenuItems.map((items, index) => (
-            <>
-              <DropdownMenuSeparator key={index + '-sep'} />
-              <DropdownMenuGroup key={index}>
-                {items.map((item) => (
-                  <DropdownMenuItem key={item.name} onClick={() => handleRouting(item.href)}>
-                    {item.name}
-                  </DropdownMenuItem>
-                ))}
-              </DropdownMenuGroup>
-            </>
-          ))}
-          <Company />
-          <DropdownMenuSeparator />
-          <Appearance />
-          <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
-    </div>
-  );
-};
-
-export const Appearance = () => {
+export const Themes = () => {
   const { themes, currentTheme, setTheme } = useTheme();
   return (
     <DropdownMenuSub>
       <DropdownMenuSubTrigger>
         <MoonIcon className='w-4 h-4 mr-2' />
-        Appearance
+        Themes
       </DropdownMenuSubTrigger>
       <DropdownMenuPortal>
         <DropdownMenuSubContent>
-          <DropdownMenuLabel>Appearance</DropdownMenuLabel>
+          <DropdownMenuLabel>Themes</DropdownMenuLabel>
           {themes.map((theme) => (
             <DropdownMenuItem
               key={theme}
@@ -107,6 +51,31 @@ export const Appearance = () => {
               onClick={() => setTheme(theme)}
             >
               {theme}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuSubContent>
+      </DropdownMenuPortal>
+    </DropdownMenuSub>
+  );
+};
+export const Appearances = () => {
+  const { appearances, currentAppearance, setAppearance } = useAppearance();
+  return (
+    <DropdownMenuSub>
+      <DropdownMenuSubTrigger>
+        <LayoutGrid className='w-4 h-4 mr-2' />
+        Appearances
+      </DropdownMenuSubTrigger>
+      <DropdownMenuPortal>
+        <DropdownMenuSubContent>
+          <DropdownMenuLabel>Appearances</DropdownMenuLabel>
+          {appearances.map((appearance) => (
+            <DropdownMenuItem
+              key={appearance}
+              className={cn('capitalize', appearance === currentAppearance && 'bg-muted')}
+              onClick={() => setAppearance(appearance)}
+            >
+              {appearance}
             </DropdownMenuItem>
           ))}
         </DropdownMenuSubContent>
