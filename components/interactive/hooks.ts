@@ -800,7 +800,9 @@ export function useConversations(): SWRResponse<ConversationEdge[]> {
           client: 3,
         });
         const response = await client.request<{ conversations: { edges: ConversationEdge[] } }>(query);
-        return z.array(ConversationEdgeSchema).parse(response.conversations.edges);
+        return z
+          .array(ConversationEdgeSchema)
+          .parse(response.conversations.edges.filter((conv) => !conv.name.startsWith('PROMPT_TEST')));
       } catch (error) {
         log(['GQL useConversations() Error', error], {
           client: 1,
