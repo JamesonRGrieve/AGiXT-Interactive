@@ -59,7 +59,7 @@ export const Themes = () => {
   );
 };
 export const Appearances = () => {
-  const { appearances, currentAppearance, setAppearance } = useAppearance();
+  const { appearances, appearance, setAppearance } = useAppearance();
   return (
     <DropdownMenuSub>
       <DropdownMenuSubTrigger>
@@ -69,13 +69,13 @@ export const Appearances = () => {
       <DropdownMenuPortal>
         <DropdownMenuSubContent>
           <DropdownMenuLabel>Appearances</DropdownMenuLabel>
-          {appearances.map((appearance) => (
+          {appearances.map((thisAppearance) => (
             <DropdownMenuItem
-              key={appearance}
-              className={cn('capitalize', appearance === currentAppearance && 'bg-muted')}
-              onClick={() => setAppearance(appearance)}
+              key={thisAppearance}
+              className={cn('capitalize', thisAppearance === appearance && 'bg-muted')}
+              onClick={() => setAppearance(thisAppearance)}
             >
-              {appearance}
+              {thisAppearance}
             </DropdownMenuItem>
           ))}
         </DropdownMenuSubContent>

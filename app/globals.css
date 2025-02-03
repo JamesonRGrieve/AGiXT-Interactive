@@ -191,10 +191,10 @@
   }
 
   .labels .icon-btn {
-    @apply px-4 py-2 bg-primary text-primary-foreground hover:bg-primary/90;
+    @apply p-2 bg-primary text-primary-foreground hover:bg-primary/90;
   }
   .labels .icon-btn .label {
-    @apply inline ml-2;
+    @apply inline-block ml-2;
   }
   .labels .icon-btn .icon {
     @apply h-4 w-4;
