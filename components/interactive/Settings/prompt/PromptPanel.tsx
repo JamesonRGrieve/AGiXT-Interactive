@@ -69,7 +69,10 @@ export default function PromptPanel() {
                 Icon={Check}
                 label='Save'
                 description='Save Prompt Name'
-                onClick={() => prompt.rename(newName)}
+                onClick={() => {
+                  prompt.rename(newName);
+                  setRenaming(false);
+                }}
                 disabled={!newName || newName === searchParams.get('prompt')}
               />
             ) : (

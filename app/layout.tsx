@@ -22,11 +22,12 @@ export { metadata, viewport };
 export default function RootLayout({ children }: { children: ReactNode }): ReactNode {
   const cookieStore = cookies();
   const theme = cookieStore.get('theme')?.value ?? '';
+  const appearance = cookieStore.get('appearance')?.value ?? '';
 
   return (
     <html lang='en'>
       <Head />
-      <body className={cn(inter.className, theme)}>
+      <body className={cn(inter.className, theme, appearance)}>
         <InteractiveConfigContextWrapper>
           <SidebarProvider className='flex-1'>
             <SidebarMain side='left' />

@@ -10,25 +10,23 @@ export const useAppearance = (customAppearances?: string[], initialAppearance?: 
     return Array.from(new Set([...defaultThemes, ...(customAppearances ?? [])]));
   });
 
-  const [currentAppearance, setCurrentAppearance] = useState(() => {
+  const [appearance, setAppearance] = useState(() => {
     const cookieValue = getCookie('appearance');
     return cookieValue?.toString() ?? initialAppearance ?? 'labels';
   });
 
-  const setAppearance = (newAppearance: string) => {
+  useEffect(() => {
     document.body.classList.remove(...appearances);
-    document.body.classList.add(newAppearance);
-
-    setCookie('appearance', newAppearance, {
+    setCookie('appearance', appearance, {
       expires: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
       domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
     });
-    setCurrentAppearance(newAppearance);
-  };
+    document.body.classList.add(appearance);
+  }, [appearance, appearances]);
 
   return {
     appearances,
-    currentAppearance,
+    appearance,
     setAppearance,
   };
 };
