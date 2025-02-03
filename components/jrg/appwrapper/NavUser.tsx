@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
-import { Appearance } from '@/components/jrg/appwrapper/UserMenu';
+import { Appearances, Themes } from '@/components/jrg/appwrapper/UserMenu';
 import useUser from '@/components/jrg/auth/hooks/useUser';
 import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
 
@@ -102,7 +102,8 @@ export function NavUser() {
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
-            <Appearance />
+            <Themes />
+            <Appearances />
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut className='mr-2 size-4' />

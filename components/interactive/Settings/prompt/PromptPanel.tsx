@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import NewPromptDialog from './PromptDialog';
+import IconButton from '@/components/jrg/theme/IconButton';
 
 export default function PromptPanel() {
   const searchParams = useSearchParams();
@@ -48,80 +49,45 @@ export default function PromptPanel() {
                 <PromptSelector />
               )}
             </div>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  onClick={() => {
-                    setImportMode(false);
-                    setIsDialogOpen(true);
-                  }}
-                >
-                  <Plus className='h-4 w-4' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Add Prompt</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant='ghost'
-                  size='icon'
-                  onClick={() => {
-                    setImportMode(true);
-                    setIsDialogOpen(true);
-                  }}
-                  disabled={renaming}
-                >
-                  <Upload className='h-4 w-4' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Import/Upload Prompt</TooltipContent>
-            </Tooltip>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant='ghost' size='icon' onClick={prompt.export} disabled={renaming}>
-                  <Download className='h-4 w-4' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Export/Download Prompt</TooltipContent>
-            </Tooltip>
+            <IconButton
+              Icon={Plus}
+              label='New'
+              description='New Prompt'
+              onClick={() => setIsDialogOpen(true)}
+              disabled={renaming}
+            />
+            <IconButton
+              Icon={Upload}
+              label='Import'
+              description='Import/Upload Prompt'
+              onClick={() => setImportMode(true)}
+              disabled={renaming}
+            />
+            <IconButton Icon={Download} label='Export' description='Export/Download Prompt' onClick={prompt.export} />
             {renaming ? (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant='ghost'
-                    size='icon'
-                    onClick={() => {
-                      prompt.rename(newName);
-                      setRenaming(false);
-                    }}
-                    disabled={!newName || newName === searchParams.get('prompt')}
-                  >
-                    <Check className='h-4 w-4' />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Save Prompt Name</TooltipContent>
-              </Tooltip>
+              <IconButton
+                Icon={Check}
+                label='Save'
+                description='Save Prompt Name'
+                onClick={() => prompt.rename(newName)}
+                disabled={!newName || newName === searchParams.get('prompt')}
+              />
             ) : (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button variant='ghost' size='icon' onClick={() => setRenaming(true)}>
-                    <Pencil className='h-4 w-4' />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Rename Prompt</TooltipContent>
-              </Tooltip>
+              <IconButton
+                Icon={Pencil}
+                label='Rename'
+                description='Rename Prompt'
+                onClick={() => setRenaming(true)}
+                disabled={renaming}
+              />
             )}
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant='ghost' size='icon' onClick={prompt.delete} disabled={renaming}>
-                  <Trash2 className='h-4 w-4' />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Delete Prompt</TooltipContent>
-            </Tooltip>
+            <IconButton
+              Icon={Trash2}
+              label='Delete'
+              description='Delete Prompt'
+              onClick={prompt.delete}
+              disabled={renaming}
+            />
           </div>
         </div>
       </TooltipProvider>
@@ -137,23 +103,16 @@ export default function PromptPanel() {
         />
       </div>
       <div className='flex space-x-2'>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span>
-              <Button
-                onClick={() => {
-                  prompt.update(promptBody);
-                  setHasChanges(false);
-                }}
-                disabled={!hasChanges || renaming}
-              >
-                <Save className='h-4 w-4 mr-2' />
-                Save Prompt
-              </Button>
-            </span>
-          </TooltipTrigger>
-          <TooltipContent>{hasChanges ? 'Save changes to prompt' : 'No changes to save'}</TooltipContent>
-        </Tooltip>
+        <IconButton
+          Icon={Save}
+          label='Save'
+          description={hasChanges ? 'Save changes to prompt.' : 'No changes to save.'}
+          onClick={() => {
+            prompt.update(promptBody);
+            setHasChanges(false);
+          }}
+          disabled={!hasChanges || renaming}
+        />
       </div>
       <NewPromptDialog open={isDialogOpen} setOpen={setIsDialogOpen} importMode={importMode} />
     </div>
