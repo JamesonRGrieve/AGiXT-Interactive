@@ -261,11 +261,13 @@ export function usePrompt(name: string): SWRResponse<Prompt | null> & {
             duration: 5000,
           });
         } catch (error) {
+          console.error(error);
           toast({
             title: 'Error',
             description: 'Failed to Delete Prompt',
             duration: 5000,
           });
+          throw error;
         }
       },
       rename: async (newName: string) => {
@@ -279,11 +281,13 @@ export function usePrompt(name: string): SWRResponse<Prompt | null> & {
             duration: 5000,
           });
         } catch (error) {
+          console.error(error);
           toast({
             title: 'Error',
             description: 'Failed to Rename Prompt',
             duration: 5000,
           });
+          throw error;
         }
       },
       update: async (content: string) => {
@@ -296,11 +300,13 @@ export function usePrompt(name: string): SWRResponse<Prompt | null> & {
             duration: 5000,
           });
         } catch (error) {
+          console.error(error);
           toast({
             title: 'Error',
             description: 'Failed to Update Prompt',
             duration: 5000,
           });
+          throw error;
         }
       },
       export: async () => {
@@ -326,12 +332,18 @@ export function usePrompt(name: string): SWRResponse<Prompt | null> & {
 
 /**
  * Hook to fetch and manage all prompts and categories
- * @returns SWR response containing prompts array and categories array
+ * @returns SWR response containing prompts array and categories array with management functions
  */
-export function usePrompts(): SWRResponse<Prompt[]> {
+export function usePrompts(): SWRResponse<Prompt[]> & {
+  create: (name: string, content: string) => Promise<void>;
+  import: (name: string, file: File) => Promise<void>;
+} {
   const client = createGraphQLClient();
+  const { toast } = useToast();
+  const { agixt } = useInteractiveConfig();
+  const router = useRouter();
 
-  return useSWR<Prompt[]>(
+  const swrHook = useSWR<Prompt[]>(
     '/prompts',
     async (): Promise<Prompt[]> => {
       try {
@@ -347,6 +359,34 @@ export function usePrompts(): SWRResponse<Prompt[]> {
     },
     { fallbackData: [] },
   );
+
+  return Object.assign(swrHook, {
+    create: async (name: string, content: string) => {
+      try {
+        await agixt.addPrompt(name, content);
+        swrHook.mutate();
+        router.push(`/settings/prompts?prompt=${name}`);
+        toast({
+          title: 'Success',
+          description: 'Prompt Created',
+          duration: 5000,
+        });
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to Create Prompt',
+          duration: 5000,
+        });
+        console.error(error);
+        throw error;
+      }
+    },
+    import: async (name: string, file: File) => {
+      name = name || file.name.replace('.json', '');
+      await agixt.addPrompt(name, await file.text());
+      router.push(`/settings/prompts?&prompt=${name}`);
+    },
+  });
 }
 // ============================================================================
 // Company Related Hooks

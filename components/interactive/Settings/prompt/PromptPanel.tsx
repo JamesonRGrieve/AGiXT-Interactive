@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Plus, Trash2, Download, Save, Pencil, Check } from 'lucide-react';
+import { Plus, Trash2, Download, Save, Pencil, Check, Upload } from 'lucide-react';
 import { mutate } from 'swr';
 import PromptSelector from '../../Selectors/PromptSelector';
 import { usePrompt } from '../../hooks';
@@ -21,6 +21,7 @@ export default function PromptPanel() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [renaming, setRenaming] = useState(false);
   const [newName, setNewName] = useState('');
+  const [importMode, setImportMode] = useState(false);
   console.log(prompt);
   useEffect(() => {
     if (prompt.data?.content) {
@@ -49,7 +50,14 @@ export default function PromptPanel() {
             </div>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Button variant='ghost' size='icon' onClick={() => setIsDialogOpen(true)}>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  onClick={() => {
+                    setImportMode(false);
+                    setIsDialogOpen(true);
+                  }}
+                >
                   <Plus className='h-4 w-4' />
                 </Button>
               </TooltipTrigger>
@@ -57,11 +65,27 @@ export default function PromptPanel() {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
+                <Button
+                  variant='ghost'
+                  size='icon'
+                  onClick={() => {
+                    setImportMode(true);
+                    setIsDialogOpen(true);
+                  }}
+                  disabled={renaming}
+                >
+                  <Upload className='h-4 w-4' />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Import/Upload Prompt</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
                 <Button variant='ghost' size='icon' onClick={prompt.export} disabled={renaming}>
                   <Download className='h-4 w-4' />
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>Export Prompt</TooltipContent>
+              <TooltipContent>Export/Download Prompt</TooltipContent>
             </Tooltip>
             {renaming ? (
               <Tooltip>
@@ -131,7 +155,7 @@ export default function PromptPanel() {
           <TooltipContent>{hasChanges ? 'Save changes to prompt' : 'No changes to save'}</TooltipContent>
         </Tooltip>
       </div>
-      <NewPromptDialog open={isDialogOpen} setOpen={setIsDialogOpen} />
+      <NewPromptDialog open={isDialogOpen} setOpen={setIsDialogOpen} importMode={importMode} />
     </div>
   );
 }
