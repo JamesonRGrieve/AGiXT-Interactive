@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Plus, Trash2, Download, Save, Pencil, Check, Upload } from 'lucide-react';
+import { Plus, Trash2, Download, Save, Pencil, Check, Upload, ArrowBigLeft } from 'lucide-react';
 import { mutate } from 'swr';
 import PromptSelector from '../../Selectors/PromptSelector';
 import { usePrompt } from '../../hooks';
@@ -46,7 +46,10 @@ export default function PromptPanel() {
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Select Prompt</SidebarGroupLabel>
-          <div className='w-full'>
+          <SidebarMenuButton className='group-data-[state=expanded]:hidden'>
+            <ArrowBigLeft />
+          </SidebarMenuButton>
+          <div className='w-full group-data-[collapsible=icon]:hidden'>
             {renaming ? (
               <Input value={newName} onChange={(e) => setNewName(e.target.value)} className='w-full' />
             ) : (
