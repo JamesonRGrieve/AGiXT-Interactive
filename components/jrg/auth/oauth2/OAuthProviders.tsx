@@ -76,7 +76,7 @@ const providers = {
   Tesla: {
     client_id: process.env.NEXT_PUBLIC_TESLA_CLIENT_ID,
     scope: 'openid offline_access user_data vehicle_device_data vehicle_cmds vehicle_charging_cmds vehicle_location',
-    uri: 'https://fleet-api.prd.na.vn.cloud.tesla.com',
+    uri: 'https://auth.tesla.com/oauth2/v3/authorize',
     params: {},
     icon: <GiTesla />,
   },
