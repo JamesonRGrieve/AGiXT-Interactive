@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { getCookie, setCookie } from 'cookies-next';
 import { GraphQLClient } from 'graphql-request';
-import { InteractiveConfigContext } from './InteractiveConfigContext';
+import { InteractiveConfigContext, useInteractiveConfig } from './InteractiveConfigContext';
 import useSWR, { SWRResponse } from 'swr';
 
 // Import all types from the centralized schema file
@@ -21,7 +21,7 @@ import {
   Chain,
   ChainSchema,
   Conversation,
-  ConversationSchema,
+  AppStateSchema,
   ConversationEdge,
   InvitationSchema,
   CommandArgSchema,
@@ -30,10 +30,14 @@ import {
   ConversationMetadataSchema,
   ConversationMetadata,
   ConversationEdgeSchema,
+  ConversationSchema,
 } from './types';
 import { z } from 'zod';
 import log from '../jrg/next-log/log';
 import axios from 'axios';
+import { useToast } from '@/hooks/useToast';
+import { create } from 'domain';
+import { useRouter } from 'next/navigation';
 
 // ============================================================================
 // Utility Functions
@@ -48,6 +52,17 @@ const createGraphQLClient = (): GraphQLClient =>
     headers: { authorization: getCookie('jwt') || '' },
   });
 
+/**
+ * Helper to chain mutations between hooks
+ * @param parentHook - Parent hook containing mutate function
+ * @param currentHook - Current hook's mutate function
+ */
+const chainMutations = (parentHook: any, originalMutate: () => Promise<any>) => {
+  return async () => {
+    await parentHook.mutate();
+    return originalMutate();
+  };
+};
 // ============================================================================
 // Agent Related Hooks
 // ============================================================================
@@ -73,10 +88,7 @@ export function useAgents(): SWRResponse<Agent[]> {
   );
 
   const originalMutate = swrHook.mutate;
-  swrHook.mutate = async () => {
-    await companiesHook.mutate();
-    return originalMutate();
-  };
+  swrHook.mutate = chainMutations(companiesHook, originalMutate);
   return swrHook;
 }
 
@@ -116,9 +128,9 @@ export function useAgent(
   log([`GQL useAgent() SEARCH NAME: ${searchName}`], {
     client: 3,
   });
-  const swrHook = useSWR<{ agent: Agent | null; commands: string[] }>(
+  const swrHook = useSWR<{ agent: Agent | null; commands: string[]; extensions: any[] }>(
     [`/agent?name=${searchName}`, companies, withSettings],
-    async (): Promise<{ agent: Agent | null; commands: string[] }> => {
+    async (): Promise<{ agent: Agent | null; commands: string[]; extensions: any[] }> => {
       try {
         if (withSettings) {
           const client = createGraphQLClient();
@@ -132,7 +144,7 @@ export function useAgent(
           });
           return AgentSchema.parse(response.agent);
         } else {
-          const toReturn = { agent: foundEarly, commands: [] };
+          const toReturn = { agent: foundEarly, commands: [], extensions: [] };
           if (companies?.length && !toReturn.agent) {
             for (const company of companies) {
               log(['GQL useAgent() Checking Company', company], {
@@ -154,6 +166,13 @@ export function useAgent(
             log(['GQL useAgent() Agent Found, Getting Commands', toReturn], {
               client: 3,
             });
+            toReturn.extensions = (
+              await axios.get(`${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/agent/${toReturn.agent.name}/extensions`, {
+                headers: {
+                  Authorization: getCookie('jwt'),
+                },
+              })
+            ).data.extensions;
             toReturn.commands = await state.agixt.getCommands(toReturn.agent.name);
           } else {
             log(['GQL useAgent() Did Not Get Agent', toReturn], {
@@ -167,16 +186,13 @@ export function useAgent(
         log(['GQL useAgent() Error', error], {
           client: 1,
         });
-        return { agent: null, commands: [] };
+        return { agent: null, commands: [], extensions: [] };
       }
     },
-    { fallbackData: { agent: null, commands: [] } },
+    { fallbackData: { agent: null, commands: [], extensions: [] } },
   );
   const originalMutate = swrHook.mutate;
-  swrHook.mutate = async () => {
-    await companiesHook.mutate();
-    return originalMutate();
-  };
+  swrHook.mutate = chainMutations(companiesHook, originalMutate);
   return swrHook;
 }
 
@@ -213,23 +229,121 @@ export function usePromptCategories(): SWRResponse<string[]> {
  * @param name - Name of the prompt to find
  * @returns SWR response containing prompt data if found
  */
-export function usePrompt(name: string): SWRResponse<Prompt | null> {
-  const { data: prompts, error, isLoading } = usePrompts();
-  return useSWR<Prompt | null>(`/prompt?name=${name}`, () => prompts?.find((p) => p.name === name) || null, {
+export function usePrompt(name: string): SWRResponse<Prompt | null> & {
+  delete: () => Promise<void>;
+  rename: (newName: string) => Promise<void>;
+  update: (content: string) => Promise<void>;
+  export: () => Promise<void>;
+} {
+  const promptsHook = usePrompts();
+  const { data: prompts, error: promptsError, isLoading: promptsLoading, mutate: promptsMutate } = promptsHook;
+  const { agixt } = useInteractiveConfig();
+  const { toast } = useToast();
+  const router = useRouter();
+  const swrHook = useSWR<Prompt | null>([name, prompts], () => prompts?.find((p) => p.name === name) || null, {
     fallbackData: null,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
   });
+  const isLoading = promptsLoading || swrHook.isLoading;
+  const error = promptsError || swrHook.error;
+  return Object.assign(
+    { ...swrHook, isLoading, error },
+    {
+      delete: async () => {
+        try {
+          await agixt.deletePrompt(name);
+          promptsMutate();
+          router.push(`/settings/prompts?prompt=${(prompts && prompts.filter((p) => p.name !== name)[0]?.name) || ''}`);
+          toast({
+            title: 'Success',
+            description: 'Prompt Deleted',
+            duration: 5000,
+          });
+        } catch (error) {
+          console.error(error);
+          toast({
+            title: 'Error',
+            description: 'Failed to Delete Prompt',
+            duration: 5000,
+          });
+          throw error;
+        }
+      },
+      rename: async (newName: string) => {
+        try {
+          await agixt.renamePrompt(name, newName);
+          swrHook.mutate();
+          promptsMutate();
+          toast({
+            title: 'Success',
+            description: 'Prompt Renamed',
+            duration: 5000,
+          });
+        } catch (error) {
+          console.error(error);
+          toast({
+            title: 'Error',
+            description: 'Failed to Rename Prompt',
+            duration: 5000,
+          });
+          throw error;
+        }
+      },
+      update: async (content: string) => {
+        try {
+          await agixt.updatePrompt(name, content);
+          swrHook.mutate();
+          toast({
+            title: 'Success',
+            description: 'Prompt Updated',
+            duration: 5000,
+          });
+        } catch (error) {
+          console.error(error);
+          toast({
+            title: 'Error',
+            description: 'Failed to Update Prompt',
+            duration: 5000,
+          });
+          throw error;
+        }
+      },
+      export: async () => {
+        if (!swrHook.data) {
+          toast({
+            title: 'Error',
+            description: 'No Active Prompt to Export',
+            duration: 5000,
+          });
+          return;
+        }
+        const element = document.createElement('a');
+        const file = new Blob([swrHook.data?.content], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `AGiXT-Prompt-${name}.txt`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      },
+    },
+  );
 }
 
 /**
  * Hook to fetch and manage all prompts and categories
- * @returns SWR response containing prompts array and categories array
+ * @returns SWR response containing prompts array and categories array with management functions
  */
-export function usePrompts(): SWRResponse<Prompt[]> {
+export function usePrompts(): SWRResponse<Prompt[]> & {
+  create: (name: string, content: string) => Promise<void>;
+  import: (name: string, file: File) => Promise<void>;
+} {
   const client = createGraphQLClient();
+  const { toast } = useToast();
+  const { agixt } = useInteractiveConfig();
+  const router = useRouter();
 
-  return useSWR<Prompt[]>(
+  const swrHook = useSWR<Prompt[]>(
     '/prompts',
     async (): Promise<Prompt[]> => {
       try {
@@ -245,6 +359,34 @@ export function usePrompts(): SWRResponse<Prompt[]> {
     },
     { fallbackData: [] },
   );
+
+  return Object.assign(swrHook, {
+    create: async (name: string, content: string) => {
+      try {
+        await agixt.addPrompt(name, content);
+        swrHook.mutate();
+        router.push(`/settings/prompts?prompt=${name}`);
+        toast({
+          title: 'Success',
+          description: 'Prompt Created',
+          duration: 5000,
+        });
+      } catch (error) {
+        toast({
+          title: 'Error',
+          description: 'Failed to Create Prompt',
+          duration: 5000,
+        });
+        console.error(error);
+        throw error;
+      }
+    },
+    import: async (name: string, file: File) => {
+      name = name || file.name.replace('.json', '');
+      await agixt.addPrompt(name, await file.text());
+      router.push(`/settings/prompts?&prompt=${name}`);
+    },
+  });
 }
 // ============================================================================
 // Company Related Hooks
@@ -261,10 +403,7 @@ export function useCompanies(): SWRResponse<Company[]> {
   const swrHook = useSWR<Company[]>(['/companies', user], () => user?.companies || [], { fallbackData: [] });
 
   const originalMutate = swrHook.mutate;
-  swrHook.mutate = async () => {
-    await userHook.mutate();
-    return originalMutate();
-  };
+  swrHook.mutate = chainMutations(userHook, originalMutate);
 
   return swrHook;
 }
@@ -277,20 +416,50 @@ export function useCompanies(): SWRResponse<Company[]> {
 export function useCompany(id?: string): SWRResponse<Company | null> {
   const companiesHook = useCompanies();
   const { data: companies } = companiesHook;
-
+  console.log('COMPANY THING');
   const swrHook = useSWR<Company | null>(
-    [`/company?id=${id}`, companies],
-    (): Company | null => {
+    [`/company?id=${id}`, companies, getCookie('jwt')],
+    async (): Promise<Company | null> => {
+      if (!getCookie('jwt')) return null;
       try {
+        console.log('COMPANY THING 2');
         if (id) {
+          console.log('COMPANY THING 3');
           return companies?.find((c) => c.id === id) || null;
         } else {
+          console.log('COMPANY THING 4');
+          log(['GQL useCompany() Companies', companies], {
+            client: 1,
+          });
           const agentName = getCookie('agixt-agent');
-          return companies?.find((c) => (agentName ? c.agents.some((a) => a.name === agentName) : c.primary)) || null;
+          log(['GQL useCompany() AgentName', agentName], {
+            client: 1,
+          });
+          const targetCompany =
+            companies?.find((c) => (agentName ? c.agents.some((a) => a.name === agentName) : c.primary)) || null;
+          log(['GQL useCompany() Company', targetCompany], {
+            client: 1,
+          });
+          targetCompany.extensions = (
+            await axios.get(
+              `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/companies/${targetCompany.id}/extensions`,
+
+              {
+                headers: {
+                  Authorization: getCookie('jwt'),
+                },
+              },
+            )
+          ).data.extensions;
+          log(['GQL useCompany() Company With Extensions', targetCompany], {
+            client: 3,
+          });
+          return targetCompany;
         }
       } catch (error) {
+        console.log('COMPANY THING 5');
         log(['GQL useCompany() Error', error], {
-          client: 1,
+          client: 3,
         });
         return null;
       }
@@ -299,10 +468,7 @@ export function useCompany(id?: string): SWRResponse<Company | null> {
   );
 
   const originalMutate = swrHook.mutate;
-  swrHook.mutate = async () => {
-    await companiesHook.mutate();
-    return originalMutate();
-  };
+  swrHook.mutate = chainMutations(companiesHook, originalMutate);
 
   return swrHook;
 }
@@ -315,12 +481,13 @@ export function useCompany(id?: string): SWRResponse<Company | null> {
  * Hook to fetch and manage current user data
  * @returns SWR response containing user data
  */
-export function useUser(): SWRResponse<User> {
+export function useUser(): SWRResponse<User | null> {
   const client = createGraphQLClient();
 
-  return useSWR<User>(
-    '/user',
-    async (): Promise<User> => {
+  return useSWR<User | null>(
+    ['/user', getCookie('jwt')],
+    async (): Promise<User | null> => {
+      if (!getCookie('jwt')) return null;
       try {
         const query = UserSchema.toGQL('query', 'GetUser');
         log(['GQL useUser() Query', query], {
@@ -560,35 +727,63 @@ export function useChains(): SWRResponse<Chain[]> {
 // Conversation Related Hooks
 // ============================================================================
 
-/**
- * Hook to fetch and manage conversation data with real-time updates
- * @param conversationId - Conversation ID to fetch
- * @returns SWR response containing conversation data
- */
-export function useConversation(conversationId: string): SWRResponse<Conversation | null> {
-  const client = createGraphQLClient();
+// /**
+//  * Hook to fetch and manage conversation data with real-time updates
+//  * @param conversationId - Conversation ID to fetch
+//  * @returns SWR response containing conversation data
+//  */
+// export function useAppState(conversationId: string): SWRResponse<Conversation | null> {
+//   const client = createGraphQLClient();
 
-  return useSWR<Conversation | null>(
-    conversationId ? [`/conversation`, conversationId] : null,
-    async (): Promise<Conversation | null> => {
-      try {
-        const query = ConversationSchema.toGQL('subscription', 'WatchConversation', { conversationId });
-        const response = await client.request<Conversation>(query, { conversationId });
-        return response.conversation;
-      } catch (error) {
-        log(['GQL useConversation() Error', error], {
-          client: 1,
-        });
-        return null;
-      }
-    },
-    {
-      fallbackData: null,
-      refreshInterval: 1000, // Real-time updates
-    },
-  );
-}
+//   return useSWR<Conversation | null>(
+//     conversationId ? [`/conversation`, conversationId] : null,
+//     async (): Promise<Conversation | null> => {
+//       try {
+//         const query = AppStateSchema.toGQL('subscription', 'appState', { conversationId });
+//         log(['GQL useAppState() Query', query], {
+//           client: 3,
+//         });
+//         const response = await client.request<Conversation>(query, { conversationId });
+//         return response.conversation;
+//       } catch (error) {
+//         log(['GQL useAppState() Error', error], {
+//           client: 1,
+//         });
+//         return null;
+//       }
+//     },
+//     {
+//       fallbackData: null,
+//       refreshInterval: 1000, // Real-time updates
+//     },
+//   );
+// }
+// export function useConversation(conversationId: string): SWRResponse<Conversation | null> {
+//   const client = createGraphQLClient();
 
+//   return useSWR<Conversation | null>(
+//     conversationId ? [`/conversation`, conversationId] : null,
+//     async (): Promise<Conversation | null> => {
+//       try {
+//         const query = ConversationSchema.toGQL('query', 'conversation', { conversationId });
+//         log(['GQL useConversation() Query', query], {
+//           client: 3,
+//         });
+//         const response = await client.request<Conversation>(query, { conversationId });
+//         return response.conversation;
+//       } catch (error) {
+//         log(['GQL useConversation() Error', error], {
+//           client: 1,
+//         });
+//         return null;
+//       }
+//     },
+//     {
+//       fallbackData: null,
+//       refreshInterval: 1000, // Real-time updates
+//     },
+//   );
+// }
 /**
  * Hook to fetch and manage all conversations with real-time updates
  * @returns SWR response containing array of conversation edges
@@ -605,7 +800,9 @@ export function useConversations(): SWRResponse<ConversationEdge[]> {
           client: 3,
         });
         const response = await client.request<{ conversations: { edges: ConversationEdge[] } }>(query);
-        return z.array(ConversationEdgeSchema).parse(response.conversations.edges);
+        return z
+          .array(ConversationEdgeSchema)
+          .parse(response.conversations.edges.filter((conv) => !conv.name.startsWith('PROMPT_TEST')));
       } catch (error) {
         log(['GQL useConversations() Error', error], {
           client: 1,
@@ -642,7 +839,7 @@ export function useOldInvitations(company_id?: string) {
 export function useOldActiveCompany() {
   const state = useContext(InteractiveConfigContext);
   const { data: companyData } = useCompany();
-  return useSWR<string[]>(
+  return useSWR<any>(
     [`/companies`, companyData?.id ?? null],
     async () => {
       const companies = await state.agixt.getCompanies();
@@ -651,7 +848,9 @@ export function useOldActiveCompany() {
           Authorization: getCookie('jwt'),
         },
       });
+      console.log('ACTIVE COMPANY', companyData);
       console.log('ACTIVE COMPANY USER', user);
+      console.log('ALL COMPANIES', companies);
       const target = companies.filter((company) => company.id === companyData.id)[0];
       console.log('ACTIVE COMPANY TARGET', target);
       console.log(

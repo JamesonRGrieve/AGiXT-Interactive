@@ -2,7 +2,7 @@
 
 import { SidebarInset } from '@/components/ui/sidebar';
 import { SidebarHeader, SidebarMain } from '@/components/jrg/appwrapper/SidebarHeader';
-import { useConversations } from '@/components/interactive/hooks';
+import { useConversation, useConversations } from '@/components/interactive/hooks';
 import { EditIcon, Edit2, Trash2, Download, Paperclip } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useContext, useState } from 'react';
@@ -22,26 +22,10 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
   // Find the current conversation
   const currentConversation = conversations?.find((conv) => conv.id === state.overrides.conversation);
 
-  const handleAddConversation = async (): Promise<void> => {
-    setCookie('agixt-conversation', '-', {
-      domain: process.env.NEXT_PUBLIC_COOKIE_DOMAIN,
-    });
-    state.mutate((oldState) => ({
-      ...oldState,
-      overrides: { ...oldState.overrides, conversation: '-' },
-    }));
-  };
-
   return (
     <SidebarInset>
       <SidebarHeader>
-        <div className='flex items-center w-full gap-2'>
-          <TooltipBasic title='New Conversation' side='right'>
-            <Button size='icon' variant='ghost' onClick={handleAddConversation}>
-              <EditIcon className='w-4 h-4 text-muted-foreground' />
-            </Button>
-          </TooltipBasic>
-
+        <div className='flex items-center w-full gap-2 pl-4'>
           <div className='flex items-center flex-1 gap-2 mx-auto'>
             {isLoadingConversations ? (
               <Skeleton className='w-32 h-4' />
@@ -59,7 +43,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
               <p className='text-sm text-muted-foreground'>New Chat</p>
             )}
           </div>
-          {currentConversation && <ConversationActions currentConversation={currentConversation} />}
+          <ConversationActions currentConversation={currentConversation || { id: '-' }} />
         </div>
       </SidebarHeader>
       <SidebarMain>{children}</SidebarMain>
@@ -72,11 +56,11 @@ export function ConversationActions({ currentConversation }: { currentConversati
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
   const [newName, setNewName] = useState('');
-
+  //const { mutate } = useConversation(currentConversation?.id);
   const handleDeleteConversation = async (): Promise<void> => {
     if (currentConversation?.id) {
       await state.agixt.deleteConversation(currentConversation.id);
-      await mutate('/conversation');
+      await mutate();
       state.mutate((oldState) => ({
         ...oldState,
         overrides: { ...oldState.overrides, conversation: '-' },
@@ -127,7 +111,7 @@ export function ConversationActions({ currentConversation }: { currentConversati
 
   return (
     <>
-      <div className='relative z-50 flex items-center gap-1'>
+      <div className='relative z-50 flex items-center gap-1 mr-4'>
         <TooltipBasic title='Rename Conversation' side='left'>
           <Button
             size='icon'

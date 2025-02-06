@@ -99,7 +99,7 @@ export default function Login({
         )}
         <Label htmlFor='token'>Multi-Factor Code</Label>
         <Input id='token' placeholder='Enter your 6 digit code' name='token' autoComplete='one-time-code' />
-        {!otp_uri && <MissingAuthenticator />}
+        <MissingAuthenticator />
         {authConfig.recaptchaSiteKey && (
           <div className='my-3'>
             <ReCAPTCHA

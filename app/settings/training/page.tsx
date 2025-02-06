@@ -2,7 +2,7 @@
 
 import Training from '@/components/interactive/Settings/training';
 import useUser from '@/components/jrg/auth/hooks/useUser';
-
+import { SidebarPage } from '@/components/jrg/appwrapper/SidebarPage';
 export default function TrainingPage() {
   const { data: user, isLoading } = useUser();
 
@@ -11,5 +11,9 @@ export default function TrainingPage() {
 
   const isAdmin = !isLoading && userRoleId && userRoleId < 3;
 
-  return <Training />;
+  return (
+    <SidebarPage title='Training'>
+      <Training />
+    </SidebarPage>
+  );
 }

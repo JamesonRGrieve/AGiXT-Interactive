@@ -1,46 +1,41 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { usePromptCategories, usePrompts } from '@/components/interactive/hooks';
-import { mutate } from 'swr';
+import { usePrompts } from '@/components/interactive/hooks';
+import { toast } from '@/hooks/useToast';
 
-export default function PromptDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
-  const router = useRouter();
-  const context = useInteractiveConfig();
-  const { data: categoryData } = usePromptCategories();
-  const { mutate } = usePrompts();
+interface PromptDialogProps {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  importMode?: boolean;
+}
+
+export default function PromptDialog({ open, setOpen, importMode = false }: PromptDialogProps) {
+  const prompts = usePrompts();
   const [newPromptName, setNewPromptName] = useState('');
-  const [promptCategory, setPromptCategory] = useState('Default');
-  const [toggleNewPromptCategory, setToggleNewPromptCategory] = useState(false);
   const [promptBody, setPromptBody] = useState('');
 
   const handleNewPrompt = async () => {
-    await context.agixt.addPrompt(newPromptName, promptBody, promptCategory);
-    await mutate();
+    await prompts.create(newPromptName, promptBody);
     setOpen(false);
-    router.push(`/settings/prompts?category=${promptCategory}&prompt=${newPromptName}`);
   };
 
   const handleImportPrompt = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(event.target.files || []);
-    for (const file of files) {
-      const fileContent = await file.text();
-      if (newPromptName === '') {
-        const fileName = file.name.replace('.json', '');
-        setNewPromptName(fileName);
-      }
-      await context.agixt.addPrompt(newPromptName, fileContent, promptCategory);
+    if (files.length > 1) {
+      toast({
+        title: 'Error',
+        description: 'You can only import one file at a time',
+        duration: 5000,
+      });
+    } else {
+      prompts.import(newPromptName, files[0]);
       setOpen(false);
-      router.push(`/settings/prompts?category=${promptCategory}&prompt=${newPromptName}`);
     }
   };
 
@@ -48,48 +43,12 @@ export default function PromptDialog({ open, setOpen }: { open: boolean; setOpen
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Create New Prompt Template</DialogTitle>
+          <DialogTitle>{importMode ? 'Import Prompt' : 'Create New Prompt'}</DialogTitle>
         </DialogHeader>
         <div className='grid gap-4 py-4'>
-          {/* <div className='flex items-center space-x-2'>
-            <Switch id='new-category' checked={toggleNewPromptCategory} onCheckedChange={setToggleNewPromptCategory} />
-            <Label htmlFor='new-category'>New Category</Label>
-          </div> */}
-          {/* {toggleNewPromptCategory ? (
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='new-category-name' className='text-right'>
-                New Prompt Category
-              </Label>
-              <Input
-                id='new-category-name'
-                value={promptCategory}
-                onChange={(e) => setPromptCategory(e.target.value)}
-                className='col-span-3'
-              />
-            </div>
-          ) : (
-            <div className='grid grid-cols-4 items-center gap-4'>
-              <Label htmlFor='prompt-category' className='text-right'>
-                Select a Prompt Category
-              </Label>
-              <Select value={promptCategory} onValueChange={setPromptCategory}>
-                <SelectTrigger className='col-span-3'>
-                  <SelectValue placeholder='Select a category' />
-                </SelectTrigger>
-                <SelectContent>
-                  {categoryData &&
-                    (categoryData as string[]).map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )} */}
           <div className='grid grid-cols-4 items-center gap-4'>
             <Label htmlFor='prompt-name' className='text-right'>
-              New Prompt Name
+              Prompt Name
             </Label>
             <Input
               id='prompt-name'
@@ -98,30 +57,35 @@ export default function PromptDialog({ open, setOpen }: { open: boolean; setOpen
               className='col-span-3'
             />
           </div>
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='prompt-content' className='text-right'>
-              New Prompt Content
-            </Label>
-            <Textarea
-              id='prompt-content'
-              value={promptBody}
-              onChange={(e) => setPromptBody(e.target.value)}
-              className='col-span-3'
-              rows={4}
-            />
-          </div>
-          <div className='grid grid-cols-4 items-center gap-4'>
-            <Label htmlFor='import-prompts' className='text-right'>
-              Import Prompts
-            </Label>
-            <Input id='import-prompts' type='file' onChange={handleImportPrompt} className='col-span-3' />
-          </div>
+          {importMode ? (
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='import-prompts' className='text-right'>
+                Import Prompt
+              </Label>
+              <Input id='import-prompts' type='file' onChange={handleImportPrompt} className='col-span-3' />
+            </div>
+          ) : (
+            <div className='grid grid-cols-4 items-center gap-4'>
+              <Label htmlFor='prompt-content' className='text-right'>
+                Prompt Body
+              </Label>
+              <Textarea
+                id='prompt-content'
+                value={promptBody}
+                onChange={(e) => setPromptBody(e.target.value)}
+                className='col-span-3'
+                rows={4}
+              />
+            </div>
+          )}
         </div>
         <DialogFooter>
           <Button variant='outline' onClick={() => setOpen(false)}>
             Cancel
           </Button>
-          <Button onClick={handleNewPrompt}>Create Prompt</Button>
+          <Button onClick={importMode ? undefined : handleNewPrompt}>
+            {importMode ? 'Import Prompt' : 'Create Prompt'}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

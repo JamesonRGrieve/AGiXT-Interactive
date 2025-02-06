@@ -60,7 +60,7 @@ export default class AGiXTSDK {
 
   // Agent Methods
   async addAgent(agentName: string, settings: any = {}) {
-    return this.request('post', '/api/agent', { agent_name: agentName, settings });
+    return this.request('post', '/api/agent', { agent_name: agentName, settings }).then((r) => r);
   }
 
   async importAgent(agentName: string, settings: any = {}, commands: any = {}) {
@@ -164,12 +164,14 @@ export default class AGiXTSDK {
     return this.request<{ message: string }>('put', `/api/conversation/message/${messageId}`, {
       conversation_name: conversationName,
       new_message: newMessage,
+      message_id: messageId,
     }).then((r) => r.message);
   }
 
   async deleteConversationMessage(conversationName: string, messageId: string) {
     return this.request<{ message: string }>('delete', `/api/conversation/message/${messageId}`, {
       conversation_name: conversationName,
+      message_id: messageId,
     }).then((r) => r.message);
   }
 

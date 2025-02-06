@@ -17,7 +17,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
-import { Appearance } from '@/components/jrg/appwrapper/UserMenu';
+import { Appearances, Themes } from '@/components/jrg/appwrapper/UserMenu';
 import useUser from '@/components/jrg/auth/hooks/useUser';
 import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
 
@@ -44,7 +44,7 @@ export function NavUser() {
             <SidebarMenuButton
               side='left'
               size='lg'
-              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
+              className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground group-data-[collapsible=icon]:my-2 pl-0'
             >
               <Avatar className='w-8 h-8 rounded-lg'>
                 <AvatarImage src={getGravatarUrl(user?.email)} alt={user?.firstName} />
@@ -102,7 +102,8 @@ export function NavUser() {
             </DropdownMenuGroup>
 
             <DropdownMenuSeparator />
-            <Appearance />
+            <Themes />
+            <Appearances />
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleLogout}>
               <LogOut className='mr-2 size-4' />

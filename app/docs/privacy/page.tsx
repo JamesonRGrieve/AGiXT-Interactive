@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
-import { SidebarHeader, SidebarHeaderTitle, SidebarMain } from '@/components/jrg/appwrapper/SidebarHeader';
+import { SidebarPage } from '@/components/jrg/appwrapper/SidebarPage';
 
 // Read privacy policy from a local file
 function getPrivacyPolicy() {
@@ -18,13 +18,8 @@ export default function PrivacyPolicy() {
   const privacyPolicyContent = getPrivacyPolicy();
 
   return (
-    <>
-      <SidebarHeader>
-        <SidebarHeaderTitle>Privacy Policy</SidebarHeaderTitle>
-      </SidebarHeader>
-      <SidebarMain>
-        <MarkdownBlock content={privacyPolicyContent} />
-      </SidebarMain>
-    </>
+    <SidebarPage title='Privacy Policy'>
+      <MarkdownBlock content={privacyPolicyContent} />
+    </SidebarPage>
   );
 }

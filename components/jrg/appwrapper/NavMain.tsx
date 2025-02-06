@@ -1,7 +1,8 @@
 'use client';
 
-import { ChatBubbleIcon, ChevronRightIcon } from '@radix-ui/react-icons';
+import { ChevronRightIcon } from '@radix-ui/react-icons';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { TbMessageCirclePlus } from 'react-icons/tb';
 import {
   BookOpen,
   SquareLibrary,
@@ -51,11 +52,11 @@ type Item = {
   }[];
 };
 
-const items: Item[] = [
+export const items: Item[] = [
   {
-    title: 'Chat',
+    title: 'New Chat',
     url: '/chat',
-    icon: ChatBubbleIcon,
+    icon: TbMessageCirclePlus,
     isActive: true,
   },
   {
@@ -184,7 +185,7 @@ export function NavMain() {
   const queryParams = useSearchParams();
   const { data: company } = useCompany();
   const { toggleSidebar, open } = useSidebar('left');
-  console.log(pathname);
+
   const itemsWithActiveState = items.map((item) => ({
     ...item,
     isActive: isActive(item, pathname, queryParams),
@@ -209,8 +210,9 @@ export function NavMain() {
                       side='left'
                       tooltip={item.title}
                       onClick={() => {
-                        !open && toggleSidebar();
-                        item.url && router.push(item.url);
+                        if (!open) toggleSidebar();
+                        if (item.url) router.push(item.url);
+                        if (pathname === '/chat') router.push('/chat/new');
                       }}
                       className={cn(item.isActive && !item.items?.length && 'bg-muted')}
                     >

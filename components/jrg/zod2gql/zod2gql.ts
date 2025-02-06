@@ -58,7 +58,8 @@ z.ZodObject.prototype.toGQL = function (
     : '';
 
   // Get operation field name
-  const queryField = operationName?.replace(/^Get/, '').toLowerCase();
+  const queryField =
+    operationName?.replace(/^Get/, '').substring(0, 1).toLowerCase() + operationName?.replace(/^Get/, '').slice(1);
   const fields = this.zodToGraphQL(2);
 
   return `${queryType}${operation}${varsString} {\n  ${queryField}${fieldArgs} {\n${fields}  }\n}`;

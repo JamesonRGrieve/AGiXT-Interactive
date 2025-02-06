@@ -102,16 +102,29 @@ export function Providers() {
       // If no relevant settings found, provider is not connected
       if (relevantSettings.length === 0) return false;
 
-      // Check if ALL relevant settings are HIDDEN
+      // Check if ANY relevant settings are not empty and not "HIDDEN"
+      const isConnected = relevantSettings.some((setting) => {
+        const agentSetting = agentData.settings.find((s) => s.name === setting.name);
+        return agentSetting && agentSetting.value !== '' && agentSetting.value !== 'HIDDEN';
+      });
+      return isConnected;
+    });
+    const available = providerData.filter((provider) => {
+      if (!provider.settings?.length) return true;
+      const relevantSettings = provider.settings.filter((setting) => {
+        const isSensitive = ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) => setting.name.includes(keyword));
+        return isSensitive && agentData.settings.some((s) => s.name === setting.name);
+      });
+      if (relevantSettings.length === 0) return true;
       return relevantSettings.every((setting) => {
         const agentSetting = agentData.settings.find((s) => s.name === setting.name);
-        return agentSetting && agentSetting.value === 'HIDDEN';
+        return !agentSetting || agentSetting.value === '' || agentSetting.value === 'HIDDEN';
       });
     });
 
     return {
       connected,
-      available: providerData.filter((provider) => !connected.includes(provider)),
+      available,
     };
   }, [agentData, providerData]);
 
@@ -147,9 +160,20 @@ export function Providers() {
     }
   };
 
-  const handleDisconnect = async (extension: Extension) => {
-    const emptySettings = extension.settings.reduce((acc, setting) => ({ ...acc, [setting]: '' }), {});
-    await handleSaveSettings(extension.extension_name, emptySettings);
+  const handleDisconnect = async (name: string) => {
+    const extension = providerData?.find((ext) => ext.name === name);
+    console.log('DELETION', extension);
+    const emptySettings = extension.settings
+      .filter((setting) => {
+        const isSensitive = ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) => setting.name.includes(keyword));
+        return isSensitive;
+      })
+      .reduce((acc, setting) => {
+        console.log('DELETION PROCESSING SETTING', setting);
+        return { ...acc, [setting.name]: '' };
+      }, {});
+    console.log('SETTING DELETION', emptySettings);
+    await handleSaveSettings(extension.name, emptySettings);
   };
 
   console.log('PROVIDERS', providerData);
@@ -207,13 +231,10 @@ export function Providers() {
                         setSelectedExtension(provider.name);
                         // Initialize settings with the default values from provider.settings
                         setSettings(
-                          Object.entries(provider.settings).reduce(
-                            (acc, [key, defaultValue]) => ({
-                              ...acc,
-                              [key]: defaultValue,
-                            }),
-                            {},
-                          ),
+                          provider.settings.reduce((acc, setting) => {
+                            acc[setting.name] = setting.value;
+                            return acc;
+                          }, {}),
                         );
                       }}
                     >
@@ -230,25 +251,25 @@ export function Providers() {
                     </DialogHeader>
 
                     <div className='grid gap-4 py-4'>
-                      {Object.entries(provider.settings).map(([key, defaultValue]) => (
-                        <div key={key} className='grid gap-2'>
-                          <Label htmlFor={key}>{key}</Label>
+                      {provider.settings.map((prov) => (
+                        <div key={prov.name} className='grid gap-2'>
+                          <Label htmlFor={prov.name}>{prov.name}</Label>
                           <Input
-                            id={key}
+                            id={prov.name}
                             type={
-                              key.toLowerCase().includes('key') || key.toLowerCase().includes('password')
+                              prov.name.toLowerCase().includes('key') || prov.name.toLowerCase().includes('password')
                                 ? 'password'
                                 : 'text'
                             }
-                            defaultValue={defaultValue}
-                            value={settings[key]}
+                            defaultValue={prov.value}
+                            value={settings[prov.name]}
                             onChange={(e) =>
                               setSettings((prev) => ({
                                 ...prev,
-                                [key]: e.target.value,
+                                [prov.name]: e.target.value,
                               }))
                             }
-                            placeholder={`Enter ${key.toLowerCase()}`}
+                            placeholder={`Enter ${prov.name.toLowerCase()}`}
                           />
                         </div>
                       ))}

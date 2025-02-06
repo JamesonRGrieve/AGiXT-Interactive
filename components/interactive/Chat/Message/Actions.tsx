@@ -13,10 +13,11 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipBasic, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
+import { useToast } from '@/hooks/useToast';
 import { formatTimeAgo } from '@/lib/time-ago';
 import { getCookie } from 'cookies-next';
 import { Loader2, Volume2 } from 'lucide-react';
+import { ChatItem } from './Message';
 
 export type MessageProps = {
   chatItem: { role: string; message: string; timestamp: string; rlhf?: { positive: boolean; feedback: string } };
@@ -33,7 +34,7 @@ export function MessageActions({
   updatedMessage,
   setUpdatedMessage,
 }: {
-  chatItem: { role: string; message: string; timestamp: string; rlhf?: { positive: boolean; feedback: string } };
+  chatItem: ChatItem;
   audios: { message: string; sources: string[] } | null;
   formattedMessage: string;
   lastUserMessage: string;
@@ -218,11 +219,7 @@ export function MessageActions({
                   }}
                   title='Edit Message'
                   onConfirm={async () => {
-                    await state.agixt.updateConversationMessage(
-                      state.overrides.conversation,
-                      chatItem.message,
-                      updatedMessage,
-                    );
+                    await state.agixt.updateConversationMessage(state.overrides.conversation, chatItem.id, updatedMessage);
                     mutate('/conversation/' + state.overrides.conversation);
                   }}
                   content={
@@ -249,7 +246,7 @@ export function MessageActions({
                     ButtonProps={{ variant: 'ghost', size: 'icon', children: <LuTrash2 /> }}
                     title='Delete Message'
                     onConfirm={async () => {
-                      await state.agixt.deleteConversationMessage(state.overrides.conversation, chatItem.message);
+                      await state.agixt.deleteConversationMessage(state.overrides.conversation, chatItem.id);
                       mutate('/conversation/' + state.overrides.conversation);
                     }}
                     content={`Are you sure you'd like to permanently delete this message from the conversation?`}
@@ -283,7 +280,7 @@ export function MessageActions({
                       state.agixt.addConversationFeedback(
                         true,
                         chatItem.role,
-                        chatItem.message,
+                        chatItem.id,
                         lastUserMessage,
                         feedback,
                         state.overrides.conversation,
@@ -292,7 +289,7 @@ export function MessageActions({
                       state.agixt.addConversationFeedback(
                         false,
                         chatItem.role,
-                        chatItem.message,
+                        chatItem.id,
                         lastUserMessage,
                         feedback,
                         state.overrides.conversation,
