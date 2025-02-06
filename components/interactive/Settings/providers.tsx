@@ -218,13 +218,10 @@ export function Providers() {
                         setSelectedExtension(provider.name);
                         // Initialize settings with the default values from provider.settings
                         setSettings(
-                          Object.entries(provider.settings).reduce(
-                            (acc, [key, defaultValue]) => ({
-                              ...acc,
-                              [key]: defaultValue,
-                            }),
-                            {},
-                          ),
+                          provider.settings.reduce((acc, setting) => {
+                            acc[setting.name] = setting.value;
+                            return acc;
+                          }, {}),
                         );
                       }}
                     >
