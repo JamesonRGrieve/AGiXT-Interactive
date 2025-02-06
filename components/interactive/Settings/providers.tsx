@@ -102,29 +102,16 @@ export function Providers() {
       // If no relevant settings found, provider is not connected
       if (relevantSettings.length === 0) return false;
 
-      // Check if ANY relevant settings are not empty and not "HIDDEN"
-      const isConnected = relevantSettings.some((setting) => {
-        const agentSetting = agentData.settings.find((s) => s.name === setting.name);
-        return agentSetting && agentSetting.value !== '' && agentSetting.value !== 'HIDDEN';
-      });
-      return isConnected;
-    });
-    const available = providerData.filter((provider) => {
-      if (!provider.settings?.length) return true;
-      const relevantSettings = provider.settings.filter((setting) => {
-        const isSensitive = ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) => setting.name.includes(keyword));
-        return isSensitive && agentData.settings.some((s) => s.name === setting.name);
-      });
-      if (relevantSettings.length === 0) return true;
+      // Check if ALL relevant settings are HIDDEN
       return relevantSettings.every((setting) => {
         const agentSetting = agentData.settings.find((s) => s.name === setting.name);
-        return !agentSetting || agentSetting.value === '' || agentSetting.value === 'HIDDEN';
+        return agentSetting && agentSetting.value === 'HIDDEN';
       });
     });
 
     return {
       connected,
-      available,
+      available: providerData.filter((provider) => !connected.includes(provider)),
     };
   }, [agentData, providerData]);
 
