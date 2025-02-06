@@ -60,7 +60,7 @@ export default class AGiXTSDK {
 
   // Agent Methods
   async addAgent(agentName: string, settings: any = {}) {
-    return this.request('post', '/api/agent', { agent_name: agentName, settings });
+    return this.request('post', '/api/agent', { agent_name: agentName, settings }).then((r) => r);
   }
 
   async importAgent(agentName: string, settings: any = {}, commands: any = {}) {
