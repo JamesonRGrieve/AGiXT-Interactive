@@ -241,25 +241,25 @@ export function Providers() {
                     </DialogHeader>
 
                     <div className='grid gap-4 py-4'>
-                      {Object.entries(provider.settings).map(([key, defaultValue]) => (
-                        <div key={key} className='grid gap-2'>
-                          <Label htmlFor={key}>{key}</Label>
+                      {provider.settings.map((prov) => (
+                        <div key={prov.name} className='grid gap-2'>
+                          <Label htmlFor={prov.name}>{prov.name}</Label>
                           <Input
-                            id={key}
+                            id={prov.name}
                             type={
-                              key.toLowerCase().includes('key') || key.toLowerCase().includes('password')
+                              prov.name.toLowerCase().includes('key') || prov.name.toLowerCase().includes('password')
                                 ? 'password'
                                 : 'text'
                             }
-                            defaultValue={defaultValue}
-                            value={settings[key]}
+                            defaultValue={prov.value}
+                            value={settings[prov.name]}
                             onChange={(e) =>
                               setSettings((prev) => ({
                                 ...prev,
-                                [key]: e.target.value,
+                                [prov.name]: e.target.value,
                               }))
                             }
-                            placeholder={`Enter ${key.toLowerCase()}`}
+                            placeholder={`Enter ${prov.name.toLowerCase()}`}
                           />
                         </div>
                       ))}
