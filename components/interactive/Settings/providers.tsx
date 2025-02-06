@@ -152,7 +152,9 @@ export function Providers() {
     console.log('DELETION', extension);
     const emptySettings = extension.settings
       .filter((setting) => {
-        const isSensitive = ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) => setting.name.includes(keyword));
+        const isSensitive = ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) =>
+          setting.name.replaceAll('TOKENS', '').includes(keyword),
+        );
         return isSensitive;
       })
       .reduce((acc, setting) => {
