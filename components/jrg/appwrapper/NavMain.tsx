@@ -212,7 +212,6 @@ export function NavMain() {
                       onClick={() => {
                         if (!open) toggleSidebar();
                         if (item.url) router.push(item.url);
-                        if (pathname === '/chat') router.push('/chat/new');
                       }}
                       className={cn(item.isActive && !item.items?.length && 'bg-muted')}
                     >
