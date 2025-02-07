@@ -93,7 +93,7 @@ export function Providers() {
 
       // Find sensitive settings that exist in both provider and agent settings
       const relevantSettings = provider.settings.filter((setting) => {
-        const isSensitive = ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) => setting.name.includes(keyword));
+        const isSensitive = ['KEY', 'SECRET', 'PASSWORD'].some((keyword) => setting.name.includes(keyword));
 
         // Only include if it exists in agent settings
         return isSensitive && agentData.settings.some((s) => s.name === setting.name);
