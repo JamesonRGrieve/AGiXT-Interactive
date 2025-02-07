@@ -9,6 +9,7 @@ import ChatLog from './ChatLog';
 import ChatBar from './ChatInput';
 import log from '@/components/jrg/next-log/log';
 import { useCompany } from '../hooks';
+import axios from 'axios';
 
 export async function getAndFormatConversastion(state): Promise<any[]> {
   const rawConversation = await state.agixt.getConversation('', state.overrides.conversation, 100, 1);
@@ -100,10 +101,20 @@ export default function Chat({
     };
     setLoading(true);
     log(['Sending: ', state.openai, toOpenAI], { client: 1 });
-    const req = state.openai.chat.completions.create(toOpenAI);
+    // const req = state.openai.chat.completions.create(toOpenAI);
     await new Promise((resolve) => setTimeout(resolve, 100));
     mutate(conversationSWRPath + state.overrides.conversation);
-    const chatCompletion = await req;
+    const chatCompletion = await axios.post(
+      `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/chat/completions`,
+      {
+        ...toOpenAI,
+      },
+      {
+        headers: {
+          Authorization: getCookie('jwt'),
+        },
+      },
+    );
     log(['RESPONSE: ', chatCompletion], { client: 1 });
     state.mutate((oldState) => ({
       ...oldState,
