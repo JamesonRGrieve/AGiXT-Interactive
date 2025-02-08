@@ -832,6 +832,49 @@ class FrontEndTest:
         await self.take_screenshot("payment was processed and subscription is active")
 
     async def run(self, headless=not is_desktop()):
+    async def handle_abilities_settings(self):
+        """Test abilities page navigation and toggle interaction."""
+        try:
+            # Navigate to Agent Management
+            await self.test_action(
+                "Navigate to Agent Management to begin abilities configuration",
+                lambda: self.page.click('span:has-text("Agent Management")'),
+            )
+            await self.take_screenshot("Agent Management drop down")
+
+            # Navigate to Extensions
+            await self.test_action(
+                "Navigate to Extensions",
+                lambda: self.page.click('span:has-text("Extensions")')
+            )
+
+            # Click Abilities tab
+            await self.test_action(
+                "Navigate to Abilities tab",
+                lambda: self.page.click('button[role="tab"][id*="trigger-abilities"]')
+            )
+
+            # Take screenshot before toggling
+            await self.take_screenshot("abilities_before_toggle")
+
+            # Find and click the Create 3D Model toggle switch
+            await self.test_action(
+                "Toggle the Create 3D Model ability",
+                lambda: self.page.locator('div.rounded-lg:has-text("Create 3D Model") button[role="switch"]').click()
+            )
+
+            # Take screenshot after toggle
+            await self.take_screenshot("abilities_after_toggle")
+
+            # Verify we're still on the abilities page
+            current_url = self.page.url
+            assert "/settings/extensions?tab=abilities&mode=user&" in current_url, f"Expected to be on abilities page, but got {current_url}"
+
+        except Exception as e:
+            print(f"Error in handle_abilities_settings: {str(e)}")
+            raise
+
+    async def run(self, headless=False):
         try:
             async with async_playwright() as self.playwright:
                 self.browser = await self.playwright.chromium.launch(headless=headless)
@@ -881,6 +924,9 @@ class FrontEndTest:
                 
                 # On Linux, go to Agent Management first
                 if not is_desktop():
+
+                    # Execute abilities settings test
+                    await self.handle_abilities_settings()
                     # Navigate to Agent Management immediately after login
                     await self.test_action(
                         "Navigate to Agent Management after login",
