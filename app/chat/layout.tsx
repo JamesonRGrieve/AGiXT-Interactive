@@ -32,10 +32,10 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
             ) : currentConversation ? (
               <>
                 <h2 className='text-sm font-medium'>{currentConversation.name}</h2>
-                {currentConversation.attachment_count > 0 && (
+                {currentConversation.attachmentCount > 0 && (
                   <Badge variant='secondary' className='gap-1'>
                     <Paperclip className='w-3 h-3' />
-                    {currentConversation.attachment_count}
+                    {currentConversation.attachmentCount}
                   </Badge>
                 )}
               </>
