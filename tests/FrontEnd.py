@@ -831,6 +831,42 @@ class FrontEndTest:
         await self.page.wait_for_timeout(15000)
         await self.take_screenshot("payment was processed and subscription is active")
 
+    async def handle_extensions_settings(self):
+        """Test extensions page navigation and toggle interaction."""
+        try:
+            # Navigate to Agent Management
+            await self.test_action(
+                "Navigate to Agent Management to begin extensions configuration",
+                lambda: self.page.click('span:has-text("Agent Management")'),
+            )
+            await self.take_screenshot("Agent Management drop down")
+
+            # Navigate to Extensions
+            await self.test_action(
+                "Navigate to Extensions",
+                lambda: self.page.click('span:has-text("Extensions")')
+            )
+
+            # Take screenshot before toggling
+            await self.take_screenshot("extensions_before_toggle")
+
+            # Find and click an extension toggle switch
+            await self.test_action(
+                "Toggle an extension",
+                lambda: self.page.locator('div.rounded-lg button[role="switch"]').first.click()
+            )
+
+            # Take screenshot after toggle
+            await self.take_screenshot("extensions_after_toggle")
+
+            # Verify we're still on the extensions page
+            current_url = self.page.url
+            assert "/settings/extensions?mode=user&" in current_url, f"Expected to be on extensions page, but got {current_url}"
+
+        except Exception as e:
+            print(f"Error in handle_extensions_settings: {str(e)}")
+            raise
+
     async def handle_abilities_settings(self):
         """Test abilities page navigation and toggle interaction."""
         try:
@@ -924,7 +960,8 @@ class FrontEndTest:
                 # On Linux, go to Agent Management first
                 if not is_desktop():
 
-                    # Execute abilities settings test
+                    # Execute extensions and abilities settings tests
+                    await self.handle_extensions_settings()
                     await self.handle_abilities_settings()
                     # Navigate to Agent Management immediately after login
                     await self.test_action(
