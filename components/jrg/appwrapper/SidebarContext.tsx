@@ -23,13 +23,13 @@ export function SidebarContext({ ...props }: React.ComponentProps<typeof Sidebar
   const { content } = useSidebarContent();
   const pathname = usePathname();
 
-  if (pathname === '/' || (pathname.startsWith('/user') && pathname !== '/user/manage')) return null;
-
   useEffect(() => {
     if (getCookie('agixt-has-started') === 'true') {
       setHasStarted(true);
     }
   }, [getCookie('agixt-has-started')]);
+
+  if (pathname !== '/settings/prompts') return null;
 
   return (
     <Sidebar collapsible='icon' side='right' {...props}>
