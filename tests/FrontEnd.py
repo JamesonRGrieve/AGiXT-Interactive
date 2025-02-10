@@ -924,7 +924,7 @@ class FrontEndTest:
             print(f"Error in handle_abilities_settings: {str(e)}")
             raise
 
-    async def run(self, headless=False):
+    async def run(self, headless=not is_desktop()):
         try:
             async with async_playwright() as self.playwright:
                 self.browser = await self.playwright.chromium.launch(headless=headless)
