@@ -1057,7 +1057,7 @@ class FrontEndTest:
 
 
 
-    async def run(self, headless=False):
+    async def run(self, headless=is_desktop()):
         try:
             async with async_playwright() as self.playwright:
                 self.browser = await self.playwright.chromium.launch(headless=headless)
@@ -1111,7 +1111,34 @@ class FrontEndTest:
                     # Execute extensions and abilities settings tests
                     await self.handle_extensions_settings()
                     await self.handle_abilities_settings()
-                    # Navigate to Agent Management immediately after login
+                    # Get JWT cookie for API access
+                    jwt_cookie = await self.context.cookies()
+                    jwt = next((c['value'] for c in jwt_cookie if c['name'] == 'jwt'), None)
+                    
+                    if not jwt:
+                        raise Exception("JWT cookie not found after login")
+                        
+                    # Initialize SDK with JWT
+                    self.agixt = AGiXTSDK(base_uri=self.base_uri, api_key=jwt)
+                    
+                    # Configure Google provider settings
+                    google_settings = {
+                        "provider": "google",
+                        "GOOGLE_API_KEY": os.getenv('GOOGLE_API_KEY'),
+                        "GOOGLE_MODEL": "gemini-2.0-flash-exp",
+                        "GOOGLE_MAX_TOKENS": "1000000",
+                        "GOOGLE_TEMPERATURE": "0.7",
+                        "GOOGLE_TOP_P": "0.95"
+                    }
+                    
+                    logging.info("Updating agent settings with Google configuration")
+                    await self.page.wait_for_timeout(2000)
+                    update_result = self.agixt.update_agent_settings("AGiXT", google_settings)
+                    
+                    if not update_result:
+                        raise Exception("Failed to update agent settings with Google configuration")
+        
+                    # Navigate to Agent Management after configuration
                     await self.test_action(
                         "Navigate to Agent Management after login",
                         lambda: self.page.click('span:has-text("Agent Management")'),
