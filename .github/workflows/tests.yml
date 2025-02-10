@@ -86,8 +86,8 @@ jobs:
           TZ: America/New_York
           SEED_DATA: true
           EZLOCALAI_URI: https://api.ezlocal.ai/v1/
-          EZLOCALAI_API_KEY: n0ne
-          EZLOCALAI_MAX_TOKENS: "1"
+          EZLOCALAI_API_KEY: "n0ne"
+          EZLOCALAI_MAX_TOKENS: "32000"
           EZLOCALAI_VOICE: "HAL9000"
       front-end:
         image: ${{ inputs.front-end-image }}
