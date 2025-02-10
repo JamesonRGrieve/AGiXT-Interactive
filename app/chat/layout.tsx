@@ -34,7 +34,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
           <ConversationActions currentConversation={currentConversation || { id: '-' }} />
         </div>
       </SidebarHeader>
-      <SidebarMain>{children}</SidebarMain>
+      <SidebarMain className='px-0'>{children}</SidebarMain>
     </SidebarInset>
   );
 }
