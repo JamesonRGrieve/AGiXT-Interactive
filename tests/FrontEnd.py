@@ -1057,7 +1057,7 @@ class FrontEndTest:
 
 
 
-    async def run(self, headless=is_desktop()):
+    async def run(self, headless=True):
         try:
             async with async_playwright() as self.playwright:
                 self.browser = await self.playwright.chromium.launch(headless=headless)
