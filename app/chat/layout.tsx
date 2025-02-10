@@ -19,7 +19,7 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
 
             {currentConversation && (
               <>
-                <h2 className='text-sm font-medium'>{currentConversation.name}</h2>
+                <h2 className='text-sm font-medium truncate max-w-[calc(100vw-200px)]'>{currentConversation.name}</h2>
                 {currentConversation.attachmentCount > 0 && (
                   <Badge variant='secondary' className='gap-1'>
                     <Paperclip className='w-3 h-3' />

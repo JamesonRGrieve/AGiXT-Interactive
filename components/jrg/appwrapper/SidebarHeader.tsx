@@ -9,8 +9,8 @@ export function SidebarHeader({ children }: { children: ReactNode }) {
       className='flex shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 w-full sticky top-0 z-20 bg-background/80 backdrop-blur supports-[backdrop-filter]:bg-background/60'
       style={{ paddingTop: 'env(safe-area-inset-top)', height: 'calc(3rem + env(safe-area-inset-top))' }}
     >
-      <div className='flex items-center gap-2 px-4 md:hidden'>
-        <SidebarTrigger className='-ml-1' />
+      <div className='flex items-center h-full md:hidden'>
+        <SidebarTrigger className='size-10' />
         <Separator orientation='vertical' className='h-4' />
       </div>
       {children}
