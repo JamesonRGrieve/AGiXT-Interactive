@@ -643,6 +643,82 @@ class FrontEndTest:
                         await self.take_screenshot(
                             "The agent did not provide a visualization of its thought process."
                         )
+        except Exception as e:
+            logging.error(f"Error nagivating to chat: {e}")
+            raise Exception(f"Error nagivating to chat: {e}")
+
+    async def handle_chat_github(self):
+        try:
+            await self.test_action(
+                "After setting up the GitHub extension, the chat interface is loaded to test GitHub integration.",
+                lambda: self.page.click("text=Chat"),
+            )
+            await self.test_action(
+                "By clicking in the chat bar, the user can expand it to show more options and see their entire input.",
+                lambda: self.page.click("#message"),
+            )
+            await self.test_action(
+                "The user enters an input to test GitHub integration with the agent.",
+                lambda: self.page.fill(
+                    "#message",
+                    "Create a new GitHub repository called test-repo with a README file.",
+                ),
+            )
+            await self.test_action(
+                "When the user hits send, or the enter key, the message is sent to the agent and it begins thinking about the GitHub task.",
+                lambda: self.page.click("#send-message"),
+            )
+            while not await self.page.locator(
+                ":has-text('Conversation renamed')"
+            ).count():
+                logging.info(f"No rename found yet, waiting 5s.")
+                await asyncio.sleep(5)
+            logging.info(
+                str(
+                    await self.page.locator(":has-text('Conversation renamed')").count()
+                )
+                + "conversation rename detected, continuing."
+            )
+
+            await asyncio.sleep(2)
+
+            await self.take_screenshot(
+                "When the agent finishes thinking, it responds with information about creating the GitHub repository."
+            )
+
+            await self.test_action(
+                "The user can expand the thought process to see how the agent worked with GitHub.",
+                lambda: self.page.locator(".agixt-activity")
+                .get_by_text("Completed Activities")
+                .click(),
+                lambda: self.page.locator(".agixt-activity")
+                .get_by_text("Completed Activities")
+                .scroll_into_view_if_needed(),
+            )
+            # Try up to 3 times to get the mermaid visualization
+            max_retries = 3
+            retry_count = 0
+            while retry_count < max_retries:
+                try:
+                    await self.test_action(
+                        "The agent provides a visualization of its GitHub interaction process.",
+                        lambda: self.page.click(".agixt-activity-diagram"),
+                        lambda: self.page.locator(
+                            '.flowchart[id^="mermaid"]'
+                        ).scroll_into_view_if_needed(),
+                    )
+                    # If successful, break out of retry loop
+                    break
+                except Exception as e:
+                    retry_count += 1
+                    if retry_count < max_retries:
+                        logging.info(f"Retrying mermaid visualization (attempt {retry_count+1}/{max_retries})")
+                        await asyncio.sleep(2)  # Wait before retrying
+                    else:
+                        logging.error("Failed to load mermaid visualization after all retries")
+                        await self.take_screenshot(
+                            "The agent did not provide a visualization of its GitHub process."
+                        )
 
             # await self.test_action(
             #     "Record audio",
@@ -862,7 +938,7 @@ class FrontEndTest:
 
             await self.test_action(
                 "Enter GitHub API key",
-                lambda: self.page.fill('#GITHUB_API_KEY', 'password')
+                lambda: self.page.fill('#GITHUB_API_KEY', os.getenv('TEST_GITHUB_PAT'))
             )
 
             # Click Connect Extension button
@@ -871,8 +947,11 @@ class FrontEndTest:
                 lambda: self.page.click('button:has-text("Connect Extension")')
             )
 
-            # Take screenshot after toggle
-            await self.take_screenshot("extensions_after_toggle")
+            # Take screenshot after connection
+            await self.take_screenshot("extensions_after_connection")
+
+            # Test GitHub integration via chat
+            await self.handle_chat_github()
 
             # Verify we're still on the extensions page
             current_url = self.page.url
