@@ -291,8 +291,8 @@ export function Extensions() {
         </TabsContent>
 
         <TabsContent value='extensions' className='space-y-4'>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'>
-            <p className='text-sm text-muted-foreground col-span-full'>
+          <div className='grid gap-4'>
+            <p className='text-sm text-muted-foreground'>
               Manage your connected third-party extensions that grant your agent additional capabilities through abilities.
             </p>
             {searchParams.get('mode') !== 'company' &&
