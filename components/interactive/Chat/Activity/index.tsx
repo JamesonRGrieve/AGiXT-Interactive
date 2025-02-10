@@ -85,13 +85,15 @@ export function Activity({
               <AccordionTrigger
                 className={`${rootStyles} agixt-activity agixt-activity-${activityType.toLocaleLowerCase()} text-foreground flex items-center cursor-pointer justify-start gap-2`}
               >
-                <div className='flex items-center justify-between w-20 gap-2'>
+                <div className='flex items-center justify-between gap-2 m-w-40'>
                   {activityType !== 'info' && !nextTimestamp ? (
                     <AutorenewOutlined className='animate-spin text-primary' />
                   ) : (
                     severities[activityType].icon
                   )}
-                  {activityType !== 'info' && <div>{getTimeDifference(timestamp, nextTimestamp || currentTime)}</div>}
+                  {activityType !== 'info' && (
+                    <div className='whitespace-nowrap'>{getTimeDifference(timestamp, nextTimestamp || currentTime)}</div>
+                  )}
                   <div className={`mx-1 w-1 h-4 border-l-2`} />
                 </div>
 
@@ -106,13 +108,15 @@ export function Activity({
           <div
             className={`${rootStyles} agixt-activity text-foreground flex items-center justify-start cursor-pointer gap-2`}
           >
-            <div className='flex items-center justify-between w-20 gap-2'>
+            <div className='flex items-center justify-between gap-2 m-w-40'>
               {activityType !== 'info' && !nextTimestamp ? (
                 <AutorenewOutlined className='animate-spin text-primary' />
               ) : (
                 severities[activityType].icon
               )}
-              {activityType !== 'info' && <div>{getTimeDifference(timestamp, nextTimestamp || currentTime)}</div>}
+              {activityType !== 'info' && (
+                <div className='whitespace-nowrap'>{getTimeDifference(timestamp, nextTimestamp || currentTime)}</div>
+              )}
               <div className={`mx-1 w-1 h-4 border-l-2`} />
             </div>
 
