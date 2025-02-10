@@ -85,62 +85,66 @@ export default function AgentPanel({ setShowCreateDialog }) {
   };
 
   return (
-    <div className='flex items-center space-x-2 mb-4'>
-      {renaming || creating ? (
-        <>
-          <Input
-            value={newName}
-            onChange={(e) => setNewName(e.target.value)}
-            className='w-64'
-            placeholder='Enter agent name'
-          />
-          @ {companyData?.name}
-        </>
-      ) : (
-        <h3>
-          {agentData?.agent?.name} @ {companyData?.name}
-        </h3>
-      )}
+    <div className='flex flex-col items-center justify-between mb-4 space-x-2 md:flex-row'>
+      <div className='flex items-center space-x-2'>
+        {renaming || creating ? (
+          <>
+            <Input
+              value={newName}
+              onChange={(e) => setNewName(e.target.value)}
+              className='w-64'
+              placeholder='Enter agent name'
+            />
+            @ {companyData?.name}
+          </>
+        ) : (
+          <h3>
+            {agentData?.agent?.name} @ {companyData?.name}
+          </h3>
+        )}
+      </div>
 
-      <Button
-        onClick={() => {
-          if (creating) {
-            handleConfirm();
-          } else {
-            setCreating(true);
-            setNewName('');
-          }
-        }}
-        disabled={renaming}
-        size='icon'
-        variant='ghost'
-      >
-        {creating ? <LuCheck className='h-4 w-4' /> : <LuPlus className='h-4 w-4' />}
-      </Button>
+      <div>
+        <Button
+          onClick={() => {
+            if (creating) {
+              handleConfirm();
+            } else {
+              setCreating(true);
+              setNewName('');
+            }
+          }}
+          disabled={renaming}
+          size='icon'
+          variant='ghost'
+        >
+          {creating ? <LuCheck className='w-4 h-4' /> : <LuPlus className='w-4 h-4' />}
+        </Button>
 
-      <Button
-        onClick={() => {
-          if (renaming) {
-            handleConfirm();
-          } else {
-            setRenaming(true);
-            setNewName(getCookie('agixt-agent')?.toString() || '');
-          }
-        }}
-        disabled={creating}
-        size='icon'
-        variant='ghost'
-      >
-        {renaming ? <LuCheck className='h-4 w-4' /> : <LuPencil className='h-4 w-4' />}
-      </Button>
+        <Button
+          onClick={() => {
+            if (renaming) {
+              handleConfirm();
+            } else {
+              setRenaming(true);
+              setNewName(getCookie('agixt-agent')?.toString() || '');
+            }
+          }}
+          disabled={creating}
+          size='icon'
+          variant='ghost'
+        >
+          {renaming ? <LuCheck className='w-4 h-4' /> : <LuPencil className='w-4 h-4' />}
+        </Button>
 
-      <Button onClick={handleExport} disabled={renaming || creating} size='icon' variant='ghost'>
-        <LuDownload className='h-4 w-4' />
-      </Button>
+        <Button onClick={handleExport} disabled={renaming || creating} size='icon' variant='ghost'>
+          <LuDownload className='w-4 h-4' />
+        </Button>
 
-      <Button onClick={handleDelete} disabled={renaming || creating} size='icon' variant='ghost'>
-        <LuTrash2 className='h-4 w-4' />
-      </Button>
+        <Button onClick={handleDelete} disabled={renaming || creating} size='icon' variant='ghost'>
+          <LuTrash2 className='w-4 h-4' />
+        </Button>
+      </div>
     </div>
   );
 }
