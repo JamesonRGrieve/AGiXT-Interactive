@@ -8,8 +8,6 @@ import platform
 import uuid
 import tempfile
 from datetime import datetime
-
-# Third party imports - essential first
 import openai
 from playwright.async_api import async_playwright
 from IPython.display import Image, display
@@ -850,10 +848,27 @@ class FrontEndTest:
             # Take screenshot before toggling
             await self.take_screenshot("extensions_before_toggle")
 
-            # Find and click an extension toggle switch
+            # Find and click the Connect button for GitHub extension
             await self.test_action(
-                "Toggle an extension",
-                lambda: self.page.locator('div.rounded-lg button[role="switch"]').first.click()
+                "Click Connect on GitHub extension",
+                lambda: self.page.locator('div.rounded-lg:has-text("Github") button:has-text("Connect")').click()
+            )
+
+            # Enter username and API key
+            await self.test_action(
+                "Enter GitHub username",
+                lambda: self.page.fill('#GITHUB_USERNAME', 'AGiXT-Tests')
+            )
+
+            await self.test_action(
+                "Enter GitHub API key",
+                lambda: self.page.fill('#GITHUB_API_KEY', 'password')
+            )
+
+            # Click Connect Extension button
+            await self.test_action(
+                "Click Connect Extension button to complete GitHub connection",
+                lambda: self.page.click('button:has-text("Connect Extension")')
             )
 
             # Take screenshot after toggle
@@ -909,7 +924,7 @@ class FrontEndTest:
             print(f"Error in handle_abilities_settings: {str(e)}")
             raise
 
-    async def run(self, headless=not is_desktop()):
+    async def run(self, headless=False):
         try:
             async with async_playwright() as self.playwright:
                 self.browser = await self.playwright.chromium.launch(headless=headless)
