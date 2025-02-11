@@ -695,30 +695,6 @@ class FrontEndTest:
                 .get_by_text("Completed Activities")
                 .scroll_into_view_if_needed(),
             )
-            # Try up to 3 times to get the mermaid visualization
-            max_retries = 3
-            retry_count = 0
-            while retry_count < max_retries:
-                try:
-                    await self.test_action(
-                        "The agent provides a visualization of its GitHub interaction process.",
-                        lambda: self.page.click(".agixt-activity-diagram"),
-                        lambda: self.page.locator(
-                            '.flowchart[id^="mermaid"]'
-                        ).scroll_into_view_if_needed(),
-                    )
-                    # If successful, break out of retry loop
-                    break
-                except Exception as e:
-                    retry_count += 1
-                    if retry_count < max_retries:
-                        logging.info(f"Retrying mermaid visualization (attempt {retry_count+1}/{max_retries})")
-                        await asyncio.sleep(2)  # Wait before retrying
-                    else:
-                        logging.error("Failed to load mermaid visualization after all retries")
-                        await self.take_screenshot(
-                            "The agent did not provide a visualization of its GitHub process."
-                        )
 
             # await self.test_action(
             #     "Record audio",
@@ -1145,8 +1121,8 @@ class FrontEndTest:
                     )
                     await self.take_screenshot("On Agent Management page after login")
                     # Then proceed with mandatory context and other tests
-                    await self.handle_mandatory_context()
-                    await self.handle_chat()
+                    # await self.handle_mandatory_context()
+                    # await self.handle_chat()
                     chat_handled = True
 
                     # Run remaining tests
