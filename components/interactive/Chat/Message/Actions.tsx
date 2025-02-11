@@ -1,22 +1,20 @@
 'use client';
 
-import React, { useContext, useState, useMemo, useRef } from 'react';
-import { LuCopy, LuDownload, LuThumbsUp, LuThumbsDown, LuPen as LuEdit, LuTrash2, LuGitFork } from 'react-icons/lu';
-import clipboardCopy from 'clipboard-copy';
-import { mutate } from 'swr';
-import { InteractiveConfigContext } from '../../InteractiveConfigContext';
-import MarkdownBlock from './MarkdownBlock';
-import formatDate from './formatDate';
-import JRGDialog from './Dialog';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipBasic, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
+import { Tooltip, TooltipBasic, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useToast } from '@/hooks/useToast';
-import { formatTimeAgo } from '@/lib/time-ago';
+import { cn } from '@/lib/utils';
+import clipboardCopy from 'clipboard-copy';
 import { getCookie } from 'cookies-next';
 import { Loader2, Volume2 } from 'lucide-react';
+import { useContext, useRef, useState } from 'react';
+import { LuCopy, LuDownload, LuPen as LuEdit, LuGitFork, LuThumbsDown, LuThumbsUp, LuTrash2 } from 'react-icons/lu';
+import { mutate } from 'swr';
+import { InteractiveConfigContext } from '../../InteractiveConfigContext';
+import { useConversations } from '../../hooks';
+import JRGDialog from './Dialog';
 import { ChatItem } from './Message';
 
 export type MessageProps = {
@@ -42,6 +40,7 @@ export function MessageActions({
   setUpdatedMessage: (value: string) => void;
 }) {
   const state = useContext(InteractiveConfigContext);
+  const { data: convData } = useConversations();
   const { toast } = useToast();
   const [vote, setVote] = useState(chatItem.rlhf ? (chatItem.rlhf.positive ? 1 : -1) : 0);
   const [open, setOpen] = useState(false);
@@ -219,7 +218,11 @@ export function MessageActions({
                   }}
                   title='Edit Message'
                   onConfirm={async () => {
-                    await state.agixt.updateConversationMessage(state.overrides.conversation, chatItem.id, updatedMessage);
+                    await state.agixt.updateConversationMessage(
+                      convData?.find((item) => item.id === state.overrides.conversation).name,
+                      chatItem.id,
+                      updatedMessage,
+                    );
                     mutate('/conversation/' + state.overrides.conversation);
                   }}
                   content={
@@ -246,7 +249,10 @@ export function MessageActions({
                     ButtonProps={{ variant: 'ghost', size: 'icon', children: <LuTrash2 /> }}
                     title='Delete Message'
                     onConfirm={async () => {
-                      await state.agixt.deleteConversationMessage(state.overrides.conversation, chatItem.id);
+                      await state.agixt.deleteConversationMessage(
+                        convData?.find((item) => item.id === state.overrides.conversation).name,
+                        chatItem.id,
+                      );
                       mutate('/conversation/' + state.overrides.conversation);
                     }}
                     content={`Are you sure you'd like to permanently delete this message from the conversation?`}
