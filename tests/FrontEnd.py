@@ -8,8 +8,6 @@ import platform
 import uuid
 import tempfile
 from datetime import datetime
-
-# Third party imports - essential first
 import openai
 from playwright.async_api import async_playwright
 from IPython.display import Image, display
@@ -46,7 +44,7 @@ async def print_args(msg):
             print("CONSOLE MESSAGE:", value)
         except Exception as e:
             # Fall back to text() if json_value() fails
-            text_value = await arg.text()
+            text_value = await arg.evaluate('handle => String(handle)')
             print("CONSOLE MESSAGE:", text_value)
 
 
@@ -645,6 +643,82 @@ class FrontEndTest:
                         await self.take_screenshot(
                             "The agent did not provide a visualization of its thought process."
                         )
+        except Exception as e:
+            logging.error(f"Error nagivating to chat: {e}")
+            raise Exception(f"Error nagivating to chat: {e}")
+
+    async def handle_chat_github(self):
+        try:
+            await self.test_action(
+                "After setting up the GitHub extension, the chat interface is loaded to test GitHub integration.",
+                lambda: self.page.click("text=Chat"),
+            )
+            await self.test_action(
+                "By clicking in the chat bar, the user can expand it to show more options and see their entire input.",
+                lambda: self.page.click("#message"),
+            )
+            await self.test_action(
+                "The user enters an input to test GitHub integration with the agent.",
+                lambda: self.page.fill(
+                    "#message",
+                    "Execute the command get list of my GitHub repositories. What are my repositories?",
+                ),
+            )
+            await self.test_action(
+                "When the user hits send, or the enter key, the message is sent to the agent and it begins thinking about the GitHub task.",
+                lambda: self.page.click("#send-message"),
+            )
+            while not await self.page.locator(
+                ":has-text('Conversation renamed')"
+            ).count():
+                logging.info(f"No rename found yet, waiting 5s.")
+                await asyncio.sleep(5)
+            logging.info(
+                str(
+                    await self.page.locator(":has-text('Conversation renamed')").count()
+                )
+                + "conversation rename detected, continuing."
+            )
+
+            await asyncio.sleep(2)
+
+            await self.take_screenshot(
+                "When the agent finishes thinking, it responds with information about creating the GitHub repository."
+            )
+
+            await self.test_action(
+                "The user can expand the thought process to see how the agent worked with GitHub.",
+                lambda: self.page.locator(".agixt-activity")
+                .get_by_text("Completed Activities")
+                .click(),
+                lambda: self.page.locator(".agixt-activity")
+                .get_by_text("Completed Activities")
+                .scroll_into_view_if_needed(),
+            )
+            # Try up to 3 times to get the mermaid visualization
+            max_retries = 3
+            retry_count = 0
+            while retry_count < max_retries:
+                try:
+                    await self.test_action(
+                        "The agent provides a visualization of its GitHub interaction process.",
+                        lambda: self.page.click(".agixt-activity-diagram"),
+                        lambda: self.page.locator(
+                            '.flowchart[id^="mermaid"]'
+                        ).scroll_into_view_if_needed(),
+                    )
+                    # If successful, break out of retry loop
+                    break
+                except Exception as e:
+                    retry_count += 1
+                    if retry_count < max_retries:
+                        logging.info(f"Retrying mermaid visualization (attempt {retry_count+1}/{max_retries})")
+                        await asyncio.sleep(2)  # Wait before retrying
+                    else:
+                        logging.error("Failed to load mermaid visualization after all retries")
+                        await self.take_screenshot(
+                            "The agent did not provide a visualization of its GitHub process."
+                        )
 
             # await self.test_action(
             #     "Record audio",
@@ -831,7 +905,159 @@ class FrontEndTest:
         await self.page.wait_for_timeout(15000)
         await self.take_screenshot("payment was processed and subscription is active")
 
-    async def run(self, headless=not is_desktop()):
+    async def handle_abilities_settings_Github(self):
+        """Test abilities page navigation and toggle interaction."""
+
+        # Click Abilities tab
+        await self.test_action(
+            "Navigate to Abilities tab",
+            lambda: self.page.click('button[role="tab"][id*="trigger-abilities"]')
+        )
+
+        # Take screenshot before toggling
+        await self.take_screenshot("abilities_before_toggle")
+
+        # Go to the Get List of My Github Repositories text
+        await self.test_action(
+            "Go to Get List of My Github Repositories ability",
+            lambda: self.page.get_by_text("Get List of My Github Repositories").click()
+        )
+
+        # Find and click the Get List of My Github Repositories toggle switch
+        await self.test_action(
+            "Toggle the Get List of My Github Repositories ability",
+            lambda: self.page.locator('div.rounded-lg.bg-card.text-card-foreground.shadow-sm.p-4.border.border-border\\/50:has-text("Get List of My Github Repositories")').locator('button[role="switch"]').click(),
+            lambda: self.page.wait_for_timeout(500)  # Ensure toggle interaction completes
+        )
+
+        # First hard refresh
+        await self.test_action(
+            "Perform hard refresh",
+            lambda: self.page.evaluate("() => { location.reload(true) }")
+        )
+        await self.page.wait_for_load_state('networkidle')
+
+        # Second hard refresh
+        await self.test_action(
+            "Perform second hard refresh",
+            lambda: self.page.evaluate("() => { location.reload(true) }")
+        )
+        await self.page.wait_for_load_state('networkidle')
+
+        # Go to the Get List of My Github Repositories text
+        await self.test_action(
+            "Go to Get List of My Github Repositories ability",
+            lambda: self.page.get_by_text("Get List of My Github Repositories").click()
+        )
+
+        # Take screenshot after toggle, refresh, and scroll
+        await self.take_screenshot("abilities_after_toggle_and_refresh")
+
+
+    async def handle_extensions_settings(self):
+        """Test extensions page navigation and toggle interaction."""
+        try:
+            # Navigate to Agent Management
+            await self.test_action(
+                "Navigate to Agent Management to begin extensions configuration",
+                lambda: self.page.click('span:has-text("Agent Management")'),
+            )
+            await self.take_screenshot("Agent Management drop down")
+
+            # Navigate to Extensions
+            await self.test_action(
+                "Navigate to Extensions",
+                lambda: self.page.click('span:has-text("Extensions")')
+            )
+
+            # Take screenshot before toggling
+            await self.take_screenshot("extensions_before_toggle")
+
+            # Find and click the Connect button for GitHub extension
+            await self.test_action(
+                "Click Connect on GitHub extension",
+                lambda: self.page.locator('div.rounded-lg:has-text("Github") button:has-text("Connect")').click()
+            )
+
+            # Enter username and API key
+            await self.test_action(
+                "Enter GitHub username",
+                lambda: self.page.fill('#GITHUB_USERNAME', 'AGiXT-Tests')
+            )
+
+            await self.test_action(
+                "Enter GitHub API key",
+                lambda: self.page.fill('#GITHUB_API_KEY', os.getenv('TEST_GITHUB_PAT'))
+            )
+
+            # Click Connect Extension button
+            await self.test_action(
+                "Click Connect Extension button to complete GitHub connection",
+                lambda: self.page.click('button:has-text("Connect Extension")')
+            )
+
+            # Take screenshot after connection
+            await self.take_screenshot("extensions_after_connection")
+
+            # Enable GitHub extension commands in Abilities tab
+            await self.handle_abilities_settings_Github()
+
+            # Test GitHub integration via chat
+            await self.handle_chat_github()
+
+            # Verify we're still on the extensions page
+            current_url = self.page.url
+            assert "/settings/extensions?mode=user&" in current_url, f"Expected to be on extensions page, but got {current_url}"
+
+        except Exception as e:
+            print(f"Error in handle_extensions_settings: {str(e)}")
+            raise
+
+    async def handle_abilities_settings(self):
+        """Test abilities page navigation and toggle interaction."""
+        try:
+            # Navigate to Agent Management
+            await self.test_action(
+                "Navigate to Agent Management to begin abilities configuration",
+                lambda: self.page.click('span:has-text("Agent Management")'),
+            )
+            await self.take_screenshot("Agent Management drop down")
+
+            # Navigate to Extensions
+            await self.test_action(
+                "Navigate to Extensions",
+                lambda: self.page.click('span:has-text("Extensions")')
+            )
+
+            # Click Abilities tab
+            await self.test_action(
+                "Navigate to Abilities tab",
+                lambda: self.page.click('button[role="tab"][id*="trigger-abilities"]')
+            )
+
+            # Take screenshot before toggling
+            await self.take_screenshot("abilities_before_toggle")
+
+            # Find and click the Create 3D Model toggle switch
+            await self.test_action(
+                "Toggle the Create 3D Model ability",
+                lambda: self.page.locator('div.rounded-lg:has-text("Create 3D Model") button[role="switch"]').click()
+            )
+
+            # Take screenshot after toggle
+            await self.take_screenshot("abilities_after_toggle")
+
+            # Verify we're still on the abilities page
+            current_url = self.page.url
+            assert "/settings/extensions?tab=abilities&mode=user&" in current_url, f"Expected to be on abilities page, but got {current_url}"
+
+        except Exception as e:
+            print(f"Error in handle_abilities_settings: {str(e)}")
+            raise
+
+
+
+    async def run(self, headless=True):
         try:
             async with async_playwright() as self.playwright:
                 self.browser = await self.playwright.chromium.launch(headless=headless)
@@ -881,7 +1107,38 @@ class FrontEndTest:
                 
                 # On Linux, go to Agent Management first
                 if not is_desktop():
-                    # Navigate to Agent Management immediately after login
+
+                    # Execute extensions and abilities settings tests
+                    await self.handle_extensions_settings()
+                    await self.handle_abilities_settings()
+                    # Get JWT cookie for API access
+                    jwt_cookie = await self.context.cookies()
+                    jwt = next((c['value'] for c in jwt_cookie if c['name'] == 'jwt'), None)
+                    
+                    if not jwt:
+                        raise Exception("JWT cookie not found after login")
+                        
+                    # Initialize SDK with JWT
+                    self.agixt = AGiXTSDK(base_uri=self.base_uri, api_key=jwt)
+                    
+                    # Configure Google provider settings
+                    google_settings = {
+                        "provider": "google",
+                        "GOOGLE_API_KEY": os.getenv('GOOGLE_API_KEY'),
+                        "GOOGLE_MODEL": "gemini-2.0-flash-exp",
+                        "GOOGLE_MAX_TOKENS": "1000000",
+                        "GOOGLE_TEMPERATURE": "0.7",
+                        "GOOGLE_TOP_P": "0.95"
+                    }
+                    
+                    logging.info("Updating agent settings with Google configuration")
+                    await self.page.wait_for_timeout(2000)
+                    update_result = self.agixt.update_agent_settings("AGiXT", google_settings)
+                    
+                    if not update_result:
+                        raise Exception("Failed to update agent settings with Google configuration")
+        
+                    # Navigate to Agent Management after configuration
                     await self.test_action(
                         "Navigate to Agent Management after login",
                         lambda: self.page.click('span:has-text("Agent Management")'),
