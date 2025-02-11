@@ -23,7 +23,7 @@ on:
         default: Dockerfile
       context:
         type: string
-        default: "{{defaultContext}}"
+        default: '{{defaultContext}}'
       context-cache:
         type: string
         description: a cache key
@@ -62,10 +62,10 @@ on:
         default: type=gha,mode=max
     outputs:
       digest:
-        description: "Digest of docker image"
+        description: 'Digest of docker image'
         value: ${{ jobs.build.outputs.digest }}
       primary-image:
-        description: "Primary full name of pushed docker image"
+        description: 'Primary full name of pushed docker image'
         value: ${{ jobs.build.outputs.primary-image }}
     secrets:
       DOCKERHUB_TOKEN:
@@ -116,7 +116,7 @@ jobs:
       ## Cache based contexts
       - name: Restore cached context
         if: inputs.context-cache
-        uses: actions/cache/restore@v4.1.2
+        uses: actions/cache/restore@v4
         with:
           path: cached-context
           key: ${{ inputs.context-cache }}
