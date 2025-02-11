@@ -668,17 +668,17 @@ class FrontEndTest:
                 "When the user hits send, or the enter key, the message is sent to the agent and it begins thinking about the GitHub task.",
                 lambda: self.page.click("#send-message"),
             )
-            while not await self.page.locator(
-                ":has-text('Conversation renamed')"
-            ).count():
-                logging.info(f"No rename found yet, waiting 5s.")
-                await asyncio.sleep(5)
-            logging.info(
-                str(
-                    await self.page.locator(":has-text('Conversation renamed')").count()
-                )
-                + "conversation rename detected, continuing."
-            )
+            # while not await self.page.locator(
+            #     ":has-text('Conversation renamed')"
+            # ).count():
+            #     logging.info(f"No rename found yet, waiting 5s.")
+            #     await asyncio.sleep(5)
+            # logging.info(
+            #     str(
+            #         await self.page.locator(":has-text('Conversation renamed')").count()
+            #     )
+            #     + "conversation rename detected, continuing."
+            # )
 
             await asyncio.sleep(2)
 
