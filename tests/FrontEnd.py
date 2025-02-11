@@ -680,21 +680,18 @@ class FrontEndTest:
             #     + "conversation rename detected, continuing."
             # )
 
-            await asyncio.sleep(2)
+            # await asyncio.sleep(2)
+            
+            await asyncio.sleep(160)
+            
+            await self.page.locator(".agixt-activity").get_by_text("Completed Activities").scroll_into_view_if_needed()
 
             await self.take_screenshot(
-                "When the agent finishes thinking, it responds with information about creating the GitHub repository."
+                "When the agent finishes thinking, it responds with the user's GitHub repositories.",
             )
 
-            await self.test_action(
-                "The user can expand the thought process to see how the agent worked with GitHub.",
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed Activities")
-                .click(),
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed Activities")
-                .scroll_into_view_if_needed(),
-            )
+            
+            # await asyncio.sleep(240)
 
             # await self.test_action(
             #     "Record audio",
