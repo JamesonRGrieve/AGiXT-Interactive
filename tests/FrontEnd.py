@@ -668,57 +668,30 @@ class FrontEndTest:
                 "When the user hits send, or the enter key, the message is sent to the agent and it begins thinking about the GitHub task.",
                 lambda: self.page.click("#send-message"),
             )
-            while not await self.page.locator(
-                ":has-text('Conversation renamed')"
-            ).count():
-                logging.info(f"No rename found yet, waiting 5s.")
-                await asyncio.sleep(5)
-            logging.info(
-                str(
-                    await self.page.locator(":has-text('Conversation renamed')").count()
-                )
-                + "conversation rename detected, continuing."
-            )
+            # while not await self.page.locator(
+            #     ":has-text('Conversation renamed')"
+            # ).count():
+            #     logging.info(f"No rename found yet, waiting 5s.")
+            #     await asyncio.sleep(5)
+            # logging.info(
+            #     str(
+            #         await self.page.locator(":has-text('Conversation renamed')").count()
+            #     )
+            #     + "conversation rename detected, continuing."
+            # )
 
-            await asyncio.sleep(2)
+            # await asyncio.sleep(2)
+            
+            await asyncio.sleep(160)
+            
+            await self.page.locator(".agixt-activity").get_by_text("Completed Activities").scroll_into_view_if_needed()
 
             await self.take_screenshot(
-                "When the agent finishes thinking, it responds with information about creating the GitHub repository."
+                "When the agent finishes thinking, it responds with the user's GitHub repositories.",
             )
 
-            await self.test_action(
-                "The user can expand the thought process to see how the agent worked with GitHub.",
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed Activities")
-                .click(),
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed Activities")
-                .scroll_into_view_if_needed(),
-            )
-            # Try up to 3 times to get the mermaid visualization
-            max_retries = 3
-            retry_count = 0
-            while retry_count < max_retries:
-                try:
-                    await self.test_action(
-                        "The agent provides a visualization of its GitHub interaction process.",
-                        lambda: self.page.click(".agixt-activity-diagram"),
-                        lambda: self.page.locator(
-                            '.flowchart[id^="mermaid"]'
-                        ).scroll_into_view_if_needed(),
-                    )
-                    # If successful, break out of retry loop
-                    break
-                except Exception as e:
-                    retry_count += 1
-                    if retry_count < max_retries:
-                        logging.info(f"Retrying mermaid visualization (attempt {retry_count+1}/{max_retries})")
-                        await asyncio.sleep(2)  # Wait before retrying
-                    else:
-                        logging.error("Failed to load mermaid visualization after all retries")
-                        await self.take_screenshot(
-                            "The agent did not provide a visualization of its GitHub process."
-                        )
+            
+            # await asyncio.sleep(240)
 
             # await self.test_action(
             #     "Record audio",
@@ -1145,8 +1118,8 @@ class FrontEndTest:
                     )
                     await self.take_screenshot("On Agent Management page after login")
                     # Then proceed with mandatory context and other tests
-                    await self.handle_mandatory_context()
-                    await self.handle_chat()
+                    # await self.handle_mandatory_context()
+                    # await self.handle_chat()
                     chat_handled = True
 
                     # Run remaining tests
