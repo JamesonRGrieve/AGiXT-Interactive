@@ -20,33 +20,33 @@ export default function ChatLayout({ children }: { children: React.ReactNode }) 
   const { data: conversations, isLoading: isLoadingConversations } = useConversations();
 
   // Find the current conversation
-  const currentConversation = conversations?.find((conv) => conv.id === state.overrides.conversation);
+  const currentConversation = conversations?.find((conv) => conv.id === state.overrides?.conversation);
 
   return (
-    <SidebarInset>
+    <SidebarInset className='max-w-[100vw]'>
       <SidebarHeader>
-        <div className='flex items-center w-full gap-2 pl-4'>
+        <div className='flex items-center w-full gap-2 md:pl-4'>
           <div className='flex items-center flex-1 gap-2 mx-auto'>
-            {isLoadingConversations ? (
-              <Skeleton className='w-32 h-4' />
-            ) : currentConversation ? (
+            {isLoadingConversations && <Skeleton className='w-32 h-4' />}
+
+            {currentConversation && (
               <>
-                <h2 className='text-sm font-medium'>{currentConversation.name}</h2>
-                {currentConversation.attachment_count > 0 && (
+                <h2 className='text-sm font-medium truncate max-w-[calc(100vw-200px)]'>{currentConversation.name}</h2>
+                {currentConversation.attachmentCount > 0 && (
                   <Badge variant='secondary' className='gap-1'>
                     <Paperclip className='w-3 h-3' />
-                    {currentConversation.attachment_count}
+                    {currentConversation.attachmentCount}
                   </Badge>
                 )}
               </>
-            ) : (
-              <p className='text-sm text-muted-foreground'>New Chat</p>
             )}
+
+            {!isLoadingConversations && !currentConversation && <p className='text-sm text-muted-foreground'>New Chat</p>}
           </div>
           <ConversationActions currentConversation={currentConversation || { id: '-' }} />
         </div>
       </SidebarHeader>
-      <SidebarMain>{children}</SidebarMain>
+      <SidebarMain className='px-0'>{children}</SidebarMain>
     </SidebarInset>
   );
 }
