@@ -55,7 +55,7 @@ export function Extensions() {
   const [showEnabledOnly, setShowEnabledOnly] = useState(false);
   const agent_name = (getCookie('agixt-agent') || process.env.NEXT_PUBLIC_AGIXT_AGENT) ?? agent;
   const { data: activeCompany, mutate: mutateCompany } = useCompany();
-  console.log('ACTIVE COMPANY', activeCompany);
+
   const { data: providerData } = useProviders();
   const searchParams = useSearchParams();
   // Filter extensions for the enabled commands view
@@ -65,6 +65,7 @@ export function Extensions() {
     ext.commands.filter((cmd) => cmd.enabled).map((cmd) => ({ ...cmd, extension_name: ext.extension_name })),
   );
   console.log('ACTIVE COMPANY', activeCompany);
+  console.log('ACTIVE AGENT', agentData);
   // Categorize extensions for the available tab
   const categorizeExtensions = (exts: Extension[]) => {
     return {
