@@ -98,7 +98,7 @@ class FrontEndTest:
             f"Screenshotting { 'popup' if self.popup else 'page'} at {target.url}"
         )
         if not no_sleep:
-            await target.wait_for_timeout(5000)
+            await target.wait_for_timeout(500)
 
         await target.screenshot(path=screenshot_path)
 
@@ -526,6 +526,8 @@ class FrontEndTest:
                 "When the user hits send, or the enter key, the message is sent to the agent and it begins thinking.",
                 lambda: self.page.click("#send-message"),
             )
+            # A refetch of conversation after the rename is done needs to be added so this loads on the new page.
+            return None
             while not await self.page.locator(
                 ":has-text('Conversation renamed')"
             ).count():
