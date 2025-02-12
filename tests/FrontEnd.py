@@ -98,7 +98,7 @@ class FrontEndTest:
             f"Screenshotting { 'popup' if self.popup else 'page'} at {target.url}"
         )
         if not no_sleep:
-            await target.wait_for_timeout(500)
+            await target.wait_for_timeout(2000)
 
         await target.screenshot(path=screenshot_path)
 
