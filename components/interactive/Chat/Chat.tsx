@@ -180,6 +180,11 @@ export default function Chat({
       }, 1000);
     }
   }, [loading, state.overrides.conversation]);
+  useEffect(() => {
+    return () => {
+      setLoading(false);
+    };
+  }, []);
   return (
     <>
       <ChatLog
