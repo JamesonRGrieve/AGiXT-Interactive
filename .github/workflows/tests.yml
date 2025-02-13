@@ -85,11 +85,10 @@ jobs:
           LOG_LEVEL: INFO
           TZ: America/New_York
           SEED_DATA: true
-          EZLOCALAI_URI: ${{ secrets.EZLOCALAI_URI }}
-          EZLOCALAI_API_KEY: ${{ secrets.EZLOCALAI_API_KEY }}
-          EZLOCALAI_MAX_TOKENS: "1"
+          EZLOCALAI_URI: https://api.ezlocal.ai/v1/
+          EZLOCALAI_API_KEY: "n0ne"
+          EZLOCALAI_MAX_TOKENS: "32000"
           EZLOCALAI_VOICE: "HAL9000"
-          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
       front-end:
         image: ${{ inputs.front-end-image }}
         ports:

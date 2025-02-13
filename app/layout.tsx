@@ -13,6 +13,7 @@ import { metadata, viewport } from './metadata';
 import '@/components/jrg/zod2gql/zod2gql';
 import { CommandMenu } from '@/components/command';
 import { SolanaWalletProvider } from '@/components/jrg/wallet/wallet-provider';
+import { SidebarContentProvider } from '@/components/jrg/appwrapper/SidebarContentManager';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -29,13 +30,15 @@ export default function RootLayout({ children }: { children: ReactNode }): React
       <body className={cn(inter.className, theme, appearance)}>
         <InteractiveConfigContextWrapper>
           <SolanaWalletProvider>
-            <SidebarProvider className='flex-1'>
-              <SidebarMain side='left' />
-              {children}
-              <Toaster />
-              <CommandMenu />
-              {/* <ContextSidebar side='right' /> */}
-            </SidebarProvider>
+            <SidebarContentProvider>
+              <SidebarProvider className='flex-1'>
+                <SidebarMain side='left' />
+                {children}
+                <Toaster />
+                <CommandMenu />
+                <SidebarContext side='right' />
+              </SidebarProvider>
+            </SidebarContentProvider>
           </SolanaWalletProvider>
         </InteractiveConfigContextWrapper>
       </body>

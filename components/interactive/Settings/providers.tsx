@@ -1,17 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { getCookie } from 'cookies-next';
-import axios from 'axios';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { LuUnlink as Unlink } from 'react-icons/lu';
-import { Wrench, Plus } from 'lucide-react';
-import { useCompany, useAgent, useProviders } from '../hooks';
+import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -21,7 +13,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import axios from 'axios';
+import { getCookie } from 'cookies-next';
+import { Plus, Wrench } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useMemo, useState } from 'react';
+import { LuUnlink as Unlink } from 'react-icons/lu';
+import { useAgent, useCompany, useProviders } from '../hooks';
 
 // Types remain the same
 type Command = {
@@ -53,7 +53,7 @@ interface ExtensionSettings {
 export function Providers() {
   const { agent } = useInteractiveConfig();
   const pathname = usePathname();
-  const { data: agentData } = useAgent(true);
+  const { data: agentData, mutate } = useAgent(true);
   const router = useRouter();
   const [extensions, setExtensions] = useState<Extension[]>([]);
   const [selectedExtension, setSelectedExtension] = useState<string>('');
@@ -93,7 +93,7 @@ export function Providers() {
 
       // Find sensitive settings that exist in both provider and agent settings
       const relevantSettings = provider.settings.filter((setting) => {
-        const isSensitive = ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) => setting.name.includes(keyword));
+        const isSensitive = ['KEY', 'SECRET', 'PASSWORD'].some((keyword) => setting.name.includes(keyword));
 
         // Only include if it exists in agent settings
         return isSensitive && agentData.settings.some((s) => s.name === setting.name);
@@ -102,29 +102,16 @@ export function Providers() {
       // If no relevant settings found, provider is not connected
       if (relevantSettings.length === 0) return false;
 
-      // Check if ANY relevant settings are not empty and not "HIDDEN"
-      const isConnected = relevantSettings.some((setting) => {
-        const agentSetting = agentData.settings.find((s) => s.name === setting.name);
-        return agentSetting && agentSetting.value !== '' && agentSetting.value !== 'HIDDEN';
-      });
-      return isConnected;
-    });
-    const available = providerData.filter((provider) => {
-      if (!provider.settings?.length) return true;
-      const relevantSettings = provider.settings.filter((setting) => {
-        const isSensitive = ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) => setting.name.includes(keyword));
-        return isSensitive && agentData.settings.some((s) => s.name === setting.name);
-      });
-      if (relevantSettings.length === 0) return true;
+      // Check if ALL relevant settings are HIDDEN
       return relevantSettings.every((setting) => {
         const agentSetting = agentData.settings.find((s) => s.name === setting.name);
-        return !agentSetting || agentSetting.value === '' || agentSetting.value === 'HIDDEN';
+        return agentSetting && agentSetting.value === 'HIDDEN';
       });
     });
 
     return {
       connected,
-      available,
+      available: providerData.filter((provider) => !connected.includes(provider)),
     };
   }, [agentData, providerData]);
 
@@ -158,6 +145,7 @@ export function Providers() {
         message: error.response?.data?.detail || error.message || 'Failed to connect extension',
       });
     }
+    mutate();
   };
 
   const handleDisconnect = async (name: string) => {
@@ -165,8 +153,9 @@ export function Providers() {
     console.log('DELETION', extension);
     const emptySettings = extension.settings
       .filter((setting) => {
-        const isSensitive = ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) => setting.name.includes(keyword));
-        return isSensitive;
+        return ['API_KEY', 'SECRET', 'PASSWORD', 'TOKEN'].some((keyword) =>
+          setting.name.replaceAll('TOKENS', '').includes(keyword),
+        );
       })
       .reduce((acc, setting) => {
         console.log('DELETION PROCESSING SETTING', setting);
@@ -231,13 +220,10 @@ export function Providers() {
                         setSelectedExtension(provider.name);
                         // Initialize settings with the default values from provider.settings
                         setSettings(
-                          Object.entries(provider.settings).reduce(
-                            (acc, [key, defaultValue]) => ({
-                              ...acc,
-                              [key]: defaultValue,
-                            }),
-                            {},
-                          ),
+                          provider.settings.reduce((acc, setting) => {
+                            acc[setting.name] = setting.value;
+                            return acc;
+                          }, {}),
                         );
                       }}
                     >

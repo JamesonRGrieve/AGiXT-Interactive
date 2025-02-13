@@ -1,14 +1,16 @@
 'use client';
 
-import { useContext, useEffect, useState } from 'react';
+import log from '@/components/jrg/next-log/log';
+import axios from 'axios';
 import { getCookie } from 'cookies-next';
+import { useRouter } from 'next/navigation';
+import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { UIProps } from '../InteractiveAGiXT';
 import { InteractiveConfigContext, Overrides } from '../InteractiveConfigContext';
-import ChatLog from './ChatLog';
-import ChatBar from './ChatInput';
-import log from '@/components/jrg/next-log/log';
 import { useCompany } from '../hooks';
+import ChatBar from './ChatInput';
+import ChatLog from './ChatLog';
 
 export async function getAndFormatConversastion(state): Promise<any[]> {
   const rawConversation = await state.agixt.getConversation('', state.overrides.conversation, 100, 1);
@@ -51,6 +53,7 @@ export default function Chat({
   showOverrideSwitchesCSV,
 }: Overrides & UIProps): React.JSX.Element {
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const state = useContext(InteractiveConfigContext);
   const conversation = useSWR(
     conversationSWRPath + state.overrides.conversation,
@@ -100,10 +103,22 @@ export default function Chat({
     };
     setLoading(true);
     log(['Sending: ', state.openai, toOpenAI], { client: 1 });
-    const req = state.openai.chat.completions.create(toOpenAI);
+    // const req = state.openai.chat.completions.create(toOpenAI);
     await new Promise((resolve) => setTimeout(resolve, 100));
     mutate(conversationSWRPath + state.overrides.conversation);
-    const chatCompletion = await req;
+    const chatCompletion = (
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/chat/completions`,
+        {
+          ...toOpenAI,
+        },
+        {
+          headers: {
+            Authorization: getCookie('jwt'),
+          },
+        },
+      )
+    ).data;
     log(['RESPONSE: ', chatCompletion], { client: 1 });
     state.mutate((oldState) => ({
       ...oldState,
@@ -112,6 +127,7 @@ export default function Chat({
         conversation: chatCompletion.id,
       },
     }));
+    router.push(`/chat/${chatCompletion.id}`);
     let response;
     if (state.overrides.conversation === '-') {
       response = await state.agixt.renameConversation(state.agent, state.overrides.conversation);
@@ -134,6 +150,7 @@ export default function Chat({
     setLoading(false);
     mutate(conversationSWRPath + response);
     mutate('/user');
+
     if (chatCompletion?.choices[0]?.message.content.length > 0) {
       return chatCompletion.choices[0].message.content;
     } else {

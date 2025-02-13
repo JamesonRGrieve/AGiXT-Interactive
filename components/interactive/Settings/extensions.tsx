@@ -1,18 +1,18 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, use } from 'react';
-import { getCookie } from 'cookies-next';
-import axios from 'axios';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { useCompany, useAgent, useProviders } from '../hooks';
-import Extension from './extension';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { ConnectedServices } from '@/components/jrg/auth/management/ConnectedServices';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import axios from 'axios';
+import { getCookie } from 'cookies-next';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+import { useAgent, useCompany, useProviders } from '../hooks';
+import Extension from './extension';
 
 import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
 import { Input } from '@/components/ui/input';
@@ -47,7 +47,7 @@ interface ExtensionSettings {
 export function Extensions() {
   const { agent } = useInteractiveConfig();
   const pathname = usePathname();
-  const { data: agentData } = useAgent();
+  const { data: agentData, mutate: mutateAgent } = useAgent();
   const [searchText, setSearchText] = useState('');
   const router = useRouter();
   const [settings, setSettings] = useState<Record<string, string>>({});
@@ -55,7 +55,7 @@ export function Extensions() {
   const [showEnabledOnly, setShowEnabledOnly] = useState(false);
   const agent_name = (getCookie('agixt-agent') || process.env.NEXT_PUBLIC_AGIXT_AGENT) ?? agent;
   const { data: activeCompany, mutate: mutateCompany } = useCompany();
-  console.log('ACTIVE COMPANY', activeCompany);
+
   const { data: providerData } = useProviders();
   const searchParams = useSearchParams();
   // Filter extensions for the enabled commands view
@@ -65,6 +65,7 @@ export function Extensions() {
     ext.commands.filter((cmd) => cmd.enabled).map((cmd) => ({ ...cmd, extension_name: ext.extension_name })),
   );
   console.log('ACTIVE COMPANY', activeCompany);
+  console.log('ACTIVE AGENT', agentData);
   // Categorize extensions for the available tab
   const categorizeExtensions = (exts: Extension[]) => {
     return {
@@ -126,7 +127,11 @@ export function Extensions() {
       );
 
       if (result.status === 200) {
-        mutateCompany();
+        if (searchParams.get('mode') === 'company') {
+          mutateCompany();
+        } else {
+          mutateAgent();
+        }
       }
     } catch (error) {
       console.error('Failed to toggle command:', error);
@@ -291,8 +296,8 @@ export function Extensions() {
         </TabsContent>
 
         <TabsContent value='extensions' className='space-y-4'>
-          <div className='grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4'>
-            <p className='text-sm text-muted-foreground col-span-full'>
+          <div className='grid gap-4'>
+            <p className='text-sm text-muted-foreground'>
               Manage your connected third-party extensions that grant your agent additional capabilities through abilities.
             </p>
             {searchParams.get('mode') !== 'company' &&
