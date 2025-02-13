@@ -1,18 +1,18 @@
+import { CommandMenu } from '@/components/command';
+import InteractiveConfigContextWrapper from '@/components/interactive/ContextWrapper';
+import Head from '@/components/jrg/appwrapper/old/Head';
+import { SidebarContentProvider } from '@/components/jrg/appwrapper/SidebarContentManager';
+import { SidebarContext } from '@/components/jrg/appwrapper/SidebarContext';
+import { SidebarMain } from '@/components/jrg/appwrapper/SidebarMain';
+import '@/components/jrg/zod2gql/zod2gql';
+import { SidebarProvider } from '@/components/ui/sidebar';
+import { Toaster } from '@/components/ui/toaster';
+import { cn } from '@/lib/utils';
 import { Inter } from 'next/font/google';
 import { cookies } from 'next/headers';
 import { ReactNode } from 'react';
-import Head from '@/components/jrg/appwrapper/old/Head';
-import { cn } from '@/lib/utils';
 import './globals.css';
-import InteractiveConfigContextWrapper from '@/components/interactive/ContextWrapper';
-import { SidebarProvider } from '@/components/ui/sidebar';
-import { SidebarMain } from '@/components/jrg/appwrapper/SidebarMain';
-import { SidebarContext } from '@/components/jrg/appwrapper/SidebarContext';
-import { Toaster } from '@/components/ui/toaster';
 import { metadata, viewport } from './metadata';
-import '@/components/jrg/zod2gql/zod2gql';
-import { CommandMenu } from '@/components/command';
-import { SidebarContentProvider } from '@/components/jrg/appwrapper/SidebarContentManager';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -20,7 +20,7 @@ export { metadata, viewport };
 
 export default function RootLayout({ children }: { children: ReactNode }): ReactNode {
   const cookieStore = cookies();
-  const theme = cookieStore.get('theme')?.value ?? '';
+  const theme = cookieStore.get('theme')?.value ?? process.env.NEXT_PUBLIC_THEME_DEFAULT_MODE;
   const appearance = cookieStore.get('appearance')?.value ?? '';
 
   return (
@@ -33,6 +33,7 @@ export default function RootLayout({ children }: { children: ReactNode }): React
               <SidebarMain side='left' />
               {children}
               <Toaster />
+              {/* <ThemeSetter /> */}
               <CommandMenu />
               <SidebarContext side='right' />
             </SidebarProvider>
