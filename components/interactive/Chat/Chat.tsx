@@ -1,6 +1,7 @@
 'use client';
 
 import log from '@/components/jrg/next-log/log';
+import { toast } from '@/hooks/useToast';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import { useRouter } from 'next/navigation';
@@ -106,9 +107,9 @@ export default function Chat({
     // const req = state.openai.chat.completions.create(toOpenAI);
     await new Promise((resolve) => setTimeout(resolve, 100));
     mutate(conversationSWRPath + state.overrides.conversation);
-    const chatCompletion = (
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/chat/completions`,
+    try {
+      const completionResponse = await axios.post(
+        `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/chat/cosdmpletions`,
         {
           ...toOpenAI,
         },
@@ -117,44 +118,56 @@ export default function Chat({
             Authorization: getCookie('jwt'),
           },
         },
-      )
-    ).data;
-    log(['RESPONSE: ', chatCompletion], { client: 1 });
-    state.mutate((oldState) => ({
-      ...oldState,
-      overrides: {
-        ...oldState.overrides,
-        conversation: chatCompletion.id,
-      },
-    }));
-    router.push(`/chat/${chatCompletion.id}`);
-    let response;
-    if (state.overrides.conversation === '-') {
-      response = await state.agixt.renameConversation(state.agent, state.overrides.conversation);
-      // response = await axios.put(
-      //   `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation`,
-      //   {
-      //     agent_name: state.agent,
-      //     conversation_name: state.overrides?.conversation,
-      //     new_name: '-',
-      //   },
-      //   {
-      //     headers: {
-      //       Authorization: getCookie('jwt'),
-      //     },
-      //   },
-      // );
-      await mutate('/conversation');
-      log([response], { client: 1 });
-    }
-    setLoading(false);
-    mutate(conversationSWRPath + response);
-    mutate('/user');
+      );
+      if (completionResponse.status === 200) {
+        const chatCompletion = completionResponse.data;
+        log(['RESPONSE: ', chatCompletion], { client: 1 });
+        state.mutate((oldState) => ({
+          ...oldState,
+          overrides: {
+            ...oldState.overrides,
+            conversation: chatCompletion.id,
+          },
+        }));
+        router.push(`/chat/${chatCompletion.id}`);
+        let response;
+        if (state.overrides.conversation === '-') {
+          response = await state.agixt.renameConversation(state.agent, state.overrides.conversation);
+          // response = await axios.put(
+          //   `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation`,
+          //   {
+          //     agent_name: state.agent,
+          //     conversation_name: state.overrides?.conversation,
+          //     new_name: '-',
+          //   },
+          //   {
+          //     headers: {
+          //       Authorization: getCookie('jwt'),
+          //     },
+          //   },
+          // );
+          await mutate('/conversation');
+          log([response], { client: 1 });
+        }
+        setLoading(false);
+        mutate(conversationSWRPath + response);
+        mutate('/user');
 
-    if (chatCompletion?.choices[0]?.message.content.length > 0) {
-      return chatCompletion.choices[0].message.content;
-    } else {
-      return 'Unable to get response from the agent';
+        if (chatCompletion?.choices[0]?.message.content.length > 0) {
+          return chatCompletion.choices[0].message.content;
+        } else {
+          throw 'Failed to get response from the agent';
+        }
+      } else {
+        throw 'Failed to get response from the agent';
+      }
+    } catch (error) {
+      setLoading(false);
+      toast({
+        title: 'Error',
+        description: 'Failed to get response from the agent',
+        duration: 5000,
+      });
     }
   }
   useEffect(() => {
