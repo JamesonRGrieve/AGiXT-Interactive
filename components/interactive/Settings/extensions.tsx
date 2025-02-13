@@ -311,7 +311,7 @@ export function Extensions() {
                 {
                   extension_name: 'web-search',
                   friendly_name: 'Web Search',
-                  description: 'Allow Claude to search and reference current web content.',
+                  description: 'Search and reference current web content.',
                   settings: [],
                 },
                 {
