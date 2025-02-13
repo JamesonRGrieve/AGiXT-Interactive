@@ -1,12 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { getCookie, setCookie } from 'cookies-next';
-import { ChevronsUpDown, Plus, Check } from 'lucide-react';
+import { setCookie } from 'cookies-next';
+import { Check, ChevronsUpDown, Plus } from 'lucide-react';
 import { FaRobot } from 'react-icons/fa';
-import { z } from 'zod';
 
-import { useCompany, useAgent, useAgents, useProviders } from '../hooks';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -16,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
+import { useRouter } from 'next/navigation';
+import { useAgent, useAgents, useCompany } from '../hooks';
 import { Agent } from '../types';
 
 export function AgentSelector() {
@@ -23,7 +22,7 @@ export function AgentSelector() {
   const { data: activeAgent, mutate: mutateActiveAgent, error: agentError } = useAgent();
   const { data: activeCompany, mutate: mutateActiveCompany, error: companyError } = useCompany();
   const { data: agentsData } = useAgents();
-
+  const router = useRouter();
   console.error({ agentError, companyError });
 
   const switchAgents = (agent: Agent) => {
@@ -77,7 +76,12 @@ export function AgentSelector() {
                 </DropdownMenuItem>
               ))}
             <DropdownMenuSeparator />
-            <DropdownMenuItem className='gap-2 p-2 cursor-pointer'>
+            <DropdownMenuItem
+              className='gap-2 p-2 cursor-pointer'
+              onClick={() => {
+                router.push('/settings');
+              }}
+            >
               <div className='flex items-center justify-center border rounded-md size-6 bg-background'>
                 <Plus className='size-4' />
               </div>
