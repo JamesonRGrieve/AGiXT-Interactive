@@ -109,7 +109,7 @@ export default function Chat({
     mutate(conversationSWRPath + state.overrides.conversation);
     try {
       const completionResponse = await axios.post(
-        `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/chat/cosdmpletions`,
+        `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/chat/completions`,
         {
           ...toOpenAI,
         },
@@ -180,6 +180,11 @@ export default function Chat({
       }, 1000);
     }
   }, [loading, state.overrides.conversation]);
+  useEffect(() => {
+    return () => {
+      setLoading(false);
+    };
+  }, []);
   return (
     <>
       <ChatLog
