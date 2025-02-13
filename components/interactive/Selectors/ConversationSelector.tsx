@@ -1,22 +1,22 @@
 'use client';
 
-import React, { useContext, useEffect, useState } from 'react';
-import { mutate } from 'swr';
-import { setCookie } from 'cookies-next';
-import { LuPlus, LuPencil, LuDownload, LuTrash2, LuChevronDown, LuChevronUp } from 'react-icons/lu';
-import { InteractiveConfigContext } from '../InteractiveConfigContext';
-import { useConversation, useConversations } from '../hooks';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { setCookie } from 'cookies-next';
+import React, { useContext, useEffect, useState } from 'react';
+import { LuChevronDown, LuChevronUp, LuDownload, LuPencil, LuPlus, LuTrash2 } from 'react-icons/lu';
+import { mutate } from 'swr';
+import { InteractiveConfigContext } from '../InteractiveConfigContext';
+import { useConversations } from '../hooks';
 
 export default function ConversationSelector(): React.JSX.Element {
   const [dropDownOpen, setDropDownOpen] = useState(false);
   const state = useContext(InteractiveConfigContext);
   const { data: conversationData } = useConversations();
-  const { data: currentConversation } = useConversation();
+  // const { data: currentConversation } = useConversation();
   const [openRenameConversation, setOpenRenameConversation] = useState(false);
   const [changedConversation, setChangedConversation] = useState('-');
   const [openDeleteConversation, setOpenDeleteConversation] = useState(false);
