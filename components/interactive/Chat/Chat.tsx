@@ -227,12 +227,11 @@ export default function Chat({
       }, 1000);
     }
   }, [loading, state.overrides.conversation]);
-  const [renaming, setRenaming] = useState(false);
   useEffect(() => {
-    if (renaming) {
-      setNewName(currentConversation?.name || '');
-    }
-  }, [renaming, currentConversation]);
+    return () => {
+      setLoading(false);
+    };
+  }, []);
   return (
     <>
       <SidebarContent title='Conversation Management'>
