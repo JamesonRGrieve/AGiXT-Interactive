@@ -24,6 +24,8 @@ export function SidebarContext({ ...props }: React.ComponentProps<typeof Sidebar
 
   if (!visibleOnPaths.some((path) => pathname.startsWith(path))) return null;
 
+  if (pathname !== '/settings/prompts') return null;
+
   return (
     <Sidebar collapsible='icon' side='right' {...props}>
       <SidebarHeader>
