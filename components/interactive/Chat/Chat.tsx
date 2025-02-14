@@ -58,7 +58,6 @@ export default function Chat({
   showOverrideSwitchesCSV,
 }: Overrides & UIProps): React.JSX.Element {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const state = useContext(InteractiveConfigContext);
   const { data: conversations, isLoading: isLoadingConversations } = useConversations();
 
