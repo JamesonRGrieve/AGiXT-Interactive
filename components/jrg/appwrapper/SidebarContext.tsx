@@ -1,10 +1,8 @@
 // components/jrg/appwrapper/SidebarContext.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
-import { getCookie } from 'cookies-next';
-import { usePathname } from 'next/navigation';
 import { ViewVerticalIcon } from '@radix-ui/react-icons';
+import { usePathname } from 'next/navigation';
 
 import {
   Sidebar,
@@ -17,24 +15,19 @@ import {
 } from '@/components/ui/sidebar';
 import { useSidebarContent } from './SidebarContentManager';
 
+const visibleOnPaths = ['/chat', '/settings/prompts'];
+
 export function SidebarContext({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [hasStarted, setHasStarted] = useState(false);
   const { toggleSidebar } = useSidebar('right');
-  const { content } = useSidebarContent();
+  const { content, title } = useSidebarContent();
   const pathname = usePathname();
 
-  useEffect(() => {
-    if (getCookie('agixt-has-started') === 'true') {
-      setHasStarted(true);
-    }
-  }, [getCookie('agixt-has-started')]);
-
-  if (pathname !== '/settings/prompts') return null;
+  if (!visibleOnPaths.some((path) => pathname.startsWith(path))) return null;
 
   return (
     <Sidebar collapsible='icon' side='right' {...props}>
       <SidebarHeader>
-        <h3 className='group-data-[collapsible=icon]:hidden'>Context Sidebar</h3>
+        <h3 className='group-data-[collapsible=icon]:hidden'>{title}</h3>
       </SidebarHeader>
       <SidebarContent>{content}</SidebarContent>
       <SidebarFooter>

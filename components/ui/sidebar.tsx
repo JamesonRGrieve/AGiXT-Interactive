@@ -1,18 +1,18 @@
 'use client';
 
-import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
-import { VariantProps, cva } from 'class-variance-authority';
-import { ViewVerticalIcon } from '@radix-ui/react-icons';
 import { useIsMobile } from '@/components/jrg/appwrapper/hooks/useMobile';
-import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
+import { ViewVerticalIcon } from '@radix-ui/react-icons';
+import { Slot } from '@radix-ui/react-slot';
+import { VariantProps, cva } from 'class-variance-authority';
 import { setCookie } from 'cookies-next';
+import * as React from 'react';
 
 const SIDEBAR_COOKIE_NAME = 'sidebar:state';
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
@@ -433,12 +433,21 @@ const SidebarInput = React.forwardRef<React.ElementRef<typeof Input>, React.Comp
   },
 );
 SidebarInput.displayName = 'SidebarInput';
-
 const SidebarHeader = React.forwardRef<HTMLDivElement, React.ComponentProps<'div'>>(({ className, ...props }, ref) => {
-  return <div ref={ref} data-sidebar='header' className={cn('flex flex-col gap-2 p-2', className)} {...props} />;
+  return (
+    <div
+      ref={ref}
+      data-sidebar='header'
+      className={cn(
+        'flex flex-col gap-2 p-2',
+        'group-data-[side=right]:group-data-[collapsible=icon]:p-0 group-data-[side=right]:group-data-[collapsible=icon]:gap-0',
+        className,
+      )}
+      {...props}
+    />
+  );
 });
 SidebarHeader.displayName = 'SidebarHeader';
-
 const SidebarFooter = React.forwardRef<HTMLDivElement, React.ComponentProps<'div'>>(({ className, ...props }, ref) => {
   return <div ref={ref} data-sidebar='footer' className={cn('flex flex-col gap-2 p-2', className)} {...props} />;
 });
