@@ -121,7 +121,7 @@ export default function Message({ chatItem, lastUserMessage, setLoading }: Messa
         </div>
       )}
 
-      <div className={cn('flex items-center gap-6', chatItem.role === 'USER' && 'flex-row-reverse')}>
+      <div className={cn('flex items-center flex-wrap', chatItem.role === 'USER' && 'flex-row-reverse')}>
         <TimeStamp chatItem={chatItem} />
 
         <MessageActions
@@ -146,7 +146,7 @@ export function TimeStamp({ chatItem }: { chatItem: { role: string; timestamp: s
   const date = formatDate(chatItem.timestamp, false);
 
   return (
-    <p className={'text-sm text-muted-foreground flex gap-1'}>
+    <p className='flex gap-1 text-sm text-muted-foreground whitespace-nowrap'>
       <span className='inline font-bold text-muted-foreground'>{roleLabel}</span>•
       <TooltipProvider>
         <Tooltip open={open} onOpenChange={setOpen}>

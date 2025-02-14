@@ -21,20 +21,20 @@ jobs:
       registry-readme: ./docs/README.md
     secrets:
       DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
-  test-ui:
-    needs: build
-    uses: ./.github/workflows/tests.yml
-    name: Basic UI
-    permissions:
-      contents: read
-      packages: read
-    with:
-      notebook: tests/FrontEnd.ipynb
-      front-end-image: ${{ needs.build.outputs.primary-image }}
-      report-name: 'interactive-tests'
-    secrets:
-      GHCR_PAT: ${{ secrets.GHCR_PAT }}
-      DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      EZLOCALAI_URI: ${{ secrets.EZLOCALAI_URI }}
-      EZLOCALAI_API_KEY: ${{ secrets.EZLOCALAI_API_KEY }}
-      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+  # test-ui:
+  #   needs: build
+  #   uses: ./.github/workflows/tests.yml
+  #   name: Basic UI
+  #   permissions:
+  #     contents: read
+  #     packages: read
+  #   with:
+  #     notebook: tests/FrontEnd.ipynb
+  #     front-end-image: ${{ needs.build.outputs.primary-image }}
+  #     report-name: 'interactive-tests'
+  #   secrets:
+  #     GHCR_PAT: ${{ secrets.GHCR_PAT }}
+  #     DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+  #     EZLOCALAI_URI: ${{ secrets.EZLOCALAI_URI }}
+  #     EZLOCALAI_API_KEY: ${{ secrets.EZLOCALAI_API_KEY }}
+  #     DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}

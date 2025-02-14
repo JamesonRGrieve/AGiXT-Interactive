@@ -6,6 +6,7 @@ import { useInteractiveConfig } from '@/components/interactive/InteractiveConfig
 import PromptPanel from '@/components/interactive/Settings/prompt/PromptPanel';
 import NewPromptDialog from '@/components/interactive/Settings/prompt/PromptDialog';
 import { SidebarPage } from '@/components/jrg/appwrapper/SidebarPage';
+import { SidebarContent } from '@/components/jrg/appwrapper/SidebarContentManager';
 
 export default function PromptPage() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);

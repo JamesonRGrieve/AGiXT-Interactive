@@ -1,14 +1,19 @@
 'use client';
 
+import { SidebarContent } from '@/components/jrg/appwrapper/SidebarContentManager';
 import log from '@/components/jrg/next-log/log';
+import { Input } from '@/components/ui/input';
+import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { toast } from '@/hooks/useToast';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
+import { Badge, Check, Download, Paperclip, Pencil, Plus, Trash2, Upload } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { UIProps } from '../InteractiveAGiXT';
 import { InteractiveConfigContext, Overrides } from '../InteractiveConfigContext';
-import { useCompany } from '../hooks';
+import { useCompany, useConversations } from '../hooks';
 import ChatBar from './ChatInput';
 import ChatLog from './ChatLog';
 
@@ -53,8 +58,11 @@ export default function Chat({
   showOverrideSwitchesCSV,
 }: Overrides & UIProps): React.JSX.Element {
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
   const state = useContext(InteractiveConfigContext);
+  const { data: conversations, isLoading: isLoadingConversations } = useConversations();
+
+  // Find the current conversation
+  const currentConversation = conversations?.find((conv) => conv.id === state.overrides.conversation);
   const conversation = useSWR(
     conversationSWRPath + state.overrides.conversation,
     async () => {
@@ -106,8 +114,8 @@ export default function Chat({
     // const req = state.openai.chat.completions.create(toOpenAI);
     await new Promise((resolve) => setTimeout(resolve, 100));
     mutate(conversationSWRPath + state.overrides.conversation);
-    const chatCompletion = (
-      await axios.post(
+    try {
+      const completionResponse = await axios.post(
         `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/v1/chat/completions`,
         {
           ...toOpenAI,
@@ -117,46 +125,101 @@ export default function Chat({
             Authorization: getCookie('jwt'),
           },
         },
-      )
-    ).data;
-    log(['RESPONSE: ', chatCompletion], { client: 1 });
-    state.mutate((oldState) => ({
-      ...oldState,
-      overrides: {
-        ...oldState.overrides,
-        conversation: chatCompletion.id,
-      },
-    }));
-    router.push(`/chat/${chatCompletion.id}`);
-    let response;
-    if (state.overrides.conversation === '-') {
-      response = await state.agixt.renameConversation(state.agent, state.overrides.conversation);
-      // response = await axios.put(
-      //   `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation`,
-      //   {
-      //     agent_name: state.agent,
-      //     conversation_name: state.overrides?.conversation,
-      //     new_name: '-',
-      //   },
-      //   {
-      //     headers: {
-      //       Authorization: getCookie('jwt'),
-      //     },
-      //   },
-      // );
-      await mutate('/conversation');
-      log([response], { client: 1 });
-    }
-    setLoading(false);
-    mutate(conversationSWRPath + response);
-    mutate('/user');
+      );
+      if (completionResponse.status === 200) {
+        const chatCompletion = completionResponse.data;
+        log(['RESPONSE: ', chatCompletion], { client: 1 });
+        state.mutate((oldState) => ({
+          ...oldState,
+          overrides: {
+            ...oldState.overrides,
+            conversation: chatCompletion.id,
+          },
+        }));
+        router.push(`/chat/${chatCompletion.id}`);
+        let response;
+        if (state.overrides.conversation === '-') {
+          response = await state.agixt.renameConversation(state.agent, state.overrides.conversation);
+          // response = await axios.put(
+          //   `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation`,
+          //   {
+          //     agent_name: state.agent,
+          //     conversation_name: state.overrides?.conversation,
+          //     new_name: '-',
+          //   },
+          //   {
+          //     headers: {
+          //       Authorization: getCookie('jwt'),
+          //     },
+          //   },
+          // );
+          await mutate('/conversation');
+          log([response], { client: 1 });
+        }
+        setLoading(false);
+        mutate(conversationSWRPath + response);
+        mutate('/user');
 
-    if (chatCompletion?.choices[0]?.message.content.length > 0) {
-      return chatCompletion.choices[0].message.content;
-    } else {
-      return 'Unable to get response from the agent';
+        if (chatCompletion?.choices[0]?.message.content.length > 0) {
+          return chatCompletion.choices[0].message.content;
+        } else {
+          throw 'Failed to get response from the agent';
+        }
+      } else {
+        throw 'Failed to get response from the agent';
+      }
+    } catch (error) {
+      setLoading(false);
+      toast({
+        title: 'Error',
+        description: 'Failed to get response from the agent',
+        duration: 5000,
+      });
     }
   }
+  const handleDeleteConversation = async (): Promise<void> => {
+    if (currentConversation?.id) {
+      await state.agixt.deleteConversation(currentConversation.id);
+      await mutate();
+      state.mutate((oldState) => ({
+        ...oldState,
+        overrides: { ...oldState.overrides, conversation: '-' },
+      }));
+    }
+  };
+
+  const handleExportConversation = async (): Promise<void> => {
+    if (currentConversation?.id) {
+      // Get the full conversation content
+      const conversationContent = await state.agixt.getConversation('', currentConversation.id);
+
+      // Format the conversation for export
+      const exportData = {
+        name: currentConversation.name,
+        id: currentConversation.id,
+        created_at: currentConversation.created_at,
+        messages: conversationContent.map((msg) => ({
+          role: msg.role,
+          content: msg.message,
+          timestamp: msg.timestamp,
+        })),
+      };
+
+      // Create and trigger download
+      const element = document.createElement('a');
+      const file = new Blob([JSON.stringify(exportData, null, 2)], {
+        type: 'application/json',
+      });
+      element.href = URL.createObjectURL(file);
+      element.download = `${currentConversation.name}_${new Date().toISOString().split('T')[0]}.json`;
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    }
+  };
+  const [newName, setNewName] = useState('');
+  const router = useRouter();
+
   useEffect(() => {
     mutate(conversationSWRPath + state.overrides.conversation);
   }, [state.overrides.conversation]);
@@ -167,8 +230,93 @@ export default function Chat({
       }, 1000);
     }
   }, [loading, state.overrides.conversation]);
+  const [renaming, setRenaming] = useState(false);
+  useEffect(() => {
+    if (renaming) {
+      setNewName(currentConversation?.name || '');
+    }
+  }, [renaming, currentConversation]);
+  useEffect(() => {
+    return () => {
+      setLoading(false);
+    };
+  }, []);
   return (
     <>
+      <SidebarContent title='Conversation Management'>
+        <SidebarGroup>
+          {
+            <div className='w-full group-data-[collapsible=icon]:hidden'>
+              {renaming ? (
+                <Input value={newName} onChange={(e) => setNewName(e.target.value)} className='w-full' />
+              ) : (
+                <h4>{currentConversation?.name}</h4>
+              )}
+              {currentConversation && currentConversation.attachment_count > 0 && (
+                <Badge className='gap-1'>
+                  <Paperclip className='w-3 h-3' />
+                  {currentConversation.attachment_count}
+                </Badge>
+              )}
+            </div>
+          }
+          <SidebarGroupLabel>Conversation Functions</SidebarGroupLabel>
+          <SidebarMenu>
+            {[
+              {
+                title: 'New Conversation',
+                icon: Plus,
+                func: () => {
+                  router.push('/chat');
+                },
+                disabled: renaming,
+              },
+              {
+                title: renaming ? 'Save Name' : 'Rename Conversation',
+                icon: renaming ? Check : Pencil,
+                func: renaming
+                  ? () => {
+                      state.agixt.renameConversation(state.agent, currentConversation.id, newName);
+                      setRenaming(false);
+                    }
+                  : () => setRenaming(true),
+                disabled: false,
+              },
+              {
+                title: 'Import Conversation',
+                icon: Upload,
+                func: () => {
+                  // setImportMode(true);
+                  // setIsDialogOpen(true);
+                },
+                disabled: true,
+              },
+              {
+                title: 'Export Conversation',
+                icon: Download,
+                func: handleExportConversation,
+                disabled: renaming,
+              },
+              {
+                title: 'Delete Conversation',
+                icon: Trash2,
+                func: handleDeleteConversation,
+                disabled: renaming,
+              },
+            ].map(
+              (item) =>
+                item.visible !== false && (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton side='left' tooltip={item.title} onClick={item.func} disabled={item.disabled}>
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ),
+            )}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
       <ChatLog
         conversation={conversation.data}
         alternateBackground={alternateBackground}

@@ -15,6 +15,7 @@ import {
 } from '@/components/ui/command';
 import { commandMenuItems } from './items';
 import { ChatHistoryCommands } from './chat-history';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 export function CommandMenu() {
   const [open, setOpen] = useState(false);
@@ -43,6 +44,7 @@ export function CommandMenu() {
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
+      <DialogTitle className='sr-only'>Command Menu</DialogTitle>
       <CommandInput placeholder='Type a command or search...' />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
@@ -50,13 +52,7 @@ export function CommandMenu() {
           <div key={group.heading}>
             <CommandGroup heading={group.heading}>
               {group.items.map((item) => (
-                <CommandItem key={item.label} disabled={item.disabled} onSelect={() => onSelect(item)}>
-                  <item.icon className='w-4 h-4 mr-2' />
-                  <div>
-                    <div>{item.label}</div>
-                  </div>
-                  <CommandShortcut className='text-xs font-light text-muted-foreground'>{item.description}</CommandShortcut>
-                </CommandItem>
+                <CommandItemComponent key={item.label} item={item} onSelect={() => onSelect(item)} />
               ))}
             </CommandGroup>
             {groupIndex < commandMenuItems.length - 1 && <CommandSeparator />}
@@ -69,7 +65,32 @@ export function CommandMenu() {
             setOpen(false);
           }}
         />
+        <CommandSeparator />
       </CommandList>
     </CommandDialog>
+  );
+}
+
+interface CommandItemProps {
+  item: {
+    label: string;
+    icon: React.ElementType;
+    description?: string;
+    disabled?: boolean;
+  };
+  onSelect: () => void;
+}
+
+export function CommandItemComponent({ item, onSelect }: CommandItemProps) {
+  return (
+    <CommandItem disabled={item.disabled} onSelect={onSelect}>
+      <item.icon className='w-4 h-4 mr-2' />
+      <div>
+        <div>{item.label}</div>
+      </div>
+      {item.description && (
+        <CommandShortcut className='text-xs font-light text-muted-foreground'>{item.description}</CommandShortcut>
+      )}
+    </CommandItem>
   );
 }

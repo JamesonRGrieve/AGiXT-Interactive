@@ -105,14 +105,14 @@ const SourceDisplay: React.FC<SourceDisplayProps> = ({ source, onDelete }) => {
   const { icon: Icon, label, description } = getSourceInfo(source);
 
   return (
-    <div className='flex items-center justify-between p-3 border rounded-lg bg-card hover:bg-accent/50 transition-colors'>
+    <div className='flex items-center justify-between p-3 transition-colors border rounded-lg bg-card hover:bg-accent/50'>
       <div className='flex items-center flex-1 min-w-0 gap-3'>
         <div className='flex items-center justify-center w-8 h-8 rounded-lg bg-muted'>
           <Icon className='w-4 h-4' />
         </div>
         <div className='flex-1 min-w-0'>
           <h4 className='font-medium truncate'>{label}</h4>
-          <p className='text-sm text-muted-foreground truncate'>{description}</p>
+          <p className='text-sm truncate text-muted-foreground'>{description}</p>
         </div>
       </div>
       <DropdownMenu>
@@ -346,9 +346,9 @@ const Training = (): React.ReactElement => {
   };
 
   return (
-    <div className='space-y-6'>
+    <div className='max-w-screen-lg mx-auto space-y-6'>
       {/* {activeCompany?.my_role >= 2 && (
-        <div className='flex items-center my-4 gap-2 mx-4'>
+        <div className='flex items-center gap-2 mx-4 my-4'>
           <Switch
             id='company-mode'
             checked={searchParams.get('mode') === 'company'}
@@ -388,7 +388,7 @@ const Training = (): React.ReactElement => {
           {/* Mandatory Context Section */}
           <div className='space-y-4'>
             <h3 className='text-lg font-medium'>Mandatory Context</h3>
-            <p className='text-sm text-muted-foreground mt-2'>
+            <p className='mt-2 text-sm text-muted-foreground'>
               This is like setting personality traits or preferences that the AI should always remember. It's automatically
               included in every conversation, helping the AI maintain consistency. For example, you might want to specify
               language preferences, areas of expertise, or communication style.
@@ -418,7 +418,7 @@ const Training = (): React.ReactElement => {
           {/* Document Upload Section */}
           <div className='space-y-4'>
             <h3 className='text-lg font-medium'>Training Documents</h3>
-            <p className='text-sm text-muted-foreground mt-2'>
+            <p className='mt-2 text-sm text-muted-foreground'>
               Upload documents that contain knowledge you want the AI to learn from. The AI will intelligently reference
               these documents during conversations when relevant, enhancing its responses with specific information from your
               uploads. This is great for teaching the AI about your projects, policies, or any specific knowledge base.

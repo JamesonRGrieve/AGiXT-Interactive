@@ -1,18 +1,16 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Plus, Trash2, Download, Save, Pencil, Check, Upload } from 'lucide-react';
-import { mutate } from 'swr';
+import { SidebarContent } from '@/components/jrg/appwrapper/SidebarContentManager';
+import IconButton from '@/components/jrg/theme/IconButton';
+import { Input } from '@/components/ui/input';
+import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { ArrowBigLeft, Check, Download, Pencil, Plus, Save, Trash2, Upload } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import PromptSelector from '../../Selectors/PromptSelector';
 import { usePrompt } from '../../hooks';
 import { AutoResizeTextarea } from '../training';
-import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import NewPromptDialog from './PromptDialog';
-import IconButton from '@/components/jrg/theme/IconButton';
 import PromptTest from './PromptTest';
 
 export default function PromptPanel() {
@@ -40,65 +38,82 @@ export default function PromptPanel() {
 
   return (
     <div className='space-y-4'>
-      <TooltipProvider>
-        <div className='flex items-center space-x-2'>
-          <div className='flex items-center space-x-2'>
-            <div className='w-48'>
-              {renaming ? (
-                <Input value={newName} onChange={(e) => setNewName(e.target.value)} className='w-full' />
-              ) : (
-                <PromptSelector />
-              )}
-            </div>
-            <IconButton
-              Icon={Plus}
-              label='New'
-              description='New Prompt'
-              onClick={() => setIsDialogOpen(true)}
-              disabled={renaming}
-            />
-            <IconButton
-              Icon={Upload}
-              label='Import'
-              description='Import/Upload Prompt'
-              onClick={() => setImportMode(true)}
-              disabled={renaming}
-            />
-            {promptBody && (
-              <>
-                <IconButton Icon={Download} label='Export' description='Export/Download Prompt' onClick={prompt.export} />
-                {renaming ? (
-                  <IconButton
-                    Icon={Check}
-                    label='Save'
-                    description='Save Prompt Name'
-                    onClick={() => {
-                      prompt.rename(newName);
-                      setRenaming(false);
-                    }}
-                    disabled={!newName || newName === searchParams.get('prompt')}
-                  />
-                ) : (
-                  <IconButton
-                    Icon={Pencil}
-                    label='Rename'
-                    description='Rename Prompt'
-                    onClick={() => setRenaming(true)}
-                    disabled={renaming}
-                  />
-                )}
-                <IconButton
-                  Icon={Trash2}
-                  label='Delete'
-                  description='Delete Prompt'
-                  onClick={prompt.delete}
-                  disabled={renaming}
-                />
-              </>
+      <SidebarContent title='Prompt Management'>
+        <SidebarGroup>
+          <SidebarGroupLabel>Select Prompt</SidebarGroupLabel>
+          <SidebarMenuButton className='group-data-[state=expanded]:hidden'>
+            <ArrowBigLeft />
+          </SidebarMenuButton>
+          <div className='w-full group-data-[collapsible=icon]:hidden'>
+            {renaming ? (
+              <Input value={newName} onChange={(e) => setNewName(e.target.value)} className='w-full' />
+            ) : (
+              <PromptSelector />
             )}
           </div>
-        </div>
-      </TooltipProvider>
+          <SidebarGroupLabel>Prompt Functions</SidebarGroupLabel>
+          <SidebarMenu>
+            {[
+              {
+                title: 'Create Prompt',
+                icon: Plus,
+                func: () => {
+                  setImportMode(false);
+                  setIsDialogOpen(true);
+                },
+                disabled: renaming,
+              },
+              {
+                title: renaming ? 'Save Name' : 'Rename Prompt',
+                icon: renaming ? Check : Pencil,
+                func: renaming
+                  ? () => {
+                      prompt.rename(newName);
+                      setRenaming(false);
+                    }
+                  : () => setRenaming(true),
+                disabled: false,
+              },
+              {
+                title: 'Import Prompt',
+                icon: Upload,
+                func: () => {
+                  setImportMode(true);
+                  setIsDialogOpen(true);
+                },
+                disabled: renaming,
+              },
+              {
+                title: 'Export Prompt',
+                icon: Download,
+                func: () => {
+                  prompt.export();
+                },
+                disabled: renaming,
+              },
+              {
+                title: 'Delete Prompt',
+                icon: Trash2,
+                func: () => {
+                  prompt.delete();
+                },
+                disabled: renaming,
+              },
+            ].map(
+              (item) =>
+                item.visible !== false && (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton side='left' tooltip={item.title} onClick={item.func} disabled={item.disabled}>
+                      {item.icon && <item.icon />}
+                      <span>{item.title}</span>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ),
+            )}
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
+
       {promptBody && (
         <>
           <div className='space-y-2'>
