@@ -6,7 +6,6 @@ import sys
 
 import nest_asyncio
 from FrontEnd import FrontEndTest
-from FrontEndGitHub import FrontEndTestGitHub
 
 
 class TestRunner:
@@ -16,7 +15,6 @@ class TestRunner:
     def run(self):
         tests = [
             FrontEndTest(base_uri="http://localhost:3437"),
-            FrontEndTestGitHub(base_uri="http://localhost:3437"),
         ]
         for test in tests:
             try:

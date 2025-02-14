@@ -1,37 +1,28 @@
-import base64
-import shutil
 import asyncio
-from pathlib import Path
+import base64
 import logging
-import json
 import os
-import re
 import platform
-import uuid
-import tempfile
-import time
-import requests
-from datetime import datetime
-from playwright.async_api import async_playwright
-from IPython.display import Image, display
-from pyzbar.pyzbar import decode
-from datetime import datetime
-from agixtsdk import AGiXTSDK
-import soundfile as sf
-from gtts import gTTS
-from tqdm import tqdm
-import numpy as np
+import re
+import shutil
 import subprocess
 import tempfile
-import asyncio
-import logging
-import pyotp
+import time
 import uuid
-import cv2
-import os
-import re
-import platform
+from datetime import datetime
 
+import cv2
+import numpy as np
+import pyotp
+import requests
+import soundfile as sf
+from agixtsdk import AGiXTSDK
+from GitHub import TestGitHub
+from IPython.display import Image, display
+from OpenSCAD import TestOpenSCAD
+from playwright.async_api import async_playwright
+from pyzbar.pyzbar import decode
+from tqdm import tqdm
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -47,7 +38,7 @@ async def print_args(msg):
             print("CONSOLE MESSAGE:", value)
         except Exception as e:
             # Fall back to text() if json_value() fails
-            text_value = await arg.evaluate('handle => String(handle)')
+            text_value = await arg.evaluate("handle => String(handle)")
             print("CONSOLE MESSAGE:", text_value)
 
 
@@ -202,29 +193,36 @@ class FrontEndTest:
             # Create paths for our files
             # Check if ffmpeg is available first
             try:
-                subprocess.run(['ffmpeg', '-version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+                subprocess.run(
+                    ["ffmpeg", "-version"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    check=True,
+                )
             except Exception as ffmpeg_error:
-                logging.error("FFMPEG is not available. Please install FFMPEG to create video reports.")
+                logging.error(
+                    "FFMPEG is not available. Please install FFMPEG to create video reports."
+                )
                 return None
 
             # Create tests directory if it doesn't exist
             tests_dir = os.path.dirname(__file__)
             logging.info(f"Using tests directory: {tests_dir}")
             os.makedirs(tests_dir, exist_ok=True)
-            
+
             # Check if directory is writable by creating a temp file
             test_file = os.path.join(tests_dir, "test_write.tmp")
             try:
-                with open(test_file, 'w') as f:
-                    f.write('test')
+                with open(test_file, "w") as f:
+                    f.write("test")
                 os.remove(test_file)
             except Exception as e:
                 logging.error(f"Directory {tests_dir} is not writable: {e}")
                 return None
-            
+
             # Create video in the tests directory
             final_video_path = os.path.abspath(os.path.join(tests_dir, "report.mp4"))
-            
+
             # Remove existing video if it exists
             if os.path.exists(final_video_path):
                 try:
@@ -232,7 +230,7 @@ class FrontEndTest:
                 except Exception as e:
                     logging.error(f"Could not remove existing video file: {e}")
                     return None
-                    
+
             logging.info(f"Creating video report at: {final_video_path}")
             concatenated_audio_path = os.path.join(temp_dir, "combined_audio.wav")
 
@@ -263,7 +261,7 @@ class FrontEndTest:
                         retry_count = 0
                         retry_delay = 1
                         max_retries = 3
-                        
+
                         while retry_count < max_retries and audio_content is None:
                             try:
                                 # Make request following exact API schema
@@ -271,23 +269,30 @@ class FrontEndTest:
                                     "input": cleaned_action,
                                     "model": "tts-1",
                                     "voice": "HAL9000",
-                                    "language": "en"
+                                    "language": "en",
                                 }
-                                logging.info(f"Making TTS request with payload: {payload}")
+                                logging.info(
+                                    f"Making TTS request with payload: {payload}"
+                                )
                                 response = requests.post(
-                                    f"{EZLOCAL_API_URL}/v1/audio/speech",
-                                    json=payload
+                                    f"{EZLOCAL_API_URL}/v1/audio/speech", json=payload
                                 )
                                 if response.status_code == 200:
                                     logging.info("Received 200 response from TTS API")
                                     try:
                                         # Response is already base64 encoded
                                         audio_content = base64.b64decode(response.text)
-                                        logging.info(f"Decoded audio content length: {len(audio_content)} bytes")
+                                        logging.info(
+                                            f"Decoded audio content length: {len(audio_content)} bytes"
+                                        )
                                         break
                                     except Exception as decode_error:
-                                        logging.error(f"Failed to decode API response: {decode_error}")
-                                        logging.error(f"Raw response: {response.text[:100]}...")
+                                        logging.error(
+                                            f"Failed to decode API response: {decode_error}"
+                                        )
+                                        logging.error(
+                                            f"Raw response: {response.text[:100]}..."
+                                        )
                                         raise
                                 else:
                                     error_detail = response.text
@@ -295,19 +300,27 @@ class FrontEndTest:
                                         error_detail = response.json()
                                     except:
                                         pass
-                                    raise Exception(f"API returned status code {response.status_code}: {error_detail}")
+                                    raise Exception(
+                                        f"API returned status code {response.status_code}: {error_detail}"
+                                    )
                             except Exception as e:
                                 retry_count += 1
                                 if retry_count < max_retries:
-                                    logging.warning(f"TTS attempt {retry_count} failed: {e}. Retrying in {retry_delay}s...")
+                                    logging.warning(
+                                        f"TTS attempt {retry_count} failed: {e}. Retrying in {retry_delay}s..."
+                                    )
                                     time.sleep(retry_delay)
                                     retry_delay *= 2  # Exponential backoff
                                 else:
-                                    raise Exception(f"Failed after {max_retries} attempts: {e}")
-                        
+                                    raise Exception(
+                                        f"Failed after {max_retries} attempts: {e}"
+                                    )
+
                         if audio_content is None:
-                            raise Exception("Failed to generate audio after all retries")
-                            
+                            raise Exception(
+                                "Failed to generate audio after all retries"
+                            )
+
                     except Exception as e:
                         logging.error(f"Error generating TTS audio: {e}")
                         all_audio_lengths.append(2.0)
@@ -323,11 +336,13 @@ class FrontEndTest:
                     try:
                         audio_data, sample_rate = sf.read(audio_path)
                     except Exception as e:
-                        logging.warning(f"Could not read audio file with soundfile: {e}, using default settings")
+                        logging.warning(
+                            f"Could not read audio file with soundfile: {e}, using default settings"
+                        )
                         # Use default audio settings
                         sample_rate = 44100
                         audio_data = np.frombuffer(audio_content, dtype=np.float32)
-                    
+
                     # Read the converted WAV
                     audio_data, sample_rate = sf.read(audio_path)
 
@@ -423,17 +438,30 @@ class FrontEndTest:
         except Exception as e:
             # Check if ffmpeg is available
             try:
-                subprocess.run(['ffmpeg', '-version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, check=True)
+                subprocess.run(
+                    ["ffmpeg", "-version"],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    check=True,
+                )
             except Exception as ffmpeg_error:
-                logging.error("FFMPEG is not available. Please install FFMPEG to create video reports.")
+                logging.error(
+                    "FFMPEG is not available. Please install FFMPEG to create video reports."
+                )
                 return None
 
-            logging.error(f"Error creating video report at {os.path.dirname(__file__)}: {e}")
+            logging.error(
+                f"Error creating video report at {os.path.dirname(__file__)}: {e}"
+            )
             logging.error(f"Debug information:")
             logging.error(f"- Working directory: {os.getcwd()}")
             logging.error(f"- Tests directory: {os.path.dirname(__file__)}")
-            logging.error(f"- Screenshots available: {len(self.screenshots_with_actions)}")
-            logging.error(f"- Has write permissions: {os.access(os.path.dirname(__file__), os.W_OK)}")
+            logging.error(
+                f"- Screenshots available: {len(self.screenshots_with_actions)}"
+            )
+            logging.error(
+                f"- Has write permissions: {os.access(os.path.dirname(__file__), os.W_OK)}"
+            )
             return None
 
     async def prompt_agent(self, action_name, screenshot_path):
@@ -620,7 +648,6 @@ class FrontEndTest:
             "Google OAuth process completed and returned to main application"
         )
 
-
     async def handle_chat(self):
         try:
             await self.test_action(
@@ -686,10 +713,14 @@ class FrontEndTest:
                 except Exception as e:
                     retry_count += 1
                     if retry_count < max_retries:
-                        logging.info(f"Retrying mermaid visualization (attempt {retry_count+1}/{max_retries})")
+                        logging.info(
+                            f"Retrying mermaid visualization (attempt {retry_count+1}/{max_retries})"
+                        )
                         await asyncio.sleep(2)  # Wait before retrying
                     else:
-                        logging.error("Failed to load mermaid visualization after all retries")
+                        logging.error(
+                            "Failed to load mermaid visualization after all retries"
+                        )
                         await self.take_screenshot(
                             "The agent did not provide a visualization of its thought process."
                         )
@@ -698,242 +729,54 @@ class FrontEndTest:
             raise Exception(f"Error nagivating to chat: {e}")
 
     async def handle_chat_github(self):
-        try:
-            await self.test_action(
-                "After setting up the GitHub extension, the chat interface is loaded to test GitHub integration.",
-                lambda: self.page.click("text=Chat"),
-            )
-            await self.test_action(
-                "By clicking in the chat bar, the user can expand it to show more options and see their entire input.",
-                lambda: self.page.click("#message"),
-            )
-            await self.test_action(
-                "The user enters an input to test GitHub integration with the agent.",
-                lambda: self.page.fill(
-                    "#message",
-                    "Execute the command get list of my GitHub repositories. What are my repositories?",
-                ),
-            )
-            await self.test_action(
-                "When the user hits send, or the enter key, the message is sent to the agent and it begins thinking about the GitHub task.",
-                lambda: self.page.click("#send-message"),
-            )
-            # while not await self.page.locator(
-            #     ":has-text('Conversation renamed')"
-            # ).count():
-            #     logging.info(f"No rename found yet, waiting 5s.")
-            #     await asyncio.sleep(5)
-            # logging.info(
-            #     str(
-            #         await self.page.locator(":has-text('Conversation renamed')").count()
-            #     )
-            #     + "conversation rename detected, continuing."
-            # )
+        return
+        # try:
 
-            # await asyncio.sleep(2)
-            
-            
-            # Final screenshot after waiting
-            await self.take_screenshot(
-                "When the agent finishes thinking, it responds with the user's GitHub repositories."
-            )
+        # await self.test_action(
+        #     "Record audio",
+        #     lambda: self.page.click("#audio-start-recording"),
+        # )
+        # with open('./audio.wav', 'rb') as audio_file:
+        #     audio_base64 = base64.b64encode(audio_file.read()).decode('utf-8')
+        # await self.page.evaluate(
+        #     f"""
+        #     // Mock MediaRecorder and getUserMedia for audio file simulation
+        #     navigator.mediaDevices.getUserMedia = async () => {{
+        #         // Create audio context and media stream
+        #         const audioContext = new AudioContext();
+        #         const audioBuffer = await audioContext.decodeAudioData(
+        #             Uint8Array.from(atob('{audio_base64}'), c => c.charCodeAt(0)).buffer
+        #         );
 
-            await self.test_action(
-                "The user can expand the completed GitHub activities",
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed Activities")
-                .click(),
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed Activities")
-                .scroll_into_view_if_needed(),
-            )
+        #         // Create a media stream from the audio buffer
+        #         const source = audioContext.createBufferSource();
+        #         source.buffer = audioBuffer;
+        #         const destination = audioContext.createMediaStreamDestination();
+        #         source.connect(destination);
 
-            # Click the message button first to transform it into an input
-            await self.test_action(
-                "Click message button to activate input",
-                lambda: self.page.click("#message"),
-            )
+        #         // Start playing the audio
+        #         source.start();
 
-            await asyncio.sleep(1)  # Wait for input to be ready
+        #         return destination.stream;
+        #     }};
+        # """
+        # )
 
-            # Now fill the input
-            await self.test_action(
-                "User sends a new message to create a GitHub issue",
-                lambda: self.page.keyboard.type(
-                    "Create a GitHub issue in the AGiXT-Tests/Repos-test repository titled 'Test Issue' with description 'This is a test issue created by the UI tests'"
-                ),
-            )
+        # await self.test_action(
+        #     "Confirm audio",
+        #     lambda: self.page.click("#audio-finish-recording"),
+        # )
 
-            await self.test_action(
-                "Send the GitHub issue creation message",
-                lambda: self.page.click("#send-message"),
-                lambda: self.page.locator("#message").scroll_into_view_if_needed(),
-            )
+        # await self.test_action(
+        #     "message is sent and the timer has started",
+        #     lambda: self.page.click("#send-message"),
+        # )
+        # await asyncio.sleep(120)
 
-            await asyncio.sleep(20)  # Wait for response
-            
-            await self.take_screenshot(
-                "GitHub issue creation response is displayed"
-            )
-
-            await self.test_action(
-                "Check completed activities for issue creation",
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed activities.")
-                .first
-                .click(),
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed activities.")
-                .first
-                .scroll_into_view_if_needed(),
-            )
-
-            # Get list of GitHub issues
-            await self.test_action(
-                "Click message button to activate input for issues query",
-                lambda: self.page.click("#message"),
-            )
-
-            await asyncio.sleep(1)  # Wait for input to be ready
-
-            await self.test_action(
-                "User sends a message to get GitHub issues",
-                lambda: self.page.keyboard.type(
-                    "Get the list of issues from the AGiXT-Tests/Repos-test repository"
-                ),
-            )
-
-            await self.test_action(
-                "Send the get issues message",
-                lambda: self.page.click("#send-message"),
-                lambda: self.page.locator("#message").scroll_into_view_if_needed(),
-            )
-
-            await asyncio.sleep(20)  # Wait for response
-            
-            await self.take_screenshot(
-                "GitHub issues list is displayed"
-            )
-
-            # Take another screenshot after scrolling down to show all issues
-            await self.test_action(
-                "Scroll down to show all GitHub issues",
-                lambda: self.page.keyboard.press("End"),
-                lambda: self.page.wait_for_timeout(1000)  # Wait for scroll animation
-            )
-            
-            await self.take_screenshot(
-                "Full list of GitHub issues after scrolling"
-            )
-
-            await self.test_action(
-                "Check completed activities for issues list",
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed activities.")
-                .first
-                .click(),
-                lambda: self.page.locator(".agixt-activity")
-                .get_by_text("Completed activities.")
-                .first
-                .scroll_into_view_if_needed(),
-            )
-
-            # Take a final screenshot showing GitHub extension usage
-            await self.take_screenshot(
-                "GitHub extension successfully demonstrated listing repos, creating issues, and viewing issues"
-            )
-
-            # # Test 3D modeling with OpenSCAD (commented out for now)
-            # await self.test_action(
-            #     "Click new chat button for 3D modeling test",
-            #     lambda: self.page.click('button:has-text("New Chat")')
-            # )
-            
-            # await asyncio.sleep(1)  # Wait for new chat to load
-
-            # await self.test_action(
-            #     "Click message button to activate input for 3D modeling",
-            #     lambda: self.page.click("#message"),
-            # )
-
-            # await asyncio.sleep(1)  # Wait for input to be ready
-
-            # await self.test_action(
-            #     "User sends a message to create a 3D cube",
-            #     lambda: self.page.keyboard.type(
-            #         "Create a 3D model of a cube with dimensions 20x20x20 using OpenSCAD"
-            #     ),
-            # )
-
-            # await self.test_action(
-            #     "Send the 3D modeling message",
-            #     lambda: self.page.click("#send-message"),
-            #     lambda: self.page.locator("#message").scroll_into_view_if_needed(),
-            # )
-
-            # await asyncio.sleep(20)  # Wait for response
-            
-            # await self.take_screenshot(
-            #     "3D model creation response is displayed"
-            # )
-
-            # await self.test_action(
-            #     "Check completed activities for 3D model creation",
-            #     lambda: self.page.locator(".agixt-activity")
-            #     .get_by_text("Completed activities.")
-            #     .first
-            #     .click(),
-            #     lambda: self.page.locator(".agixt-activity")
-            #     .get_by_text("Completed activities.")
-            #     .first
-            #     .scroll_into_view_if_needed(),
-            # )
-
-            # await self.test_action(
-            #     "Record audio",
-            #     lambda: self.page.click("#audio-start-recording"),
-            # )
-            # with open('./audio.wav', 'rb') as audio_file:
-            #     audio_base64 = base64.b64encode(audio_file.read()).decode('utf-8')
-            # await self.page.evaluate(
-            #     f"""
-            #     // Mock MediaRecorder and getUserMedia for audio file simulation
-            #     navigator.mediaDevices.getUserMedia = async () => {{
-            #         // Create audio context and media stream
-            #         const audioContext = new AudioContext();
-            #         const audioBuffer = await audioContext.decodeAudioData(
-            #             Uint8Array.from(atob('{audio_base64}'), c => c.charCodeAt(0)).buffer
-            #         );
-
-            #         // Create a media stream from the audio buffer
-            #         const source = audioContext.createBufferSource();
-            #         source.buffer = audioBuffer;
-            #         const destination = audioContext.createMediaStreamDestination();
-            #         source.connect(destination);
-
-            #         // Start playing the audio
-            #         source.start();
-
-            #         return destination.stream;
-            #     }};
-            # """
-            # )
-
-            # await self.test_action(
-            #     "Confirm audio",
-            #     lambda: self.page.click("#audio-finish-recording"),
-            # )
-
-            # await self.test_action(
-            #     "message is sent and the timer has started",
-            #     lambda: self.page.click("#send-message"),
-            # )
-            # await asyncio.sleep(120)
-
-            # await self.take_screenshot("voice response")
-        except Exception as e:
-            logging.error(f"Error nagivating to chat: {e}")
-            raise Exception(f"Error nagivating to chat: {e}")
+        # await self.take_screenshot("voice response")
+        # except Exception as e:
+        #     logging.error(f"Error nagivating to chat: {e}")
+        #     raise Exception(f"Error nagivating to chat: {e}")
 
     async def handle_commands_workflow(self):
         """Handle commands workflow scenario"""
@@ -953,7 +796,7 @@ class FrontEndTest:
         # Navigate directly to training URL
         await self.test_action(
             "Navigate to training settings",
-            lambda: self.page.goto(f"{self.base_uri}/settings/training?mode=user&")
+            lambda: self.page.goto(f"{self.base_uri}/settings/training?mode=user&"),
         )
 
         # After navigating to Training section, screenshot the interface
@@ -979,7 +822,6 @@ class FrontEndTest:
 
         # Let handle_chat run the conversation
         await self.handle_chat()
-
 
     async def handle_email(self):
         """Handle email verification scenario"""
@@ -1016,10 +858,6 @@ class FrontEndTest:
         """Handle training company agent scenario"""
         # TODO: Handle training company agent workflow
         pass
-
-
-
-
 
     async def handle_stripe(self):
         """Handle Stripe subscription scenario"""
@@ -1078,7 +916,6 @@ class FrontEndTest:
         await self.page.wait_for_timeout(15000)
         await self.take_screenshot("payment was processed and subscription is active")
 
-
     async def handle_provider_settings(self):
         """Test provider settings page navigation and toggle interaction."""
         # Navigate to Agent Management
@@ -1090,113 +927,37 @@ class FrontEndTest:
 
         # Navigate to Settings
         await self.test_action(
-            "Navigate to Settings",
-            lambda: self.page.click('span:has-text("Settings")')
+            "Navigate to Settings", lambda: self.page.click('span:has-text("Settings")')
         )
 
         # Find and click the Connect button for Google
         await self.test_action(
             "Click Connect button for Google provider",
-            lambda: self.page.locator('button:has-text("Connect"):right-of(:text("Google"))').first.click()
+            lambda: self.page.locator(
+                'button:has-text("Connect"):right-of(:text("Google"))'
+            ).first.click(),
         )
 
         # Wait for dialog to appear and input API Key
         await self.test_action(
             "Input Google A-P-I key",
-            lambda: self.page.fill('[id="GOOGLE_API_KEY"]', os.getenv('GOOGLE_API_KEY', ''))
+            lambda: self.page.fill(
+                '[id="GOOGLE_API_KEY"]', os.getenv("GOOGLE_API_KEY", "")
+            ),
         )
 
         # Click Save/Connect in the dialog
         await self.test_action(
             "Save Google A-P-I key configuration",
-            lambda: self.page.get_by_role('button', name='Connect Provider').click()
+            lambda: self.page.get_by_role("button", name="Connect Provider").click(),
         )
 
         # Take screenshot of success state
         await self.take_screenshot("Google provider connected successfully")
 
-
-    async def handle_abilities_settings_Github(self):
-        """Test abilities page navigation and toggle interaction."""
-
-        # Click Abilities tab
-        await self.test_action(
-            "Navigate to Abilities tab",
-            lambda: self.page.click('button[role="tab"][id*="trigger-abilities"]')
-        )
-
-        # Take screenshot before toggling
-        await self.take_screenshot("abilities_before_toggle")
-
-        # Go to the Get List of My Github Repositories text
-        await self.test_action(
-            "Scroll down to the My Github Repositories ability", 
-            lambda: self.page.get_by_text("Get List of My Github Repositories").click()
-        )
-
-        # Find and click the Get List of My Github Repositories toggle switch
-        await self.test_action(
-            "Toggle the Get List of My Github Repositories ability",
-            lambda: self.page.locator('div.rounded-lg.bg-card.text-card-foreground.shadow-sm.p-4.border.border-border\\/50:has-text("Get List of My Github Repositories")').locator('button[role="switch"]').click(),
-            lambda: self.page.wait_for_timeout(500)  # Ensure toggle interaction completes
-        )
-
-        # Toggle Create Github Repository Issue
-        await self.test_action(
-            "Toggle Create Github Repository Issue ability",
-            lambda: self.page.locator('div.rounded-lg.bg-card.text-card-foreground.shadow-sm.p-4.border.border-border\\/50:has-text("Create Github Repository Issue")').locator('button[role="switch"]').click(),
-            lambda: self.page.wait_for_timeout(500)
-        )
-
-        # Toggle Get Github Repository Issues
-        await self.test_action(
-            "Toggle Get Github Repository Issues ability",
-            lambda: self.page.locator('div.rounded-lg.bg-card.text-card-foreground.shadow-sm.p-4.border.border-border\\/50:has-text("Get Github Repository Issues")').locator('button[role="switch"]').click(),
-            lambda: self.page.wait_for_timeout(500)
-        )
-
-        # Take screenshot of GitHub abilities enabled
-        await self.take_screenshot("All GitHub abilities successfully enabled")
-
-        # # 3D model ability setup commented out for now
-        # await self.take_screenshot("Lets toggle the 3d model ability")
-        # await self.handle_abilities_settings_3D_model()
-
-
     async def handle_extensions_settings(self):
         """Test extensions page navigation and toggle interaction."""
         try:
-            # Navigate to Extensions
-            await self.test_action(
-                "Navigate to Extensions",
-                lambda: self.page.click('span:has-text("Extensions")')
-            )
-
-            # Take screenshot before toggling
-            await self.take_screenshot("extensions_before_toggle")
-
-            # Find and click the Connect button for GitHub extension
-            await self.test_action(
-                "Click Connect on GitHub extension",
-                lambda: self.page.locator('div.rounded-lg:has-text("Github") button:has-text("Connect")').click()
-            )
-
-            # Enter username and API key
-            await self.test_action(
-                "Enter GitHub user name",
-                lambda: self.page.fill('#GITHUB_USERNAME', os.getenv('GITHUB_USERNAME', 'AGiXT-Tests'))
-            )
-
-            await self.test_action(
-                "Enter GitHub A-P-I key",
-                lambda: self.page.fill('#GITHUB_API_KEY', os.getenv('GITHUB_API_KEY', ''))
-            )
-
-            # Click Connect Extension button
-            await self.test_action(
-                "Click Connect Extension button to complete GitHub connection",
-                lambda: self.page.click('button:has-text("Connect Extension")')
-            )
 
             # Take screenshot after connection
             await self.take_screenshot("extension connected")
@@ -1209,7 +970,9 @@ class FrontEndTest:
 
             # Verify we're still on the extensions page
             current_url = self.page.url
-            assert "/settings/extensions?mode=user&" in current_url, f"Expected to be on extensions page, but got {current_url}"
+            assert (
+                "/settings/extensions?mode=user&" in current_url
+            ), f"Expected to be on extensions page, but got {current_url}"
 
         except Exception as e:
             print(f"Error in handle_extensions_settings: {str(e)}")
@@ -1217,7 +980,7 @@ class FrontEndTest:
 
     # async def handle_abilities_settings_3D_model(self):
     #     """Test abilities page navigation and toggle interaction."""
-        
+
     #     # Use more specific selector combining class attributes
     #     await self.test_action(
     #         "Scroll down to the 3D model ability",
@@ -1239,14 +1002,6 @@ class FrontEndTest:
 
     #     # Take screenshot after toggle
     #     await self.take_screenshot("abilities_after_toggle")
-
-
-
-
-
-
-
-
 
     async def run(self, headless=True):
         try:
@@ -1287,55 +1042,47 @@ class FrontEndTest:
                 # Ensure we wait for the interface to be fully loaded after login
                 try:
                     await self.page.wait_for_timeout(5000)  # Wait for initial page load
-                    await self.page.wait_for_selector('span:has-text("Agent Management")',
-                        state='visible',
-                        timeout=30000
+                    await self.page.wait_for_selector(
+                        'span:has-text("Agent Management")',
+                        state="visible",
+                        timeout=30000,
                     )
                 except Exception as e:
                     logging.error(f"Failed to find Agent Management after login: {e}")
                     await self.take_screenshot("Failed to find Agent Management")
                     raise
-                
-                # On Linux, go to Agent Management first
-                if not is_desktop():
 
-                    await self.handle_provider_settings()
+                await self.test_action(
+                    "Expand Agent Management after login",
+                    lambda: self.page.click('span:has-text("Agent Management")'),
+                )
+                await self.take_screenshot("On Agent Management page after login")
 
-                    # Execute extensions and abilities settings tests
-                    await self.handle_extensions_settings()
+                # Doesn't work for me - disconnect nonfunctional.
+                # await self.handle_provider_settings()
 
-                    # await self.handle_abilities_settings()
+                # Execute extensions and abilities settings tests
+                extensions = [
+                    TestOpenSCAD(self.page, self.test_action),
+                    TestGitHub(self.page, self.test_action),
+                ]
+                for extension in extensions:
+                    await extension.setup()
+                    await extension.run()
 
+                # await self.handle_abilities_settings()
 
-        
-                    # Navigate to Agent Management after configuration
-                    await self.test_action(
-                        "Navigate to Agent Management after login",
-                        lambda: self.page.click('span:has-text("Agent Management")'),
-                    )
-                    await self.take_screenshot("On Agent Management page after login")
-                    # Then proceed with mandatory context and other tests
-                    # await self.handle_mandatory_context()
-                    # await self.handle_chat()
-                    chat_handled = True
+                # Navigate to Agent Management after configuration
 
-                    # Run remaining tests
-                    if "stripe" in self.features:
-                        await self.handle_stripe()
-                    await self.handle_train_user_agent()
-                    await self.handle_train_company_agent()
-                # else:
-                #     # Non-Linux flow remains unchanged
-                #     if "stripe" in self.features:
-                #         await self.handle_stripe()
-                #     await self.handle_train_user_agent()
-                #     await self.handle_train_company_agent()
-                #     await self.handle_mandatory_context()
-                #     await self.handle_chat()
+                # Then proceed with mandatory context and other tests
+                # await self.handle_mandatory_context()
+                # await self.handle_chat()
 
-                ##
-                # Any other tests can be added here
-                ##
+                # Run remaining tests
+                if "stripe" in self.features:
+                    await self.handle_stripe()
+                await self.handle_train_user_agent()
+                await self.handle_train_company_agent()
 
                 await self.handle_logout()
                 await self.handle_login(email, mfa_token)
@@ -1348,6 +1095,8 @@ class FrontEndTest:
         except Exception as e:
             logging.error(f"Test failed: {e}")
             # Try to create video one last time if it failed during the test
-            if not os.path.exists(os.path.join(os.path.dirname(__file__), "report.mp4")):
+            if not os.path.exists(
+                os.path.join(os.path.dirname(__file__), "report.mp4")
+            ):
                 self.create_video_report()
             raise e
