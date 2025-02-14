@@ -28,8 +28,6 @@ export function SidebarContext({ ...props }: React.ComponentProps<typeof Sidebar
     }
   }, [getCookie('agixt-has-started')]);
 
-  if (pathname !== '/settings/prompts') return null;
-
   return (
     <Sidebar collapsible='icon' side='right' {...props}>
       <SidebarHeader>
