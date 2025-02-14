@@ -1,22 +1,17 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { Plus, Trash2, Download, Save, Pencil, Check, Upload, ArrowBigLeft } from 'lucide-react';
-import { mutate } from 'swr';
+import { SidebarContent } from '@/components/jrg/appwrapper/SidebarContentManager';
+import IconButton from '@/components/jrg/theme/IconButton';
+import { Input } from '@/components/ui/input';
+import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
+import { ArrowBigLeft, Check, Download, Pencil, Plus, Save, Trash2, Upload } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 import PromptSelector from '../../Selectors/PromptSelector';
 import { usePrompt } from '../../hooks';
 import { AutoResizeTextarea } from '../training';
-import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import NewPromptDialog from './PromptDialog';
-import IconButton from '@/components/jrg/theme/IconButton';
 import PromptTest from './PromptTest';
-import { SidebarContent } from '@/components/jrg/appwrapper/SidebarContentManager';
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import { Collapsible, CollapsibleTrigger } from '@/components/ui/collapsible';
 
 export default function PromptPanel() {
   const searchParams = useSearchParams();
@@ -43,7 +38,7 @@ export default function PromptPanel() {
 
   return (
     <div className='space-y-4'>
-      <SidebarContent>
+      <SidebarContent title='Prompt Management'>
         <SidebarGroup>
           <SidebarGroupLabel>Select Prompt</SidebarGroupLabel>
           <SidebarMenuButton className='group-data-[state=expanded]:hidden'>
