@@ -19,7 +19,7 @@ const visibleOnPaths = ['/chat', '/settings/prompts'];
 
 export function SidebarContext({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { toggleSidebar } = useSidebar('right');
-  const { content } = useSidebarContent();
+  const { content, title } = useSidebarContent();
   const pathname = usePathname();
 
   if (!visibleOnPaths.some((path) => pathname.startsWith(path))) return null;
@@ -27,7 +27,7 @@ export function SidebarContext({ ...props }: React.ComponentProps<typeof Sidebar
   return (
     <Sidebar collapsible='icon' side='right' {...props}>
       <SidebarHeader>
-        <h3 className='group-data-[collapsible=icon]:hidden'>Context Sidebar</h3>
+        <h3 className='group-data-[collapsible=icon]:hidden'>{title}</h3>
       </SidebarHeader>
       <SidebarContent>{content}</SidebarContent>
       <SidebarFooter>
