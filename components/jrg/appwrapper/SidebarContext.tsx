@@ -1,8 +1,4 @@
-// components/jrg/appwrapper/SidebarContext.tsx
 'use client';
-
-import { ViewVerticalIcon } from '@radix-ui/react-icons';
-import { usePathname } from 'next/navigation';
 
 import {
   Sidebar,
@@ -13,6 +9,8 @@ import {
   SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { ViewVerticalIcon } from '@radix-ui/react-icons';
+import { usePathname } from 'next/navigation';
 import { useSidebarContent } from './SidebarContentManager';
 
 const visibleOnPaths = ['/chat', '/settings/prompts'];

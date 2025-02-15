@@ -1,4 +1,4 @@
-import { chainMutations } from '@/components/interactive/hooks';
+import { chainMutations } from '@/components/interactive/hooks/lib';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import useSWR, { SWRResponse } from 'swr';

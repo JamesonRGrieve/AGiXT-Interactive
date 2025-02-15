@@ -1,17 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { useAgent, useProvider } from '../../hooks';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import { useAgent } from '../../hooks/useAgent';
+import { useProvider } from '../../hooks/useProvider';
 
 export default function AgentConfigure() {
   const context = useInteractiveConfig();
-  const searchParams = useSearchParams();
   const { data: agentData, mutate } = useAgent();
   const { data: providerData } = useProvider(agentData?.settings?.provider || 'default');
 

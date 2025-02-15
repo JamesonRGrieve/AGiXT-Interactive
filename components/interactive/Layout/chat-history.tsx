@@ -1,19 +1,18 @@
 'use client';
 
-import { useContext } from 'react';
-import { DotsHorizontalIcon } from '@radix-ui/react-icons';
-import { usePathname, useRouter } from 'next/navigation';
-import dayjs from 'dayjs';
-import { useConversations } from '../hooks';
-import { InteractiveConfigContext } from '../InteractiveConfigContext';
-import { CommandInput, CommandItem, CommandList, Command } from '../../ui/command';
-import { Dialog, DialogClose, DialogTrigger, DialogContent } from '../../ui/dialog';
-import { cn } from '@/lib/utils';
-import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Badge } from '@/components/ui/badge';
+import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { getTimeDifference } from '../Chat/Message/Activity';
-import { ConversationEdge as Conversation } from '@/interactive/types';
+import { getTimeDifference } from '@/interactive/Chat/Activity';
+import { cn } from '@/lib/utils';
+import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+import dayjs from 'dayjs';
+import { usePathname, useRouter } from 'next/navigation';
+import { useContext } from 'react';
+import { Command, CommandInput, CommandItem, CommandList } from '../../ui/command';
+import { Dialog, DialogClose, DialogContent, DialogTrigger } from '../../ui/dialog';
+import { Conversation, useConversations } from '../hooks/useConversation';
+import { InteractiveConfigContext } from '../InteractiveConfigContext';
 
 export function ChatHistory() {
   const state = useContext(InteractiveConfigContext);

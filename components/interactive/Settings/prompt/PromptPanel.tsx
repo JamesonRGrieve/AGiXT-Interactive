@@ -7,8 +7,8 @@ import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, Sideba
 import { ArrowBigLeft, Check, Download, Pencil, Plus, Save, Trash2, Upload } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { usePrompt } from '../../hooks/usePrompt';
 import PromptSelector from '../../Selectors/PromptSelector';
-import { usePrompt } from '../../hooks';
 import { AutoResizeTextarea } from '../training';
 import NewPromptDialog from './PromptDialog';
 import PromptTest from './PromptTest';

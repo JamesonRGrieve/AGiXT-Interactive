@@ -1,4 +1,4 @@
-import { createGraphQLClient } from '@/components/interactive/hooks';
+import { createGraphQLClient } from '@/components/interactive/hooks/lib';
 import { getCookie } from 'cookies-next';
 import useSWR, { SWRResponse } from 'swr';
 import log from '../../next-log/log';

@@ -1,7 +1,7 @@
 import { getCookie } from 'cookies-next';
 import { useContext } from 'react';
 import useSWR from 'swr';
-import { InteractiveConfigContext } from './InteractiveConfigContext';
+import { InteractiveConfigContext } from '../InteractiveConfigContext';
 
 export function useOldCompanies() {
   const state = useContext(InteractiveConfigContext);

@@ -1,7 +1,5 @@
 import useSWR, { SWRResponse } from 'swr';
 import { z } from 'zod';
-
-// Import all types from the centralized schema file
 import log from '../../jrg/next-log/log';
 import { createGraphQLClient } from './lib';
 
