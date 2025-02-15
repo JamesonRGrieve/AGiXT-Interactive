@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useContext } from 'react';
-import { InteractiveConfigContext } from '../InteractiveConfigContext';
+import usePathname from '@/components/jrg/auth/hooks/usePathname';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useRouter, useSearchParams } from 'next/navigation';
-import usePathname from '@/components/jrg/auth/hooks/usePathname';
-import { useAgent } from '../hooks';
+import React from 'react';
+import { useAgent } from '../hooks/useAgent';
 
 export function CommandSelector({
   value,
