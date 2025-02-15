@@ -11,10 +11,12 @@ import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { useAgent, useCompany, useProviders } from '../hooks';
+import { useAgent } from '../hooks/useAgent';
+import { useProviders } from '../hooks/useProvider';
 import Extension from './extension';
 
 import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
+import { useCompany } from '@/components/jrg/auth/hooks/useTeam';
 import { Input } from '@/components/ui/input';
 
 // Types remain the same

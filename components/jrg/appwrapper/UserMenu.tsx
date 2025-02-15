@@ -1,37 +1,22 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-
-import { LayoutGrid, MoonIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useTheme } from '@/components/jrg/theme/useTheme';
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuPortal,
-  DropdownMenuSeparator,
   DropdownMenuSub,
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { cn } from '@/lib/utils';
-import { useTheme } from '@/components/jrg/theme/useTheme';
-import useUser from '@/auth/hooks/useUser';
-import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
-import { useCompany } from '@/components/interactive/hooks';
+import { LayoutGrid, MoonIcon } from 'lucide-react';
 import { useAppearance } from '../theme/useAppearance';
 
 type MenuItem = {
   name: string;
   href: string;
 };
-
-type UserMenuGroups = MenuItem[][];
 
 export const Themes = () => {
   const { themes, currentTheme, setTheme } = useTheme();

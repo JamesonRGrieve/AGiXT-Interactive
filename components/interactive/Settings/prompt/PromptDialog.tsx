@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { usePrompts } from '@/components/interactive/hooks';
 import { toast } from '@/hooks/useToast';
+import { useState } from 'react';
+import { usePrompts } from '../../hooks/usePrompt';
 
 interface PromptDialogProps {
   open: boolean;

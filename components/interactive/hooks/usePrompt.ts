@@ -79,3 +79,109 @@ export function usePrompts(): SWRResponse<Prompt[]> & {
     },
   });
 }
+
+/**
+ * Hook to get a specific prompt by name from the prompts list
+ * @param name - Name of the prompt to find
+ * @returns SWR response containing prompt data if found
+ */
+export function usePrompt(name: string): SWRResponse<Prompt | null> & {
+  delete: () => Promise<void>;
+  rename: (newName: string) => Promise<void>;
+  update: (content: string) => Promise<void>;
+  export: () => Promise<void>;
+} {
+  const promptsHook = usePrompts();
+  const { data: prompts, error: promptsError, isLoading: promptsLoading, mutate: promptsMutate } = promptsHook;
+  const { agixt } = useInteractiveConfig();
+  const { toast } = useToast();
+  const router = useRouter();
+  const swrHook = useSWR<Prompt | null>([name, prompts], () => prompts?.find((p) => p.name === name) || null, {
+    fallbackData: null,
+    revalidateOnFocus: false,
+    revalidateOnReconnect: false,
+  });
+  const isLoading = promptsLoading || swrHook.isLoading;
+  const error = promptsError || swrHook.error;
+  return Object.assign(
+    { ...swrHook, isLoading, error },
+    {
+      delete: async () => {
+        try {
+          await agixt.deletePrompt(name);
+          promptsMutate();
+          router.push(`/settings/prompts?prompt=${(prompts && prompts.filter((p) => p.name !== name)[0]?.name) || ''}`);
+          toast({
+            title: 'Success',
+            description: 'Prompt Deleted',
+            duration: 5000,
+          });
+        } catch (error) {
+          console.error(error);
+          toast({
+            title: 'Error',
+            description: 'Failed to Delete Prompt',
+            duration: 5000,
+          });
+          throw error;
+        }
+      },
+      rename: async (newName: string) => {
+        try {
+          await agixt.renamePrompt(name, newName);
+          swrHook.mutate();
+          promptsMutate();
+          toast({
+            title: 'Success',
+            description: 'Prompt Renamed',
+            duration: 5000,
+          });
+        } catch (error) {
+          console.error(error);
+          toast({
+            title: 'Error',
+            description: 'Failed to Rename Prompt',
+            duration: 5000,
+          });
+          throw error;
+        }
+      },
+      update: async (content: string) => {
+        try {
+          await agixt.updatePrompt(name, content);
+          swrHook.mutate();
+          toast({
+            title: 'Success',
+            description: 'Prompt Updated',
+            duration: 5000,
+          });
+        } catch (error) {
+          console.error(error);
+          toast({
+            title: 'Error',
+            description: 'Failed to Update Prompt',
+            duration: 5000,
+          });
+          throw error;
+        }
+      },
+      export: async () => {
+        if (!swrHook.data) {
+          toast({
+            title: 'Error',
+            description: 'No Active Prompt to Export',
+            duration: 5000,
+          });
+          return;
+        }
+        const element = document.createElement('a');
+        const file = new Blob([swrHook.data?.content], { type: 'text/plain' });
+        element.href = URL.createObjectURL(file);
+        element.download = `AGiXT-Prompt-${name}.txt`;
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+      },
+    },
+  );
+}

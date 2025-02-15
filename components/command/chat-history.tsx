@@ -1,8 +1,8 @@
 'use client';
 
-import dayjs from 'dayjs';
 import { CommandGroup, CommandItem } from '@/components/ui/command';
-import { useConversations } from '@/interactive/hooks';
+import dayjs from 'dayjs';
+import { useConversations } from '../interactive/hooks/useConversation';
 
 interface ChatHistoryCommandsProps {
   onSelect: (id: string) => void;

@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Plus, Check, Download, Pencil, Trash2 } from 'lucide-react';
-import { ChainSelector } from '../../Selectors/ChainSelector';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { useChain } from '../../hooks';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Check, Download, Pencil, Plus, Trash2 } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { ChainSelector } from '../../Selectors/ChainSelector';
+import { useChain } from '../../hooks/useChain';
 import ChainSteps from './ChainSteps';
 
 export default function ChainPanel({ showCreateDialog, setShowCreateDialog }) {

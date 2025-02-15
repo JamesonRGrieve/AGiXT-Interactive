@@ -1,11 +1,11 @@
 'use client';
 
-import React from 'react';
-import { useChains } from '../hooks';
+import usePathname from '@/components/jrg/auth/hooks/usePathname';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useRouter, useSearchParams } from 'next/navigation';
-import usePathname from '@/components/jrg/auth/hooks/usePathname';
+import React from 'react';
+import { useChains } from '../hooks/useChain';
 
 export function ChainSelector({
   value,

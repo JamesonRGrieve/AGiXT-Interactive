@@ -8,7 +8,6 @@ import { useAgents } from '../hooks/useAgent';
 export default function AgentSelector(): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);
   const { data: agentData } = useAgents();
-  console.log(state.agent);
   return agentData && agentData?.length > 1 ? (
     <TooltipProvider>
       <Tooltip>

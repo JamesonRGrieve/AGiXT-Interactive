@@ -1,4 +1,4 @@
-import { AgentSchema } from '@/components/interactive/types';
+import { AgentSchema } from '@/components/interactive/hooks/useAgent';
 import '@/components/jrg/zod2gql/zod2gql';
 import { z } from 'zod';
 

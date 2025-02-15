@@ -13,7 +13,7 @@ import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { UIProps } from '../InteractiveAGiXT';
 import { InteractiveConfigContext, Overrides } from '../InteractiveConfigContext';
-import { useCompany, useConversations } from '../hooks';
+import { useConversations } from '../hooks/useConversation';
 import ChatBar from './ChatInput';
 import ChatLog from './ChatLog';
 

@@ -1,27 +1,24 @@
 'use client';
 
 import { ChevronRightIcon } from '@radix-ui/react-icons';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { TbMessageCirclePlus } from 'react-icons/tb';
 import {
   BookOpen,
-  SquareLibrary,
-  HelpCircle,
-  VenetianMask,
-  Rocket,
-  Link as LuLink,
-  GraduationCap,
-  Settings,
   Bot,
-  Users,
-  User,
+  GraduationCap,
+  HelpCircle,
+  Link as LuLink,
   Puzzle,
-  Building,
+  Rocket,
+  Settings,
+  SquareLibrary,
+  User,
+  Users,
+  VenetianMask,
   Workflow,
 } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { TbMessageCirclePlus } from 'react-icons/tb';
 
-import Link from 'next/link';
-import { useCompany } from '../../interactive/hooks';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import {
   SidebarGroup,
@@ -35,6 +32,8 @@ import {
   useSidebar,
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { useCompany } from '../auth/hooks/useTeam';
 
 type Item = {
   title: string;
@@ -192,10 +191,6 @@ export function NavMain() {
   }));
 
   // Add logic to determine if team management should be shown
-  if (false) {
-    itemsWithActiveState.find((item) => item.title === 'Team Management').visible = false;
-  }
-
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Pages</SidebarGroupLabel>
