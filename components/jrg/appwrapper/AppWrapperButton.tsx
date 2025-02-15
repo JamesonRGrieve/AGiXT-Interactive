@@ -1,5 +1,5 @@
-import React, { ReactNode } from 'react';
-import { LuChevronRight as ChevronRight, LuChevronLeft as ChevronLeft } from 'react-icons/lu';
+import { ReactNode } from 'react';
+import { LuChevronLeft as ChevronLeft, LuChevronRight as ChevronRight } from 'react-icons/lu';
 
 export default function PopoutDrawerWrapperAppBarButton({
   open,

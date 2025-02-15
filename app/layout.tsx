@@ -1,5 +1,7 @@
+import { CommandMenu } from '@/components/command';
 import InteractiveConfigContextWrapper from '@/components/interactive/ContextWrapper';
-import Head from '@/components/jrg/appwrapper/old/Head';
+import Head from '@/components/jrg/appwrapper/Head';
+import { SidebarContentProvider } from '@/components/jrg/appwrapper/SidebarContentManager';
 import { SidebarContext } from '@/components/jrg/appwrapper/SidebarContext';
 import { SidebarMain } from '@/components/jrg/appwrapper/SidebarMain';
 import '@/components/jrg/zod2gql/zod2gql';
@@ -11,9 +13,6 @@ import { cookies } from 'next/headers';
 import { ReactNode } from 'react';
 import './globals.css';
 import { metadata, viewport } from './metadata';
-import '@/components/jrg/zod2gql/zod2gql';
-import { CommandMenu } from '@/components/command';
-import { SidebarContentProvider } from '@/components/jrg/appwrapper/SidebarContentManager';
 
 const inter = Inter({ subsets: ['latin'] });
 

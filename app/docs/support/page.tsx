@@ -1,16 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardContent, CardFooter, CardTitle, CardDescription } from '@/components/ui/card';
-import useUser from '@/components/jrg/auth/hooks/useUser';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import Link from 'next/link';
 import { SidebarPage } from '@/components/jrg/appwrapper/SidebarPage';
+import { useUser } from '@/components/jrg/auth/hooks/useUser';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import Link from 'next/link';
+import { useState } from 'react';
 const requestTypes = [
   { value: 'bug', label: 'Repot a Bug Report' },
   { value: 'technical', label: 'Technical Support' },

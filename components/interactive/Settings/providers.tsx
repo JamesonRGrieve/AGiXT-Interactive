@@ -2,6 +2,7 @@
 
 import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
+import { useCompany } from '@/components/jrg/auth/hooks/useUser';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,10 +19,10 @@ import { Label } from '@/components/ui/label';
 import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import { Plus, Wrench } from 'lucide-react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import { LuUnlink as Unlink } from 'react-icons/lu';
-import { useAgent, useCompany, useProviders } from '../hooks';
+import { useAgent } from '../hooks/useAgent';
+import { useProviders } from '../hooks/useProvider';
 
 // Types remain the same
 type Command = {
@@ -52,23 +53,13 @@ interface ExtensionSettings {
 
 export function Providers() {
   const { agent } = useInteractiveConfig();
-  const pathname = usePathname();
   const { data: agentData, mutate } = useAgent(true);
-  const router = useRouter();
-  const [extensions, setExtensions] = useState<Extension[]>([]);
-  const [selectedExtension, setSelectedExtension] = useState<string>('');
   const [settings, setSettings] = useState<Record<string, string>>({});
   const [error, setError] = useState<ErrorState>(null);
-  const [showEnabledOnly, setShowEnabledOnly] = useState(false);
   const agent_name = (getCookie('agixt-agent') || process.env.NEXT_PUBLIC_AGIXT_AGENT) ?? agent;
   const { data: activeCompany } = useCompany();
   const { data: providerData } = useProviders();
-  const searchParams = useSearchParams();
-  // Filter extensions for the enabled commands view
-  const extensionsWithCommands = extensions.filter((ext) => ext.commands?.length > 0);
-  const allEnabledCommands = extensions.flatMap((ext) =>
-    ext.commands.filter((cmd) => cmd.enabled).map((cmd) => ({ ...cmd, extension_name: ext.extension_name })),
-  );
+
   console.log('ACTIVE COMPANY', activeCompany);
 
   // Filter connected providers

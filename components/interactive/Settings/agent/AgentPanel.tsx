@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
-import { LuPlus, LuCheck, LuDownload, LuPencil, LuTrash2 } from 'react-icons/lu';
-import { mutate } from 'swr';
-import { getCookie, setCookie } from 'cookies-next';
-import axios from 'axios';
-import { useActiveCompany, useAgent, useCompany } from '../../hooks';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
+import { useCompany } from '@/components/jrg/auth/hooks/useUser';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import axios from 'axios';
+import { getCookie, setCookie } from 'cookies-next';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { LuCheck, LuDownload, LuPencil, LuPlus, LuTrash2 } from 'react-icons/lu';
+import { useAgent } from '../../hooks/useAgent';
 
 export default function AgentPanel({ setShowCreateDialog }) {
   const [renaming, setRenaming] = useState(false);

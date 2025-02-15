@@ -1,8 +1,7 @@
 'use client';
 
 import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
-import { useCompanies, useCompany } from '@/components/jrg/auth/hooks/useTeam';
-import { useUser } from '@/components/jrg/auth/hooks/useUser';
+import { useCompanies, useCompany, useUser } from '@/components/jrg/auth/hooks/useUser';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,

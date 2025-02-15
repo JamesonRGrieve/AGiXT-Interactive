@@ -1,5 +1,4 @@
-import React from 'react';
-import CenterAlignedBox, { CenterAlignedBoxProps } from './CenterAlignedBox';
+import CenterAlignedBox, { CenterAlignedBoxProps } from './AppWrapperCenterAlignedBox';
 
 export type HeaderFooterProps = {
   footer?: boolean;

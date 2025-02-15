@@ -1,3 +1,4 @@
+import { useCompany } from '@/components/jrg/auth/hooks/useUser';
 import { getCookie } from 'cookies-next';
 import { useContext } from 'react';
 import useSWR from 'swr';

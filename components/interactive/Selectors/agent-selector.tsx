@@ -1,6 +1,6 @@
 'use client';
 
-import { useCompany } from '@/components/jrg/auth/hooks/useTeam';
+import { useCompany } from '@/components/jrg/auth/hooks/useUser';
 import {
   DropdownMenu,
   DropdownMenuContent,
