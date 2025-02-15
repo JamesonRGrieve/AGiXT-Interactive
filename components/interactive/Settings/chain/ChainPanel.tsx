@@ -1,14 +1,14 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useRouter, usePathname, useSearchParams } from 'next/navigation';
-import { Plus, Check, Download, Pencil, Trash2 } from 'lucide-react';
-import { ChainSelector } from '../../Selectors/ChainSelector';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { useChain } from '../../hooks';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Check, Download, Pencil, Plus, Trash2 } from 'lucide-react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { ChainSelector } from '../../Selectors/ChainSelector';
+import { useChain } from '../../hooks/useChain';
 import ChainSteps from './ChainSteps';
 
 export default function ChainPanel({ showCreateDialog, setShowCreateDialog }) {
@@ -20,22 +20,21 @@ export default function ChainPanel({ showCreateDialog, setShowCreateDialog }) {
   const searchParams = useSearchParams();
 
   const { data: chainData, error } = useChain(searchParams.get('chain') ?? undefined);
-  const currentChain = searchParams.get('chain') ?? '';
 
   useEffect(() => {
     if (renaming) {
-      setNewName(currentChain);
+      setNewName(searchParams.get('chain') ?? '');
     }
-  }, [renaming, currentChain]);
+  }, [renaming]);
 
   const handleDelete = async () => {
-    await context.agixt.deleteChain(currentChain);
+    await context.agixt.deleteChain(searchParams.get('chain') ?? '');
     router.push(pathname);
   };
 
   const handleRename = async () => {
-    if (newName && newName !== currentChain) {
-      await context.agixt.renameChain(currentChain, newName);
+    if ((newName && newName !== searchParams.get('chain')) ?? '') {
+      (await context.agixt.searchParams.get('chain')) ?? ''(searchParams.get('chain') ?? '', newName);
       setRenaming(false);
       const current = new URLSearchParams(Array.from(searchParams.entries()));
       current.set('chain', newName);
@@ -44,11 +43,11 @@ export default function ChainPanel({ showCreateDialog, setShowCreateDialog }) {
   };
 
   const handleExportChain = async () => {
-    const chainData = await context.agixt.getChain(currentChain);
+    const chainData = await context.agixt.getChain(searchParams.get('chain') ?? '');
     const element = document.createElement('a');
     const file = new Blob([JSON.stringify(chainData.steps)], { type: 'application/json' });
     element.href = URL.createObjectURL(file);
-    element.download = `${currentChain}.json`;
+    element.download = `${searchParams.get('chain') ?? ''}.json`;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
@@ -63,7 +62,7 @@ export default function ChainPanel({ showCreateDialog, setShowCreateDialog }) {
               {renaming ? (
                 <Input value={newName} onChange={(e) => setNewName(e.target.value)} className='w-full' />
               ) : (
-                <ChainSelector value={currentChain} />
+                <ChainSelector />
               )}
             </div>
             <Tooltip>
@@ -96,7 +95,7 @@ export default function ChainPanel({ showCreateDialog, setShowCreateDialog }) {
                         variant='ghost'
                         size='icon'
                         onClick={handleRename}
-                        disabled={!newName || newName === currentChain}
+                        disabled={(!newName || newName === searchParams.get('chain')) ?? ''}
                       >
                         <Check className='h-4 w-4' />
                       </Button>

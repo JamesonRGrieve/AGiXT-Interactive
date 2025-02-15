@@ -1,9 +1,6 @@
 'use client';
 
-import { setCookie } from 'cookies-next';
-import { Check, ChevronsUpDown, Plus } from 'lucide-react';
-import { FaRobot } from 'react-icons/fa';
-
+import { useCompany } from '@/components/jrg/auth/hooks/useUser';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,9 +10,11 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
+import { setCookie } from 'cookies-next';
+import { Check, ChevronsUpDown, Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useAgent, useAgents, useCompany } from '../hooks';
-import { Agent } from '../types';
+import { FaRobot } from 'react-icons/fa';
+import { Agent, useAgent, useAgents } from '../hooks/useAgent';
 
 export function AgentSelector() {
   const { isMobile } = useSidebar('left');

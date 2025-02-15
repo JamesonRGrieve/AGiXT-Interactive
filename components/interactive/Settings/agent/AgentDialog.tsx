@@ -1,14 +1,15 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import { Button } from '@/components/ui/button';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { useProviders } from '../../hooks';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+import { useProviders } from '../../hooks/useProvider';
+
 export function AgentDialog({ open, setOpen }: { open: boolean; setOpen: (open: boolean) => void }) {
   const router = useRouter();
   const context = useInteractiveConfig();

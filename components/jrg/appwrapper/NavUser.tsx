@@ -1,11 +1,10 @@
 'use client';
 
-import { BadgeCheck, Bell, LogOut } from 'lucide-react';
 import { CaretRightIcon, ComponentPlaceholderIcon } from '@radix-ui/react-icons';
+import { BadgeCheck, LogOut } from 'lucide-react';
 
-import { useRouter } from 'next/navigation';
-import { Skeleton } from '../../ui/skeleton';
-import { Button } from '../../ui/button';
+import { Appearances, Themes } from '@/components/jrg/appwrapper/UserMenu';
+import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -17,15 +16,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
-import { Appearances, Themes } from '@/components/jrg/appwrapper/UserMenu';
-import useUser from '@/components/jrg/auth/hooks/useUser';
-import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
-
-const user = {
-  name: 'shadcn',
-  email: 'm@example.com',
-  avatar: '/avatars/shadcn.jpg',
-};
+import { useRouter } from 'next/navigation';
+import { Skeleton } from '../../ui/skeleton';
+import { useUser } from '../auth/hooks/useUser';
 
 export function NavUser() {
   const { isMobile } = useSidebar('left');

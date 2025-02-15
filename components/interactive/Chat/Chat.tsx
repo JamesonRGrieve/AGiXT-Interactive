@@ -1,6 +1,7 @@
 'use client';
 
 import { SidebarContent } from '@/components/jrg/appwrapper/SidebarContentManager';
+import { useCompany } from '@/components/jrg/auth/hooks/useUser';
 import log from '@/components/jrg/next-log/log';
 import { Input } from '@/components/ui/input';
 import { SidebarGroup, SidebarGroupLabel, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
@@ -13,7 +14,7 @@ import { useContext, useEffect, useState } from 'react';
 import useSWR, { mutate } from 'swr';
 import { UIProps } from '../InteractiveAGiXT';
 import { InteractiveConfigContext, Overrides } from '../InteractiveConfigContext';
-import { useCompany, useConversations } from '../hooks';
+import { useConversations } from '../hooks/useConversation';
 import ChatBar from './ChatInput';
 import ChatLog from './ChatLog';
 
@@ -22,7 +23,6 @@ export async function getAndFormatConversastion(state): Promise<any[]> {
   log(['Raw conversation: ', rawConversation], { client: 3 });
   return rawConversation.reduce((accumulator, currentMessage: { id: string; message: string }) => {
     const messageType = currentMessage.message.split(' ')[0];
-    log(['Message type: ', messageType], { client: 2 });
     if (messageType.startsWith('[SUBACTIVITY]')) {
       let target;
       const parent = messageType.split('[')[2].split(']')[0];
@@ -178,44 +178,40 @@ export default function Chat({
     }
   }
   const handleDeleteConversation = async (): Promise<void> => {
-    if (currentConversation?.id) {
-      await state.agixt.deleteConversation(currentConversation.id);
-      await mutate();
-      state.mutate((oldState) => ({
-        ...oldState,
-        overrides: { ...oldState.overrides, conversation: '-' },
-      }));
-    }
+    await state.agixt.deleteConversation(currentConversation?.id || '-');
+    await mutate();
+    state.mutate((oldState) => ({
+      ...oldState,
+      overrides: { ...oldState.overrides, conversation: '-' },
+    }));
   };
 
   const handleExportConversation = async (): Promise<void> => {
-    if (currentConversation?.id) {
-      // Get the full conversation content
-      const conversationContent = await state.agixt.getConversation('', currentConversation.id);
+    // Get the full conversation content
+    const conversationContent = await state.agixt.getConversation('', currentConversation?.id || '-');
 
-      // Format the conversation for export
-      const exportData = {
-        name: currentConversation.name,
-        id: currentConversation.id,
-        created_at: currentConversation.created_at,
-        messages: conversationContent.map((msg) => ({
-          role: msg.role,
-          content: msg.message,
-          timestamp: msg.timestamp,
-        })),
-      };
+    // Format the conversation for export
+    const exportData = {
+      name: currentConversation?.name || 'New',
+      id: currentConversation?.id || '-',
+      created_at: currentConversation?.created_at || new Date().toISOString(),
+      messages: conversationContent.map((msg) => ({
+        role: msg.role,
+        content: msg.message,
+        timestamp: msg.timestamp,
+      })),
+    };
 
-      // Create and trigger download
-      const element = document.createElement('a');
-      const file = new Blob([JSON.stringify(exportData, null, 2)], {
-        type: 'application/json',
-      });
-      element.href = URL.createObjectURL(file);
-      element.download = `${currentConversation.name}_${new Date().toISOString().split('T')[0]}.json`;
-      document.body.appendChild(element);
-      element.click();
-      document.body.removeChild(element);
-    }
+    // Create and trigger download
+    const element = document.createElement('a');
+    const file = new Blob([JSON.stringify(exportData, null, 2)], {
+      type: 'application/json',
+    });
+    element.href = URL.createObjectURL(file);
+    element.download = `${currentConversation?.name || 'New'}_${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   };
   const [newName, setNewName] = useState('');
   const router = useRouter();
@@ -294,13 +290,16 @@ export default function Chat({
               {
                 title: 'Export Conversation',
                 icon: Download,
-                func: handleExportConversation,
+                func: () => handleExportConversation(),
                 disabled: renaming,
               },
               {
                 title: 'Delete Conversation',
                 icon: Trash2,
-                func: handleDeleteConversation,
+                func: () => {
+                  console.log('DELETE');
+                  handleDeleteConversation();
+                },
                 disabled: renaming,
               },
             ].map(

@@ -1,10 +1,7 @@
 'use client';
 
-import { CaretSortIcon } from '@radix-ui/react-icons';
-
-import { useRouter } from 'next/navigation';
-import { getCookie, setCookie } from 'cookies-next';
-import { useCompany, useCompanies } from '../hooks';
+import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
+import { useCompanies, useCompany, useUser } from '@/components/jrg/auth/hooks/useUser';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,
@@ -13,30 +10,16 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
-import useUser from '@/components/jrg/auth/hooks/useUser';
-import { getGravatarUrl } from '@/components/jrg/auth/gravatar';
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
-
-const user = {
-  name: 'shadcn',
-  email: 'm@example.com',
-  avatar: '/avatars/shadcn.jpg',
-};
+import { CaretSortIcon } from '@radix-ui/react-icons';
 
 export function NavCompany() {
-  const { isMobile } = useSidebar('left');
-  const router = useRouter();
-
   const { data: company } = useCompany();
-  console.log(company);
   const { data: companies } = useCompanies();
 
   const { data: user, mutate: mutateUser } = useUser();
   const { data: activeCompany, mutate: mutateActiveCompany } = useCompany();
-  const handleLogout = () => {
-    router.push('/user/logout');
-  };
 
   return (
     <SidebarMenu>

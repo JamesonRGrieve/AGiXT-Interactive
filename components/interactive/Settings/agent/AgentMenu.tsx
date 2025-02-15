@@ -1,16 +1,14 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { mutate } from 'swr';
-import { useAgent } from '../../hooks';
 import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import { Card, CardContent } from '@/components/ui/card';
-import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { mutate } from 'swr';
+import { useAgent } from '../../hooks/useAgent';
 
 export default function AgentMenu() {
   const context = useInteractiveConfig();
-  const searchParams = useSearchParams();
 
   const { data: agentData } = useAgent();
 

@@ -1,27 +1,27 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
-import { getCookie } from 'cookies-next';
-import {
-  LuTrash2 as Trash2,
-  LuBrain as Brain,
-  LuUpload as Upload,
-  LuFile,
-  LuMessageSquare,
-  LuLink,
-  LuMic,
-  LuImage,
-  LuThumbsUp,
-  LuNewspaper,
-  LuYoutube,
-} from 'react-icons/lu';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCompany } from '../hooks';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useCompany } from '@/components/jrg/auth/hooks/useUser';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Progress } from '@/components/ui/progress';
+import { Textarea } from '@/components/ui/textarea';
+import { getCookie } from 'cookies-next';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  LuBrain as Brain,
+  LuFile,
+  LuImage,
+  LuLink,
+  LuMessageSquare,
+  LuMic,
+  LuNewspaper,
+  LuThumbsUp,
+  LuYoutube,
+  LuTrash2 as Trash2,
+  LuUpload as Upload,
+} from 'react-icons/lu';
 
 interface SourceDisplayProps {
   source: string;

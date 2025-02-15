@@ -1,21 +1,20 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { ArrowUp, ArrowDown, Save, X } from 'lucide-react';
-import useSWR, { mutate } from 'swr';
-import PromptSelector from '../../Selectors/PromptSelector';
-import PromptCategorySelector from '../../Selectors/PromptCategorySelector';
-import { CommandSelector } from '../../Selectors/CommandSelector';
-import { ChainSelector } from '../../Selectors/ChainSelector';
+import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
-import { useInteractiveConfig } from '@/components/interactive/InteractiveConfigContext';
-import { useChain, useChains } from '../../hooks';
+import { ArrowDown, ArrowUp, Save, X } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import useSWR from 'swr';
+import { ChainSelector } from '../../Selectors/ChainSelector';
+import { CommandSelector } from '../../Selectors/CommandSelector';
+import PromptSelector from '../../Selectors/PromptSelector';
+import { useChain, useChains } from '../../hooks/useChain';
 
 const ignoreArgs = [
   'prompt_name',
@@ -66,7 +65,7 @@ export default function ChainStep({
   const { mutate: mutateChainList } = useChains();
 
   const { data: agentData } = useSWR('/agents', async () =>
-    ((await context.agixt.getAgents()) as any[])
+    (await context.agixt.getAgents())
       .map((agent: any) => agent.name)
       .sort((a: any, b: any) => {
         const nameA = typeof a.name === 'string' ? a.name.trim().toLowerCase() : '';
@@ -86,7 +85,7 @@ export default function ChainStep({
       Prompt: {
         component: (
           <div className='space-y-2'>
-            <PromptCategorySelector category={targetCategory.toString()} categoryMutate={setTargetCategory} />
+            {/* <PromptCategorySelector category={targetCategory.toString()} categoryMutate={setTargetCategory} /> */}
             <div>
               <Label htmlFor='prompt-name'>Prompt Name</Label>
               <PromptSelector value={targetName} onChange={setTargetName} />

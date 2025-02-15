@@ -13,7 +13,7 @@ import { useContext, useRef, useState } from 'react';
 import { LuCopy, LuDownload, LuPen as LuEdit, LuGitFork, LuThumbsDown, LuThumbsUp, LuTrash2 } from 'react-icons/lu';
 import { mutate } from 'swr';
 import { InteractiveConfigContext } from '../../InteractiveConfigContext';
-import { useConversations } from '../../hooks';
+import { useConversations } from '../../hooks/useConversation';
 import JRGDialog from './Dialog';
 import { ChatItem } from './Message';
 

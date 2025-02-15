@@ -1,10 +1,6 @@
 'use client';
-import React, { useState } from 'react';
-import axios from 'axios';
-import { getCookie, setCookie } from 'cookies-next';
-import { LuPencil, LuCheck, LuPlus } from 'react-icons/lu';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -14,8 +10,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useCompany, useCompanies } from '@/components/interactive/hooks';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import axios from 'axios';
+import { getCookie } from 'cookies-next';
+import { useState } from 'react';
+import { LuCheck, LuPencil, LuPlus } from 'react-icons/lu';
+import { useCompanies, useCompany } from '../hooks/useUser';
 
 const ROLES = [
   { id: 2, name: 'Admin' },
