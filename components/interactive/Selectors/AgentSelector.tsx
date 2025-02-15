@@ -1,10 +1,9 @@
 'use client';
-
-import React, { useContext } from 'react';
-import { InteractiveConfigContext } from '../InteractiveConfigContext';
-import { useAgents } from '../hooks';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import React, { useContext } from 'react';
+import { InteractiveConfigContext } from '../InteractiveConfigContext';
+import { useAgents } from '../hooks/useAgent';
 
 export default function AgentSelector(): React.JSX.Element {
   const state = useContext(InteractiveConfigContext);
