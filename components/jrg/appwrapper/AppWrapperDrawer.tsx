@@ -1,7 +1,6 @@
 'use client';
 
-import React, { ReactNode, useEffect, useState } from 'react';
-import MenuSWR from './MenuSWR';
+import { ReactNode, useEffect, useState } from 'react';
 
 export default function PopoutDrawer({
   open,
@@ -61,7 +60,7 @@ export default function PopoutDrawer({
           paddingBottom: isMobile ? 'env(safe-area-inset-bottom)' : undefined,
         }}
       >
-        <ul className='p-0 m-0 list-none'>{staticMenu ? staticMenu : <MenuSWR swr={swr} menu={menu} />}</ul>
+        <ul className='p-0 m-0 list-none'>{staticMenu ? staticMenu : null /* <MenuSWR swr={swr} menu={menu} /> */}</ul>
       </div>
     </>
   );

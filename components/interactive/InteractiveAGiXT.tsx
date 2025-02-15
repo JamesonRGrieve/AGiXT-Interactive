@@ -1,24 +1,22 @@
 'use client';
-import { deleteCookie, getCookie, setCookie } from 'cookies-next';
-import React, { ReactNode, useEffect, useMemo, useState } from 'react';
+import Gravatar from '@/components/jrg/auth/management/Gravatar';
+import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import axios from 'axios';
+import { getCookie, setCookie } from 'cookies-next';
 import { useSearchParams } from 'next/navigation';
+import React, { ReactNode, useEffect, useMemo, useState } from 'react';
 import { LuMenu as Menu } from 'react-icons/lu';
 import useSWR from 'swr';
-import axios from 'axios';
-import AppWrapper from '../jrg/appwrapper/old/AppWrapper';
-
-import { InteractiveConfigDefault, InteractiveConfig, Overrides } from './InteractiveConfigContext';
-import ContextWrapper from './ContextWrapper';
-import Chat from './Chat/Chat';
-import Form from './Form/Form';
-import ConversationSelector from './Selectors/ConversationSelector';
-
-import { AgentSelector } from './Selectors/agent-selector';
-import PromptSelector from './Selectors/PromptSelector';
-import Gravatar from '@/components/jrg/auth/management/Gravatar';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Button } from '@/components/ui/button';
+import AppWrapper from '../jrg/appwrapper/AppWrapper';
 import log from '../jrg/next-log/log';
+import Chat from './Chat/Chat';
+import ContextWrapper from './ContextWrapper';
+import Form from './Form/Form';
+import { InteractiveConfig, InteractiveConfigDefault, Overrides } from './InteractiveConfigContext';
+import { AgentSelector } from './Selectors/agent-selector';
+import ConversationSelector from './Selectors/ConversationSelector';
+import PromptSelector from './Selectors/PromptSelector';
 
 export type FormProps = {
   fieldOverrides?: { [key: string]: ReactNode };

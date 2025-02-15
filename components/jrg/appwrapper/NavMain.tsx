@@ -33,7 +33,7 @@ import {
 } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { useCompany } from '../auth/hooks/useTeam';
+import { useCompany } from '../auth/hooks/useUser';
 
 type Item = {
   title: string;

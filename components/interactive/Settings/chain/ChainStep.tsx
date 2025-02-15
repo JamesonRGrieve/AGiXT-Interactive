@@ -13,7 +13,6 @@ import { useEffect, useMemo, useState } from 'react';
 import useSWR from 'swr';
 import { ChainSelector } from '../../Selectors/ChainSelector';
 import { CommandSelector } from '../../Selectors/CommandSelector';
-import PromptCategorySelector from '../../Selectors/PromptCategorySelector';
 import PromptSelector from '../../Selectors/PromptSelector';
 import { useChain, useChains } from '../../hooks/useChain';
 
@@ -86,7 +85,7 @@ export default function ChainStep({
       Prompt: {
         component: (
           <div className='space-y-2'>
-            <PromptCategorySelector category={targetCategory.toString()} categoryMutate={setTargetCategory} />
+            {/* <PromptCategorySelector category={targetCategory.toString()} categoryMutate={setTargetCategory} /> */}
             <div>
               <Label htmlFor='prompt-name'>Prompt Name</Label>
               <PromptSelector value={targetName} onChange={setTargetName} />

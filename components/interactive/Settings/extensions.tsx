@@ -16,7 +16,7 @@ import { useProviders } from '../hooks/useProvider';
 import Extension from './extension';
 
 import MarkdownBlock from '@/components/interactive/Chat/Message/MarkdownBlock';
-import { useCompany } from '@/components/jrg/auth/hooks/useTeam';
+import { useCompany } from '@/components/jrg/auth/hooks/useUser';
 import { Input } from '@/components/ui/input';
 
 // Types remain the same

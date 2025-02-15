@@ -15,7 +15,7 @@ import axios from 'axios';
 import { getCookie } from 'cookies-next';
 import { useState } from 'react';
 import { LuCheck, LuPencil, LuPlus } from 'react-icons/lu';
-import { useCompanies, useCompany } from '../hooks/useTeam';
+import { useCompanies, useCompany } from '../hooks/useUser';
 
 const ROLES = [
   { id: 2, name: 'Admin' },

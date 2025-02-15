@@ -1,7 +1,7 @@
 import useSWR, { SWRResponse } from 'swr';
 
 // Import all types from the centralized schema file
-import { RoleSchema, UserSchema } from '@/components/jrg/auth/types/types';
+import { RoleSchema, UserSchema } from '@/components/jrg/auth/hooks/useUser';
 import { z } from 'zod';
 import log from '../../jrg/next-log/log';
 import { createGraphQLClient } from './lib';
