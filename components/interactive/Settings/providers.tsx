@@ -208,7 +208,6 @@ export function Providers() {
                       size='sm'
                       className='gap-2'
                       onClick={() => {
-                        setSelectedExtension(provider.name);
                         // Initialize settings with the default values from provider.settings
                         setSettings(
                           provider.settings.reduce((acc, setting) => {
