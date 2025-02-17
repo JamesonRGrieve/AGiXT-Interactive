@@ -35,6 +35,7 @@ export function CommandMenuProvider({ children }: CommandMenuProviderProps) {
     const down = (e: KeyboardEvent) => {
       if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
         e.preventDefault();
+        setSearch('');
         toggle();
       }
     };
