@@ -16,6 +16,7 @@ import {
 import { commandMenuItems } from './items';
 import { ChatHistoryCommands } from './chat-history';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { WalletCommands } from './wallet';
 
 export function CommandMenu() {
   const [open, setOpen] = useState(false);
@@ -66,6 +67,7 @@ export function CommandMenu() {
           }}
         />
         <CommandSeparator />
+        <WalletCommands onSelect={() => setOpen(false)} />
       </CommandList>
     </CommandDialog>
   );
