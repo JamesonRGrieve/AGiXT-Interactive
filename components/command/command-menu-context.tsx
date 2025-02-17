@@ -6,6 +6,9 @@ type CommandMenuContextType = {
   open: boolean;
   setOpen: (open: boolean) => void;
   toggle: () => void;
+  subPage: SubPage | null;
+  setSubPage: (subPage: SubPage | null) => void;
+  currentSubPage: SubPage | null;
 };
 
 const CommandMenuContext = createContext<CommandMenuContextType | undefined>(undefined);
@@ -14,8 +17,12 @@ type CommandMenuProviderProps = {
   children: ReactNode;
 };
 
+type SubPage = 'chat-history' | 'navigation' | 'wallet';
+
 export function CommandMenuProvider({ children }: CommandMenuProviderProps) {
   const [open, setOpen] = useState(false);
+  const [subPage, setSubPage] = useState<SubPage | null>(null);
+  const currentSubPage = subPage;
 
   const toggle = () => setOpen((prev) => !prev);
 
@@ -36,6 +43,9 @@ export function CommandMenuProvider({ children }: CommandMenuProviderProps) {
         open,
         setOpen,
         toggle,
+        subPage,
+        setSubPage,
+        currentSubPage,
       }}
     >
       {children}

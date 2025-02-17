@@ -1,29 +1,28 @@
 import { TbMessageCirclePlus } from 'react-icons/tb';
-import { User, Puzzle, Rocket, HelpCircle } from 'lucide-react';
+import { User, Puzzle, Rocket, HelpCircle, Wallet } from 'lucide-react';
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { CommandItemComponent, CommandMenuGroup } from '../index';
+import { CommandItemComponent } from '../index';
 import { useCommandMenu } from '../command-menu-context';
 import { CommandGroup, CommandSeparator } from '@/components/ui/command';
 
 export function QuickActionsGroup() {
   const router = useRouter();
-  const { setOpen } = useCommandMenu();
+  const { setOpen, setSubPage } = useCommandMenu();
 
   const onSelect = useCallback(
-    (item: { url?: string }) => {
-      if (item.url) {
-        router.push(item.url);
-        setOpen(false);
+    (item: { subPage?: string }) => {
+      if (item.subPage) {
+        setSubPage(item.subPage as any);
       }
     },
-    [router, setOpen],
+    [setSubPage],
   );
 
   return (
     <>
-      <CommandGroup heading={quickActions.heading}>
-        {quickActions.items.map((item) => (
+      <CommandGroup heading='Quick Actions'>
+        {quickActions.map((item) => (
           <CommandItemComponent key={item.label} item={item} onSelect={() => onSelect(item)} />
         ))}
       </CommandGroup>
@@ -32,43 +31,35 @@ export function QuickActionsGroup() {
   );
 }
 
-export const quickActions: CommandMenuGroup = {
-  heading: 'Quick Actions',
-  items: [
-    {
-      icon: TbMessageCirclePlus,
-      label: 'New Chat',
-      description: 'Start a new chat',
-      url: '/chat',
-      keywords: ['chat', 'new', 'start'],
-    },
-    {
-      icon: User,
-      label: 'Profile',
-      description: 'Manage your profile',
-      url: '/user/manage',
-      keywords: ['profile', 'manage', 'user'],
-    },
-    {
-      icon: Puzzle,
-      label: 'Extensions',
-      description: 'Manage agent extensions',
-      url: '/settings/extensions',
-      keywords: ['extensions', 'manage', 'agent'],
-    },
-    {
-      icon: Rocket,
-      label: 'Getting Started',
-      description: 'View getting started guide',
-      url: '/docs/getting-started',
-      keywords: ['getting started', 'guide', 'documentation'],
-    },
-    {
-      icon: HelpCircle,
-      label: 'Support',
-      description: 'Get help, report a bug, or request a feature',
-      url: '/docs/support',
-      keywords: ['support', 'help', 'bug', 'feature'],
-    },
-  ],
-};
+export const quickActions = [
+  {
+    label: 'Chat',
+    icon: TbMessageCirclePlus,
+    shortcut: ['⌘', 'N'],
+    subPage: 'chat-history',
+  },
+  {
+    label: 'Wallet',
+    icon: Wallet,
+    shortcut: ['⌘', 'W'],
+    subPage: 'wallet',
+  },
+  {
+    label: 'Extensions',
+    icon: Puzzle,
+    shortcut: ['⌘', 'E'],
+    subPage: 'extensions',
+  },
+  {
+    label: 'Profile',
+    icon: User,
+    shortcut: ['⌘', 'P'],
+    subPage: 'profile',
+  },
+  {
+    label: 'Settings',
+    icon: HelpCircle,
+    shortcut: ['⌘', 'S'],
+    subPage: 'settings',
+  },
+];
