@@ -10,7 +10,7 @@ import { CommandGroup, CommandItem } from '@/components/ui/command';
 export function ChatHistoryGroup() {
   const router = useRouter();
   const { data: conversationData, isLoading } = useConversations();
-  const { setOpen } = useCommandMenu();
+  const { setOpen, currentSubPage } = useCommandMenu();
 
   const onSelect = useCallback(
     (id: string) => {
@@ -19,6 +19,8 @@ export function ChatHistoryGroup() {
     },
     [router, setOpen],
   );
+
+  if (currentSubPage !== 'chat-history') return null;
 
   if (!conversationData || !conversationData.length || isLoading) return null;
 

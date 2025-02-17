@@ -2,30 +2,37 @@
 
 import { useWallet, type Wallet } from '@solana/wallet-adapter-react';
 import { Wallet as WalletIcon, Copy, SwitchCamera, LogOut } from 'lucide-react';
-import { useState } from 'react';
 import { CommandItemComponent } from '../index';
 import { useCommandMenu } from '../command-menu-context';
 import { CommandGroup } from '@/components/ui/command';
 import { useToast } from '@/hooks/useToast';
 
+const walletSubPages = ['wallet-list', 'wallet-connected'];
+
 export function WalletCommands() {
   const { connected } = useWallet();
-  const [showWalletList, setShowWalletList] = useState(false);
+
+  const { currentSubPage } = useCommandMenu();
+
+  if (!walletSubPages.includes(currentSubPage ?? '')) return null;
 
   return (
     <CommandGroup heading='Wallet'>
-      {showWalletList || !connected ? <WalletList /> : <WalletConnected onChangeWallet={() => setShowWalletList(true)} />}
+      {currentSubPage === walletSubPages[0] && <WalletList />}
+      {currentSubPage === walletSubPages[1] && connected && <WalletConnected />}
     </CommandGroup>
   );
 }
 
 function WalletList() {
   const { wallets, select, connect } = useWallet();
+  const { openSubPage } = useCommandMenu();
 
   const handleSelectWallet = async (selectedWallet: Wallet) => {
     try {
       await select(selectedWallet.adapter.name);
       await connect();
+      openSubPage('wallet-connected');
     } catch (error) {
       console.error('Failed to connect:', error);
     }
@@ -49,10 +56,10 @@ function WalletList() {
   );
 }
 
-function WalletConnected({ onChangeWallet }: { onChangeWallet: () => void }) {
+function WalletConnected() {
   const { publicKey, disconnect } = useWallet();
   const { toast } = useToast();
-  const { setOpen } = useCommandMenu();
+  const { setOpen, openSubPage } = useCommandMenu();
 
   const handleCopyAddress = async () => {
     if (publicKey) {
@@ -83,7 +90,7 @@ function WalletConnected({ onChangeWallet }: { onChangeWallet: () => void }) {
           description: 'Switch to a different wallet',
           keywords: ['wallet', 'change', 'switch'],
         }}
-        onSelect={onChangeWallet}
+        onSelect={() => openSubPage('wallet-list')}
       />
       <CommandItemComponent
         item={{
