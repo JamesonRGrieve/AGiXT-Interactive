@@ -1,5 +1,5 @@
 import { TbMessageCirclePlus } from 'react-icons/tb';
-import { User, Puzzle, HelpCircle, Wallet, ArrowRight, HistoryIcon } from 'lucide-react';
+import { User, Puzzle, HelpCircle, Wallet, ArrowRight, HistoryIcon, Palette } from 'lucide-react';
 import { useCallback } from 'react';
 import { CommandItemComponent } from '../index';
 import { SubPage, useCommandMenu } from '../command-menu-context';
@@ -66,5 +66,11 @@ export const quickActions = [
     icon: ArrowRight,
     description: 'Visit a page',
     subPage: 'navigation',
+  },
+  {
+    label: 'Theme',
+    icon: Palette,
+    description: 'Change the theme',
+    subPage: 'theme',
   },
 ];

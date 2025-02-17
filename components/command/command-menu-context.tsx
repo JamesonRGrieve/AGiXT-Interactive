@@ -21,7 +21,7 @@ type CommandMenuProviderProps = {
   children: ReactNode;
 };
 
-export type SubPage = 'chat-history' | 'navigation' | 'wallet-list' | 'wallet-connected' | null;
+export type SubPage = 'chat-history' | 'navigation' | 'wallet-list' | 'wallet-connected' | 'theme' | null;
 
 export function CommandMenuProvider({ children }: CommandMenuProviderProps) {
   const [open, setOpen] = useState(false);
