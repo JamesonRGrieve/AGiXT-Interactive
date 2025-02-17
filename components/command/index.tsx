@@ -7,6 +7,7 @@ import { NavigationGroup } from './group/navigation';
 import { WalletCommands } from './group/wallet';
 import { QuickActionsGroup } from './group/quick-actions';
 import { useCommandMenu } from './command-menu-context';
+import { ThemeGroup } from './group/theme';
 import {
   Command,
   CommandDialog,
@@ -54,6 +55,7 @@ export function CommandMenu() {
           <NavigationGroup />
           <WalletCommands />
           <CommandSeparator />
+          <ThemeGroup />
         </CommandList>
       </Command>
     </CommandDialog>
