@@ -47,6 +47,7 @@ function WalletList() {
             icon: WalletIcon,
             label: wallet.adapter.name,
             description: 'Select this wallet',
+            keywords: ['wallet', 'select', 'connect', wallet.adapter.name],
           }}
           onSelect={() => handleSelectWallet(wallet)}
         />
@@ -77,6 +78,7 @@ function WalletConnected({ onChangeWallet, closeCommand }: { onChangeWallet: () 
           icon: Copy,
           label: 'Copy Address',
           description: 'Copy wallet address to clipboard',
+          keywords: ['wallet', 'copy', 'address'],
         }}
         onSelect={handleCopyAddress}
       />
@@ -85,6 +87,7 @@ function WalletConnected({ onChangeWallet, closeCommand }: { onChangeWallet: () 
           icon: SwitchCamera,
           label: 'Change Wallet',
           description: 'Switch to a different wallet',
+          keywords: ['wallet', 'change', 'switch'],
         }}
         onSelect={onChangeWallet}
       />
@@ -93,6 +96,7 @@ function WalletConnected({ onChangeWallet, closeCommand }: { onChangeWallet: () 
           icon: LogOut,
           label: 'Disconnect',
           description: 'Disconnect current wallet',
+          keywords: ['wallet', 'disconnect', 'logout'],
         }}
         onSelect={() => {
           disconnect();

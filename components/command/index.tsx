@@ -79,13 +79,14 @@ interface CommandItemProps {
     icon: React.ElementType;
     description?: string;
     disabled?: boolean;
+    keywords?: string[];
   };
   onSelect: () => void;
 }
 
 export function CommandItemComponent({ item, onSelect }: CommandItemProps) {
   return (
-    <CommandItem disabled={item.disabled} onSelect={onSelect}>
+    <CommandItem disabled={item.disabled} onSelect={onSelect} keywords={item.keywords}>
       <item.icon className='w-4 h-4 mr-2' />
       <div>
         <div>{item.label}</div>
