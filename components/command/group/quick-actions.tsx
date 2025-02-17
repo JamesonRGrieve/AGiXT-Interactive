@@ -1,12 +1,20 @@
 import { TbMessageCirclePlus } from 'react-icons/tb';
-import { User, Puzzle, HelpCircle, Wallet } from 'lucide-react';
+import { User, Puzzle, HelpCircle, Wallet, ArrowRight, HistoryIcon } from 'lucide-react';
 import { useCallback } from 'react';
 import { CommandItemComponent } from '../index';
 import { SubPage, useCommandMenu } from '../command-menu-context';
 import { CommandGroup, CommandSeparator } from '@/components/ui/command';
+import { useRouter } from 'next/navigation';
+export type QuickAction = {
+  label: string;
+  icon: React.ElementType;
+  shortcut: string[];
+  subPage?: string;
+};
 
 export function QuickActionsGroup() {
-  const { openSubPage, currentSubPage } = useCommandMenu();
+  const { openSubPage, currentSubPage, setOpen } = useCommandMenu();
+  const router = useRouter();
 
   const onSelect = useCallback(
     (item: { subPage?: string }) => {
@@ -19,9 +27,18 @@ export function QuickActionsGroup() {
 
   if (currentSubPage !== null) return null;
 
+  const handleNewChat = () => {
+    router.push('/chat');
+    setOpen(false);
+  };
+
   return (
     <>
       <CommandGroup heading='Quick Actions'>
+        <CommandItemComponent
+          item={{ label: 'New Chat', icon: TbMessageCirclePlus, description: 'Create a new chat' }}
+          onSelect={handleNewChat}
+        />
         {quickActions.map((item) => (
           <CommandItemComponent key={item.label} item={item} onSelect={() => onSelect(item)} />
         ))}
@@ -34,32 +51,20 @@ export function QuickActionsGroup() {
 export const quickActions = [
   {
     label: 'Chat History',
-    icon: TbMessageCirclePlus,
-    shortcut: ['⌘', 'N'],
+    icon: HistoryIcon,
+    description: 'View your chat history',
     subPage: 'chat-history',
   },
   {
     label: 'Wallet',
     icon: Wallet,
-    shortcut: ['⌘', 'W'],
+    description: 'View your wallet',
     subPage: 'wallet-list',
   },
   {
-    label: 'Extensions',
-    icon: Puzzle,
-    shortcut: ['⌘', 'E'],
-    subPage: 'extensions',
-  },
-  {
-    label: 'Profile',
-    icon: User,
-    shortcut: ['⌘', 'P'],
-    subPage: 'profile',
-  },
-  {
-    label: 'Settings',
-    icon: HelpCircle,
-    shortcut: ['⌘', 'S'],
-    subPage: 'settings',
+    label: 'Go to Page',
+    icon: ArrowRight,
+    description: 'Visit a page',
+    subPage: 'navigation',
   },
 ];
