@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 import {
   CommandDialog,
@@ -13,9 +14,8 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from '@/components/ui/command';
-import { commandMenuItems } from './items';
 import { ChatHistoryCommands } from './chat-history';
-import { DialogTitle } from '@radix-ui/react-dialog';
+import { commandMenuItems } from './items';
 import { WalletCommands } from './wallet';
 
 export function CommandMenu() {
@@ -67,7 +67,7 @@ export function CommandMenu() {
           }}
         />
         <CommandSeparator />
-        <WalletCommands onSelect={() => setOpen(false)} />
+        <WalletCommands closeCommand={() => setOpen(false)} />
       </CommandList>
     </CommandDialog>
   );
