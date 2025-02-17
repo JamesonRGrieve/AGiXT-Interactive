@@ -53,24 +53,28 @@ export const quickActions = [
     label: 'Chat History',
     icon: HistoryIcon,
     description: 'View your chat history',
+    keywords: ['chat', 'history', 'conversation', 'messages'],
     subPage: 'chat-history',
   },
   {
     label: 'Wallet',
     icon: Wallet,
     description: 'View your wallet',
+    keywords: ['wallet', 'balance', 'transactions', 'payments', 'crypto', 'solana', 'sol', 'connect wallet'],
     subPage: 'wallet-list',
   },
   {
     label: 'Go to Page',
     icon: ArrowRight,
     description: 'Visit a page',
+    keywords: ['page', 'visit', 'navigate', 'link'],
     subPage: 'navigation',
   },
   {
     label: 'Theme',
     icon: Palette,
     description: 'Change the theme',
+    keywords: ['theme', 'colour', 'blind', 'mode', 'color', 'dark', 'light', 'system', 'colourblind', 'colourblind-dark'],
     subPage: 'theme',
   },
 ];
