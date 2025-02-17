@@ -3,25 +3,18 @@
 import { useWallet, type Wallet } from '@solana/wallet-adapter-react';
 import { Wallet as WalletIcon, Copy, SwitchCamera, LogOut } from 'lucide-react';
 import { useState } from 'react';
+import { CommandItemComponent } from '../index';
+import { useCommandMenu } from '../command-menu-context';
 import { CommandGroup } from '@/components/ui/command';
 import { useToast } from '@/hooks/useToast';
-import { CommandItemComponent } from './index';
 
-interface WalletCommandsProps {
-  closeCommand: () => void;
-}
-
-export function WalletCommands({ closeCommand }: WalletCommandsProps) {
+export function WalletCommands() {
   const { connected } = useWallet();
   const [showWalletList, setShowWalletList] = useState(false);
 
   return (
     <CommandGroup heading='Wallet'>
-      {showWalletList || !connected ? (
-        <WalletList />
-      ) : (
-        <WalletConnected closeCommand={closeCommand} onChangeWallet={() => setShowWalletList(true)} />
-      )}
+      {showWalletList || !connected ? <WalletList /> : <WalletConnected onChangeWallet={() => setShowWalletList(true)} />}
     </CommandGroup>
   );
 }
@@ -56,9 +49,10 @@ function WalletList() {
   );
 }
 
-function WalletConnected({ onChangeWallet, closeCommand }: { onChangeWallet: () => void; closeCommand: () => void }) {
+function WalletConnected({ onChangeWallet }: { onChangeWallet: () => void }) {
   const { publicKey, disconnect } = useWallet();
   const { toast } = useToast();
+  const { setOpen } = useCommandMenu();
 
   const handleCopyAddress = async () => {
     if (publicKey) {
@@ -100,7 +94,7 @@ function WalletConnected({ onChangeWallet, closeCommand }: { onChangeWallet: () 
         }}
         onSelect={() => {
           disconnect();
-          closeCommand();
+          setOpen(false);
         }}
       />
     </>
