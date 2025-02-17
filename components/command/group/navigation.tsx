@@ -5,7 +5,7 @@ import { useCommandMenu } from '../command-menu-context';
 import { CommandGroup, CommandSeparator } from '@/components/ui/command';
 import { items } from '@/components/jrg/appwrapper/NavMain';
 
-export function PagesGroup() {
+export function NavigationGroup() {
   const router = useRouter();
   const { setOpen } = useCommandMenu();
 
@@ -21,8 +21,8 @@ export function PagesGroup() {
 
   return (
     <>
-      <CommandGroup heading={pagesGroup.heading}>
-        {pagesGroup.items.map((item) => (
+      <CommandGroup heading={navigationGroup.heading}>
+        {navigationGroup.items.map((item) => (
           <CommandItemComponent key={item.label} item={item} onSelect={() => onSelect(item)} />
         ))}
       </CommandGroup>
@@ -31,8 +31,8 @@ export function PagesGroup() {
   );
 }
 
-export const pagesGroup: CommandMenuGroup = {
-  heading: 'Pages',
+export const navigationGroup: CommandMenuGroup = {
+  heading: 'Navigation',
   items: [
     // Add root level items that don't have children
     ...items

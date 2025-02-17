@@ -3,7 +3,7 @@
 import { DialogTitle } from '@radix-ui/react-dialog';
 
 import { ChatHistoryGroup } from './group/chat-history';
-import { PagesGroup } from './group/navigation';
+import { NavigationGroup } from './group/navigation';
 import { WalletCommands } from './group/wallet';
 import { QuickActionsGroup } from './group/quick-actions';
 import { useCommandMenu } from './command-menu-context';
@@ -32,7 +32,7 @@ export type CommandMenuGroup = {
 };
 
 export function CommandMenu() {
-  const { open, setOpen } = useCommandMenu();
+  const { open, setOpen, subPage } = useCommandMenu();
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
@@ -40,11 +40,11 @@ export function CommandMenu() {
       <CommandInput placeholder='Type a command or search...' />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
-        <QuickActionsGroup />
-        <PagesGroup />
-        <ChatHistoryGroup />
+        {subPage === null && <QuickActionsGroup />}
+        {subPage === 'chat-history' && <ChatHistoryGroup />}
+        {subPage === 'navigation' && <NavigationGroup />}
+        {subPage === 'wallet' && <WalletCommands />}
         <CommandSeparator />
-        <WalletCommands closeCommand={() => setOpen(false)} />
       </CommandList>
     </CommandDialog>
   );
