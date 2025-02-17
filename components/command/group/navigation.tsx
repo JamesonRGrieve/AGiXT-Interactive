@@ -7,7 +7,7 @@ import { items } from '@/components/jrg/appwrapper/NavMain';
 
 export function NavigationGroup() {
   const router = useRouter();
-  const { setOpen } = useCommandMenu();
+  const { setOpen, currentSubPage } = useCommandMenu();
 
   const onSelect = useCallback(
     (item: { url?: string }) => {
@@ -18,6 +18,8 @@ export function NavigationGroup() {
     },
     [router, setOpen],
   );
+
+  if (currentSubPage !== 'navigation') return null;
 
   return (
     <>

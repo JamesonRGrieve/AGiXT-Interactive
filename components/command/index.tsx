@@ -8,6 +8,7 @@ import { WalletCommands } from './group/wallet';
 import { QuickActionsGroup } from './group/quick-actions';
 import { useCommandMenu } from './command-menu-context';
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
   CommandInput,
@@ -32,20 +33,29 @@ export type CommandMenuGroup = {
 };
 
 export function CommandMenu() {
-  const { open, setOpen, subPage } = useCommandMenu();
+  const { open, setOpen, setSubPages, search, setSearch } = useCommandMenu();
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <DialogTitle className='sr-only'>Command Menu</DialogTitle>
-      <CommandInput placeholder='Type a command or search...' />
-      <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
-        {subPage === null && <QuickActionsGroup />}
-        {subPage === 'chat-history' && <ChatHistoryGroup />}
-        {subPage === 'navigation' && <NavigationGroup />}
-        {subPage === 'wallet' && <WalletCommands />}
-        <CommandSeparator />
-      </CommandList>
+      <Command
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' || (e.key === 'Backspace' && !search)) {
+            e.preventDefault();
+            setSubPages((pages) => pages.slice(0, -1));
+          }
+        }}
+      >
+        <DialogTitle className='sr-only'>Command Menu</DialogTitle>
+        <CommandInput value={search} onValueChange={setSearch} placeholder='Type a command or search...' />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <QuickActionsGroup />
+          <ChatHistoryGroup />
+          <NavigationGroup />
+          <WalletCommands />
+          <CommandSeparator />
+        </CommandList>
+      </Command>
     </CommandDialog>
   );
 }

@@ -1,23 +1,23 @@
 import { TbMessageCirclePlus } from 'react-icons/tb';
-import { User, Puzzle, Rocket, HelpCircle, Wallet } from 'lucide-react';
+import { User, Puzzle, HelpCircle, Wallet } from 'lucide-react';
 import { useCallback } from 'react';
-import { useRouter } from 'next/navigation';
 import { CommandItemComponent } from '../index';
-import { useCommandMenu } from '../command-menu-context';
+import { SubPage, useCommandMenu } from '../command-menu-context';
 import { CommandGroup, CommandSeparator } from '@/components/ui/command';
 
 export function QuickActionsGroup() {
-  const router = useRouter();
-  const { setOpen, setSubPage } = useCommandMenu();
+  const { openSubPage, currentSubPage } = useCommandMenu();
 
   const onSelect = useCallback(
     (item: { subPage?: string }) => {
       if (item.subPage) {
-        setSubPage(item.subPage as any);
+        openSubPage(item.subPage as SubPage);
       }
     },
-    [setSubPage],
+    [openSubPage],
   );
+
+  if (currentSubPage !== null) return null;
 
   return (
     <>
@@ -33,7 +33,7 @@ export function QuickActionsGroup() {
 
 export const quickActions = [
   {
-    label: 'Chat',
+    label: 'Chat History',
     icon: TbMessageCirclePlus,
     shortcut: ['⌘', 'N'],
     subPage: 'chat-history',
@@ -42,7 +42,7 @@ export const quickActions = [
     label: 'Wallet',
     icon: Wallet,
     shortcut: ['⌘', 'W'],
-    subPage: 'wallet',
+    subPage: 'wallet-list',
   },
   {
     label: 'Extensions',

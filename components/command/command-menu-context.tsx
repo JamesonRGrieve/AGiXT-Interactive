@@ -6,9 +6,13 @@ type CommandMenuContextType = {
   open: boolean;
   setOpen: (open: boolean) => void;
   toggle: () => void;
-  subPage: SubPage | null;
-  setSubPage: (subPage: SubPage | null) => void;
-  currentSubPage: SubPage | null;
+  subPages: SubPage[];
+  setSubPages: (setter: SubPage[] | ((prev: SubPage[]) => SubPage[])) => void;
+  currentSubPage: SubPage;
+  search: string;
+  setSearch: (search: string) => void;
+  openSubPage: (subPage: SubPage) => void;
+  closeSubPage: () => void;
 };
 
 const CommandMenuContext = createContext<CommandMenuContextType | undefined>(undefined);
@@ -17,12 +21,13 @@ type CommandMenuProviderProps = {
   children: ReactNode;
 };
 
-type SubPage = 'chat-history' | 'navigation' | 'wallet';
+export type SubPage = 'chat-history' | 'navigation' | 'wallet-list' | 'wallet-connected' | null;
 
 export function CommandMenuProvider({ children }: CommandMenuProviderProps) {
   const [open, setOpen] = useState(false);
-  const [subPage, setSubPage] = useState<SubPage | null>(null);
-  const currentSubPage = subPage;
+  const [search, setSearch] = useState('');
+  const [subPages, setSubPages] = useState<SubPage[]>([]);
+  const currentSubPage = subPages[subPages.length - 1] ?? null;
 
   const toggle = () => setOpen((prev) => !prev);
 
@@ -37,15 +42,34 @@ export function CommandMenuProvider({ children }: CommandMenuProviderProps) {
     return () => document.removeEventListener('keydown', down);
   }, []);
 
+  useEffect(() => {
+    if (!open) {
+      setSubPages([]);
+    }
+  }, [open]);
+
+  const openSubPage = (subPage: SubPage) => {
+    setSubPages((pages) => [...pages, subPage]);
+    setSearch('');
+  };
+
+  const closeSubPage = () => {
+    setSubPages((pages) => pages.slice(0, -1));
+  };
+
   return (
     <CommandMenuContext.Provider
       value={{
         open,
         setOpen,
         toggle,
-        subPage,
-        setSubPage,
+        subPages,
+        setSubPages,
         currentSubPage,
+        search,
+        setSearch,
+        openSubPage,
+        closeSubPage,
       }}
     >
       {children}
