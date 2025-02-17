@@ -1,15 +1,24 @@
 'use client';
 
 import dayjs from 'dayjs';
-import { useConversations } from '../interactive/hooks/useConversation';
+import { useCallback } from 'react';
+import { useRouter } from 'next/navigation';
+import { useCommandMenu } from '../command-menu-context';
+import { useConversations } from '@/interactive/hooks/useConversation';
 import { CommandGroup, CommandItem } from '@/components/ui/command';
 
-interface ChatHistoryCommandsProps {
-  onSelect: (id: string) => void;
-}
-
-export function ChatHistoryCommands({ onSelect }: ChatHistoryCommandsProps) {
+export function ChatHistoryGroup() {
+  const router = useRouter();
   const { data: conversationData, isLoading } = useConversations();
+  const { setOpen } = useCommandMenu();
+
+  const onSelect = useCallback(
+    (id: string) => {
+      router.push(`/chat/${id}`);
+      setOpen(false);
+    },
+    [router, setOpen],
+  );
 
   if (!conversationData || !conversationData.length || isLoading) return null;
 

@@ -1,4 +1,5 @@
 import { CommandMenu } from '@/components/command';
+import { CommandMenuProvider } from '@/components/command/command-menu-context';
 import InteractiveConfigContextWrapper from '@/components/interactive/ContextWrapper';
 import Head from '@/components/jrg/appwrapper/Head';
 import { SidebarContentProvider } from '@/components/jrg/appwrapper/SidebarContentManager';
@@ -30,16 +31,18 @@ export default function RootLayout({ children }: { children: ReactNode }): React
       <body className={cn(inter.className, theme, appearance)}>
         <InteractiveConfigContextWrapper>
           <SolanaWalletProvider>
-            <SidebarContentProvider>
-              <SidebarProvider className='flex-1'>
-                <SidebarMain side='left' />
-                {children}
-                <Toaster />
-                {/* <ThemeSetter /> */}
-                <CommandMenu />
-                <SidebarContext side='right' />
-              </SidebarProvider>
-            </SidebarContentProvider>
+            <CommandMenuProvider>
+              <SidebarContentProvider>
+                <SidebarProvider className='flex-1'>
+                  <SidebarMain side='left' />
+                  {children}
+                  <Toaster />
+                  {/* <ThemeSetter /> */}
+                  <CommandMenu />
+                  <SidebarContext side='right' />
+                </SidebarProvider>
+              </SidebarContentProvider>
+            </CommandMenuProvider>
           </SolanaWalletProvider>
         </InteractiveConfigContextWrapper>
       </body>
