@@ -1,16 +1,29 @@
 import { TbMessageCirclePlus } from 'react-icons/tb';
-import { User, Puzzle, HelpCircle, Wallet, ArrowRight, HistoryIcon, Palette } from 'lucide-react';
 import { useCallback } from 'react';
-import { CommandItemComponent } from '../index';
-import { SubPage, useCommandMenu } from '../command-menu-context';
-import { CommandGroup, CommandSeparator } from '@/components/ui/command';
 import { useRouter } from 'next/navigation';
+import { SubPage, useCommandMenu } from '../command-menu-context';
+import { CommandItemComponent } from '../index';
+import { agentQuickAction } from './agent-selector';
+import { themeQuickAction } from './theme';
+import { navigationQuickAction } from './navigation';
+import { walletQuickAction } from './wallet';
+import { chatHistoryQuickAction } from './chat-history';
+import { CommandGroup, CommandSeparator } from '@/components/ui/command';
+
 export type QuickAction = {
   label: string;
   icon: React.ElementType;
   shortcut: string[];
   subPage?: string;
 };
+
+export const subPageQuickActions = [
+  chatHistoryQuickAction,
+  agentQuickAction,
+  walletQuickAction,
+  navigationQuickAction,
+  themeQuickAction,
+];
 
 export function QuickActionsGroup() {
   const { openSubPage, currentSubPage, setOpen } = useCommandMenu();
@@ -39,7 +52,7 @@ export function QuickActionsGroup() {
           item={{ label: 'New Chat', icon: TbMessageCirclePlus, description: 'Create a new chat' }}
           onSelect={handleNewChat}
         />
-        {quickActions.map((item) => (
+        {subPageQuickActions.map((item) => (
           <CommandItemComponent key={item.label} item={item} onSelect={() => onSelect(item)} />
         ))}
       </CommandGroup>
@@ -47,34 +60,3 @@ export function QuickActionsGroup() {
     </>
   );
 }
-
-export const quickActions = [
-  {
-    label: 'Chat History',
-    icon: HistoryIcon,
-    description: 'View your chat history',
-    keywords: ['chat', 'history', 'conversation', 'messages'],
-    subPage: 'chat-history',
-  },
-  {
-    label: 'Wallet',
-    icon: Wallet,
-    description: 'View your wallet',
-    keywords: ['wallet', 'balance', 'transactions', 'payments', 'crypto', 'solana', 'sol', 'connect wallet'],
-    subPage: 'wallet-list',
-  },
-  {
-    label: 'Go to Page',
-    icon: ArrowRight,
-    description: 'Visit a page',
-    keywords: ['page', 'visit', 'navigate', 'link'],
-    subPage: 'navigation',
-  },
-  {
-    label: 'Theme',
-    icon: Palette,
-    description: 'Change the theme',
-    keywords: ['theme', 'colour', 'blind', 'mode', 'color', 'dark', 'light', 'system', 'colourblind', 'colourblind-dark'],
-    subPage: 'theme',
-  },
-];

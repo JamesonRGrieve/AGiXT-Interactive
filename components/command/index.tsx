@@ -8,6 +8,7 @@ import { WalletCommands } from './group/wallet';
 import { QuickActionsGroup } from './group/quick-actions';
 import { useCommandMenu } from './command-menu-context';
 import { ThemeGroup } from './group/theme';
+import { AgentSelectorGroup } from './group/agent-selector';
 import {
   Command,
   CommandDialog,
@@ -54,6 +55,7 @@ export function CommandMenu() {
           <ChatHistoryGroup />
           <NavigationGroup />
           <WalletCommands />
+          <AgentSelectorGroup />
           <CommandSeparator />
           <ThemeGroup />
         </CommandList>
