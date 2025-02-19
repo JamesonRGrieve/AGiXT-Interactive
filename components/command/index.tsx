@@ -1,72 +1,63 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/navigation';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
+import { ChatHistoryGroup } from './group/chat-history';
+import { NavigationGroup } from './group/navigation';
+import { WalletCommands } from './group/wallet';
+import { QuickActionsGroup } from './group/quick-actions';
+import { useCommandMenu } from './command-menu-context';
+import { ThemeGroup } from './group/theme';
 import {
+  Command,
   CommandDialog,
   CommandEmpty,
-  CommandGroup,
   CommandInput,
   CommandItem,
   CommandList,
   CommandSeparator,
   CommandShortcut,
 } from '@/components/ui/command';
-import { commandMenuItems } from './items';
-import { ChatHistoryCommands } from './chat-history';
-import { DialogTitle } from '@radix-ui/react-dialog';
+
+export type CommandMenuItem = {
+  icon: any;
+  label: string;
+  description: string;
+  url?: string;
+  disabled?: boolean;
+  keywords?: string[];
+};
+
+export type CommandMenuGroup = {
+  heading: string;
+  items: CommandMenuItem[];
+};
 
 export function CommandMenu() {
-  const [open, setOpen] = useState(false);
-  const router = useRouter();
-
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === 'k' && (e.metaKey || e.ctrlKey)) {
-        e.preventDefault();
-        setOpen((open) => !open);
-      }
-    };
-    document.addEventListener('keydown', down);
-    return () => document.removeEventListener('keydown', down);
-  }, []);
-
-  const onSelect = useCallback(
-    (item: { url?: string }) => {
-      if (item.url) {
-        router.push(item.url);
-      }
-      setOpen(false);
-    },
-    [router],
-  );
+  const { open, setOpen, setSubPages, search, setSearch } = useCommandMenu();
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <DialogTitle className='sr-only'>Command Menu</DialogTitle>
-      <CommandInput placeholder='Type a command or search...' />
-      <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
-        {commandMenuItems.map((group, groupIndex) => (
-          <div key={group.heading}>
-            <CommandGroup heading={group.heading}>
-              {group.items.map((item) => (
-                <CommandItemComponent key={item.label} item={item} onSelect={() => onSelect(item)} />
-              ))}
-            </CommandGroup>
-            {groupIndex < commandMenuItems.length - 1 && <CommandSeparator />}
-          </div>
-        ))}
-        <CommandSeparator />
-        <ChatHistoryCommands
-          onSelect={(id) => {
-            router.push(`/chat/${id}`);
-            setOpen(false);
-          }}
-        />
-        <CommandSeparator />
-      </CommandList>
+      <Command
+        onKeyDown={(e) => {
+          if (e.key === 'Escape' || (e.key === 'Backspace' && !search)) {
+            e.preventDefault();
+            setSubPages((pages) => pages.slice(0, -1));
+          }
+        }}
+      >
+        <DialogTitle className='sr-only'>Command Menu</DialogTitle>
+        <CommandInput value={search} onValueChange={setSearch} placeholder='Type a command or search...' />
+        <CommandList>
+          <CommandEmpty>No results found.</CommandEmpty>
+          <QuickActionsGroup />
+          <ChatHistoryGroup />
+          <NavigationGroup />
+          <WalletCommands />
+          <CommandSeparator />
+          <ThemeGroup />
+        </CommandList>
+      </Command>
     </CommandDialog>
   );
 }
@@ -77,13 +68,14 @@ interface CommandItemProps {
     icon: React.ElementType;
     description?: string;
     disabled?: boolean;
+    keywords?: string[];
   };
   onSelect: () => void;
 }
 
 export function CommandItemComponent({ item, onSelect }: CommandItemProps) {
   return (
-    <CommandItem disabled={item.disabled} onSelect={onSelect}>
+    <CommandItem disabled={item.disabled} onSelect={onSelect} keywords={item.keywords}>
       <item.icon className='w-4 h-4 mr-2' />
       <div>
         <div>{item.label}</div>
