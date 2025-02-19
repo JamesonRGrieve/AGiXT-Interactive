@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Moon, Sun, Monitor, Eye } from 'lucide-react';
+import { Moon, Sun, Monitor, Eye, Palette } from 'lucide-react';
 import { CommandItemComponent, CommandMenuGroup } from '..';
 import { useCommandMenu } from '../command-menu-context';
 import { CommandGroup, CommandSeparator } from '@/components/ui/command';
@@ -64,4 +64,12 @@ export const themeGroup: CommandMenuGroup = {
       keywords: ['theme', 'colour', 'blind', 'mode', 'color'],
     },
   ],
+};
+
+export const themeQuickAction = {
+  label: 'Theme',
+  icon: Palette,
+  description: 'Change the theme',
+  keywords: ['theme', 'colour', 'blind', 'mode', 'color', 'dark', 'light', 'system', 'colourblind', 'colourblind-dark'],
+  subPage: 'theme',
 };
