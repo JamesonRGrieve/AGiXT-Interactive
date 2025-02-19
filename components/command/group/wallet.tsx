@@ -107,3 +107,11 @@ function WalletConnected() {
     </>
   );
 }
+
+export const walletQuickAction = {
+  label: 'Wallet',
+  icon: WalletIcon,
+  description: 'View your wallet',
+  keywords: ['wallet', 'balance', 'transactions', 'payments', 'crypto', 'solana', 'sol', 'connect wallet'],
+  subPage: 'wallet-list',
+};

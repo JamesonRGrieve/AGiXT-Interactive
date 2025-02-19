@@ -2,12 +2,11 @@
 
 import { useCallback } from 'react';
 import { Bot, Check } from 'lucide-react';
-import { CommandGroup, CommandItem } from '@/components/ui/command';
+import { setCookie } from 'cookies-next';
 import { useCommandMenu } from '../command-menu-context';
+import { CommandGroup, CommandItem } from '@/components/ui/command';
 import { useAgent, useAgents } from '@/components/interactive/hooks/useAgent';
 import { useCompany } from '@/components/jrg/auth/hooks/useUser';
-import { setCookie } from 'cookies-next';
-import { CommandItemComponent } from '..';
 
 export function AgentSelectorGroup() {
   const { currentSubPage, setOpen } = useCommandMenu();
