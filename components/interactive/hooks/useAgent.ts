@@ -10,6 +10,7 @@ import { chainMutations, createGraphQLClient } from './lib';
 
 export const AgentSchema = z.object({
   companyId: z.string().uuid(),
+  companyName: z.string().min(1),
   default: z.boolean(),
   id: z.string().uuid(),
   name: z.string().min(1),

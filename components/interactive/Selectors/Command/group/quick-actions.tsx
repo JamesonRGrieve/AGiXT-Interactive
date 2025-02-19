@@ -5,6 +5,8 @@ import { CommandItemComponent } from '../index';
 import { SubPage, useCommandMenu } from '../command-menu-context';
 import { CommandGroup, CommandSeparator } from '@/components/ui/command';
 import { useRouter } from 'next/navigation';
+import { agentQuickAction } from './agent-selector';
+
 export type QuickAction = {
   label: string;
   icon: React.ElementType;
@@ -56,6 +58,7 @@ export const quickActions = [
     keywords: ['chat', 'history', 'conversation', 'messages'],
     subPage: 'chat-history',
   },
+  agentQuickAction,
   {
     label: 'Wallet',
     icon: Wallet,
