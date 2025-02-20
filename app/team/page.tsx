@@ -5,7 +5,7 @@ import TeamUsers from '@/components/jrg/auth/management/TeamUsers';
 export default function TeamPage() {
   return (
     <SidebarPage title='Team Management'>
-      <div className='overflow-x-auto w-screen'>
+      <div className='overflow-x-auto px-4'>
         <Team />
         <TeamUsers />
       </div>
