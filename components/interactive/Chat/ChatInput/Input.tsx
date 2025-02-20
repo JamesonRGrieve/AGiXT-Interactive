@@ -1,13 +1,10 @@
-import { UploadIcon, Send, Mic, RefreshCcw } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { BiCollapseVertical } from 'react-icons/bi';
+import { LuPaperclip, LuMic, LuTrash2, LuSend, LuRefreshCcw } from 'react-icons/lu';
 import { ChatInputProvider } from './Provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
-import { ListUploadedFiles, OverrideSwitches, ResetConversation, SendMessage, Timer, UploadFiles } from './Adornments';
 import { TooltipBasic } from '@/components/ui/tooltip';
-import { BiCollapseVertical } from 'react-icons/bi';
-import { VoiceRecorder } from '../VoiceRecorder';
-import { LuPaperclip, LuMic, LuTrash2, LuSend, LuRefreshCcw } from 'react-icons/lu';
 
 export function InputContainer() {
   return (
@@ -16,6 +13,7 @@ export function InputContainer() {
         className='flex absolute bg-background bottom-0 items-center left-0 right-0 max-w-[95%] px-2 m-3 mx-auto border overflow-hidden shadow-md rounded-3xl flex-col p-1'
         htmlFor='message'
       >
+        <UploadedFilesDisplay />
         <div className='w-full'>
           <TextField />
           <AdornmentsContainer />
@@ -46,6 +44,45 @@ export function TextField() {
       value={message}
       onChange={(e) => setMessage(e.target.value)}
     />
+  );
+}
+
+export function UploadedFilesDisplay() {
+  const files = null;
+
+  if (!files) return null;
+  return (
+    <div className='flex items-center gap-1 p-1 w-full overflow-x-auto'>
+      <UploadedFileCard file={new File([''], 'test.txt', { type: 'text/plain' })} />
+      <UploadedFileCard file={new File([''], 'test.md', { type: 'text/markdown' })} />
+      <UploadedFileCard file={new File([''], 'test.pdf', { type: 'application/pdf' })} />
+      <UploadedFileCard file={new File([''], 'test.png', { type: 'image/png' })} />
+      <UploadedFileCard file={new File([''], 'test.jpg', { type: 'image/jpeg' })} />
+    </div>
+  );
+}
+
+export function UploadedFileCard({ file }: { file: File }) {
+  const fileSize = (file.size / 1024).toFixed(1) + ' KB';
+
+  return (
+    <div className='flex items-start gap-2 bg-muted/30 hover:bg-muted/50 transition-colors rounded-lg px-3 py-2 max-w-fit'>
+      <div className='mt-0.5'>
+        <LuPaperclip className='w-4 h-4 text-muted-foreground' />
+      </div>
+      <div className='flex flex-col min-w-20'>
+        <span className='text-sm font-medium truncate max-w-[200px]'>{file.name}</span>
+        <span className='text-xs text-muted-foreground'>{fileSize}</span>
+      </div>
+      <Button
+        size='icon'
+        variant='ghost'
+        className='h-5 w-5 rounded-full hover:bg-destructive/10 hover:text-destructive mt-0.5'
+        onClick={() => {}}
+      >
+        <LuTrash2 className='w-3 h-3' />
+      </Button>
+    </div>
   );
 }
 
