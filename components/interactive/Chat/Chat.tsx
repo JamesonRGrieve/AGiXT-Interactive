@@ -15,7 +15,7 @@ import useSWR, { mutate } from 'swr';
 import { UIProps } from '../InteractiveAGiXT';
 import { InteractiveConfigContext, Overrides } from '../InteractiveConfigContext';
 import { useConversations } from '../hooks/useConversation';
-import ChatBar from './ChatInput';
+import { ChatInputBar } from './ChatInput/Input';
 import ChatLog from './ChatLog';
 
 export async function getAndFormatConversastion(state): Promise<any[]> {
@@ -322,15 +322,15 @@ export default function Chat({
         setLoading={setLoading}
         loading={loading}
       />
-      <ChatBar
+      <ChatInputBar
         onSend={chat}
         disabled={loading}
-        showChatThemeToggles={showChatThemeToggles}
-        enableFileUpload={enableFileUpload}
-        enableVoiceInput={enableVoiceInput}
+        showChatThemeToggles={!!showChatThemeToggles}
+        enableFileUpload={!!enableFileUpload}
+        enableVoiceInput={!!enableVoiceInput}
         loading={loading}
         setLoading={setLoading}
-        showOverrideSwitchesCSV={showOverrideSwitchesCSV}
+        showOverrideSwitchesCSV={showOverrideSwitchesCSV || ''}
         showResetConversation={
           process.env.NEXT_PUBLIC_AGIXT_SHOW_CONVERSATION_BAR !== 'true' &&
           process.env.NEXT_PUBLIC_AGIXT_CONVERSATION_MODE === 'uuid'

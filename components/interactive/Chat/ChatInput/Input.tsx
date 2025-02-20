@@ -1,14 +1,14 @@
 import { useState, useEffect, useRef } from 'react';
 import { BiCollapseVertical } from 'react-icons/bi';
 import { LuPaperclip, LuMic, LuTrash2, LuSend, LuRefreshCcw } from 'react-icons/lu';
-import { ChatInputProvider } from './Provider';
+import { ChatInputProvider, type ChatInputContextType } from './Provider';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { TooltipBasic } from '@/components/ui/tooltip';
 
-export function InputContainer() {
+export function ChatInputBar(props: ChatInputContextType) {
   return (
-    <ChatInputProvider>
+    <ChatInputProvider {...props}>
       <label
         className='flex absolute bg-background bottom-0 items-center left-0 right-0 max-w-[95%] px-2 m-3 mx-auto border overflow-hidden shadow-md rounded-3xl flex-col p-1'
         htmlFor='message'

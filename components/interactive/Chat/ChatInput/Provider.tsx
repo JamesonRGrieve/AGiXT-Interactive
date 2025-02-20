@@ -2,24 +2,26 @@
 
 import { createContext, useContext, type ReactNode } from 'react';
 
-type ChatInputContextType = {
-  // Add state types here later
+export type ChatInputContextType = {
+  onSend: (message: string | object, uploadedFiles?: { [x: string]: string }) => Promise<string>;
+  disabled: boolean;
+  showChatThemeToggles: boolean;
+  enableFileUpload: boolean;
+  enableVoiceInput: boolean;
+  loading: boolean;
+  setLoading: (loading: boolean) => void;
+  showOverrideSwitchesCSV: string;
+  showResetConversation: boolean;
 };
 
 const ChatInputContext = createContext<ChatInputContextType | undefined>(undefined);
 
-export function ChatInputProvider({ children }: { children: ReactNode }) {
-  return (
-    <ChatInputContext.Provider
-      value={
-        {
-          // Add state and handlers here later
-        }
-      }
-    >
-      {children}
-    </ChatInputContext.Provider>
-  );
+type ChatInputProviderProps = ChatInputContextType & {
+  children: ReactNode;
+};
+
+export function ChatInputProvider({ children, ...props }: ChatInputProviderProps) {
+  return <ChatInputContext.Provider value={props}>{children}</ChatInputContext.Provider>;
 }
 
 export function useChatInput() {
