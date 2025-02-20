@@ -1,9 +1,8 @@
-import { useState, useEffect, useRef } from 'react';
 import { BiCollapseVertical } from 'react-icons/bi';
 import { LuPaperclip, LuMic, LuTrash2, LuSend, LuRefreshCcw } from 'react-icons/lu';
 import { ChatInputProvider, type ChatInputContextType } from './Provider';
+import { TextField } from './TextField';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { TooltipBasic } from '@/components/ui/tooltip';
 
 export function ChatInputBar(props: ChatInputContextType) {
@@ -20,30 +19,6 @@ export function ChatInputBar(props: ChatInputContextType) {
         </div>
       </label>
     </ChatInputProvider>
-  );
-}
-
-export function TextField() {
-  const [message, setMessage] = useState('');
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = 'auto';
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
-    }
-  }, [message]);
-
-  return (
-    <Textarea
-      ref={textareaRef}
-      className='overflow-x-hidden overflow-y-auto border-none resize-none min-h-4 ring-0 focus-visible:ring-0 max-h-96'
-      rows={1}
-      name='message'
-      id='message'
-      value={message}
-      onChange={(e) => setMessage(e.target.value)}
-    />
   );
 }
 
