@@ -1,6 +1,15 @@
 'use client';
 
 import { createContext, useContext, type ReactNode, useState } from 'react';
+import { z } from 'zod';
+
+const FileReaderResultSchema = z.object({
+  target: z
+    .object({
+      result: z.string().min(1),
+    })
+    .required(),
+});
 
 export type UploadedFiles = { [fileName: string]: string };
 
@@ -37,11 +46,15 @@ export function ChatInputProvider({ children, onSend, ...props }: ChatInputProvi
 
   const addFile = async (file: File) => {
     const reader = new FileReader();
-    reader.onload = (e) => {
-      if (e.target?.result) {
+    reader.onload = (e: ProgressEvent<FileReader>) => {
+      if (!e.target || typeof e.target.result !== 'string') return;
+
+      const result = FileReaderResultSchema.safeParse({ target: { result: e.target.result } });
+
+      if (result.success) {
         setUploadedFiles((prev) => ({
           ...prev,
-          [file.name]: e.target!.result as string,
+          [file.name]: result.data.target.result,
         }));
       }
     };
