@@ -3,15 +3,37 @@
 import { createContext, useContext, type ReactNode, useState } from 'react';
 import { z } from 'zod';
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_FILE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'text/plain',
+  'text/markdown',
+] as const;
+
+const FileSchema = z.object({
+  name: z.string().min(1),
+  size: z.number().max(MAX_FILE_SIZE, 'File size must be less than 5MB'),
+  type: z.enum([...ACCEPTED_FILE_TYPES] as [string, ...string[]]),
+});
+
 const FileReaderResultSchema = z.object({
   target: z
     .object({
-      result: z.string().min(1),
+      result: z.string().min(1).startsWith('data:', 'Invalid file data format'),
     })
     .required(),
 });
 
-export type UploadedFiles = { [fileName: string]: string };
+const UploadedFilesSchema = z.record(z.string().min(1), z.string().min(1).startsWith('data:'));
+
+export type UploadedFiles = z.infer<typeof UploadedFilesSchema>;
 
 export type ChatInputContextType = {
   onSend: (message: string | object, uploadedFiles?: UploadedFiles) => Promise<string>;
@@ -45,6 +67,12 @@ export function ChatInputProvider({ children, onSend, ...props }: ChatInputProvi
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFiles>({});
 
   const addFile = async (file: File) => {
+    const fileValidation = FileSchema.safeParse(file);
+    if (!fileValidation.success) {
+      console.error('File validation failed:', fileValidation.error);
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (e: ProgressEvent<FileReader>) => {
       if (!e.target || typeof e.target.result !== 'string') return;
@@ -52,10 +80,20 @@ export function ChatInputProvider({ children, onSend, ...props }: ChatInputProvi
       const result = FileReaderResultSchema.safeParse({ target: { result: e.target.result } });
 
       if (result.success) {
-        setUploadedFiles((prev) => ({
-          ...prev,
-          [file.name]: result.data.target.result,
-        }));
+        setUploadedFiles((prev) => {
+          const newFiles = {
+            ...prev,
+            [file.name]: result.data.target.result,
+          };
+
+          const filesValidation = UploadedFilesSchema.safeParse(newFiles);
+          if (!filesValidation.success) {
+            console.error('Uploaded files validation failed:', filesValidation.error);
+            return prev;
+          }
+
+          return newFiles;
+        });
       }
     };
     reader.readAsDataURL(file);
@@ -73,9 +111,9 @@ export function ChatInputProvider({ children, onSend, ...props }: ChatInputProvi
     if (!message.trim() && Object.keys(uploadedFiles).length === 0) return;
 
     try {
-      await onSend(message, uploadedFiles);
       setMessage('');
       setUploadedFiles({});
+      await onSend(message, uploadedFiles);
     } catch (error) {
       console.error('Failed to send message:', error);
     }

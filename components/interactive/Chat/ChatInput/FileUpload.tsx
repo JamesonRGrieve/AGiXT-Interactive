@@ -1,10 +1,11 @@
 'use client';
 
 import { LuPaperclip, LuTrash2 } from 'react-icons/lu';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { useChatInput } from './Provider';
+import { InputAdornmentButton } from './Input';
 import { Button } from '@/components/ui/button';
-import { TooltipBasic } from '@/components/ui/tooltip';
+import { useToast } from '@/hooks/useToast';
 
 export function UploadedFilesDisplay() {
   const { uploadedFiles } = useChatInput();
@@ -69,6 +70,8 @@ function getFileType(extension: string): string {
 export function FileUploadButton() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { addFile, enableFileUpload } = useChatInput();
+  const { toast } = useToast();
+  const [isUploading, setIsUploading] = useState(false);
 
   if (!enableFileUpload) return null;
 
@@ -76,29 +79,35 @@ export function FileUploadButton() {
     const files = e.target.files;
     if (!files) return;
 
-    for (const file of Array.from(files)) {
-      await addFile(file);
-    }
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+    setIsUploading(true);
+    try {
+      for (const file of Array.from(files)) {
+        try {
+          await addFile(file);
+        } catch (error) {
+          toast({
+            title: 'File Upload Error',
+            description: error instanceof Error ? error.message : 'Failed to upload file',
+            variant: 'destructive',
+          });
+        }
+      }
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
+  const acceptedTypes = ['image/*', '.pdf', '.doc', '.docx', '.txt', '.md'].join(',');
+
   return (
     <>
-      <input
-        type='file'
-        ref={fileInputRef}
-        onChange={handleFileUpload}
-        className='hidden'
-        multiple
-        accept='image/*,.pdf,.doc,.docx,.txt,.md'
-      />
-      <TooltipBasic title='Upload Files' side='top'>
-        <Button size='icon' variant='ghost' className='rounded-full' onClick={() => fileInputRef.current?.click()}>
-          <LuPaperclip className='w-4 h-4' />
-        </Button>
-      </TooltipBasic>
+      <input type='file' ref={fileInputRef} onChange={handleFileUpload} className='hidden' multiple accept={acceptedTypes} />
+      <InputAdornmentButton title='Upload Files' onClick={() => fileInputRef.current?.click()} disabled={isUploading}>
+        <LuPaperclip className={`w-4 h-4 ${isUploading ? 'animate-pulse' : ''}`} />
+      </InputAdornmentButton>
     </>
   );
 }

@@ -6,7 +6,7 @@ import { ChatInputProvider, type ChatInputContextType } from './Provider';
 import { TextField } from './TextField';
 import { UploadedFilesDisplay, FileUploadButton } from './FileUpload';
 import { useChatInput } from './Provider';
-import { Button } from '@/components/ui/button';
+import { Button, ButtonProps } from '@/components/ui/button';
 import { TooltipBasic } from '@/components/ui/tooltip';
 
 export function ChatInputBar(props: ChatInputContextType) {
@@ -38,39 +38,33 @@ export function AdornmentsContainer() {
   return (
     <div className='flex items-center w-full gap-1'>
       <FileUploadButton />
-      <InputAdornmentButton
-        icon={<LuRefreshCcw className='w-4 h-4' />}
-        onClick={() => {}}
-        tooltipTitle='Reset Conversation'
-      />
-      <InputAdornmentButton
-        icon={<BiCollapseVertical className='w-4 h-4' />}
-        onClick={() => {}}
-        tooltipTitle='Collapse Input'
-      />
-      <InputAdornmentButton icon={<LuTrash2 className='w-4 h-4' />} onClick={() => {}} tooltipTitle='Reset Conversation' />
+      <InputAdornmentButton title='Reset Conversation' onClick={() => {}}>
+        <LuRefreshCcw className='w-4 h-4' />
+      </InputAdornmentButton>
+      <InputAdornmentButton title='Collapse Input' onClick={() => {}}>
+        <BiCollapseVertical className='w-4 h-4' />
+      </InputAdornmentButton>
+      <InputAdornmentButton title='Reset Conversation' onClick={() => {}}>
+        <LuTrash2 className='w-4 h-4' />
+      </InputAdornmentButton>
       <div className='flex-grow' />
       {enableVoiceInput && (
-        <InputAdornmentButton icon={<LuMic className='w-4 h-4' />} onClick={() => {}} tooltipTitle='Voice Input' />
+        <InputAdornmentButton title='Voice Input' onClick={() => {}}>
+          <LuMic className='w-4 h-4' />
+        </InputAdornmentButton>
       )}
-      <InputAdornmentButton icon={<LuSend className='w-4 h-4' />} onClick={handleSendMessage} tooltipTitle='Send Message' />
+      <InputAdornmentButton title='Send Message' onClick={handleSendMessage}>
+        <LuSend className='w-4 h-4' />
+      </InputAdornmentButton>
     </div>
   );
 }
 
-function InputAdornmentButton({
-  icon,
-  onClick,
-  tooltipTitle,
-}: {
-  icon: React.ReactNode;
-  onClick: () => void;
-  tooltipTitle: string;
-}) {
+export function InputAdornmentButton({ title, children, ...props }: ButtonProps & { title: string }) {
   return (
-    <TooltipBasic title={tooltipTitle} side='top'>
-      <Button size='icon' variant='ghost' className='rounded-full' onClick={onClick}>
-        {icon}
+    <TooltipBasic title={title} side='top'>
+      <Button size='icon' variant='ghost' className='rounded-full' {...props}>
+        {children}
       </Button>
     </TooltipBasic>
   );

@@ -30,6 +30,7 @@ export function TextField() {
       rows={1}
       name='message'
       id='message'
+      tabIndex={0}
       value={message}
       onChange={(e) => setMessage(e.target.value)}
       onKeyDown={handleKeyDown}
