@@ -1,11 +1,12 @@
 'use client';
 
 import { BiCollapseVertical } from 'react-icons/bi';
-import { LuMic, LuTrash2, LuSend, LuRefreshCcw } from 'react-icons/lu';
+import { LuTrash2, LuSend, LuRefreshCcw } from 'react-icons/lu';
 import { ChatInputProvider, type ChatInputContextType } from './Provider';
 import { TextField } from './TextField';
 import { UploadedFilesDisplay, FileUploadButton } from './FileUpload';
 import { useChatInput } from './Provider';
+import { VoiceInputButton } from './VoiceInput';
 import { Button, ButtonProps } from '@/components/ui/button';
 import { TooltipBasic } from '@/components/ui/tooltip';
 
@@ -33,7 +34,7 @@ function ChatInputContent() {
 }
 
 export function AdornmentsContainer() {
-  const { handleSendMessage, enableVoiceInput } = useChatInput();
+  const { handleSendMessage, loading } = useChatInput();
 
   return (
     <div className='flex items-center w-full gap-1'>
@@ -48,12 +49,8 @@ export function AdornmentsContainer() {
         <LuTrash2 className='w-4 h-4' />
       </InputAdornmentButton>
       <div className='flex-grow' />
-      {enableVoiceInput && (
-        <InputAdornmentButton title='Voice Input' onClick={() => {}}>
-          <LuMic className='w-4 h-4' />
-        </InputAdornmentButton>
-      )}
-      <InputAdornmentButton title='Send Message' onClick={handleSendMessage}>
+      <VoiceInputButton />
+      <InputAdornmentButton title='Send Message' onClick={handleSendMessage} disabled={loading}>
         <LuSend className='w-4 h-4' />
       </InputAdornmentButton>
     </div>

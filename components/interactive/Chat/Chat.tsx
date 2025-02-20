@@ -327,7 +327,7 @@ export default function Chat({
         disabled={loading}
         showChatThemeToggles={!!showChatThemeToggles}
         enableFileUpload={!!enableFileUpload}
-        enableVoiceInput={!!enableVoiceInput}
+        enableVoiceInput={false}
         loading={loading}
         setLoading={setLoading}
         showOverrideSwitchesCSV={showOverrideSwitchesCSV || ''}
