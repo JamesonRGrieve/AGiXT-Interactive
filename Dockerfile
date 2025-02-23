@@ -9,6 +9,8 @@ RUN apk add --no-cache \
   make \
   g++ \
   linux-headers
+COPY package*.json ./
+RUN npm install
 COPY . .
 RUN chmod +x /app/launch.sh
 EXPOSE 3437
