@@ -8,7 +8,8 @@ RUN apk add --no-cache \
   py3-pip \
   make \
   g++ \
-  linux-headers
+  linux-headers \
+  eudev-dev
 COPY package*.json ./
 RUN npm install
 COPY . .
