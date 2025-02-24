@@ -73,7 +73,7 @@ services:
       - ./models:/agixt/models
       - ./WORKSPACE:/agixt/WORKSPACE
       - /var/run/docker.sock:/var/run/docker.sock
-  aginteractive:
+  agixt-interactive:
     image: jamesonrgrieve/agixt-interactive:main
     init: true
     environment:
