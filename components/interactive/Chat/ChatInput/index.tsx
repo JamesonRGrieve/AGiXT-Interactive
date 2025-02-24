@@ -179,9 +179,7 @@ export default function ChatBar({
             className='justify-start w-full px-4 hover:bg-transparent'
             onClick={handleFocus}
           >
-            <span className='font-light text-muted-foreground'>
-              {loading ? 'Sending...' : 'Enter your message here...'}
-            </span>
+            <span className='font-light text-muted-foreground'>{loading ? 'Sending...' : 'Enter your message here...'}</span>
           </Button>
           {enableVoiceInput && <VoiceRecorder onSend={onSend} disabled={disabled} />}
         </>

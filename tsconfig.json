@@ -35,7 +35,8 @@
     ".next/types/**/*.ts",
     "app/theme.ts",
     "components/jrg/auth/auth.config.js",
-    "components/interactive/interactive.config.js"
-, "components/interactive/Chat/Activity/Severtities.tsx"  ],
+    "components/interactive/interactive.config.js",
+    "components/interactive/Chat/Activity/Severtities.tsx"
+  ],
   "exclude": ["node_modules"]
 }

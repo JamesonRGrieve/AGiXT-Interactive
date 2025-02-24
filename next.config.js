@@ -25,7 +25,7 @@ const useBasicConfig = () => ({
     NEXT_PUBLIC_TZ: process.env.TZ || 'America/New_York', // Server timezone
     NEXT_PUBLIC_ADSENSE_ACCOUNT: process.env.ADSENSE_ACCOUNT || '',
     NEXT_PUBLIC_ENV: ENV,
-    NEXT_PUBLIC_LOG_VERBOSITY_CLIENT: process.env.NEXT_PUBLIC_LOG_VERBOSITY_CLIENT || "3",
+    NEXT_PUBLIC_LOG_VERBOSITY_CLIENT: process.env.NEXT_PUBLIC_LOG_VERBOSITY_CLIENT || '3',
   },
 });
 const useProductionSkipLintingConfig = () => ({
@@ -98,7 +98,9 @@ const useOAuth2Config = () => ({
     NEXT_PUBLIC_MICROSOFT_SCOPES:
       process.env.MICROSOFT_SCOPES || 'offline_access User.Read Mail.Send Calendars.ReadWrite Calendars.ReadWrite.Shared',
     NEXT_PUBLIC_TESLA_CLIENT_ID: process.env.TESLA_CLIENT_ID || '',
-    NEXT_PUBLIC_TESLA_SCOPES: process.env.TESLA_SCOPES || 'openid offline_access user_data vehicle_device_data vehicle_cmds vehicle_charging_cmds vehicle_location',
+    NEXT_PUBLIC_TESLA_SCOPES:
+      process.env.TESLA_SCOPES ||
+      'openid offline_access user_data vehicle_device_data vehicle_cmds vehicle_charging_cmds vehicle_location',
     NEXT_PUBLIC_OPENAM_CLIENT_ID: process.env.OPENAM_CLIENT_ID || '',
     NEXT_PUBLIC_ORCID_CLIENT_ID: process.env.ORCID_CLIENT_ID || '',
     NEXT_PUBLIC_PAYPAL_CLIENT_ID: process.env.PAYPAL_CLIENT_ID || '',
@@ -190,6 +192,7 @@ const configs = [
   useProductionSkipLintingConfig,
 ];
 const nextConfig = configs.reduce((accumulator, config) => mergeConfigs(accumulator, config()), {
+  output: 'standalone',
   env: {},
   experimental: {
     serverActions: {

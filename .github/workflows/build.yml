@@ -25,13 +25,6 @@ jobs:
       - name: Install dependencies and build
         run: npm install && npm run build
 
-      # Cache the build output for later steps
-      - name: Cache build artifacts
-        uses: actions/cache/save@v4
-        with:
-          path: ./dist
-          key: build-${{ github.sha }}
-
   docker-build:
     needs: npm-build
     runs-on: ubuntu-latest
@@ -49,13 +42,6 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Restore build artifacts
-        uses: actions/cache/restore@v4
-        with:
-          path: ./dist
-          key: build-${{ github.sha }}
-          fail-on-cache-miss: true
-
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3.2.0
 
@@ -65,7 +51,7 @@ jobs:
       - name: Generate image names
         id: set_image_names
         run: |
-          echo "image-names=ghcr.io/${{ github.repository_owner }}/AGiXT-Interactive,${{ vars.DOCKERHUB_USERNAME }}/AGiXT-Interactive" >> $GITHUB_OUTPUT
+          echo "image-names=ghcr.io/${{ github.repository_owner }}/AGiXT-Interactive,${{ github.repository_owner }}/AGiXT-Interactive" >> $GITHUB_OUTPUT
 
       - name: Extract metadata for Docker
         id: meta
@@ -77,6 +63,7 @@ jobs:
             type=semver,pattern={{raw}},enable=${{ github.ref_type == 'tag' }}
             type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
             type=sha
+          sep-tags: ','
 
       - name: Build Docker image
         id: docker_build
@@ -109,7 +96,7 @@ jobs:
           - registry: github
             enabled: true
           - registry: dockerhub
-            enabled: ${{ github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') }}
+            enabled: ${{ startsWith(github.ref, 'refs/tags/v') }}
     name: Publish to ${{ matrix.registry }}
     permissions:
       packages: write
@@ -119,7 +106,7 @@ jobs:
       - name: Skip if not enabled
         if: matrix.registry == 'dockerhub' && matrix.enabled != true
         run: |
-          echo "DockerHub publishing is only enabled for main branch and tags"
+          echo "DockerHub publishing is only enabled for release tags"
           exit 0
 
       - name: Checkout repository
@@ -152,7 +139,7 @@ jobs:
         if: matrix.registry == 'dockerhub' && matrix.enabled
         uses: docker/login-action@v3.3.0
         with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Extract image repository
@@ -162,7 +149,7 @@ jobs:
           if [ "${{ matrix.registry }}" == "github" ]; then
             echo "repo=ghcr.io/${{ github.repository_owner }}/AGiXT-Interactive" >> $GITHUB_OUTPUT
           else
-            echo "repo=${{ vars.DOCKERHUB_USERNAME }}/AGiXT-Interactive" >> $GITHUB_OUTPUT
+            echo "repo=${{ github.repository_owner }}/AGiXT-Interactive" >> $GITHUB_OUTPUT
           fi
 
       - name: Extract metadata for Docker
@@ -172,10 +159,11 @@ jobs:
         with:
           images: ${{ steps.extract_repo.outputs.repo }}
           tags: |
-            type=raw,value={{branch}}
-            type=semver,pattern={{raw}},enable=${{ github.ref_type == 'tag' }}
-            type=raw,value=latest,enable=${{ github.ref_type == 'tag' }}
-            type=sha
+            ${{ matrix.registry == 'github' && github.ref_type != 'tag' && format('type=raw,value={0}', github.ref_name) || '' }}
+            ${{ github.ref_type == 'tag' && 'type=semver,pattern={{raw}}' || '' }}
+            ${{ github.ref_type == 'tag' && 'type=raw,value=latest' || '' }}
+            ${{ matrix.registry == 'github' && 'type=sha' || '' }}
+          sep-tags: ','
 
       - name: Push Docker image
         if: matrix.enabled
@@ -191,9 +179,9 @@ jobs:
         if: matrix.registry == 'dockerhub' && matrix.enabled
         uses: peter-evans/dockerhub-description@v4
         with:
-          username: ${{ vars.DOCKERHUB_USERNAME }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-          repository: ${{ vars.DOCKERHUB_USERNAME }}/AGiXT-Interactive
+          repository: ${{ github.repository_owner }}/AGiXT-Interactive
           readme-filepath: ./docs/README.md
 
   test-ui:
@@ -300,7 +288,9 @@ jobs:
           python3 -m nbconvert --execute --allow-errors --log-level INFO --to pdf tests/FrontEnd.ipynb
 
       - name: Send Report to Discord
-        if: always() && secrets.DISCORD_WEBHOOK != ''
+        env:
+          HAS_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK != '' }}
+        if: always() && env.HAS_WEBHOOK == 'true'
         run: |
           # Set message based on stored test outcome
           BRANCH_NAME=${{ github.ref_name }}
