@@ -3,6 +3,7 @@
 import dayjs from 'dayjs';
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { HistoryIcon } from 'lucide-react';
 import { useCommandMenu } from '../command-menu-context';
 import { useConversations } from '@/interactive/hooks/useConversation';
 import { CommandGroup, CommandItem } from '@/components/ui/command';
@@ -44,3 +45,11 @@ export function ChatHistoryGroup() {
     </CommandGroup>
   );
 }
+
+export const chatHistoryQuickAction = {
+  label: 'Chat History',
+  icon: HistoryIcon,
+  description: 'View your chat history',
+  keywords: ['chat', 'history', 'conversation', 'messages'],
+  subPage: 'chat-history',
+};

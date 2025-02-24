@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { ArrowRight } from 'lucide-react';
 import { CommandItemComponent, CommandMenuGroup } from '../index';
 import { useCommandMenu } from '../command-menu-context';
 import { CommandGroup, CommandSeparator } from '@/components/ui/command';
@@ -59,4 +60,12 @@ export const navigationGroup: CommandMenuGroup = {
         })),
       ),
   ],
+};
+
+export const navigationQuickAction = {
+  label: 'Go to Page',
+  icon: ArrowRight,
+  description: 'Visit a page',
+  keywords: ['page', 'visit', 'navigate', 'link'],
+  subPage: 'navigation',
 };
