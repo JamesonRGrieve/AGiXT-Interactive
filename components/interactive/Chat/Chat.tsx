@@ -137,25 +137,25 @@ export default function Chat({
           },
         }));
         router.push(`/chat/${chatCompletion.id}`);
-        let response;
-        if (state.overrides.conversation === '-') {
-          response = await state.agixt.renameConversation(state.agent, state.overrides.conversation);
-          // response = await axios.put(
-          //   `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation`,
-          //   {
-          //     agent_name: state.agent,
-          //     conversation_name: state.overrides?.conversation,
-          //     new_name: '-',
-          //   },
-          //   {
-          //     headers: {
-          //       Authorization: getCookie('jwt'),
-          //     },
-          //   },
-          // );
-          await mutate('/conversation');
-          log([response], { client: 1 });
-        }
+        // let response;
+        // if (state.overrides.conversation === '-') {
+        //   response = await state.agixt.renameConversation(state.agent, state.overrides.conversation);
+        //   // response = await axios.put(
+        //   //   `${process.env.NEXT_PUBLIC_AGIXT_SERVER}/api/conversation`,
+        //   //   {
+        //   //     agent_name: state.agent,
+        //   //     conversation_name: state.overrides?.conversation,
+        //   //     new_name: '-',
+        //   //   },
+        //   //   {
+        //   //     headers: {
+        //   //       Authorization: getCookie('jwt'),
+        //   //     },
+        //   //   },
+        //   // );
+        //   await mutate('/conversation');
+        //   log([response], { client: 1 });
+        // }
         setLoading(false);
         mutate(conversationSWRPath + response);
         mutate('/user');
