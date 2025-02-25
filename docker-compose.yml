@@ -13,7 +13,7 @@ services:
       DISABLED_PROVIDERS: ${DISABLED_PROVIDERS}
       WORKING_DIRECTORY: ${WORKING_DIRECTORY:-/agixt/WORKSPACE}
       REGISTRATION_DISABLED: ${REGISTRATION_DISABLED:-false}
-      TOKENIZERS_PARALLELISM: "false"
+      TOKENIZERS_PARALLELISM: 'false'
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
       AWS_CLIENT_ID: ${AWS_CLIENT_ID}
       AWS_CLIENT_SECRET: ${AWS_CLIENT_SECRET}
@@ -68,13 +68,13 @@ services:
       GRAPHIQL: ${GRAPHIQL:-true}
       TZ: ${TZ:-America/New_York}
     ports:
-      - "${AGIXT_PORT:-7437}:7437"
+      - '${AGIXT_PORT:-7437}:7437'
     volumes:
       - ./models:/agixt/models
       - ./WORKSPACE:/agixt/WORKSPACE
       - /var/run/docker.sock:/var/run/docker.sock
-  agixtinteractive:
-    image: joshxt/agixt-interactive:main
+  agixt-interactive:
+    image: jamesonrgrieve/agixt-interactive:main
     init: true
     environment:
       MODE: production
@@ -100,7 +100,7 @@ services:
       MICROSOFT_CLIENT_ID: ${MICROSOFT_CLIENT_ID}
       TZ: ${TZ:-America/New_York}
     ports:
-      - "${AGIXT_INTERACTIVE_PORT:-3437}:3437"
+      - '${AGIXT_INTERACTIVE_PORT:-3437}:3437'
     restart: unless-stopped
     volumes:
       - ./node_modules:/app/node_modules
