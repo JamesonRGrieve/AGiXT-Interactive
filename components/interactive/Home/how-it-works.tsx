@@ -1,14 +1,14 @@
 'use client';
+import { BarChart3 } from 'lucide-react';
 import { useState } from 'react';
 import {
   LuDatabase as Database,
-  LuMessageSquare as MessageSquare,
   LuFileText as FileText,
+  LuMessageSquare as MessageSquare,
   LuSend as Send,
 } from 'react-icons/lu';
-import { BarChart3 } from 'lucide-react';
-import { Button } from '../ui/button';
-import { Input } from '../ui/input';
+import { Button } from '../../ui/button';
+import { Input } from '../../ui/input';
 
 export function HowItWorks() {
   return (
