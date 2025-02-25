@@ -1,16 +1,15 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { getCookie } from 'cookies-next';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-import { AgentSelector } from '../../interactive/Selectors/agent-selector';
-import { ChatHistory } from '../../interactive/Layout/chat-history';
 import { NavMain } from '@/components/jrg/appwrapper/NavMain';
 import { NavUser } from '@/components/jrg/appwrapper/NavUser';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarRail } from '@/components/ui/sidebar';
+import { ChatHistory } from '../../interactive/Layout/chat-history';
+import { AgentSelector } from '../../interactive/Selectors/AgentSelector';
 import { ToggleSidebar } from './ToggleSidebar';
-import { NotificationsNavItem } from '@/interactive/Notifications/popup';
 
 export function SidebarMain({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const [hasStarted, setHasStarted] = useState(false);

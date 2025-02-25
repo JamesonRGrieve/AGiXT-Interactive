@@ -14,7 +14,7 @@ import Chat from './Chat/Chat';
 import ContextWrapper from './ContextWrapper';
 import Form from './Form/Form';
 import { InteractiveConfig, InteractiveConfigDefault, Overrides } from './InteractiveConfigContext';
-import { AgentSelector } from './Selectors/agent-selector';
+import { AgentSelector } from './Selectors/AgentSelector';
 import ConversationSelector from './Selectors/ConversationSelector';
 import PromptSelector from './Selectors/PromptSelector';
 
