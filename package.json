@@ -19,7 +19,9 @@
     "url": "git+https://github.com/JamesonRGrieve/AGiXT-Interactive.git"
   },
   "keywords": [
-    "agixt",
+    "ai",
+    "agi",
+    "chat",
     "react",
     "nextjs",
     "components"

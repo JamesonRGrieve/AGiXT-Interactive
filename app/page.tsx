@@ -1,14 +1,14 @@
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
-import { Hero } from '@/components/home/hero';
-import { Features } from '@/components/home/features';
-import { HowItWorks } from '@/components/home/how-it-works';
+import { CallToAction } from '@/components/interactive/Home/call-to-action';
+import { Contact } from '@/components/interactive/Home/contact';
+import { Features } from '@/components/interactive/Home/features';
+import { Hero } from '@/components/interactive/Home/hero';
+import { HowItWorks } from '@/components/interactive/Home/how-it-works';
 import PricingGrid from '@/components/jrg/auth/stripe/PricingTable';
-import { Contact } from '@/components/home/contact';
-import { CallToAction } from '@/components/home/call-to-action';
 import { ThemeToggle } from '@/components/jrg/theme/ThemeToggle';
-import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { cookies } from 'next/headers';
+import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default function Home() {
   if (cookies().has('jwt')) {

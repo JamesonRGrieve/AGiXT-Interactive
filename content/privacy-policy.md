@@ -9,12 +9,14 @@ This Privacy Policy describes how AGiXT ("we," "our," or "us") collects, uses, s
 ## Information We Collect
 
 ### Information You Provide
+
 - Account information (email address, name, and profile information)
 - Authentication credentials through Google OAuth
 - User-generated content and data created within the application
 - Communication preferences and settings
 
 ### Information Automatically Collected
+
 - Log data (IP addresses, browser type, pages visited)
 - Device information (operating system, hardware model, unique device identifiers)
 - Usage data (features accessed, interaction patterns)
@@ -23,6 +25,7 @@ This Privacy Policy describes how AGiXT ("we," "our," or "us") collects, uses, s
 ## How We Use Your Information
 
 We use your information for the following purposes:
+
 - Providing and maintaining the AGiXT service
 - Authentication and account management
 - Improving and optimizing our services
@@ -38,6 +41,7 @@ We implement appropriate technical and organizational measures to protect your p
 ## Data Sharing and Third-Party Services
 
 We may share your information with:
+
 - Google OAuth services for authentication purposes
 - Cloud service providers for hosting and infrastructure
 - Third-party services essential for application functionality
@@ -47,6 +51,7 @@ We do not sell your personal information to third parties.
 ## Your Rights and Choices
 
 You have the right to:
+
 - Access your personal information
 - Correct inaccurate or incomplete information
 - Request deletion of your account and associated data
@@ -57,6 +62,7 @@ You have the right to:
 ## Cookie Policy
 
 We use essential cookies and similar technologies to:
+
 - Maintain your session and authentication status
 - Remember your preferences
 - Analyze usage patterns and improve our service
@@ -68,6 +74,7 @@ Our service is not directed to children under 13 years of age. We do not knowing
 ## Changes to This Policy
 
 We may update this Privacy Policy from time to time. We will notify you of any material changes by:
+
 - Posting the new Privacy Policy on our website
 - Sending you an email notification
 - Displaying a notice in the application
@@ -75,6 +82,7 @@ We may update this Privacy Policy from time to time. We will notify you of any m
 ## Retention of Information
 
 We retain your personal information for as long as necessary to:
+
 - Provide our services to you
 - Comply with legal obligations
 - Resolve disputes
@@ -88,6 +96,7 @@ If you have any questions about this Privacy Policy or our privacy practices, pl
 ## Legal Basis for Processing (for EEA Users)
 
 For users in the European Economic Area (EEA), we process personal data based on:
+
 - Performance of our contract with you
 - Your consent
 - Our legitimate interests
@@ -96,6 +105,7 @@ For users in the European Economic Area (EEA), we process personal data based on
 ## International Data Transfers
 
 If we transfer your data outside your region, we ensure appropriate safeguards are in place through:
+
 - Standard contractual clauses
 - Adequacy decisions
 - Other legal mechanisms as required
@@ -103,6 +113,7 @@ If we transfer your data outside your region, we ensure appropriate safeguards a
 ## California Privacy Rights
 
 California residents have additional rights under the California Consumer Privacy Act (CCPA), including:
+
 - Right to know what personal information is collected
 - Right to delete personal information
 - Right to opt-out of the sale of personal information
@@ -111,6 +122,7 @@ California residents have additional rights under the California Consumer Privac
 ## Compliance with Google OAuth Requirements
 
 This Privacy Policy complies with Google's OAuth 2.0 Policies and Terms of Service. We:
+
 - Only request necessary OAuth scopes
 - Handle user data in accordance with Google API Services User Data Policy
 - Provide transparent information about how we use Google user data
