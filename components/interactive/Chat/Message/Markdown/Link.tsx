@@ -1,7 +1,7 @@
 'use client';
 
-import React, { ReactNode, useEffect, useRef } from 'react';
 import { cn } from '@/lib/utils';
+import React, { ReactNode } from 'react';
 // import Plyr from 'plyr-react';
 // import 'plyr-react/plyr.css';
 
@@ -77,10 +77,4 @@ export default function MarkdownLink({ children, href, className, ...props }: Ma
       {children}
     </a>
   );
-};
-
-function getYoutubeId(url: string): string | null {
-  const regExp = /^.*((youtu.be\/)|(v\/)|(\/u\/\w\/)|(embed\/)|(watch\?))\??v?=?([^#&?]*).*/;
-  const match = url.match(regExp);
-  return match && match[7].length === 11 ? match[7] : null;
 }
