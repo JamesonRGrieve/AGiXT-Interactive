@@ -13,7 +13,7 @@ import { Input } from '../../ui/input';
 export function HowItWorks() {
   return (
     <section className='max-w-6xl p-4 mx-auto'>
-      <div className='grid gap-6 lg:grid-cols-[1fr,400px] lg:gap-12 xl:grid-cols-[1fr,450px]'>
+      <div className='grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_450px]'>
         <div className='flex flex-col justify-center space-y-4 md:justify-start'>
           <div className='flex flex-col items-center space-y-2'>
             <h2 className='text-3xl font-bold tracking-tighter sm:text-5xl'>How It Works</h2>
@@ -66,7 +66,7 @@ function ExampleChat() {
 
   return (
     <div className='flex flex-col justify-center max-w-md mx-auto'>
-      <div className='border rounded-lg shadow-sm bg-background'>
+      <div className='border rounded-lg shadow-xs bg-background'>
         <div className='flex flex-col space-y-1.5 p-6'>
           <h3 className='text-2xl font-semibold leading-none tracking-tight'>Example Conversation</h3>
           <p className='text-sm text-muted-foreground'>Ask questions and get insights from your data</p>

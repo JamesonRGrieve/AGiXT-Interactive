@@ -166,11 +166,11 @@ export function Providers() {
           providers.connected.map((provider) => (
             <div
               key={provider.name}
-              className='flex flex-col gap-4 p-4 transition-colors border rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
+              className='flex flex-col gap-4 p-4 transition-colors border rounded-lg bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60'
             >
               <div className='flex items-center gap-4'>
                 <div className='flex items-center flex-1 min-w-0 gap-3.5'>
-                  <Wrench className='flex-shrink-0 w-5 h-5 text-muted-foreground' />
+                  <Wrench className='shrink-0 w-5 h-5 text-muted-foreground' />
                   <div>
                     <h4 className='font-medium truncate'>{provider.name}</h4>
                     <p className='text-sm text-muted-foreground'>Connected</p>
@@ -191,11 +191,11 @@ export function Providers() {
           providers.available.map((provider) => (
             <div
               key={provider.name}
-              className='flex flex-col gap-4 p-4 transition-colors border rounded-lg bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60'
+              className='flex flex-col gap-4 p-4 transition-colors border rounded-lg bg-background/95 backdrop-blur-sm supports-backdrop-filter:bg-background/60'
             >
               <div className='flex items-center gap-4'>
                 <div className='flex items-center flex-1 min-w-0 gap-3.5'>
-                  <Wrench className='flex-shrink-0 w-5 h-5 text-muted-foreground' />
+                  <Wrench className='shrink-0 w-5 h-5 text-muted-foreground' />
                   <div>
                     <h4 className='font-medium truncate'>{provider.friendlyName}</h4>
                     <p className='text-sm text-muted-foreground'>Not Connected</p>

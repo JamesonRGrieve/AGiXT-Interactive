@@ -83,7 +83,7 @@ export default function ConversationSelector(): React.JSX.Element {
   }, []);
 
   return (
-    <div className='flex items-center flex-grow w-full'>
+    <div className='flex items-center grow w-full'>
       <div className='relative w-full'>
         <Select
           open={dropDownOpen}

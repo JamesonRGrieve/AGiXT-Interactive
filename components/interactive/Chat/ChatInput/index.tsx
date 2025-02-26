@@ -132,7 +132,7 @@ export default function ChatBar({
             {Object.keys(uploadedFiles).length > 0 && (
               <ListUploadedFiles uploadedFiles={uploadedFiles} setUploadedFiles={setUploadedFiles} />
             )}
-            <div className='flex-grow' />
+            <div className='grow' />
             {timer > -1 && <Timer loading={loading} timer={timer} />}
             <TooltipBasic title='Collapse Input' side='top'>
               <Button size='icon' variant='ghost' className='rounded-full' onClick={() => handleBlur()}>

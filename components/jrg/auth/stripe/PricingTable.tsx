@@ -132,7 +132,7 @@ export function PricingCard({
         {isMostPopular && (
           <Badge className='self-center mb-3 uppercase w-max bg-primary-foreground text-primary'>Most popular</Badge>
         )}
-        <CardTitle className={isMostPopular ? '!mb-7' : 'mb-7'}>{name}</CardTitle>
+        <CardTitle className={isMostPopular ? 'mb-7!' : 'mb-7'}>{name}</CardTitle>
         {flatRate && (
           <span className='text-5xl font-bold'>
             {isAnnual
@@ -149,9 +149,9 @@ export function PricingCard({
           {marketing_features?.map((feature) => (
             <li className='flex space-x-2' key={feature.name}>
               {feature.name.startsWith('-') ? (
-                <MinusIcon className='flex-shrink-0 mt-0.5 h-4 w-4' />
+                <MinusIcon className='shrink-0 mt-0.5 h-4 w-4' />
               ) : (
-                <CheckIcon className='flex-shrink-0 mt-0.5 h-4 w-4' />
+                <CheckIcon className='shrink-0 mt-0.5 h-4 w-4' />
               )}
               <span className={isMostPopular ? 'text-primary-foreground' : 'text-muted-foreground'}>{feature.name}</span>
             </li>
