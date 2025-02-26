@@ -47,7 +47,7 @@ class FrontEndTest:
 
     def __init__(
         self,
-        base_uri: str = "http://localhost:3437",
+        base_uri: str = "http://localhost:1109",
         features: str = "",
     ):
         self.base_uri = base_uri
@@ -60,10 +60,10 @@ class FrontEndTest:
         self.popup = None
         self.playwright = None
         self.screenshots_with_actions = []
-        self.agixt = (
+        self.sdk = (
             AGiXTSDK(base_uri="https://api.agixt.dev") if is_desktop() else AGiXTSDK()
         )
-        self.agixt.register_user(
+        self.sdk.register_user(
             email=f"{uuid.uuid4()}@example.com", first_name="Test", last_name="User"
         )
         # Features are comma separated, options are:
@@ -334,7 +334,7 @@ class FrontEndTest:
         with open(screenshot_path, "rb") as f:
             screenshot = f.read().decode("utf-8")
         screenshot = f"data:image/png;base64,{screenshot}"
-        response = self.agixt.prompt_agent(
+        response = self.sdk.prompt_agent(
             agent_name="XT",
             prompt_name="Think About It",
             prompt_args={"user_input": prompt, "file_urls": [screenshot]},
@@ -548,17 +548,17 @@ class FrontEndTest:
 
             await self.test_action(
                 "The user can expand the thought process to see the thoughts, reflections and actions.",
-                lambda: self.page.locator(".agixt-activity")
+                lambda: self.page.locator(".aginteractive-activity")
                 .get_by_text("Completed Activities")
                 .click(),
-                lambda: self.page.locator(".agixt-activity")
+                lambda: self.page.locator(".aginteractive-activity")
                 .get_by_text("Completed Activities")
                 .scroll_into_view_if_needed(),
             )
             try:
                 await self.test_action(
                     "The agent also provides a visualization of its thought process.",
-                    lambda: self.page.click(".agixt-activity-diagram"),
+                    lambda: self.page.click(".aginteractive-activity-diagram"),
                     lambda: self.page.locator(
                         '.flowchart[id^="mermaid"]'
                     ).scroll_into_view_if_needed(),

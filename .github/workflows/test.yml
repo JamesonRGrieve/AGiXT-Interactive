@@ -18,7 +18,7 @@ on:
         required: true
       front-end-port:
         type: string
-        default: '3437'
+        default: '1109'
       port-mapping:
         type: string
       additional-python-dependencies:
@@ -75,9 +75,9 @@ jobs:
         env:
           DATABASE_TYPE: sqlite
           DATABASE_NAME: agixt
-          AGIXT_API_KEY: just-a-test
-          AGIXT_URI: http://agixt:7437
-          APP_URI: http://localhost:3437
+          AGINTERACTIVE_API_KEY: just-a-test
+          AGINTERACTIVE_URI: http://agixt:7437
+          APP_URI: http://localhost:1109
           AGENT_NAME: XT
           WORKING_DIRECTORY: /agixt/WORKSPACE
           TOKENIZERS_PARALLELISM: 'false'
@@ -89,7 +89,7 @@ jobs:
           EZLOCALAI_API_KEY: 'n0ne'
           EZLOCALAI_MAX_TOKENS: '32000'
           EZLOCALAI_VOICE: 'HAL9000'
-      front-end:
+      aginteractive:
         image: ${{ inputs.front-end-image }}
         ports:
           - ${{ inputs.port-mapping || format('{0}:{1}', inputs.front-end-port, inputs.front-end-port) }}
@@ -102,20 +102,20 @@ jobs:
         env:
           mode: production
           NEXT_TELEMETRY_DISABLED: 1
-          AGIXT_AGENT: XT
-          AGIXT_FOOTER_MESSAGE: 'AGiXT 2024'
+          AGINTERACTIVE_AGENT: XT
+          AGINTERACTIVE_FOOTER_MESSAGE: 'AGiXT 2024'
           APP_DESCRIPTION: 'XT is an advanced artificial intelligence agent orchestration agent.'
           APP_NAME: XT
-          AGIXT_FILE_UPLOAD_ENABLED: true
-          AGIXT_VOICE_INPUT_ENABLED: true
-          AGIXT_RLHF: true
-          AGIXT_ALLOW_MESSAGE_EDITING: true
-          AGIXT_ALLOW_MESSAGE_DELETION: true
-          AGIXT_SHOW_OVERRIDE_SWITCHES: tts,websearch,analyze-user-input
+          AGINTERACTIVE_FILE_UPLOAD_ENABLED: true
+          AGINTERACTIVE_VOICE_INPUT_ENABLED: true
+          AGINTERACTIVE_RLHF: true
+          AGINTERACTIVE_ALLOW_MESSAGE_EDITING: true
+          AGINTERACTIVE_ALLOW_MESSAGE_DELETION: true
+          AGINTERACTIVE_SHOW_OVERRIDE_SWITCHES: tts,websearch,analyze-user-input
           INTERACTIVE_MODE: chat
           ALLOW_EMAIL_SIGN_IN: true
           APP_URI: http://localhost:${{ inputs.front-end-port }}
-          AGIXT_SERVER: http://localhost:7437
+          AGINTERACTIVE_SERVER: http://localhost:7437
           LOG_VERBOSITY_SERVER: 3
           TZ: America/New_York
     steps:
@@ -146,11 +146,11 @@ jobs:
             echo "artifact-file=${notebook}/*.pdf"  >> "$GITHUB_ENV"
           fi
 
-      - name: Check AGiXT logs
+      - name: Check back-end logs
         run: docker logs ${{ job.services.agixt.id }} --follow &
 
       - name: Check front-end logs
-        run: docker logs ${{ job.services.front-end.id }} --follow &
+        run: docker logs ${{ job.services.aginteractive.id }} --follow &
 
       - name: Execute notebook
         id: execute_notebook
@@ -176,16 +176,10 @@ jobs:
         run: |
           # Set message based on stored test outcome
           BRANCH_NAME=$(echo ${{ github.ref }} | awk -F'/' '{print $NF}')
-          if [ "${{ github.actor }}" == "Josh-XT" ]; then
-            DISCORD_NAME="<@381837595522367488>"
-          elif [ "${{ github.actor }}" == "JamesonRGrieve" ]; then
+          if [ "${{ github.actor }}" == "JamesonRGrieve" ]; then
             DISCORD_NAME="<@329145730725838858>"
           elif [ "${{ github.actor }}" == "waiscodes" ]; then
             DISCORD_NAME="<@670762167037067304>"
-          elif [ "${{ github.actor }}" == "birdup000" ]; then
-            DISCORD_NAME="<@856308374567256074>"
-          elif [ "${{ github.actor }}" == "Nick-XT" ]; then
-            DISCORD_NAME="<@381908912951001088>"
           else
             DISCORD_NAME="**${{ github.actor }}**"
           fi
