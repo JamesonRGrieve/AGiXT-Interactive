@@ -25,7 +25,7 @@ export default function ChatLog({
   }, [conversation]);
 
   return (
-    <div className='flex flex-col-reverse flex-grow overflow-auto bg-background pb-28' style={{ flexBasis: '0px' }}>
+    <div className='flex flex-col-reverse grow overflow-auto bg-background pb-28' style={{ flexBasis: '0px' }}>
       <div className='flex flex-col h-min'>
         {conversation.length > 0 && conversation.map ? (
           conversation.map((chatItem, index: number) => {

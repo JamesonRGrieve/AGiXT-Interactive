@@ -183,7 +183,7 @@ const MainSection = ({
   return (
     <div
       className={`
-        flex flex-col flex-grow flex-shrink-0 relative overflow-y-auto
+        flex flex-col grow shrink-0 relative overflow-y-auto
         transition-[margin] duration-300 ease-in-out
       `}
       style={{

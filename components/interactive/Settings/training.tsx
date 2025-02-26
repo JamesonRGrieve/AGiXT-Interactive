@@ -346,7 +346,7 @@ const Training = (): React.ReactElement => {
   };
 
   return (
-    <div className='max-w-screen-lg mx-auto space-y-6'>
+    <div className='max-w-(--breakpoint-lg) mx-auto space-y-6'>
       {/* {activeCompany?.my_role >= 2 && (
         <div className='flex items-center gap-2 mx-4 my-4'>
           <Switch

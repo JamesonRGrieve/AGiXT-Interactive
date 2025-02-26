@@ -54,7 +54,7 @@ export function AgentSelector() {
             </SidebarMenuButton>
           </DropdownMenuTrigger>
           <DropdownMenuContent
-            className='w-[--radix-dropdown-menu-trigger-width] min-w-64 rounded-lg px-2'
+            className='w-(--radix-dropdown-menu-trigger-width) min-w-64 rounded-lg px-2'
             align='start'
             side={isMobile ? 'bottom' : 'right'}
             sideOffset={4}

@@ -45,7 +45,7 @@ export default function FormOutput({
 
   return (
     results.length > 0 && (
-      <Card className='overflow-y-auto flex-grow mx-4 mb-4'>
+      <Card className='overflow-y-auto grow mx-4 mb-4'>
         <div className='text-center px-12 py-2 text-sm'>
           {process.env.NEXT_PUBLIC_APP_NAME} may provide inaccurate or inappropriate responses, may break character and comes
           with no warranty of any kind. By using this software you agree to hold harmless the developers of{' '}
